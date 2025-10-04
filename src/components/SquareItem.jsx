@@ -26,9 +26,13 @@ export const SquareItem = ({
   size = 120,
   index = 0,
   onClick,
+  drawNumber, // 第几抽获得的（可选）
 }) => {
   const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
+
+  // 光晕颜色
+  const glowColor = rarity === 'legendary' ? '#a280d2' : rarity === 'epic' ? '#e0932e' : null;
 
   // 提示框状态（只对传奇/史诗生效）
   const [showTooltip, setShowTooltip] = useState(false);
@@ -124,6 +128,18 @@ export const SquareItem = ({
       {tier && (
         <div className="absolute right-2 bottom-2 text-sm font-bold text-white">
           Ⅲ
+        </div>
+      )}
+
+      {/* 底部：抽数（史诗/传奇专属，显示光晕） */}
+      {drawNumber && glowColor && (
+        <div
+          className="absolute left-1/2 bottom-2 -translate-x-1/2 text-xl md:text-2xl font-bold text-white pointer-events-none"
+          style={{
+            textShadow: `0 0 8px ${glowColor}, 0 0 16px ${glowColor}, 0 0 24px ${glowColor}`
+          }}
+        >
+          {drawNumber}
         </div>
       )}
 

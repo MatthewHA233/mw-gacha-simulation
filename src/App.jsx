@@ -38,6 +38,7 @@ function App() {
     epicCount: 0,
     rareCount: 0,
     history: [],
+    epicLegendaryHistory: [], // 史诗/传奇抽取记录 [{item, drawNumber}]
     items: [...defaultItems]
   })
 
@@ -339,21 +340,36 @@ function App() {
               currencyBonus = parseInt(match[1])
             }
 
+            // 记录史诗/传奇抽取
+            const newEpicLegendaryHistory = [...prev.epicLegendaryHistory]
+            if (result.rarity === 'epic' || result.rarity === 'legendary') {
+              newEpicLegendaryHistory.push({
+                item: result,
+                drawNumber: prev.totalDraws
+              })
+            }
+
             return {
               ...prev,
               currency: prev.currency + currencyBonus,
               items: newItems,
               history: [result, ...prev.history],
+              epicLegendaryHistory: newEpicLegendaryHistory,
               legendaryCount: prev.legendaryCount + (result.rarity === 'legendary' ? 1 : 0),
               epicCount: prev.epicCount + (result.rarity === 'epic' ? 1 : 0),
               rareCount: prev.rareCount + (result.rarity === 'rare' ? 1 : 0)
             }
           })
 
+          // 为史诗/传奇物品添加抽数
+          const resultWithDrawNum = (result.rarity === 'epic' || result.rarity === 'legendary')
+            ? { ...result, drawNumber: prev.totalDraws }
+            : result;
+
           setResultModal({
             show: true,
-            items: [result],
-            displayedItems: [result],
+            items: [resultWithDrawNum],
+            displayedItems: [resultWithDrawNum],
             isMulti: false,
             drawType: 'single',
             isGenerating: false,
@@ -442,6 +458,14 @@ function App() {
         tempObtained[selectedItem.name] = (tempObtained[selectedItem.name] || 0) + 1
       }
 
+      // 为史诗/传奇物品添加抽数（在更新状态前计算）
+      const resultsWithDrawNum = results.map((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          return { ...result, drawNumber: gameState.totalDraws + index + 1 };
+        }
+        return result;
+      });
+
       setGameState(prev => {
         // 统计每个物品被抽到的次数
         const obtainedCount = {}
@@ -469,11 +493,23 @@ function App() {
           return item
         })
 
+        // 记录史诗/传奇抽取（按抽取顺序）
+        const newEpicLegendaryHistory = [...prev.epicLegendaryHistory]
+        results.forEach((result, index) => {
+          if (result.rarity === 'epic' || result.rarity === 'legendary') {
+            newEpicLegendaryHistory.push({
+              item: result,
+              drawNumber: prev.totalDraws - 10 + index + 1
+            })
+          }
+        })
+
         return {
           ...prev,
           currency: prev.currency + currencyBonus,
           items: newItems,
           history: [...results.reverse(), ...prev.history],
+          epicLegendaryHistory: newEpicLegendaryHistory,
           legendaryCount: prev.legendaryCount + newLegendary,
           epicCount: prev.epicCount + newEpic,
           rareCount: prev.rareCount + newRare
@@ -482,7 +518,7 @@ function App() {
 
       setResultModal({
         show: true,
-        items: results,
+        items: resultsWithDrawNum,
         displayedItems: [],
         isMulti: true,
         drawType: 'multi10',
@@ -495,7 +531,7 @@ function App() {
 
       // 开始逐个显示
       setTimeout(() => {
-        progressivelyShowItems(results, 'multi10')
+        progressivelyShowItems(resultsWithDrawNum, 'multi10')
       }, 100)
     }, 300)
   }
@@ -572,6 +608,14 @@ function App() {
         tempObtained[selectedItem.name] = (tempObtained[selectedItem.name] || 0) + 1
       }
 
+      // 为史诗/传奇物品添加抽数（在更新状态前计算）
+      const resultsWithDrawNum = results.map((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          return { ...result, drawNumber: gameState.totalDraws + index + 1 };
+        }
+        return result;
+      });
+
       setGameState(prev => {
         const obtainedCount = {}
         let newLegendary = 0, newEpic = 0, newRare = 0
@@ -596,11 +640,23 @@ function App() {
           return item
         })
 
+        // 记录史诗/传奇抽取（按抽取顺序）
+        const newEpicLegendaryHistory = [...prev.epicLegendaryHistory]
+        results.forEach((result, index) => {
+          if (result.rarity === 'epic' || result.rarity === 'legendary') {
+            newEpicLegendaryHistory.push({
+              item: result,
+              drawNumber: prev.totalDraws - 100 + index + 1
+            })
+          }
+        })
+
         return {
           ...prev,
           currency: prev.currency + currencyBonus,
           items: newItems,
           history: [...results.reverse(), ...prev.history],
+          epicLegendaryHistory: newEpicLegendaryHistory,
           legendaryCount: prev.legendaryCount + newLegendary,
           epicCount: prev.epicCount + newEpic,
           rareCount: prev.rareCount + newRare
@@ -609,7 +665,7 @@ function App() {
 
       setResultModal({
         show: true,
-        items: results,
+        items: resultsWithDrawNum,
         displayedItems: [],
         isMulti: true,
         drawType: 'multi100',
@@ -622,7 +678,7 @@ function App() {
 
       // 开始逐个显示
       setTimeout(() => {
-        progressivelyShowItems(results, 'multi100')
+        progressivelyShowItems(resultsWithDrawNum, 'multi100')
       }, 100)
     }, 300)
   }
@@ -699,6 +755,14 @@ function App() {
         tempObtained[selectedItem.name] = (tempObtained[selectedItem.name] || 0) + 1
       }
 
+      // 为史诗/传奇物品添加抽数（在更新状态前计算）
+      const resultsWithDrawNum = results.map((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          return { ...result, drawNumber: gameState.totalDraws + index + 1 };
+        }
+        return result;
+      });
+
       setGameState(prev => {
         const obtainedCount = {}
         let newLegendary = 0, newEpic = 0, newRare = 0
@@ -723,11 +787,23 @@ function App() {
           return item
         })
 
+        // 记录史诗/传奇抽取（按抽取顺序）
+        const newEpicLegendaryHistory = [...prev.epicLegendaryHistory]
+        results.forEach((result, index) => {
+          if (result.rarity === 'epic' || result.rarity === 'legendary') {
+            newEpicLegendaryHistory.push({
+              item: result,
+              drawNumber: prev.totalDraws - 500 + index + 1
+            })
+          }
+        })
+
         return {
           ...prev,
           currency: prev.currency + currencyBonus,
           items: newItems,
           history: [...results.reverse(), ...prev.history],
+          epicLegendaryHistory: newEpicLegendaryHistory,
           legendaryCount: prev.legendaryCount + newLegendary,
           epicCount: prev.epicCount + newEpic,
           rareCount: prev.rareCount + newRare
@@ -736,7 +812,7 @@ function App() {
 
       setResultModal({
         show: true,
-        items: results,
+        items: resultsWithDrawNum,
         displayedItems: [],
         isMulti: true,
         drawType: 'multi500',
@@ -749,7 +825,7 @@ function App() {
 
       // 开始逐个显示
       setTimeout(() => {
-        progressivelyShowItems(results, 'multi500')
+        progressivelyShowItems(resultsWithDrawNum, 'multi500')
       }, 100)
     }, 300)
   }
@@ -859,7 +935,7 @@ function App() {
             </button>
 
             {/* 货币显示 */}
-            <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-1.5 md:gap-2">
               {/* 筹码 */}
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-cyan-500/30">
                 <img
@@ -881,6 +957,50 @@ function App() {
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-amber-500/30">
                 <span className="text-amber-400 font-bold text-xs md:text-sm">¥</span>
                 <span className="text-amber-400 font-bold text-xs md:text-sm">{gameState.rmb}</span>
+              </div>
+
+              {/* 艺术硬币 */}
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
+                <img
+                  src="/常驻奖励物品/Artstorm.png"
+                  alt="艺术硬币"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-purple-400 font-bold text-xs md:text-sm">
+                  {(() => {
+                    let total = 0;
+                    gameState.items.forEach(item => {
+                      if (item.name.includes('艺术硬币')) {
+                        const match = item.name.match(/^(\d+)\s/);
+                        const quantity = match ? parseInt(match[1]) : 0;
+                        total += item.obtained * quantity;
+                      }
+                    });
+                    return total;
+                  })()}
+                </span>
+              </div>
+
+              {/* 金条 */}
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
+                <img
+                  src="/常驻奖励物品/Hard.png"
+                  alt="黄金"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-yellow-400 font-bold text-xs md:text-sm">
+                  {(() => {
+                    let total = 0;
+                    gameState.items.forEach(item => {
+                      if (item.name.includes('黄金')) {
+                        const match = item.name.match(/^(\d+)\s/);
+                        const quantity = match ? parseInt(match[1]) : 0;
+                        total += item.obtained * quantity;
+                      }
+                    });
+                    return total;
+                  })()}
+                </span>
               </div>
             </div>
           </div>
@@ -989,6 +1109,7 @@ function App() {
                       item={resultModal.displayedItems[0]}
                       size={120}
                       index={0}
+                      drawNumber={resultModal.displayedItems[0]?.drawNumber}
                     />
                   </div>
                 ) : resultModal.drawType === 'multi10' ? (
@@ -1002,6 +1123,7 @@ function App() {
                             item={item}
                             size={120}
                             index={rowIndex * 5 + colIndex}
+                            drawNumber={item.drawNumber}
                           />
                         ))}
                       </div>
@@ -1018,6 +1140,7 @@ function App() {
                             item={item}
                             size={120}
                             index={rowIndex * 10 + colIndex}
+                            drawNumber={item.drawNumber}
                           />
                         ))}
                       </div>
@@ -1029,49 +1152,66 @@ function App() {
           </motion.div>
         )}
 
-        {/* Info Modal */}
+        {/* History Modal - 历史记录 */}
         {infoModal && (
-          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setInfoModal(false)}>
-            <div className="bg-slate-800/95 rounded-2xl p-8 max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-cyan-500/30 animate-modalFadeIn" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
-                <h3 className="text-3xl font-bold text-cyan-400">所有奖品信息</h3>
-                <button onClick={() => setInfoModal(false)} className="text-4xl text-gray-400 hover:text-white transition-colors">&times;</button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-slate-900/80 border-b border-white/10">
-                      <th className="p-3 text-left text-cyan-400">奖品名称</th>
-                      <th className="p-3 text-left text-cyan-400">类别</th>
-                      <th className="p-3 text-left text-cyan-400">稀有度</th>
-                      <th className="p-3 text-left text-cyan-400">概率</th>
-                      <th className="p-3 text-left text-cyan-400">已抽中</th>
-                      <th className="p-3 text-left text-cyan-400">限量</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {gameState.items.sort((a, b) => {
-                      const order = { legendary: 4, epic: 3, rare: 2, common: 1 }
-                      return order[b.rarity] - order[a.rarity] || a.probability - b.probability
-                    }).map((item, index) => (
-                      <tr key={index} className="border-b border-white/5 hover:bg-cyan-500/10 transition-colors">
-                        <td className="p-3">{item.name}</td>
-                        <td className="p-3">{item.type}</td>
-                        <td className="p-3">
-                          <span className={`px-2 py-1 rounded-lg text-xs ${getRarityClass(item.rarity)}`}>
-                            {getRarityText(item.rarity)}
-                          </span>
-                        </td>
-                        <td className="p-3">{item.probability.toFixed(2)}%</td>
-                        <td className="p-3">{item.obtained}</td>
-                        <td className="p-3">{item.limit > 0 ? `${item.obtained}/${item.limit}` : '无限制'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+            onClick={() => setInfoModal(false)}
+          >
+            <div
+              className="relative w-full max-h-[85vh] overflow-y-auto rounded-lg scale-90 md:scale-100"
+              style={{
+                backgroundImage: 'url(/10月月头筹码抽奖暗影交易/背景组件/eventgachaoffer_ag97_limited_background.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                maxWidth: `${1280 * itemScale}px`,
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex flex-col items-center py-6 px-4 md:py-8 md:px-8">
+                {/* 标题 */}
+                <h2 className="text-xl md:text-3xl font-bold text-white mb-4 md:mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  历史抽奖记录
+                </h2>
+
+                {/* 史诗和传奇物品展示（按抽取顺序） */}
+                <div
+                  className="mb-4 md:mb-6"
+                  style={{ transform: `scale(${itemScale})`, transformOrigin: 'center' }}
+                >
+                  {gameState.epicLegendaryHistory.length === 0 ? (
+                    <div className="text-white text-base md:text-lg text-center py-6 bg-black/50 rounded-lg px-4">
+                      还未获得史诗或传奇物品
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-4 md:gap-6 justify-center">
+                      {gameState.epicLegendaryHistory.map((record, index) => (
+                        <div key={index} className="relative mb-2">
+                          <SquareItem
+                            item={record.item}
+                            size={120}
+                            index={index}
+                            drawNumber={record.drawNumber}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* 关闭按钮 */}
+                <button
+                  onClick={() => setInfoModal(false)}
+                  className="px-8 py-2 bg-cyan-600/80 hover:bg-cyan-500 text-white rounded font-bold transition-colors text-sm md:text-base"
+                >
+                  关闭
+                </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Shop Modal - 充值商店 */}
