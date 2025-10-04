@@ -1,0 +1,220 @@
+/* Custom animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s;
+}
+
+.animate-slideIn {
+    animation: slideIn 0.3s;
+}
+
+.animate-pulse-custom {
+    animation: pulse 0.5s ease-in-out;
+}
+
+.animate-drawing {
+    animation: pulse 0.3s infinite;
+}
+
+.animate-modalFadeIn {
+    animation: modalFadeIn 0.5s;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite;
+}
+
+/* 手机端横屏适配 */
+@media (max-width: 1024px) and (orientation: landscape) {
+    .mobile-landscape {
+        transform: rotate(90deg);
+        transform-origin: center center;
+        width: 100vh;
+        height: 100vw;
+        position: absolute;
+        top: calc((100vh - 100vw) / 2);
+        left: calc((100vw - 100vh) / 2);
+    }
+}
+
+/* === 六边形裁剪（外/内同形） === */
+.clip-hex {
+    clip-path: polygon(
+        25% 6%, 75% 6%,
+        100% 50%,
+        75% 94%, 25% 94%,
+        0% 50%
+    );
+}
+
+/* === 六边形根容器 === */
+.hex-root {
+    width: var(--hex-size);
+    height: var(--hex-size);
+    position: relative;
+    cursor: pointer;
+}
+
+/* 外层容器，负责外发光 & 外描边承载 */
+.hex-outer {
+    position: absolute;
+    inset: 0;
+}
+
+/* 内板：向内缩进，形成边框感 */
+.hex-inner {
+    position: absolute;
+    inset: 5.5%;
+    background: linear-gradient(145deg, var(--hex-bg1), var(--hex-bg2));
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.06),
+        inset 0 12px 28px rgba(255,255,255,0.05),
+        inset 0 -16px 32px rgba(0,0,0,0.45);
+    position: relative;
+}
+
+/* 内板再加一层高光蒙版 */
+.hex-inner-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 60%, transparent 100%),
+        radial-gradient(80% 60% at 50% 100%, rgba(0,0,0,0.35) 0%, transparent 60%);
+    mix-blend-mode: screen;
+}
+
+/* 外描边层 */
+.hex-stroke {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0) 40%) border-box;
+    box-shadow:
+        0 0 0 2px var(--hex-border),
+        0 0 16px var(--hex-glow),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* 传奇扫光 */
+.hex-sheen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.hex-sheen::before {
+    content: "";
+    position: absolute;
+    inset: -35%;
+    background: linear-gradient(100deg,
+        transparent 30%,
+        rgba(255,255,255,0.22) 45%,
+        rgba(255,255,255,0.12) 50%,
+        transparent 65%);
+    transform: rotate(15deg) translateX(-60%);
+    animation: hex-sheen-move 2.8s linear infinite;
+    filter: blur(0.5px);
+    mix-blend-mode: screen;
+}
+@keyframes hex-sheen-move {
+    0%   { transform: rotate(15deg) translateX(-60%); }
+    100% { transform: rotate(15deg) translateX(60%); }
+}
+
+/* 传奇图标额外发光 */
+.legendary-glow {
+    filter:
+        drop-shadow(0 0 6px var(--hex-glow))
+        drop-shadow(0 0 14px var(--hex-glow));
+}
+
+/* 右下角等级楔形 */
+.hex-tier-badge {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.45rem;
+    height: 18px;
+    padding: 0 8px;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    background: linear-gradient(180deg, var(--hex-border) 0%, #000 100%);
+    clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.15) inset,
+        0 0 8px var(--hex-glow);
+    border: 1px solid var(--hex-border);
+}
+
+/* 自定义滚动条 */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollbar-thumb-cyan-500\/50::-webkit-scrollbar-thumb {
+    background-color: rgba(6, 182, 212, 0.5);
+    border-radius: 2px;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 响应式优化 */
+@media (max-width: 1024px) {
+    .lg\:flex-row {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* 手机端竖屏 */
+    .mobile-portrait {
+        padding: 0.5rem;
+    }
+}
+
+@media (min-width: 768px) and (orientation: landscape) and (max-height: 600px) {
+    /* 平板/手机横屏 */
+    .landscape-compact {
+        flex-direction: row !important;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .landscape-compact > aside {
+        width: 250px !important;
+        max-height: 100vh;
+        overflow-y: auto;
+    }
+}

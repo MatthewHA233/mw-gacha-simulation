@@ -1,0 +1,131 @@
+/* 六边形容器 */
+.hexagon-container {
+  position: relative;
+  width: 100px;
+  height: 115px;
+  margin: 5px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* 六边形包装器 */
+.hexagon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+}
+
+.hexagon:hover {
+  transform: scale(1.1) translateZ(20px);
+}
+
+/* 六边形内部 */
+.hexagon-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 2px solid rgba(6, 182, 212, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.hexagon:hover .hexagon-inner {
+  border-color: rgba(6, 182, 212, 0.8);
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.5),
+    inset 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+/* 六边形内容 */
+.hexagon-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 90%;
+  height: 90%;
+}
+
+/* 稀有度颜色 */
+.hexagon-legendary .hexagon-inner {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(168, 85, 247, 0.6);
+}
+
+.hexagon-legendary:hover .hexagon-inner {
+  border-color: rgba(168, 85, 247, 1);
+  box-shadow:
+    0 0 30px rgba(168, 85, 247, 0.8),
+    inset 0 0 30px rgba(168, 85, 247, 0.3);
+}
+
+.hexagon-epic .hexagon-inner {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.hexagon-epic:hover .hexagon-inner {
+  border-color: rgba(251, 191, 36, 1);
+  box-shadow:
+    0 0 30px rgba(251, 191, 36, 0.8),
+    inset 0 0 30px rgba(251, 191, 36, 0.3);
+}
+
+.hexagon-rare .hexagon-inner {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.hexagon-rare:hover .hexagon-inner {
+  border-color: rgba(59, 130, 246, 1);
+  box-shadow:
+    0 0 30px rgba(59, 130, 246, 0.8),
+    inset 0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+/* 六边形网格布局 */
+.hexagon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 响应式 - 手机端横屏 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hexagon-container {
+    width: 80px;
+    height: 92px;
+  }
+
+  .hexagon-grid {
+    max-width: 100%;
+    padding: 10px;
+  }
+}
+
+/* 响应式 - 手机端竖屏 */
+@media (max-width: 768px) and (orientation: portrait) {
+  .hexagon-container {
+    width: 70px;
+    height: 80px;
+  }
+
+  .hexagon-grid {
+    gap: 5px;
+    padding: 10px;
+  }
+}
