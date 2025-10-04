@@ -8,12 +8,20 @@ import toast, { Toaster } from 'react-hot-toast'
 
 function App() {
   const [shouldRotate, setShouldRotate] = useState(false)
+  const [itemScale, setItemScale] = useState(1)
 
   useEffect(() => {
     const checkOrientation = () => {
       // 当宽度小于高度时（接近1:1或更窄），触发横屏旋转
       const shouldRotateNow = window.innerWidth < window.innerHeight && window.innerWidth < 900
       setShouldRotate(shouldRotateNow)
+
+      // 计算物品缩放比例：基于标准桌面宽度按比例缩放，但设置最小值
+      const width = window.innerWidth
+      const baseWidth = 1920 // 标准桌面宽度
+      const minScale = 0.5 // 最小缩放比例
+      const scale = Math.max(width / baseWidth, minScale)
+      setItemScale(scale)
     }
 
     checkOrientation()
@@ -819,20 +827,20 @@ function App() {
 
       {/* 顶部导航栏 */}
       <div className="relative z-50">
-        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/80 to-black/40">
+        <div className="flex items-center justify-between px-4 py-1 md:py-3 bg-gradient-to-b from-black/80 to-black/40">
           {/* 左侧：返回按钮 + 标题 */}
           <div className="flex items-center gap-4">
             {/* 返回按钮 */}
             <button className="text-white/80 hover:text-white transition-colors">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
 
             {/* 标题 */}
             <div>
-              <h1 className="text-white text-lg font-bold">暗影交易</h1>
-              <p className="text-cyan-400 text-xs">SHADOW TRADE</p>
+              <h1 className="text-white text-sm md:text-lg font-bold">暗影交易</h1>
+              <p className="text-cyan-400 text-[8px] md:text-xs">SHADOW TRADE</p>
             </div>
           </div>
 
@@ -843,7 +851,7 @@ function App() {
               onClick={() => setInfoModal(true)}
               className="text-white/80 hover:text-white transition-colors"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="16" x2="12" y2="12" />
                 <circle cx="12" cy="8" r="0.5" fill="currentColor" />
@@ -851,28 +859,28 @@ function App() {
             </button>
 
             {/* 货币显示 */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {/* 筹码 */}
-              <div className="flex items-center gap-2 bg-black/60 rounded-full px-3 py-1.5 border border-cyan-500/30">
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-cyan-500/30">
                 <img
                   src="/10月月头筹码抽奖暗影交易/货币/currency_gachacoins_ag97.png"
                   alt="筹码"
-                  className="w-6 h-6"
+                  className="w-5 h-5 md:w-6 md:h-6"
                 />
-                <span className="text-cyan-400 font-bold text-sm">{gameState.currency}</span>
+                <span className="text-cyan-400 font-bold text-xs md:text-sm">{gameState.currency}</span>
                 {/* 加号按钮 */}
                 <button
                   onClick={() => setShopModal(true)}
-                  className="ml-1 w-5 h-5 flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 rounded-full text-white text-lg font-bold transition-colors"
+                  className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
                 >
                   +
                 </button>
               </div>
 
               {/* 人民币 */}
-              <div className="flex items-center gap-2 bg-black/60 rounded-full px-3 py-1.5 border border-amber-500/30">
-                <span className="text-amber-400 font-bold text-sm">¥</span>
-                <span className="text-amber-400 font-bold text-sm">{gameState.rmb}</span>
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-amber-500/30">
+                <span className="text-amber-400 font-bold text-xs md:text-sm">¥</span>
+                <span className="text-amber-400 font-bold text-xs md:text-sm">{gameState.rmb}</span>
               </div>
             </div>
           </div>
@@ -886,64 +894,64 @@ function App() {
           <img
             src="/10月月头筹码抽奖暗影交易/抽奖界面/商人.png"
             alt="商人"
-            className="h-[900px] object-contain drop-shadow-2xl"
+            className="max-h-[65vh] md:h-[900px] md:max-h-none object-contain drop-shadow-2xl"
           />
         </div>
 
-        {/* 中间偏右：六边形奖池 */}
-        <div className="absolute right-[15%] top-[40%] -translate-y-1/2">
+        {/* 中间偏右：六边形奖池 + 抽奖按钮 */}
+        <div className="absolute right-[-8%] md:right-[15%] top-[50%] md:top-[48%] -translate-y-1/2 scale-[0.6] md:scale-100 origin-center">
           <HexGrid
             items={getPremiumItems()}
             onItemClick={(item) => console.log('点击了', item.name)}
             highlightedItemName={highlightedItemName}
           />
-        </div>
 
-        {/* 底部：抽奖按钮（六边形物品栏下方） */}
-        <div className="absolute right-[-6%] top-[75%] -translate-x-1/2 flex gap-8">
-          {/* 抽奖 x1 */}
-          <button
-            onClick={singleDraw}
-            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
-              抽奖 ×1
-            </span>
-          </button>
+          {/* 抽奖按钮（在六边形下方居中） */}
+          <div className="flex gap-8 justify-center mt-12">
+            {/* 抽奖 x1 */}
+            <button
+              onClick={singleDraw}
+              className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+                抽奖 ×1
+              </span>
+            </button>
 
-          {/* 抽奖 x10 */}
-          <button
-            onClick={multiDraw}
-            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
-              抽奖 ×10
-            </span>
-          </button>
+            {/* 抽奖 x10 */}
+            <button
+              onClick={multiDraw}
+              className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+                抽奖 ×10
+              </span>
+            </button>
 
-          {/* 抽奖 x100 - 金色主题 */}
-          <button
-            onClick={draw100}
-            className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-              抽奖 ×100
-            </span>
-          </button>
+            {/* 抽奖 x100 - 金色主题 */}
+            <button
+              onClick={draw100}
+              className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+                抽奖 ×100
+              </span>
+            </button>
 
-          {/* 抽奖 x500 - 特殊紫色主题 */}
-          <button
-            onClick={draw500}
-            className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-              抽奖 ×500
-            </span>
-          </button>
+            {/* 抽奖 x500 - 特殊紫色主题 */}
+            <button
+              onClick={draw500}
+              className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+                抽奖 ×500
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -953,9 +961,8 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-0 right-0 bottom-0 z-40"
+            className="fixed left-0 right-0 bottom-0 top-0 md:top-[60px] z-40"
             style={{
-              top: '60px',
               backgroundImage: 'url(/10月月头筹码抽奖暗影交易/抽奖界面/出物品.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
@@ -972,49 +979,52 @@ function App() {
             }}
           >
             {/* 物品展示区域 */}
-            <div className="h-full flex items-center justify-center p-8 overflow-hidden" style={{ transform: 'translateY(28px)' }}>
-              {resultModal.drawType === 'single' ? (
-                // 单抽：居中显示单个物品
-                <div onClick={e => e.stopPropagation()}>
-                  <SquareItem
-                    item={resultModal.displayedItems[0]}
-                    size={120}
-                    index={0}
-                  />
-                </div>
-              ) : resultModal.drawType === 'multi10' ? (
-                // 10连抽：5个一排，两排
-                <div className="flex flex-col gap-6" onClick={e => e.stopPropagation()}>
-                  {[0, 1].map(rowIndex => (
-                    <div key={rowIndex} className="flex gap-6 justify-center">
-                      {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
-                        <SquareItem
-                          key={rowIndex * 5 + colIndex}
-                          item={item}
-                          size={120}
-                          index={rowIndex * 5 + colIndex}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                // 100连和500连：10个一排，最多显示两排（史诗/传奇在前）
-                <div className="flex flex-col gap-6" onClick={e => e.stopPropagation()}>
-                  {[0, 1].map(rowIndex => (
-                    <div key={rowIndex} className="flex gap-6 justify-center">
-                      {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
-                        <SquareItem
-                          key={rowIndex * 10 + colIndex}
-                          item={item}
-                          size={120}
-                          index={rowIndex * 10 + colIndex}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="h-full flex items-center justify-center p-8 translate-y-[11px] md:translate-y-[28px]">
+              {/* 响应式缩放容器 */}
+              <div style={{ transform: `scale(${itemScale})`, transformOrigin: 'center' }}>
+                {resultModal.drawType === 'single' ? (
+                  // 单抽：居中显示单个物品
+                  <div onClick={e => e.stopPropagation()}>
+                    <SquareItem
+                      item={resultModal.displayedItems[0]}
+                      size={120}
+                      index={0}
+                    />
+                  </div>
+                ) : resultModal.drawType === 'multi10' ? (
+                  // 10连抽：5个一排，两排
+                  <div className="flex flex-col gap-6" onClick={e => e.stopPropagation()}>
+                    {[0, 1].map(rowIndex => (
+                      <div key={rowIndex} className="flex gap-6 justify-center">
+                        {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
+                          <SquareItem
+                            key={rowIndex * 5 + colIndex}
+                            item={item}
+                            size={120}
+                            index={rowIndex * 5 + colIndex}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // 100连和500连：10个一排，最多显示两排（史诗/传奇在前）
+                  <div className="flex flex-col gap-6" onClick={e => e.stopPropagation()}>
+                    {[0, 1].map(rowIndex => (
+                      <div key={rowIndex} className="flex gap-6 justify-center">
+                        {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
+                          <SquareItem
+                            key={rowIndex * 10 + colIndex}
+                            item={item}
+                            size={120}
+                            index={rowIndex * 10 + colIndex}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
@@ -1074,7 +1084,7 @@ function App() {
             onClick={() => setShopModal(false)}
           >
             {/* 商品展示区域 */}
-            <div className="flex gap-6 px-8" onClick={e => e.stopPropagation()}>
+            <div className="flex gap-6 px-8 scale-[0.6] md:scale-100" onClick={e => e.stopPropagation()}>
               {shopPackages.map((pkg, index) => (
                   <div
                     key={pkg.id}
