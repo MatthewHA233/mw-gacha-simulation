@@ -6,6 +6,9 @@ import { SquareItem } from './components/SquareItem'
 import { motion } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
 
+// CDN 基础 URL
+const CDN_BASE_URL = 'https://assets.lingflow.cn/mw-gacha-simulation'
+
 function App() {
   const [shouldRotate, setShouldRotate] = useState(false)
   const [itemScale, setItemScale] = useState(1)
@@ -894,7 +897,7 @@ function App() {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: 'url(/10月月头筹码抽奖暗影交易/抽奖界面/activity_gacha_ag97_background.png)',
+          backgroundImage: `url(${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/activity_gacha_ag97_background.png)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
@@ -939,7 +942,7 @@ function App() {
               {/* 筹码 */}
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-cyan-500/30">
                 <img
-                  src="/10月月头筹码抽奖暗影交易/货币/currency_gachacoins_ag97.png"
+                  src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/货币/currency_gachacoins_ag97.png`}
                   alt="筹码"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />
@@ -966,7 +969,7 @@ function App() {
               {/* 艺术硬币 */}
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
                 <img
-                  src="/常驻奖励物品/Artstorm.png"
+                  src={`${CDN_BASE_URL}/常驻奖励物品/Artstorm.png`}
                   alt="艺术硬币"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />
@@ -988,7 +991,7 @@ function App() {
               {/* 金条 */}
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
                 <img
-                  src="/常驻奖励物品/Hard.png"
+                  src={`${CDN_BASE_URL}/常驻奖励物品/Hard.png`}
                   alt="黄金"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />
@@ -1016,7 +1019,7 @@ function App() {
         {/* 左侧：商人角色 - 绝对定位，中间偏左 */}
         <div className="absolute left-[5%] top-1/2 -translate-y-1/2">
           <img
-            src="/10月月头筹码抽奖暗影交易/抽奖界面/商人.png"
+            src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/商人.png`}
             alt="商人"
             className="max-h-[65vh] md:h-[900px] md:max-h-none object-contain drop-shadow-2xl"
           />
@@ -1087,7 +1090,7 @@ function App() {
             transition={{ duration: 0.2 }}
             className="fixed left-0 right-0 bottom-0 top-0 md:top-[60px] z-40"
             style={{
-              backgroundImage: 'url(/10月月头筹码抽奖暗影交易/抽奖界面/出物品.png)',
+              backgroundImage: `url(${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/出物品.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -1168,7 +1171,7 @@ function App() {
             <div
               className="relative w-full max-h-[85vh] overflow-y-auto rounded-lg scale-90 md:scale-100"
               style={{
-                backgroundImage: 'url(/10月月头筹码抽奖暗影交易/背景组件/eventgachaoffer_ag97_limited_background.png)',
+                backgroundImage: `url(${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/背景组件/eventgachaoffer_ag97_limited_background.png)`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 maxWidth: `${1280 * itemScale}px`,
@@ -1312,7 +1315,7 @@ function App() {
                       {/* 筹码数量 */}
                       <div className="flex items-center justify-center gap-2 mb-2">
                         <img
-                          src="/10月月头筹码抽奖暗影交易/货币/currency_gachacoins_ag97.png"
+                          src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/货币/currency_gachacoins_ag97.png`}
                           alt="筹码"
                           className="w-5 h-5"
                         />
