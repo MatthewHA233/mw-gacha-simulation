@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 
 // 原版游戏颜色
 const RARITY_COLORS = {
@@ -27,8 +28,13 @@ export const HexItem = ({
   onClick,
   isHighlighted = false,
 }) => {
-  const { rarity = 'common', limit = 0, obtained = 0, tier, type, name } = item;
+  const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
+
+  // 提示框状态（只对传奇/史诗生效）
+  const [showTooltip, setShowTooltip] = useState(false);
+  const timerRef = useRef(null);
+  const isEpicOrLegendary = rarity === 'epic' || rarity === 'legendary';
 
   // 计算六边形的SVG路径点（平顶六边形）
   const hexPoints = "30,10 90,10 115,60 90,110 30,110 5,60";
@@ -43,6 +49,37 @@ export const HexItem = ({
 
   // 判断是否已抽完
   const isSoldOut = limit > 0 && obtained >= limit;
+
+  // 清除定时器
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  // 处理点击（手机端）
+  const handleClick = (e) => {
+    if (isEpicOrLegendary) {
+      e.stopPropagation();
+      setShowTooltip(true);
+
+      // 清除之前的定时器
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      // 5秒后自动隐藏
+      timerRef.current = setTimeout(() => {
+        setShowTooltip(false);
+      }, 5000);
+    }
+
+    if (onClick) {
+      onClick(e);
+    }
+  };
 
   // 根据类型调整图标大小
   const getIconSize = () => {
@@ -65,7 +102,9 @@ export const HexItem = ({
         scale: { duration: 0.2 }
       }}
       whileHover={{ scale: isSoldOut ? 1 : 1.05 }}
-      onClick={onClick}
+      onClick={handleClick}
+      onMouseEnter={() => isEpicOrLegendary && setShowTooltip(true)}
+      onMouseLeave={() => isEpicOrLegendary && setShowTooltip(false)}
     >
       {/* SVG六边形 */}
       <svg width={size} height={size} viewBox="0 0 120 120" className="absolute inset-0">
@@ -145,6 +184,22 @@ export const HexItem = ({
         <div className="absolute right-[25%] bottom-[8%] text-sm font-bold text-white">
           Ⅲ
         </div>
+      )}
+
+      {/* 提示框：概率和名称（传奇/史诗专属） */}
+      {isEpicOrLegendary && showTooltip && (
+        <>
+          {/* 上方：概率 */}
+          {probability && (
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full text-white text-xs font-bold whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              {probability}%
+            </div>
+          )}
+          {/* 下方：物品名称 */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full text-white text-xs font-bold whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+            {name}
+          </div>
+        </>
       )}
     </motion.div>
   );
