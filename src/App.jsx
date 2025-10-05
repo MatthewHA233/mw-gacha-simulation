@@ -35,6 +35,9 @@ function App() {
       const minScale = 0.5 // 最小缩放比例
       const scale = Math.max(width / baseWidth, minScale)
       setItemScale(scale)
+
+      // 检查是否为移动端
+      setIsMobile(width < 768)
     }
 
     checkOrientation()
@@ -72,6 +75,8 @@ function App() {
   const [isDrawing, setIsDrawing] = useState(false)
   const [shopModal, setShopModal] = useState(false) // 充值商店弹窗
   const [sponsorModal, setSponsorModal] = useState(false) // 赞助作者弹窗
+  const [sidebarOpen, setSidebarOpen] = useState(false) // 侧边栏状态
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768) // 是否为移动端
   const [highlightedItemName, setHighlightedItemName] = useState(null) // 当前高亮的物品名称
   const [shopPackages, setShopPackages] = useState([
     { id: 1, coins: 22, price: 25, image: '/10月月头筹码抽奖暗影交易/购买/eventgachaoffer_ag97_2_thumbnail.png', discount: '-10%' },
@@ -86,6 +91,16 @@ function App() {
     const showNextItem = () => {
       if (currentIndex >= allItems.length) {
         // 所有物品显示完毕
+        // 检查是否有史诗或传奇物品
+        const hasEpicOrLegendary = allItems.some(item =>
+          item.rarity === 'epic' || item.rarity === 'legendary'
+        );
+
+        // 如果没有史诗或传奇物品，播放失败音效
+        if (!hasEpicOrLegendary) {
+          playSound('UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav');
+        }
+
         setResultModal(prev => ({
           ...prev,
           isGenerating: false,
@@ -165,6 +180,17 @@ function App() {
 
     const showNextItem = () => {
       if (index >= allItems.length) {
+        // 所有物品显示完毕
+        // 检查是否有史诗或传奇物品
+        const hasEpicOrLegendary = allItems.some(item =>
+          item.rarity === 'epic' || item.rarity === 'legendary'
+        );
+
+        // 如果没有史诗或传奇物品，播放失败音效
+        if (!hasEpicOrLegendary) {
+          playSound('UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav');
+        }
+
         setResultModal(prev => ({
           ...prev,
           isGenerating: false,
@@ -389,6 +415,13 @@ function App() {
           const resultWithDrawNum = (result.rarity === 'epic' || result.rarity === 'legendary')
             ? { ...result, drawNumber: prev.totalDraws }
             : result;
+
+          // 如果是史诗或传奇物品，播放奖励音效，否则播放失败音效
+          if (result.rarity === 'epic' || result.rarity === 'legendary') {
+            playSound('Reward_Daily_02_UI.Reward_Daily_02_UI.wav');
+          } else {
+            playSound('UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav');
+          }
 
           setResultModal({
             show: true,
@@ -918,7 +951,40 @@ function App() {
       {/* Vercel Analytics */}
       <Analytics />
 
-      {/* 背景图 - 横向铺满 */}
+      <div className="flex h-full w-full">
+        {/* Sidebar - 侧边栏 */}
+        <motion.div
+          initial={false}
+          animate={{ width: sidebarOpen ? (isMobile ? '210px' : '420px') : '0px' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="relative flex-shrink-0 bg-black overflow-hidden"
+          style={{ maxWidth: sidebarOpen ? (isMobile ? '42.5vw' : '85vw') : '0' }}
+        >
+          {/* 活动卡片 */}
+          <div className="relative w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex items-start pt-6">
+            <div className="relative w-full cursor-pointer" onClick={() => setSidebarOpen(false)}>
+              <img
+                src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/背景组件/activity_gacha_ag97_widget.png`}
+                alt="活动"
+                className="w-full h-auto"
+              />
+              {/* 文本覆盖层 - 底部 */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <h2 className="text-white text-[9px] md:text-xl font-bold">暗影交易</h2>
+                    <p className="text-cyan-400 text-[6px] md:text-sm">(Deal with the Shadow)</p>
+                  </div>
+                  <p className="text-white text-[7px] md:text-base">2025年10月 月初</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 主内容区 */}
+        <div className="overflow-hidden relative flex-1">
+          {/* 背景图 - 横向铺满 */}
       <div
         className="absolute inset-0 w-full h-full"
         style={{
@@ -934,17 +1000,28 @@ function App() {
         <div className="flex items-center justify-between px-4 py-1 md:py-3 bg-gradient-to-b from-black/80 to-black/40">
           {/* 左侧：返回按钮 + 标题 */}
           <div className="flex items-center gap-4">
-            {/* 返回按钮 */}
-            <button className="text-white/80 hover:text-white transition-colors">
-              <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
+            {/* 侧边栏切换按钮 */}
+            <motion.button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {sidebarOpen ? (
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              )}
+            </motion.button>
 
             {/* 标题 */}
             <div>
               <h1 className="text-white text-sm md:text-lg font-bold">暗影交易</h1>
-              <p className="text-cyan-400 text-[8px] md:text-xs">SHADOW TRADE</p>
+              <p className="text-cyan-400 text-[8px] md:text-xs">Deal with the Shadow</p>
             </div>
           </div>
 
@@ -1517,6 +1594,10 @@ function App() {
             </div>
           </div>
         )}
+        </div>
+        {/* 主内容区结束 */}
+      </div>
+      {/* flex container 结束 */}
     </div>
   )
 }
