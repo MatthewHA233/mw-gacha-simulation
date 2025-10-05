@@ -5,6 +5,7 @@ import { HexGrid } from './components/HexGrid'
 import { SquareItem } from './components/SquareItem'
 import { motion } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
+import { Analytics } from '@vercel/analytics/react'
 
 // CDN 基础 URL
 const CDN_BASE_URL = 'https://assets.lingflow.cn/mw-gacha-simulation'
@@ -61,6 +62,7 @@ function App() {
   const [historyModal, setHistoryModal] = useState(false)
   const [isDrawing, setIsDrawing] = useState(false)
   const [shopModal, setShopModal] = useState(false) // 充值商店弹窗
+  const [sponsorModal, setSponsorModal] = useState(false) // 赞助作者弹窗
   const [highlightedItemName, setHighlightedItemName] = useState(null) // 当前高亮的物品名称
   const [shopPackages, setShopPackages] = useState([
     { id: 1, coins: 22, price: 25, image: '/10月月头筹码抽奖暗影交易/购买/eventgachaoffer_ag97_2_thumbnail.png', discount: '-10%' },
@@ -893,6 +895,9 @@ function App() {
       {/* Toast Notifications */}
       <Toaster />
 
+      {/* Vercel Analytics */}
+      <Analytics />
+
       {/* 背景图 - 横向铺满 */}
       <div
         className="absolute inset-0 w-full h-full"
@@ -923,7 +928,7 @@ function App() {
             </div>
           </div>
 
-          {/* 右侧：信息按钮 + 货币显示 */}
+          {/* 右侧：信息按钮 + 赞助按钮 + 货币显示 */}
           <div className="flex items-center gap-4">
             {/* 信息按钮 */}
             <button
@@ -934,6 +939,16 @@ function App() {
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="16" x2="12" y2="12" />
                 <circle cx="12" cy="8" r="0.5" fill="currentColor" />
+              </svg>
+            </button>
+
+            {/* 赞助按钮 */}
+            <button
+              onClick={() => setSponsorModal(true)}
+              className="text-white/80 hover:text-yellow-400 transition-colors"
+            >
+              <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             </button>
 
@@ -1212,9 +1227,14 @@ function App() {
                 {/* 关闭按钮 */}
                 <button
                   onClick={() => setInfoModal(false)}
-                  className="px-8 py-2 bg-cyan-600/80 hover:bg-cyan-500 text-white rounded font-bold transition-colors text-sm md:text-base"
+                  className="bg-slate-800 no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-full p-px text-sm font-semibold leading-6 text-white inline-block scale-90 md:scale-100"
                 >
-                  关闭
+                  <span className="absolute inset-0 overflow-hidden rounded-full">
+                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                  </span>
+                  <div className="relative flex items-center justify-center z-10 rounded-full bg-zinc-950 py-1 px-5 ring-1 ring-white/10">
+                    <span>关闭</span>
+                  </div>
                 </button>
               </div>
             </div>
@@ -1334,6 +1354,109 @@ function App() {
                   </div>
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {/* Sponsor Modal - 赞助作者 */}
+        {sponsorModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+            onClick={() => setSponsorModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 50 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                transition: {
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }
+              }}
+              exit={{ opacity: 0, scale: 0.8, y: 50 }}
+              className="relative bg-black rounded-2xl p-4 md:p-6 max-w-xs md:max-w-sm w-full shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* 顶部装饰线条 */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-0.5 bg-gradient-to-r from-transparent via-emerald-500 to-transparent rounded-full" />
+
+              {/* 关闭按钮 */}
+              <button
+                onClick={() => setSponsorModal(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* 内容区 */}
+              <div className="flex flex-col items-center space-y-4 mt-2">
+                {/* 标题 */}
+                <div className="text-center space-y-1">
+                  <h3 className="text-xl md:text-2xl font-bold text-white">赞助作者</h3>
+                  <div className="flex items-center gap-2 justify-center">
+                    <div className="h-px w-6 bg-gradient-to-r from-transparent to-gray-600" />
+                    <p className="text-sm md:text-base text-emerald-400 font-semibold">CHanGO</p>
+                    <div className="h-px w-6 bg-gradient-to-l from-transparent to-gray-600" />
+                  </div>
+                </div>
+
+                {/* 收款码 */}
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-500" />
+                  <div className="relative bg-white p-3 rounded-xl">
+                    <img
+                      src={`${CDN_BASE_URL}/sponsor/payment-qr.png`}
+                      alt="收款码"
+                      className="w-40 h-40 md:w-48 md:h-48 object-contain"
+                    />
+                  </div>
+                  {/* 支付说明 */}
+                  <div className="text-center mt-2">
+                    <p className="text-gray-500 text-xs">使用支付宝扫码支付</p>
+                  </div>
+                </div>
+
+                {/* QQ号复制按钮 */}
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText('1528919811')
+                    toast.success('QQ号已复制', {
+                      duration: 2000,
+                      position: 'top-center',
+                      style: {
+                        background: '#000',
+                        color: '#fff',
+                        border: '1px solid #10b981',
+                        borderRadius: '12px',
+                        padding: '12px 24px'
+                      }
+                    })
+                  }}
+                  className="bg-slate-800 no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-full p-px text-xs md:text-sm font-semibold leading-6 text-white inline-block w-full"
+                >
+                  <span className="absolute inset-0 overflow-hidden rounded-full">
+                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                  </span>
+                  <div className="relative flex space-x-1.5 md:space-x-2 items-center justify-center z-10 rounded-full bg-zinc-950 py-2 md:py-2.5 px-4 md:px-6 ring-1 ring-white/10">
+                    <svg className="w-3.5 h-3.5 md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span className="text-xs md:text-sm">复制 QQ: 1528919811</span>
+                  </div>
+                </button>
+              </div>
+
+              {/* 底部装饰线条 */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-0.5 bg-gradient-to-r from-transparent via-sky-500 to-transparent rounded-full" />
+            </motion.div>
           </motion.div>
         )}
 
