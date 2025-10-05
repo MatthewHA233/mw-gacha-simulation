@@ -960,24 +960,39 @@ function App() {
           className="relative flex-shrink-0 bg-black overflow-hidden"
           style={{ maxWidth: sidebarOpen ? (isMobile ? '42.5vw' : '85vw') : '0' }}
         >
-          {/* 活动卡片 */}
-          <div className="relative w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex items-start pt-6">
-            <div className="relative w-full cursor-pointer" onClick={() => setSidebarOpen(false)}>
-              <img
-                src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/背景组件/activity_gacha_ag97_widget.png`}
-                alt="活动"
-                className="w-full h-auto"
-              />
-              {/* 文本覆盖层 - 底部 */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                <div className="space-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <h2 className="text-white text-[9px] md:text-xl font-bold">暗影交易</h2>
-                    <p className="text-cyan-400 text-[6px] md:text-sm">(Deal with the Shadow)</p>
+          <div className="w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex flex-col justify-between">
+            {/* 活动卡片 */}
+            <div className="relative pt-6">
+              <div className="relative w-full cursor-pointer" onClick={() => setSidebarOpen(false)}>
+                <img
+                  src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/背景组件/activity_gacha_ag97_widget.png`}
+                  alt="活动"
+                  className="w-full h-auto"
+                />
+                {/* 文本覆盖层 - 底部 */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                  <div className="space-y-1">
+                    <div className="flex items-baseline gap-2">
+                      <h2 className="text-white text-[9px] md:text-xl font-bold">暗影交易</h2>
+                      <p className="text-cyan-400 text-[6px] md:text-sm">(Deal with the Shadow)</p>
+                    </div>
+                    <p className="text-white text-[7px] md:text-base">2025年10月 月初</p>
                   </div>
-                  <p className="text-white text-[7px] md:text-base">2025年10月 月初</p>
                 </div>
               </div>
+            </div>
+
+            {/* 底部署名 */}
+            <div
+              className="pb-4 px-4 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSponsorModal(true);
+              }}
+            >
+              <p className="text-white/60 text-[8px] md:text-sm text-center">
+                Made by <span className="text-cyan-400">HORIZN地平线-CHanGO</span>
+              </p>
             </div>
           </div>
         </motion.div>
