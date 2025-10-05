@@ -10,6 +10,15 @@ import { Analytics } from '@vercel/analytics/react'
 // CDN 基础 URL
 const CDN_BASE_URL = 'https://assets.lingflow.cn/mw-gacha-simulation'
 
+// 音效播放函数
+const playSound = (soundName) => {
+  const audio = new Audio(`${CDN_BASE_URL}/audio/${soundName}`)
+  audio.volume = 0.5 // 设置音量为50%
+  audio.play().catch(err => {
+    console.log('音效播放失败:', err)
+  })
+}
+
 function App() {
   const [shouldRotate, setShouldRotate] = useState(false)
   const [itemScale, setItemScale] = useState(1)
@@ -87,6 +96,11 @@ function App() {
 
       const nextItem = allItems[currentIndex];
 
+      // 如果是史诗或传奇物品，播放奖励音效
+      if (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary') {
+        playSound('Reward_Daily_02_UI.Reward_Daily_02_UI.wav')
+      }
+
       // 添加当前物品到显示列表
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem];
@@ -160,6 +174,11 @@ function App() {
       }
 
       const nextItem = allItems[index];
+
+      // 如果是史诗或传奇物品，播放奖励音效
+      if (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary') {
+        playSound('Reward_Daily_02_UI.Reward_Daily_02_UI.wav')
+      }
 
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem];
@@ -845,6 +864,7 @@ function App() {
 
   // 购买充值包
   const buyPackage = (pkg) => {
+    playSound('Buy_01_UI.Buy_01_UI.wav')
     setGameState(prev => ({
       ...prev,
       currency: prev.currency + pkg.coins,
@@ -1052,7 +1072,10 @@ function App() {
           <div className="flex gap-8 justify-center mt-12">
             {/* 抽奖 x1 */}
             <button
-              onClick={singleDraw}
+              onClick={() => {
+                playSound('Button_01_UI.Button_01_UI.wav')
+                singleDraw()
+              }}
               className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50"
             >
               <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
@@ -1063,7 +1086,10 @@ function App() {
 
             {/* 抽奖 x10 */}
             <button
-              onClick={multiDraw}
+              onClick={() => {
+                playSound('Button_01_UI.Button_01_UI.wav')
+                multiDraw()
+              }}
               className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50"
             >
               <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
@@ -1074,7 +1100,10 @@ function App() {
 
             {/* 抽奖 x100 - 金色主题 */}
             <button
-              onClick={draw100}
+              onClick={() => {
+                playSound('Button_01_UI.Button_01_UI.wav')
+                draw100()
+              }}
               className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50"
             >
               <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
@@ -1085,7 +1114,10 @@ function App() {
 
             {/* 抽奖 x500 - 特殊紫色主题 */}
             <button
-              onClick={draw500}
+              onClick={() => {
+                playSound('Button_01_UI.Button_01_UI.wav')
+                draw500()
+              }}
               className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
             >
               <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
