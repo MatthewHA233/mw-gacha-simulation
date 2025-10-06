@@ -28,6 +28,21 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
       style={{ maxWidth: isOpen ? (isMobile ? '42.5vw' : '85vw') : '0' }}
     >
       <div className="w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex flex-col">
+        {/* 顶部网站标题 */}
+        <div className="py-3 md:py-4 px-4 border-b border-white/10 bg-gradient-to-b from-black to-black/90">
+          <div className="flex items-center gap-2 md:gap-3">
+            <img
+              src="/MW.png"
+              alt="现代战舰"
+              className="w-8 h-8 md:w-12 md:h-12 object-contain"
+            />
+            <div className="flex-1">
+              <h1 className="text-white text-xs md:text-lg font-bold">现代战舰抽奖模拟器</h1>
+              <p className="text-cyan-400 text-[8px] md:text-xs">Modern Warships Gacha Simulator</p>
+            </div>
+          </div>
+        </div>
+
         {/* 活动列表 - 可滚动 */}
         <div className="flex-1 overflow-y-auto py-4 space-y-3 custom-scrollbar">
           {loading && (
