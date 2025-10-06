@@ -11,8 +11,8 @@ import { InfoModal } from './InfoModal'
 import { HistoryModal } from './HistoryModal'
 import { ShopModal } from './ShopModal'
 import { SponsorModal } from './SponsorModal'
-import { ResetModal } from '../UI/ResetModal'
-import { ConfirmModal } from '../UI/ConfirmModal'
+import { ResetModal } from '../ui/ResetModal'
+import { ConfirmModal } from '../ui/ConfirmModal'
 
 /**
  * 筹码类抽卡主组件
