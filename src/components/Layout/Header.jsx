@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { buildCurrencyIconUrl } from '../../services/cdnService'
+import { useEffect } from 'react'
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -16,8 +17,15 @@ export function Header({
   onResetData,
   gameState,
   activityName = '暗影交易',
-  activityNameEn = 'Deal with the Shadow'
+  activityNameEn = 'Deal with the Shadow',
+  isModalOpen = false
 }) {
+  // 当弹窗打开时，自动收缩侧边栏
+  useEffect(() => {
+    if (isModalOpen && sidebarOpen) {
+      onToggleSidebar()
+    }
+  }, [isModalOpen])
   // 动态生成货币图标 URL（优先使用activityConfig，fallback到activityId）
   const currencyIconUrl = buildCurrencyIconUrl(activityConfig || activityId)
   // 计算艺术硬币总数
@@ -53,10 +61,14 @@ export function Header({
         <div className="flex items-center gap-4">
           {/* 侧边栏切换按钮 */}
           <motion.button
-            onClick={onToggleSidebar}
-            className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-white/80 hover:text-white transition-colors"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
+            onClick={isModalOpen ? undefined : onToggleSidebar}
+            className={`relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-colors ${
+              isModalOpen
+                ? 'text-white/30 cursor-not-allowed'
+                : 'text-white/80 hover:text-white'
+            }`}
+            whileHover={isModalOpen ? {} : { scale: 1.1 }}
+            whileTap={isModalOpen ? {} : { scale: 0.95 }}
           >
             {sidebarOpen ? (
               <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

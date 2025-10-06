@@ -964,6 +964,7 @@ export function ChipGacha({
         gameState={gameState}
         activityName={activityConfig.metadata?.name}
         activityNameEn={activityConfig.metadata?.nameEn}
+        isModalOpen={resultModal.show}
       />
 
       {/* 主内容区域 */}
