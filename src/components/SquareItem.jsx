@@ -34,7 +34,7 @@ export const SquareItem = ({
   // 光晕颜色
   const glowColor = rarity === 'legendary' ? '#a280d2' : rarity === 'epic' ? '#e0932e' : null;
 
-  // 提示框状态（只对传奇/史诗生效）
+  // 提示框状态（只对传说/史诗生效）
   const [showTooltip, setShowTooltip] = useState(false);
   const timerRef = useRef(null);
   const isEpicOrLegendary = rarity === 'epic' || rarity === 'legendary';
@@ -80,8 +80,8 @@ export const SquareItem = ({
 
   // 根据类型调整图标大小
   const getIconSize = () => {
-    if (type === '舰船') return 'max-w-[90%] max-h-[90%]';
-    if (type === '皮肤') return 'max-w-[50%] max-h-[50%]';
+    if (type === '战舰') return 'max-w-[90%] max-h-[90%]';
+    if (type === '涂装') return 'max-w-[50%] max-h-[50%]';
     return 'max-w-[70%] max-h-[70%]';
   };
 
@@ -131,7 +131,7 @@ export const SquareItem = ({
         </div>
       )}
 
-      {/* 底部：抽数（史诗/传奇专属，显示光晕） */}
+      {/* 底部：抽数（史诗/传说专属，显示光晕） */}
       {drawNumber && glowColor && (
         <div
           className="absolute left-1/2 bottom-2 -translate-x-1/2 text-xl md:text-2xl font-bold text-white pointer-events-none"
@@ -143,7 +143,7 @@ export const SquareItem = ({
         </div>
       )}
 
-      {/* 提示框：概率和名称（传奇/史诗专属） */}
+      {/* 提示框：概率和名称（传说/史诗专属） */}
       {isEpicOrLegendary && showTooltip && (
         <>
           {/* 上方：概率 */}

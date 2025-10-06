@@ -31,7 +31,7 @@ export const HexItem = ({
   const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
 
-  // 提示框状态（只对传奇/史诗生效）
+  // 提示框状态（只对传说/史诗生效）
   const [showTooltip, setShowTooltip] = useState(false);
   const timerRef = useRef(null);
   const isEpicOrLegendary = rarity === 'epic' || rarity === 'legendary';
@@ -83,8 +83,8 @@ export const HexItem = ({
 
   // 根据类型调整图标大小
   const getIconSize = () => {
-    if (type === '舰船') return 'max-w-[90%] max-h-[90%]'; // 舰船放大
-    if (type === '皮肤') return 'max-w-[50%] max-h-[50%]'; // 皮肤缩小
+    if (type === '战舰') return 'max-w-[90%] max-h-[90%]'; // 战舰放大
+    if (type === '涂装') return 'max-w-[50%] max-h-[50%]'; // 涂装缩小
     return 'max-w-[70%] max-h-[70%]'; // 默认
   };
 
@@ -186,7 +186,7 @@ export const HexItem = ({
         </div>
       )}
 
-      {/* 提示框：概率和名称（传奇/史诗专属） */}
+      {/* 提示框：概率和名称（传说/史诗专属） */}
       {isEpicOrLegendary && showTooltip && (
         <>
           {/* 上方：概率 */}
