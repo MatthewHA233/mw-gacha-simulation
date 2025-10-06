@@ -28,17 +28,30 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
       style={{ maxWidth: isOpen ? (isMobile ? '42.5vw' : '85vw') : '0' }}
     >
       <div className="w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex flex-col">
-        {/* 顶部网站标题 */}
-        <div className="py-3 md:py-4 px-4 border-b border-white/10 bg-gradient-to-b from-black to-black/90">
+        {/* 顶部网站Logo */}
+        <div className="py-3 md:py-4 px-4 border-b border-white/10 bg-gradient-to-br from-slate-950 to-black">
           <div className="flex items-center gap-2 md:gap-3">
+            {/* Logo */}
             <img
               src="/MW.png"
-              alt="现代战舰"
-              className="w-8 h-8 md:w-12 md:h-12 object-contain"
+              alt="MW"
+              className="w-7 h-7 md:w-10 md:h-10 object-contain flex-shrink-0"
             />
-            <div className="flex-1">
-              <h1 className="text-white text-xs md:text-lg font-bold">现代战舰抽奖模拟器</h1>
-              <p className="text-cyan-400 text-[8px] md:text-xs">Modern Warships Gacha Simulator</p>
+            {/* 文字 - 彩虹渐变光晕效果 */}
+            <div className="flex-1 min-w-0">
+              <h1
+                className="text-[10px] md:text-sm font-bold tracking-wide"
+                style={{
+                  backgroundImage: 'linear-gradient(to right, #19fdfe 0%, #67e8f9 20%, #a78bfa 40%, #f0abfc 60%, #fef08a 80%, #fef08a 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  filter: 'drop-shadow(0 0 1px rgba(34, 211, 238, 0.4)) drop-shadow(0 0 2px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 3px rgba(232, 121, 249, 0.3)) drop-shadow(0 0 4px rgba(250, 204, 21, 0.3))',
+                }}
+              >
+                现代战舰抽卡模拟器
+              </h1>
+              <p className="text-white/60 text-[8px] md:text-xs mt-0.5">活动列表</p>
             </div>
           </div>
         </div>
