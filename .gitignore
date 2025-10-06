@@ -28,6 +28,7 @@ dist-ssr
 public/*
 !public/gacha-configs/
 !public/vite.svg
+!public/MW.png
 
 # 环境变量文件
 .env
