@@ -1008,7 +1008,7 @@ export function ChipGacha({
         shopPackages={shopPackages}
         onBuyPackage={buyPackage}
         onUpdateQuantity={updateQuantity}
-        activityId={activityId}
+        activityConfig={activityConfig}
       />
 
       {/* 赞助作者弹窗 */}

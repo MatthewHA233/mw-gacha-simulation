@@ -4,10 +4,10 @@ import { buildCurrencyIconUrl } from '../../services/cdnService'
 /**
  * 充值商店弹窗组件
  */
-export function ShopModal({ isOpen, onClose, shopPackages, onBuyPackage, onUpdateQuantity, activityId }) {
+export function ShopModal({ isOpen, onClose, shopPackages, onBuyPackage, onUpdateQuantity, activityConfig }) {
   if (!isOpen) return null
 
-  const currencyIconUrl = buildCurrencyIconUrl(activityId)
+  const currencyIconUrl = buildCurrencyIconUrl(activityConfig)
 
   return (
     <motion.div
