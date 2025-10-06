@@ -22,7 +22,7 @@ export function getGachaTypePath(gachaType) {
 }
 
 /**
- * 加载活动索引列表
+ * 加载活动索引列表（始终从本地public加载）
  * @returns {Promise<Object>} 活动索引数据
  */
 export async function loadActivityIndex() {
@@ -33,7 +33,8 @@ export async function loadActivityIndex() {
   }
 
   try {
-    const response = await fetch(`${CDN_BASE_URL}/gacha-configs/index.json`)
+    // 配置文件始终从本地public加载
+    const response = await fetch('/gacha-configs/index.json')
     if (!response.ok) {
       throw new Error(`Failed to load activity index: ${response.status}`)
     }
@@ -47,7 +48,7 @@ export async function loadActivityIndex() {
 }
 
 /**
- * 加载单个活动配置
+ * 加载单个活动配置（始终从本地public加载）
  * @param {string} gachaType - 抽卡类型 (chip/cargo/flagship)
  * @param {string} activityId - 活动ID
  * @returns {Promise<Object>} 活动配置数据
@@ -60,7 +61,8 @@ export async function loadActivityConfig(gachaType, activityId) {
   }
 
   try {
-    const response = await fetch(`${CDN_BASE_URL}/gacha-configs/${gachaType}/${activityId}.json`)
+    // 配置文件始终从本地public加载
+    const response = await fetch(`/gacha-configs/${gachaType}/${activityId}.json`)
     if (!response.ok) {
       throw new Error(`Failed to load activity config: ${response.status}`)
     }

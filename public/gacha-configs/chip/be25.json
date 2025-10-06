@@ -1,0 +1,131 @@
+{
+  "id": "be25",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "战争回声",
+    "nameEn": "Battle’s Echo",
+    "formattedDate": "2025年1月",
+    "image": "https://mwstats.info/images/gacha-preview/activity_c_be25_background.jpg?v=e9d95635"
+  },
+  "items": [
+    {
+      "name": "[俄]22350M型",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "Project22350M",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Project 22350M"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "62型鱼雷(533mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "Torped62",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Torped 62 (533 mm)"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[中]天津",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Tianjin",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Tianjin"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 筹码",
+      "probability": 2.53,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "HyFly-2",
+      "probability": 0.21,
+      "limit": 0,
+      "id": "HyFly2",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "HyFly-2"
+    },
+    {
+      "name": "战争之犬",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Camo_WarDogs",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "War Dogs"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 25.2,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[美]圣安东尼奥(LPD-17)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "SanAntonio",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS San Antonio (LPD-17)"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "PKX-B (130 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "LIGNex1",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "PKX-B (130mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

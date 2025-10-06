@@ -403,11 +403,15 @@ export function ChipGacha({
   }
 
   // ========== 抽奖函数 ==========
-  const drawLottery = () => {
-    const availableItems = gameState.items.filter(item =>
+  // ========== 抽奖核心逻辑（支持传入自定义状态） ==========
+  const drawLottery = (customItems = null) => {
+    // 使用传入的items或默认使用gameState.items
+    const items = customItems || gameState.items
+
+    const availableItems = items.filter(item =>
       item.limit === 0 || item.obtained < item.limit
     )
-    const unavailableItems = gameState.items.filter(item =>
+    const unavailableItems = items.filter(item =>
       item.limit > 0 && item.obtained >= item.limit
     )
 
@@ -427,7 +431,7 @@ export function ChipGacha({
     for (const item of itemsWithAdjustedProb) {
       cumulativeProbability += item.probability
       if (rand < cumulativeProbability) {
-        return gameState.items.find(i => i.name === item.name && i.rarity === item.rarity)
+        return items.find(i => i.name === item.name && i.rarity === item.rarity)
       }
     }
     return { ...availableItems[availableItems.length - 1] }
@@ -609,7 +613,8 @@ export function ChipGacha({
       tempGameState.totalDraws = gameState.totalDraws + 10
 
       for (let i = 0; i < 10; i++) {
-        const result = drawLottery()
+        // 传入当前临时状态的items，确保正确跟踪已获得数量
+        const result = drawLottery(tempGameState.items)
         results.push(result)
 
         // 检查是否抽到筹码
@@ -713,7 +718,8 @@ export function ChipGacha({
       tempGameState.totalDraws = gameState.totalDraws + 100
 
       for (let i = 0; i < 100; i++) {
-        const result = drawLottery()
+        // 传入当前临时状态的items，确保正确跟踪已获得数量
+        const result = drawLottery(tempGameState.items)
         results.push(result)
 
         // 检查是否抽到筹码
@@ -817,7 +823,8 @@ export function ChipGacha({
       tempGameState.totalDraws = gameState.totalDraws + 500
 
       for (let i = 0; i < 500; i++) {
-        const result = drawLottery()
+        // 传入当前临时状态的items，确保正确跟踪已获得数量
+        const result = drawLottery(tempGameState.items)
         results.push(result)
 
         // 检查是否抽到筹码

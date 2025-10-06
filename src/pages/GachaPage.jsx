@@ -91,7 +91,17 @@ export function GachaPage() {
       }}
     >
       {/* Toast 通知（在旋转容器内） */}
-      <Toaster />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            marginTop: isMobile ? '20px' : '60px',
+            padding: isMobile ? '6px 12px' : '8px 16px',
+            fontSize: isMobile ? '12px' : '14px',
+            minHeight: 'auto',
+          },
+        }}
+      />
 
       <div className="flex h-full w-full">
         {/* 侧边栏 */}

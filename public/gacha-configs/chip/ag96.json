@@ -1,0 +1,131 @@
+{
+  "id": "ag96",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "禁品追缉",
+    "nameEn": "Contraband Hunt",
+    "formattedDate": "2025年9月"
+  },
+  "items": [
+    {
+      "name": "[法]黎塞留",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "Richelieu",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Richelieu"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "T-122\"萨卡里亚\"(122 mm)",
+      "probability": 0.52,
+      "limit": 2,
+      "id": "T122Sakarya",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "T-122 Sakarya (122 mm)"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.5,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[美]弗莱彻(DD-992)",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Fletcher",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Fletcher (DD-992)"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "幽灵之影",
+      "probability": 1.53,
+      "limit": 1,
+      "id": "Camo_CyberGhost",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Phantom Shadow"
+    },
+    {
+      "name": "HyFly-2(核)",
+      "probability": 0.24,
+      "limit": 0,
+      "id": "HyFly2Nuke",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "HyFly-2 (Nuke)"
+    },
+    {
+      "name": "台风MLS-NLOS",
+      "probability": 0.5,
+      "limit": 1,
+      "id": "TyphoonMLS",
+      "type": "自卫炮",
+      "rarity": "epic",
+      "nameEn": "Typhoon MLS-NLOS"
+    },
+    {
+      "name": "2 烟幕",
+      "probability": 17.0,
+      "limit": 0,
+      "id": "TankSmokeBombs",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[俄]符拉迪沃斯托克(68M-Bis-Zif型)",
+      "probability": 0.09,
+      "limit": 1,
+      "id": "Vladivostok",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Vladivostok (68M-bis-Zif)"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "苏-39",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "SU39",
+      "type": "攻击机",
+      "rarity": "epic",
+      "nameEn": "Su-39"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.06,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

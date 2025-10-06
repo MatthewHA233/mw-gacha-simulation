@@ -23,5 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .claude
-public/
+
+# Public 文件夹（排除大部分文件，只保留配置和必要资源）
+public/*
+!public/gacha-configs/
+!public/vite.svg
+
+# 环境变量文件
 .env

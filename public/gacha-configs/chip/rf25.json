@@ -1,0 +1,131 @@
+{
+  "id": "rf25",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "狂怒律动",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_rf25.webp?v=37f64842",
+    "nameEn": "Rhythm of Fury",
+    "formattedDate": "2025年5月"
+  },
+  "items": [
+    {
+      "name": "[法]黎塞留",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "Richelieu",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Richelieu"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "台风MLS-NLOS",
+      "probability": 0.51,
+      "limit": 2,
+      "id": "TyphoonMLS",
+      "type": "自卫炮",
+      "rarity": "epic",
+      "nameEn": "Typhoon MLS-NLOS"
+    },
+    {
+      "name": "5 高级修理包",
+      "probability": 3.0,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[中]天津",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Tianjin",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Tianjin"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 32.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 筹码",
+      "probability": 1.53,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "Mark-71 (203 mm)",
+      "probability": 0.24,
+      "limit": 0,
+      "id": "Mark71",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Mark-71 (203 mm)"
+    },
+    {
+      "name": "脉冲",
+      "probability": 2.0,
+      "limit": 1,
+      "id": "Camo_CyberGlitch",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Glitch"
+    },
+    {
+      "name": "烟幕",
+      "probability": 23.0,
+      "limit": 0,
+      "id": "TankSmokeBombs",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[俄]22350M型",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Project22350M",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Project 22350M"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 25.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "URWS (30 mm)",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "URWS",
+      "type": "自卫炮",
+      "rarity": "legendary",
+      "nameEn": "URWS (30 mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "id": "cc24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "混乱嘉年华",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_cc24.webp?v=1d21ba87",
+    "nameEn": "Carnival of Chaos",
+    "formattedDate": "2024年10月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_cc24.jpg?v=52e25ddd"
+  },
+  "items": [
+    {
+      "name": "[泛空间]巫师",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "Hexeres",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "Pan Spatial Hexeres"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "A-220M (57 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "A220M",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "A-220M (57mm)"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[美]杰克·H·卢卡斯(DDG-125)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "JackHLucas",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Jack H. Lucas (DDG-125)"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 筹码",
+      "probability": 2.53,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "红鲨(382 mm)",
+      "probability": 0.21,
+      "limit": 0,
+      "id": "RedShark",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "Red Shark (382 mm)"
+    },
+    {
+      "name": "午夜城堡",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Camo_MidnightCitadel",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Midnight Citadel"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 25.2,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[美]战巡2000",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Battlecruiser2000",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "USS Battlecruiser 2000"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "寂静狩猎者",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "SilentHunter",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "Silent Hunter"
+    },
+    {
+      "name": "筹码",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

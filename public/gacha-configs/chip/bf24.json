@@ -1,0 +1,132 @@
+{
+  "id": "bf24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "抽奖",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bf24.webp?v=40bbfdc8",
+    "nameEn": "Prize Draw",
+    "formattedDate": "2024年11月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_bf24.jpg?v=87a5be7f"
+  },
+  "items": [
+    {
+      "name": "[德]萨克森(F124型)",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "F124",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FGS F124"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[博福斯]L/50(120 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "BoforsL50",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "Bofors L/50 (120 mm)"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[中]天津",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Tianjin",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Tianjin"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 筹码",
+      "probability": 2.53,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "海星-III",
+      "probability": 0.21,
+      "limit": 0,
+      "id": "HaeseongIII",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "Haeseong III"
+    },
+    {
+      "name": "侵染",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Camo_VenomAnomaly",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Infected"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 25.2,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[英]参战者(UXV)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "UXVCombatant",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "HMS UXV Combatant"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "Mark45Astor",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Mark-45 ASTOR (483mm)"
+    },
+    {
+      "name": "3 抽奖券",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    }
+  ]
+}

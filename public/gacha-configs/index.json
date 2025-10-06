@@ -1,0 +1,78 @@
+{
+  "activities": [
+    {
+      "id": "ag97",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "nameEn": "Deal with the Shadow",
+      "formattedDate": "2025年10月"
+    },
+    {
+      "id": "ag96",
+      "gacha_type": "筹码类",
+      "name": "禁品追缉",
+      "formattedDate": "2025年9月",
+      "nameEn": "Contraband Hunt"
+    },
+    {
+      "id": "fw25",
+      "gacha_type": "筹码类",
+      "name": "梦幻之战",
+      "formattedDate": "2025年8月",
+      "nameEn": "Fantasy Warfare"
+    },
+    {
+      "id": "lm25",
+      "gacha_type": "筹码类",
+      "name": "漩涡之主",
+      "formattedDate": "2025年7月",
+      "nameEn": "Lords of the Maelstrom"
+    },
+    {
+      "id": "ms25",
+      "gacha_type": "筹码类",
+      "name": "黑帮之影",
+      "formattedDate": "2025年6月",
+      "nameEn": "Mafia's Shadow"
+    },
+    {
+      "id": "rf25",
+      "gacha_type": "筹码类",
+      "name": "狂怒律动",
+      "formattedDate": "2025年5月",
+      "nameEn": "Rhythm of Fury"
+    },
+    {
+      "id": "pf25",
+      "gacha_type": "筹码类",
+      "name": "招财进宝",
+      "formattedDate": "2025年2月",
+      "nameEn": "Pursuit of Fortune",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_pf25.jpg?v=6993bfbd"
+    },
+    {
+      "id": "be25",
+      "gacha_type": "筹码类",
+      "name": "战争回声",
+      "formattedDate": "2025年1月",
+      "nameEn": "Battle’s Echo",
+      "image": "https://mwstats.info/images/gacha-preview/activity_c_be25_background.jpg?v=e9d95635"
+    },
+    {
+      "id": "bf24",
+      "gacha_type": "筹码类",
+      "name": "抽奖",
+      "formattedDate": "2024年11月",
+      "nameEn": "Prize Draw",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_bf24.jpg?v=87a5be7f"
+    },
+    {
+      "id": "cc24",
+      "gacha_type": "筹码类",
+      "name": "混乱嘉年华",
+      "formattedDate": "2024年10月",
+      "nameEn": "Carnival of Chaos",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_cc24.jpg?v=52e25ddd"
+    }
+  ]
+}

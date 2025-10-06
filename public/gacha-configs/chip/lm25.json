@@ -1,0 +1,132 @@
+{
+  "id": "lm25",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "漩涡之主",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_lm25.webp?v=bf7e26c1",
+    "nameEn": "Lords of the Maelstrom",
+    "formattedDate": "2025年7月"
+  },
+  "items": [
+    {
+      "name": "[意]维托里奥·维内托(C 550)",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "VittorioVeneto",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "IT Vittorio Veneto (C 550)"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "PAK DA M",
+      "probability": 0.51,
+      "limit": 2,
+      "id": "PAKDAM",
+      "type": "轰炸机",
+      "rarity": "epic",
+      "nameEn": "PAK DA M"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 11.5,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[韩]幽灵指挥官",
+      "probability": 0.12,
+      "limit": 1,
+      "id": "GhostCommander",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS Ghost Commander"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "帕特农神庙",
+      "probability": 1.53,
+      "limit": 0,
+      "id": "Camo_Parthenon",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Parthenon"
+    },
+    {
+      "name": "62型鱼雷(533mm)",
+      "probability": 0.24,
+      "limit": 0,
+      "id": "Torped62",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Torped 62 (533 mm)"
+    },
+    {
+      "name": "RIM-162D",
+      "probability": 0.5,
+      "limit": 1,
+      "id": "RIM162D",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "RIM-162D"
+    },
+    {
+      "name": "2 烟幕",
+      "probability": 15.0,
+      "limit": 0,
+      "id": "TankSmokeBombs",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[俄]巴尔蒂尼 A-2000-7",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "BartiniA2000",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Bartini A-2000-7"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 25.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "Mark 55/12 (305 mm)",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "Mark5512",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "Mark 55/12 (305 mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}
