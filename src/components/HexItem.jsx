@@ -135,12 +135,67 @@ export const HexItem = ({
 
       {/* 变暗遮罩（抽完时） */}
       {isSoldOut && (
-        <svg width={size} height={size} viewBox="0 0 120 120" className="absolute inset-0">
-          <polygon
-            points={hexPoints}
-            fill="rgba(0, 0, 0, 0.7)"
-          />
-        </svg>
+        <>
+          <svg width={size} height={size} viewBox="0 0 120 120" className="absolute inset-0">
+            <polygon
+              points={hexPoints}
+              fill="rgba(0, 0, 0, 0.7)"
+            />
+          </svg>
+
+          {/* 绿色成功勾选图标 */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <motion.svg
+              viewBox="0 0 50 50"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+                delay: 0.1
+              }}
+              style={{ width: size * 0.45, height: size * 0.45 }}
+            >
+              {/* 外发光圆环 */}
+              <circle
+                cx="25"
+                cy="25"
+                r="23"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="1.5"
+                className="drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+              />
+
+              {/* 主圆环边框 */}
+              <motion.circle
+                cx="25"
+                cy="25"
+                r="23"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="2.5"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              />
+
+              {/* 勾选图标 */}
+              <motion.path
+                d="M15 25 L22 32 L35 18"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.4, delay: 0.25 }}
+              />
+            </motion.svg>
+          </div>
+        </>
       )}
 
       {/* 内容层 */}
