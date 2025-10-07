@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { CDN_BASE_URL } from '../utils/constants'
 
 /**
  * 宝箱开启动画演示页面 - 精简版
@@ -34,10 +35,10 @@ export function LootboxAnimationDemo() {
 
   // 预加载音频
   useEffect(() => {
-    audioRefs.current.down = new Audio('/lootbox/la96_premium/lootbox_down.wav')
-    audioRefs.current.shaking = new Audio('/lootbox/la96_premium/lootbox_shaking_loop.wav')
+    audioRefs.current.down = new Audio(`${CDN_BASE_URL}/lootbox/la96_premium/lootbox_down.wav`)
+    audioRefs.current.shaking = new Audio(`${CDN_BASE_URL}/lootbox/la96_premium/lootbox_shaking_loop.wav`)
     audioRefs.current.shaking.loop = true
-    audioRefs.current.open = new Audio('/lootbox/la96_premium/lootbox_open.wav')
+    audioRefs.current.open = new Audio(`${CDN_BASE_URL}/lootbox/la96_premium/lootbox_open.wav`)
 
     return () => {
       Object.values(audioRefs.current).forEach(audio => {
@@ -185,7 +186,7 @@ export function LootboxAnimationDemo() {
             >
               {/* 2D宝箱图片 - 底层 */}
               <img
-                src={`/lootbox/lootboxtickets.spriteatlas/${selectedLootbox}`}
+                src={`${CDN_BASE_URL}/lootbox/lootboxtickets.spriteatlas/${selectedLootbox}`}
                 alt="Lootbox"
                 className="w-56 h-56 object-contain drop-shadow-2xl"
                 style={{
@@ -199,7 +200,7 @@ export function LootboxAnimationDemo() {
               {/* 烟雾特效图层 - 在蒸汽阶段显示 */}
               {showSteam && (
                 <img
-                  src="/lootbox/烟雾.png"
+                  src={`${CDN_BASE_URL}/lootbox/烟雾.png`}
                   alt="Steam Effect"
                   className="absolute pointer-events-none"
                   style={{
@@ -217,7 +218,7 @@ export function LootboxAnimationDemo() {
               {(stage === 'open' || stage === 'reward') && (
                 <>
                   <img
-                    src="/lootbox/开箱.png"
+                    src={`${CDN_BASE_URL}/lootbox/开箱.png`}
                     alt="Open Lootbox"
                     className="absolute pointer-events-none"
                     style={{
@@ -231,7 +232,7 @@ export function LootboxAnimationDemo() {
                   />
                   {/* 开箱时烟雾图层 - 置于更顶层 */}
                   <img
-                    src="/lootbox/开箱时烟雾.png"
+                    src={`${CDN_BASE_URL}/lootbox/开箱时烟雾.png`}
                     alt="Opening Steam"
                     className="absolute pointer-events-none"
                     style={{
