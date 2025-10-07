@@ -91,91 +91,140 @@ CDN_BASE_URL/
 }
 ```
 
-### 单个活动配置 (例: 2024-10-shadow-trade.json)
+### 单个活动配置 (例: chip/lm25.json)
 
 ```json
 {
-  "id": "2024-10-shadow-trade",
-  "type": "chip",
+  "id": "lm25",
+  "gacha_type": "筹码类",
   "metadata": {
-    "name": "暗影交易",
-    "nameEn": "Deal with the Shadow",
-    "period": "2025年10月 月初",
-    "description": "暗影交易活动描述"
+    "name": "漩涡之主",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_lm25.webp?v=bf7e26c1",
+    "nameEn": "Lords of the Maelstrom",
+    "formattedDate": "2025年7月"
   },
-
-  "assets": {
-    "basePath": "/assets/chip/2024-10-shadow-trade",
-    "background": "background.png",
-    "widget": "widget.png",
-    "currencyIcon": "currency.png"
-  },
-
-  "currency": {
-    "name": "筹码",
-    "initialAmount": 40,
-    "singleDrawCost": 1,
-    "multiDrawCost": 10,
-    "multiDrawCount": 10
-  },
-
-  "guarantee": {
-    "epic": 10,
-    "legendary": 50
-  },
-
   "items": [
     {
-      "id": "item_001",
-      "name": "幻影迷彩",
-      "nameEn": "Phantom Camo",
-      "rarity": "legendary",
-      "image": "items/item_001.png",
-      "probability": 0.0005,
-      "category": "迷彩"
-    },
-    {
-      "id": "item_002",
-      "name": "高级零件",
+      "name": "[意]维托里奥·维内托(C 550)",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "VittorioVeneto",
+      "type": "战舰",
       "rarity": "epic",
-      "image": "items/item_002.png",
-      "probability": 0.02,
-      "category": "零件"
+      "nameEn": "IT Vittorio Veneto (C 550)"
     },
     {
-      "id": "item_003",
-      "name": "普通材料",
-      "rarity": "rare",
-      "image": "items/item_003.png",
-      "probability": 0.15,
-      "category": "材料"
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "PAK DA M",
+      "probability": 0.51,
+      "limit": 2,
+      "id": "PAKDAM",
+      "type": "轰炸机",
+      "rarity": "epic",
+      "nameEn": "PAK DA M"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 11.5,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[韩]幽灵指挥官",
+      "probability": 0.12,
+      "limit": 1,
+      "id": "GhostCommander",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS Ghost Commander"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "帕特农神庙",
+      "probability": 1.53,
+      "limit": 0,
+      "id": "Camo_Parthenon",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Parthenon"
+    },
+    {
+      "name": "62型鱼雷(533mm)",
+      "probability": 0.24,
+      "limit": 0,
+      "id": "Torped62",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Torped 62 (533 mm)"
+    },
+    {
+      "name": "RIM-162D",
+      "probability": 0.5,
+      "limit": 1,
+      "id": "RIM162D",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "RIM-162D"
+    },
+    {
+      "name": "2 烟幕",
+      "probability": 15.0,
+      "limit": 0,
+      "id": "TankSmokeBombs",
+      "type": "道具",
+      "rarity": "common"
+    },
+    {
+      "name": "[俄]巴尔蒂尼 A-2000-7",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "BartiniA2000",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Bartini A-2000-7"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 25.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "Mark 55/12 (305 mm)",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "Mark5512",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "Mark 55/12 (305 mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency",
+      "type": "资源",
+      "rarity": "common"
     }
-  ],
-
-  "shop": {
-    "packages": [
-      {
-        "id": "pkg_001",
-        "coins": 22,
-        "price": 25,
-        "image": "shop/package_001.png",
-        "discount": "-10%"
-      },
-      {
-        "id": "pkg_002",
-        "coins": 60,
-        "price": 60,
-        "image": "shop/package_002.png",
-        "discount": "-15%"
-      }
-    ]
-  },
-
-  "audio": {
-    "draw": "draw.wav",
-    "reward": "Reward_Daily_02_UI.Reward_Daily_02_UI.wav",
-    "fail": "UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav"
-  }
+  ]
 }
 ```
 
@@ -323,23 +372,3 @@ const shopUrl = `${CDN_BASE_URL}${config.assets.basePath}/${pkg.image}`
 - **样式**: Tailwind CSS
 - **部署**: Vercel
 - **CDN**: 阿里云 OSS
-
----
-
-## 注意事项
-
-1. **赞助功能风险**：由于 QQ/微信可能拦截含支付二维码的网站，建议：
-   - 改为跳转到爱发电等第三方平台
-   - 避免使用"打赏"、"支付"等敏感词
-   - 添加明显的"游戏模拟工具"说明
-
-2. **CDN 缓存**：更新配置后注意刷新 CDN 缓存
-
-3. **历史数据兼容**：保持 JSON 配置格式向后兼容
-
----
-
-## 当前进度
-
-- ✅ 项目架构设计完成
-- ⏳ 待实施：组件拆分、CDN 数据加载、路由系统
