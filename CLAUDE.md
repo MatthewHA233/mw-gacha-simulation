@@ -13,7 +13,7 @@
 
 ## 核心设计原则
 
-1. **数据驱动**：所有活动配置、物品数据、图片路径均从 CDN JSON 配置加载
+1. **数据驱动**：所有活动配置、物品数据都从 CDN JSON 配置加载
 2. **组件化**：三种抽卡类型各自独立组件，共享底层逻辑
 3. **动态路由**：支持多个抽卡活动，通过路由切换
 4. **历史数据支持**：侧边栏可加载历史活动，使用相同组件渲染
@@ -27,11 +27,11 @@ CDN_BASE_URL/
 ├── gacha-configs/
 │   ├── index.json                          # 所有活动的索引文件
 │   ├── chip/                              # 筹码类活动配置
-│   │   ├── 2024-10-shadow-trade.json      # 暗影交易配置
-│   │   ├── 2024-09-xxx.json               # 历史活动
+│   │   ├── ag97.json                       # 暗影交易配置
+│   │   ├── ag96.json                       # 历史活动
 │   │   └── ...
 │   ├── cargo/                              # 机密货物类（未来）
-│   └── flagship/                           # 旗舰宝箱类（未来）
+│   └── flagship/                           # 旗舰宝箱类（接下来开发）
 │
 └── assets/                                 # 静态资源
     └── chip/
@@ -58,23 +58,19 @@ CDN_BASE_URL/
 {
   "activities": [
     {
-      "id": "2024-10-shadow-trade",
-      "type": "chip",
+      "id": "ag97",
+      "gacha_type": "筹码类",
       "name": "暗影交易",
       "nameEn": "Deal with the Shadow",
-      "period": "2025年10月 月初",
-      "startDate": "2024-10-01",
-      "endDate": "2024-10-31",
-      "active": true,
-      "thumbnail": "/assets/chip/2024-10-shadow-trade/widget.png",
-      "configUrl": "/gacha-configs/chip/2024-10-shadow-trade.json"
+      "formattedDate": "2025年10月"
     },
     {
-      "id": "2024-09-xxx",
-      "type": "chip",
-      "name": "另一个活动",
-      "active": false,
-      "configUrl": "/gacha-configs/chip/2024-09-xxx.json"
+      "id": "pf25",
+      "gacha_type": "筹码类",
+      "name": "招财进宝",
+      "formattedDate": "2025年2月",
+      "nameEn": "Pursuit of Fortune",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_pf25.jpg?v=6993bfbd"
     }
   ]
 }
