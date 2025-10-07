@@ -11,6 +11,7 @@ export function LootboxAnimationDemo() {
   const [debugMode, setDebugMode] = useState(false) // 调试模式：手动控制阶段
   const [selectedLootbox, setSelectedLootbox] = useState('LA96_premium_lootbox_ticket.png')
   const [showSteam, setShowSteam] = useState(false) // 显示烟雾特效
+  const [mobileMode, setMobileMode] = useState(false) // 手机端模式：缩小到60%
 
   // 可用的宝箱列表（仅 Premium 系列）
   const lootboxOptions = [
@@ -149,7 +150,12 @@ export function LootboxAnimationDemo() {
       </div>
 
       {/* 动画舞台 */}
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div
+        className="relative w-full h-full flex items-center justify-center transition-transform duration-300"
+        style={{
+          transform: mobileMode ? 'scale(0.6)' : 'scale(1)',
+        }}
+      >
 
         {/* 待机/震动/打开 - 宝箱主体 */}
         <AnimatePresence mode="wait">
@@ -261,6 +267,15 @@ export function LootboxAnimationDemo() {
           `}
         >
           {isAnimating && !debugMode ? '播放中...' : '开始开箱'}
+        </button>
+
+        <button
+          onClick={() => setMobileMode(!mobileMode)}
+          className={`px-6 py-3 rounded-lg font-semibold text-white transition-colors ${
+            mobileMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-700 hover:bg-gray-600'
+          }`}
+        >
+          {mobileMode ? '手机端 60%' : '桌面端 100%'}
         </button>
 
         <button
