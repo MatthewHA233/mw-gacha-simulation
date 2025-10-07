@@ -22,44 +22,46 @@
 
 ## CDN 文件组织结构
 
+所有静态资源与配置在运行时会优先从 `CDN_BASE_URL/`（由环境变量 `VITE_CDN_BASE_URL` 提供）读取；当该值为空时，会自动回退到项目的 `public/` 目录，目录形态保持一致。下图展示了 CDN 根目录的实际组织方式：
+
 ```
 CDN_BASE_URL/
-├── gacha-configs/
-│   ├── index.json                          # 所有活动的索引文件
-│   ├── chip/                              # 筹码类活动配置
-│   │   ├── ag97.json                       # 暗影交易配置
-│   │   ├── ag96.json                       # 历史活动
-│   │   └── ...
-│   ├── cargo/                              # 机密货物类（未来）
-│   └── flagship/                           # 旗舰宝箱类（接下来开发）
+├── gacha-configs/                                   # 活动配置 JSON
+│   ├── index.json                                   # 活动索引（Sidebar 用）
+│   ├── chip/                                        # 筹码类活动配置
+│   │   └── {activityId}.json                        # 例如 ag97.json
+│   ├── cargo/                                       # 预留：机密货物类活动
+│   └── flagship/                                    # 预留：旗舰宝箱类活动
 │
-└── assets/                                 # 静态资源（根据活动动态拼接 + public 下的固定目录）
-    ├── 动态路由资源（通过 `CDN_BASE_URL` + 模板字符串按活动 ID 组合）
-    │   ├── /assets/contentseparated_assets_activities/activity_gacha_{activityId}_background.png      # 抽卡背景
-    │   ├── /assets/contentseparated_assets_activities/activity_gacha_{activityId}_widget.png          # 活动卡片 & 抽卡结果背景
-    │   ├── /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_limited_background.png # 信息弹窗背景
-    │   ├── /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_{2-5}_thumbnail.png     # 商店套餐缩略图（packageId + 1）
-    │   ├── /assets/contentseparated_assets_content/textures/sprites/currency/currency_gachacoins_{activityId}.png  # 活动专属货币
-    │   ├── /assets/contentseparated_assets_content/textures/sprites/units_ships/{itemId}.png           # 舰船立绘
-    │   ├── /assets/contentseparated_assets_content/textures/sprites/weapons/{itemId}.png               # 武器/导弹等装备
-    │   └── /assets/contentseparated_assets_content/textures/sprites/camouflages/{itemId}.png           # 伪装/皮肤
-    └── 指定路由资源（`public/` 下的固定目录，用于本地开发与常驻素材）
-        ├── /gacha-configs/                                      # 活动配置文件
-        │   ├── index.json
-        │   └── chip/{activityId}.json
-        ├── /常驻奖励物品/{itemId}.png                           # 普通物品图标（与 item.id 对齐）
-        ├── /10月月头筹码抽奖暗影交易/                           # 当前活动的本地素材示例
-        │   ├── 抽奖界面/
-        │   │   ├── 活动奖励物品/{itemId}.png
-        │   │   ├── 商人.png
-        │   │   └── 出物品.png
-        │   ├── 货币/
-        │   ├── 购买/
-        │   └── 背景组件/
-        ├── /audio/                                             # 音效文件
-        ├── /sponsor/payment-qr.png                             # 赞助二维码
-        └── /示例/                                               # 页面示意图/设计稿
-```
+└── assets/                                          # 抽卡所需的全部素材
+    ├── contentseparated_assets_activities/          # 按活动 ID 区分的界面元素
+    │   ├── activity_gacha_{activityId}_background.png  # 抽卡背景
+    │   └── activity_gacha_{activityId}_widget.png      # 活动卡片 & 抽卡结果面板
+    ├── contentseparated_assets_offers/              # 商店/弹窗相关资源
+    │   ├── eventgachaoffer_{activityId}_limited_background.png     # 商店弹窗背景
+    │   └── eventgachaoffer_{activityId}_{packageIndex}_thumbnail.png # 商店套餐缩略图（packageIndex = packageId + 1）
+    ├── contentseparated_assets_content/             # 通用素材归档
+    │   └── textures/sprites/
+    │       ├── currency/currency_gachacoins_{activityId}.png       # 活动专属货币
+    │       ├── units_ships/{itemId}.png                           # 舰船立绘（稀有奖励）
+    │       ├── weapons/{itemId}.png                               # 武器/导弹/模块
+    │       └── camouflages/{itemId}.png                           # 涂装/皮肤
+    └── audio/                                     
+        ├── draw.wav                                 # 抽卡音效
+        ├── Reward_Daily_02_UI.wav                   # 奖励提示音
+        └── UpgradeFailed_01_UI.wav                  # 未中奖反馈音
+
+### 与 `public/` 目录的映射关系
+
+- 本地开发或 `VITE_CDN_BASE_URL` 留空时，Vite 会直接从 `public/` 下读取同名文件，例如 `public/gacha-configs/index.json`、`public/assets/...`。
+- `public/` 中可以额外放置仅供本地调试的素材，例如 `public/常驻奖励物品/`、`public/示例/` 等，它们不会上传至 CDN。
+
+### 数据文件中的外链资源
+
+部分配置字段直接给出第三方绝对 URL（如活动预览图），这些资源既不位于 CDN，也不会被复制到 `public/`，示例如下：
+
+- `https://mwstats.info/images/gacha-preview/gacha_c_*.jpg?v=xxxx`
+- `https://mwstats.info/images/gacha-preview/activity_c_*.jpg?v=xxxx`
 
 ---
 
