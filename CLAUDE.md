@@ -33,19 +33,32 @@ CDN_BASE_URL/
 │   ├── cargo/                              # 机密货物类（未来）
 │   └── flagship/                           # 旗舰宝箱类（接下来开发）
 │
-└── assets/                                 # 静态资源
-    └── chip/
-        └── 2024-10-shadow-trade/          # 每个活动独立文件夹
-            ├── background.png              # 主背景图
-            ├── widget.png                  # 活动卡片图
-            ├── currency.png                # 货币图标
-            ├── items/                      # 物品图片
-            │   ├── item_001.png
-            │   ├── item_002.png
-            │   └── ...
-            └── shop/                       # 商店图片
-                ├── package_001.png
-                └── ...
+└── assets/                                 # 静态资源（根据活动动态拼接 + public 下的固定目录）
+    ├── 动态路由资源（通过 `CDN_BASE_URL` + 模板字符串按活动 ID 组合）
+    │   ├── /assets/contentseparated_assets_activities/activity_gacha_{activityId}_background.png      # 抽卡背景
+    │   ├── /assets/contentseparated_assets_activities/activity_gacha_{activityId}_widget.png          # 活动卡片 & 抽卡结果背景
+    │   ├── /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_limited_background.png # 信息弹窗背景
+    │   ├── /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_{2-5}_thumbnail.png     # 商店套餐缩略图（packageId + 1）
+    │   ├── /assets/contentseparated_assets_content/textures/sprites/currency/currency_gachacoins_{activityId}.png  # 活动专属货币
+    │   ├── /assets/contentseparated_assets_content/textures/sprites/units_ships/{itemId}.png           # 舰船立绘
+    │   ├── /assets/contentseparated_assets_content/textures/sprites/weapons/{itemId}.png               # 武器/导弹等装备
+    │   └── /assets/contentseparated_assets_content/textures/sprites/camouflages/{itemId}.png           # 伪装/皮肤
+    └── 指定路由资源（`public/` 下的固定目录，用于本地开发与常驻素材）
+        ├── /gacha-configs/                                      # 活动配置文件
+        │   ├── index.json
+        │   └── chip/{activityId}.json
+        ├── /常驻奖励物品/{itemId}.png                           # 普通物品图标（与 item.id 对齐）
+        ├── /10月月头筹码抽奖暗影交易/                           # 当前活动的本地素材示例
+        │   ├── 抽奖界面/
+        │   │   ├── 活动奖励物品/{itemId}.png
+        │   │   ├── 商人.png
+        │   │   └── 出物品.png
+        │   ├── 货币/
+        │   ├── 购买/
+        │   └── 背景组件/
+        ├── /audio/                                             # 音效文件
+        ├── /sponsor/payment-qr.png                             # 赞助二维码
+        └── /示例/                                               # 页面示意图/设计稿
 ```
 
 ---
