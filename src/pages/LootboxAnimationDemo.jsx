@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
  * 核心动画流程：震动 → 打开 → 奖励展示
  */
 export function LootboxAnimationDemo() {
-  const [stage, setStage] = useState('idle') // idle, shake, open, reward
+  const [stage, setStage] = useState('idle') // idle, shake, steamBurst, open, reward
   const [isAnimating, setIsAnimating] = useState(false)
   const [debugMode, setDebugMode] = useState(false) // 调试模式：手动控制阶段
   const [selectedLootbox, setSelectedLootbox] = useState('LA96_premium_lootbox_ticket.png')
@@ -77,13 +77,17 @@ export function LootboxAnimationDemo() {
     playSound('shaking')
     await new Promise(resolve => setTimeout(resolve, 400))
 
-    // 2. 停止震动音效，播放开箱音效（4.6秒）+ 显示烟雾特效
+    // 2. 停止震动音效，播放开箱音效 + 烟雾爆发阶段（大幅度震动）
     stopSound('shaking')
     playSound('open')
+    setStage('steamBurst')
+    await new Promise(resolve => setTimeout(resolve, 150))
+
+    // 震动结束后显示烟雾
     setShowSteam(true)
 
     // 等待开箱音效播放到一半再显示开箱动画
-    await new Promise(resolve => setTimeout(resolve, 1400))
+    await new Promise(resolve => setTimeout(resolve, 1250))
 
     // 3. 显示开箱盖和裁剪（开箱音效已经播放了一半）+ 隐藏烟雾
     setShowSteam(false)
@@ -149,7 +153,7 @@ export function LootboxAnimationDemo() {
 
         {/* 待机/震动/打开 - 宝箱主体 */}
         <AnimatePresence mode="wait">
-          {(stage === 'idle' || stage === 'shake' || stage === 'open' || stage === 'reward') && (
+          {(stage === 'idle' || stage === 'shake' || stage === 'steamBurst' || stage === 'open' || stage === 'reward') && (
             <motion.div
               key="lootbox"
               className="relative z-10"
@@ -160,10 +164,16 @@ export function LootboxAnimationDemo() {
                       y: [0, -2, -1, -3, -1.5, -2, -1, -1.5, -1, -1, -0.5, -0.5, 0],
                       x: [0, 2, -2, 3, -2.5, 2, -2, 1.5, -1, 1, -0.5, 0.5, 0],
                     }
+                  : stage === 'steamBurst'
+                  ? {
+                      rotate: [0, -4, 4, 0],
+                      y: [0, -6, -4, 0],
+                      x: [0, 5, -5, 0],
+                    }
                   : { rotate: 0, x: 0, y: 0 }
               }
               transition={{
-                duration: stage === 'shake' ? 0.4 : 0,
+                duration: stage === 'shake' ? 0.4 : stage === 'steamBurst' ? 0.15 : 0,
                 ease: 'linear',
               }}
             >
@@ -199,19 +209,36 @@ export function LootboxAnimationDemo() {
 
               {/* 开箱盖图层 - 在同一个容器内，使用绝对定位覆盖 */}
               {(stage === 'open' || stage === 'reward') && (
-                <img
-                  src="/lootbox/开箱.png"
-                  alt="Open Lootbox"
-                  className="absolute pointer-events-none"
-                  style={{
-                    width: '230px',
-                    height: 'auto',
-                    top: '-70px',
-                    left: '-10px',
-                    maxWidth: 'none',
-                    maxHeight: 'none',
-                  }}
-                />
+                <>
+                  <img
+                    src="/lootbox/开箱.png"
+                    alt="Open Lootbox"
+                    className="absolute pointer-events-none"
+                    style={{
+                      width: '230px',
+                      height: 'auto',
+                      top: '-70px',
+                      left: '-10px',
+                      maxWidth: 'none',
+                      maxHeight: 'none',
+                    }}
+                  />
+                  {/* 开箱时烟雾图层 - 置于更顶层 */}
+                  <img
+                    src="/lootbox/开箱时烟雾.png"
+                    alt="Opening Steam"
+                    className="absolute pointer-events-none"
+                    style={{
+                      width: '600px',
+                      height: 'auto',
+                      top: '-240px',
+                      left: '-176px',
+                      maxWidth: 'none',
+                      maxHeight: 'none',
+                      zIndex: 1,
+                    }}
+                  />
+                </>
               )}
             </motion.div>
           )}
@@ -271,6 +298,7 @@ export function LootboxAnimationDemo() {
               {[
                 { key: 'idle', label: '待机' },
                 { key: 'shake', label: '震动' },
+                { key: 'steamBurst', label: '烟雾爆发' },
                 { key: 'open', label: '开箱' },
                 { key: 'reward', label: '奖励' },
               ].map(({ key, label }) => (
@@ -296,6 +324,7 @@ export function LootboxAnimationDemo() {
           {[
             { key: 'idle', label: '待机' },
             { key: 'shake', label: '震动' },
+            { key: 'steamBurst', label: '烟雾爆发' },
             { key: 'open', label: '开箱' },
             { key: 'reward', label: '奖励' },
           ].map(({ key, label }) => (
