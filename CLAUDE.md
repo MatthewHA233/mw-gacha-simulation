@@ -233,44 +233,67 @@ CDN_BASE_URL/
 ## 项目目录结构
 
 ```
-src/
-├── components/
-│   ├── Sidebar/
-│   │   └── Sidebar.jsx                    # 侧边栏（显示活动列表）
+项目根目录
+├── public/                                 # 静态资源（可与 CDN 同步）
+│   ├── assets/...
+│   └── gacha-configs/...
+│
+├── src/
+│   ├── App.jsx                             # 路由与全局布局
+│   ├── main.jsx                            # React 入口
+│   ├── App.css / index.css                 # 全局样式
+│   ├── components/
+│   │   ├── ChipGacha/                      # 筹码类抽卡界面组件
+│   │   │   ├── ChipGacha.jsx               # 主容器组件
+│   │   │   ├── GachaDisplay.jsx            # 抽卡展示区
+│   │   │   ├── HistoryModal.jsx            # 历史记录弹窗
+│   │   │   ├── InfoModal.jsx               # 规则说明弹窗
+│   │   │   ├── ResultModal.jsx             # 抽卡结果弹窗
+│   │   │   ├── ShopModal.jsx               # 商店弹窗
+│   │   │   └── SponsorModal.jsx            # 赞助弹窗
+│   │   │
+│   │   ├── Layout/                         # 布局相关组件
+│   │   │   ├── Header.jsx                  # 顶部标题栏
+│   │   │   ├── Sidebar.jsx                 # 活动列表侧边栏
+│   │   │   └── Sidebar.css                 # 侧边栏样式
+│   │   │
+│   │   ├── ui/                             # 通用 UI 组件
+│   │   │   ├── ConfirmModal.jsx
+│   │   │   ├── ResetModal.jsx
+│   │   │   ├── background-beams.jsx        # 背景特效
+│   │   │   ├── hexagon-grid.jsx            # 六边形网格组件
+│   │   │   ├── hexagon.css                 # 六边形样式
+│   │   │   └── text-generate-effect.jsx    # 文本动画效果
+│   │   │
+│   │   ├── HexGrid.jsx / HexItem.jsx       # 六边形展示组件
+│   │   └── SquareItem.jsx                  # 方形展示组件
 │   │
-│   ├── ChipGacha/                        # 筹码类抽卡
-│   │   ├── ChipGacha.jsx                 # 主组件
-│   │   ├── GachaHeader.jsx                # 顶部导航栏
-│   │   ├── GachaDisplay.jsx               # 抽卡展示区
-│   │   ├── ResultModal.jsx                # 结果弹窗
-│   │   ├── ShopModal.jsx                  # 商店弹窗
-│   │   ├── SponsorModal.jsx               # 赞助弹窗
-│   │   ├── HistoryModal.jsx               # 历史记录
-│   │   └── InfoModal.jsx                  # 信息说明
+│   ├── pages/
+│   │   └── GachaPage.jsx                   # 抽卡页面容器
 │   │
-│   ├── CargoGacha/                        # 机密货物类（未来）
-│   │   └── CargoGacha.jsx
+│   ├── hooks/
+│   │   ├── useActivityList.js
+│   │   ├── useGachaData.js
+│   │   └── useSound.js
 │   │
-│   └── FlagshipGacha/                     # 旗舰宝箱类（未来）
-│       └── FlagshipGacha.jsx
+│   ├── services/
+│   │   ├── cdnService.js                   # CDN 数据加载
+│   │   └── gachaService.js                 # 抽卡逻辑与概率
+│   │
+│   ├── utils/
+│   │   ├── constants.js                    # 常量配置
+│   │   ├── gameStateStorage.js             # 本地存档工具
+│   │   └── rarityHelpers.js                # 稀有度辅助方法
+│   │
+│   ├── data/
+│   │   └── defaultItems.js                 # 默认物品配置
+│   │
+│   └── lib/
+│       └── utils.js                        # 通用工具函数
 │
-├── services/
-│   ├── cdnService.js                      # CDN数据加载服务
-│   └── gachaService.js                    # 抽卡逻辑服务
-│
-├── hooks/
-│   ├── useGachaData.js                    # 抽卡数据 Hook
-│   ├── useSound.js                        # 音效 Hook
-│   └── useActivityList.js                 # 活动列表 Hook
-│
-├── pages/
-│   └── GachaPage.jsx                      # 抽卡页面容器
-│
-├── utils/
-│   ├── constants.js                       # 常量配置
-│   └── imageLoader.js                     # 图片加载工具
-│
-└── App.jsx                                # 路由配置
+├── index.html
+├── package.json / vite.config.js / tailwind.config.js ...
+└── CLAUDE.md 等文档
 ```
 
 ---
