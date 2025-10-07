@@ -50,7 +50,6 @@ CDN_BASE_URL/
         ├── draw.wav                                 # 抽卡音效
         ├── Reward_Daily_02_UI.wav                   # 奖励提示音
         └── UpgradeFailed_01_UI.wav                  # 未中奖反馈音
-```
 
 ### 与 `public/` 目录的映射关系
 
