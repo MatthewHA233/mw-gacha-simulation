@@ -210,9 +210,9 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/${folder}/${item.id}.png`
   }
 
-  // 普通物品（common）：常驻奖励物品
+  // 普通物品（common）：common-items
   if (item.rarity === 'common') {
-    return `${CDN_BASE_URL}/常驻奖励物品/${item.id}.png`
+    return `${CDN_BASE_URL}/assets/common-items/${item.id}.png`
   }
 
   return null

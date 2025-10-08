@@ -158,7 +158,7 @@ export function Header({
             {/* 艺术硬币 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
               <img
-                src={`${CDN_BASE_URL}/常驻奖励物品/Artstorm.png`}
+                src={`${CDN_BASE_URL}/assets/common-items/Artstorm.png`}
                 alt="艺术硬币"
                 className="w-5 h-5 md:w-6 md:h-6"
               />
@@ -170,7 +170,7 @@ export function Header({
             {/* 金条 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
               <img
-                src={`${CDN_BASE_URL}/常驻奖励物品/Hard.png`}
+                src={`${CDN_BASE_URL}/assets/common-items/Hard.png`}
                 alt="黄金"
                 className="w-5 h-5 md:w-6 md:h-6"
               />

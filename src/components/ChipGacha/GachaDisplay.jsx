@@ -24,7 +24,7 @@ export function GachaDisplay({
       {/* 左侧：商人角色 - 绝对定位，中间偏左 */}
       <div className="absolute left-[5%] top-1/2 -translate-y-1/2">
         <img
-          src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/商人.png`}
+          src={`${CDN_BASE_URL}/assets/ui-common/merchant.png`}
           alt="商人"
           className="max-h-[65vh] md:h-[900px] md:max-h-none object-contain drop-shadow-2xl"
         />

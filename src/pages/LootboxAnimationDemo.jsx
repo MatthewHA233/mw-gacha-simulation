@@ -35,10 +35,10 @@ export function LootboxAnimationDemo() {
 
   // 预加载音频
   useEffect(() => {
-    audioRefs.current.down = new Audio(`${CDN_BASE_URL}/lootbox/la96_premium/lootbox_down.wav`)
-    audioRefs.current.shaking = new Audio(`${CDN_BASE_URL}/lootbox/la96_premium/lootbox_shaking_loop.wav`)
+    audioRefs.current.down = new Audio(`${CDN_BASE_URL}/audio/lootbox_premium/lootbox_down.wav`)
+    audioRefs.current.shaking = new Audio(`${CDN_BASE_URL}/audio/lootbox_premium/lootbox_shaking_loop.wav`)
     audioRefs.current.shaking.loop = true
-    audioRefs.current.open = new Audio(`${CDN_BASE_URL}/lootbox/la96_premium/lootbox_open.wav`)
+    audioRefs.current.open = new Audio(`${CDN_BASE_URL}/audio/lootbox_premium/lootbox_open.wav`)
 
     return () => {
       Object.values(audioRefs.current).forEach(audio => {

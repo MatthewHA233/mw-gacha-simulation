@@ -31,7 +31,7 @@ export function ResultModal({
       transition={{ duration: 0.2 }}
       className="fixed left-0 right-0 bottom-0 top-0 md:top-[60px] z-40"
       style={{
-        backgroundImage: `url(${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/出物品.png)`,
+        backgroundImage: `url(${CDN_BASE_URL}/assets/ui-common/result-bg.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}

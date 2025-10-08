@@ -1096,7 +1096,7 @@ function App() {
               {/* 艺术硬币 */}
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
                 <img
-                  src={`${CDN_BASE_URL}/常驻奖励物品/Artstorm.png`}
+                  src={`${CDN_BASE_URL}/assets/common-items/Artstorm.png`}
                   alt="艺术硬币"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />
@@ -1118,7 +1118,7 @@ function App() {
               {/* 金条 */}
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
                 <img
-                  src={`${CDN_BASE_URL}/常驻奖励物品/Hard.png`}
+                  src={`${CDN_BASE_URL}/assets/common-items/Hard.png`}
                   alt="黄金"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />
@@ -1146,7 +1146,7 @@ function App() {
         {/* 左侧：商人角色 - 绝对定位，中间偏左 */}
         <div className="absolute left-[5%] top-1/2 -translate-y-1/2">
           <img
-            src={`${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/商人.png`}
+            src={`${CDN_BASE_URL}/assets/ui-common/merchant.png`}
             alt="商人"
             className="max-h-[65vh] md:h-[900px] md:max-h-none object-contain drop-shadow-2xl"
           />
@@ -1229,7 +1229,7 @@ function App() {
             transition={{ duration: 0.2 }}
             className="fixed left-0 right-0 bottom-0 top-0 md:top-[60px] z-40"
             style={{
-              backgroundImage: `url(${CDN_BASE_URL}/10月月头筹码抽奖暗影交易/抽奖界面/出物品.png)`,
+              backgroundImage: `url(${CDN_BASE_URL}/assets/ui-common/result-bg.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -1536,7 +1536,7 @@ function App() {
                   <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-500" />
                   <div className="relative bg-white p-3 rounded-xl">
                     <img
-                      src={`${CDN_BASE_URL}/sponsor/payment-qr.png`}
+                      src={`${CDN_BASE_URL}/assets/common-items/payment-qr.png`}
                       alt="收款码"
                       className="w-40 h-40 md:w-48 md:h-48 object-contain"
                     />
