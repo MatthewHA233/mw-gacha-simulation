@@ -104,6 +104,14 @@ export function buildWidgetUrl(activityIdOrConfig) {
   }
   // 否则使用动态路由
   const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
+  const gachaType = activityIdOrConfig?.gacha_type
+
+  // 旗舰宝箱类使用特殊格式
+  if (gachaType === '旗舰宝箱类') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_widget.png`
+  }
+
+  // 其他类型使用默认格式
   return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png`
 }
 
@@ -126,6 +134,14 @@ export function buildBackgroundUrl(activityIdOrConfig) {
   }
   // 否则使用动态路由
   const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
+  const gachaType = activityIdOrConfig?.gacha_type
+
+  // 旗舰宝箱类使用特殊格式
+  if (gachaType === '旗舰宝箱类') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_background.png`
+  }
+
+  // 其他类型使用默认格式
   return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_background.png`
 }
 
@@ -139,9 +155,18 @@ export function buildInfoBackgroundUrl(activityId) {
 
 /**
  * 构建结果弹窗背景图片 URL
- * @param {string} activityId - 活动ID
+ * @param {string|Object} activityIdOrConfig - 活动ID 或活动配置对象
  */
-export function buildResultBackgroundUrl(activityId) {
+export function buildResultBackgroundUrl(activityIdOrConfig) {
+  const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
+  const gachaType = activityIdOrConfig?.gacha_type
+
+  // 旗舰宝箱类使用特殊格式
+  if (gachaType === '旗舰宝箱类') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_widget.png`
+  }
+
+  // 其他类型使用默认格式
   return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png`
 }
 
