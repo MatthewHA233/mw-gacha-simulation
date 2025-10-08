@@ -46,7 +46,10 @@ CDN_BASE_URL/
     │       ├── units_ships/{itemId}.png                           # 舰船立绘（稀有奖励）
     │       ├── weapons/{itemId}.png                               # 武器/导弹/模块
     │       └── camouflages/{itemId}.png                           # 涂装/皮肤
-    └── audio/                                     
+    ├── ui-common/                                   # 通用 UI 素材
+    │   ├── merchant.png                             # 商人角色图（筹码类抽卡展示区）
+    │   └── result-bg.png                            # 结果弹窗背景
+    └── audio/
         ├── draw.wav                                 # 抽卡音效
         ├── Reward_Daily_02_UI.wav                   # 奖励提示音
         └── UpgradeFailed_01_UI.wav                  # 未中奖反馈音
@@ -54,7 +57,7 @@ CDN_BASE_URL/
 ### 与 `public/` 目录的映射关系
 
 - 本地开发或 `VITE_CDN_BASE_URL` 留空时，Vite 会直接从 `public/` 下读取同名文件，例如 `public/gacha-configs/index.json`、`public/assets/...`。
-- `public/` 中可以额外放置仅供本地调试的素材，例如 `public/常驻奖励物品/`、`public/示例/` 等，它们不会上传至 CDN。
+- `public/` 中可以额外放置仅供本地调试的素材，例如 `public/common-items/`（常驻奖励物品）、`public/lootbox/`（宝箱动画资源）等，它们会按需上传至 CDN。
 
 ### 数据文件中的外链资源
 
@@ -235,7 +238,12 @@ CDN_BASE_URL/
 ```
 项目根目录
 ├── public/                                 # 静态资源（可与 CDN 同步）
-│   ├── assets/...                          # CDN 资源镜像
+│   ├── assets/                             # CDN 资源镜像
+│   │   ├── contentseparated_assets_*/      # 游戏素材（活动、商店、物品等）
+│   │   ├── ui-common/                      # 通用 UI 素材
+│   │   │   ├── merchant.png                # 商人角色图
+│   │   │   └── result-bg.png               # 结果弹窗背景
+│   │   └── audio/                          # 音效文件
 │   ├── gacha-configs/...                   # 活动配置 JSON
 │   ├── lootbox/                            # 宝箱动画资源
 │   │   ├── lootboxtickets.spriteatlas/     # 宝箱图片集
@@ -243,7 +251,7 @@ CDN_BASE_URL/
 │   │   ├── 开箱时烟雾.png                  # 开箱烟雾特效
 │   │   ├── 烟雾.png                        # 烟雾释放特效
 │   │   └── la96_premium/                   # 音效文件
-│   └── 常驻奖励物品/                        # 常驻奖励图片
+│   └── common-items/                       # 常驻奖励图片
 │
 ├── src/
 │   ├── App.jsx                             # 路由与全局布局
@@ -391,7 +399,7 @@ const itemUrl = buildItemImageUrl(item, activityConfig)
 // - 战舰(epic/legendary): /assets/.../units_ships/{itemId}.png
 // - 涂装(epic/legendary): /assets/.../camouflages/{itemId}.png
 // - 武器类(epic/legendary): /assets/.../weapons/{itemId}.png
-// - 普通物品(common): /常驻奖励物品/{itemId}.png
+// - 普通物品(common): /common-items/{itemId}.png
 
 // 4. 货币图标
 const currencyUrl = buildCurrencyIconUrl(activityConfig)
