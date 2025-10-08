@@ -235,8 +235,15 @@ CDN_BASE_URL/
 ```
 项目根目录
 ├── public/                                 # 静态资源（可与 CDN 同步）
-│   ├── assets/...
-│   └── gacha-configs/...
+│   ├── assets/...                          # CDN 资源镜像
+│   ├── gacha-configs/...                   # 活动配置 JSON
+│   ├── lootbox/                            # 宝箱动画资源
+│   │   ├── lootboxtickets.spriteatlas/     # 宝箱图片集
+│   │   ├── 开箱.png                        # 开箱盖图层
+│   │   ├── 开箱时烟雾.png                  # 开箱烟雾特效
+│   │   ├── 烟雾.png                        # 烟雾释放特效
+│   │   └── la96_premium/                   # 音效文件
+│   └── 常驻奖励物品/                        # 常驻奖励图片
 │
 ├── src/
 │   ├── App.jsx                             # 路由与全局布局
@@ -269,15 +276,16 @@ CDN_BASE_URL/
 │   │   └── SquareItem.jsx                  # 方形展示组件
 │   │
 │   ├── pages/
-│   │   └── GachaPage.jsx                   # 抽卡页面容器
+│   │   ├── GachaPage.jsx                   # 抽卡页面容器
+│   │   └── LootboxAnimationDemo.jsx        # 宝箱开启动画测试页面
 │   │
 │   ├── hooks/
-│   │   ├── useActivityList.js
-│   │   ├── useGachaData.js
-│   │   └── useSound.js
+│   │   ├── useActivityList.js              # 活动列表加载
+│   │   ├── useGachaData.js                 # 抽卡数据管理
+│   │   └── useSound.js                     # 音效播放
 │   │
 │   ├── services/
-│   │   ├── cdnService.js                   # CDN 数据加载
+│   │   ├── cdnService.js                   # CDN 数据加载与URL构建
 │   │   └── gachaService.js                 # 抽卡逻辑与概率
 │   │
 │   ├── utils/
@@ -302,18 +310,22 @@ CDN_BASE_URL/
 
 1. **应用启动**
    - App.jsx 初始化路由
-   - Sidebar 加载 `index.json` 获取所有活动列表
+   - Sidebar 加载 `/gacha-configs/index.json` 获取所有活动列表
 
 2. **用户选择活动**
    - 点击侧边栏某个活动
-   - 路由跳转到 `/gacha/chip/2024-10-shadow-trade`
+   - 路由跳转到 `/gacha/chip/{activityId}`（例如：`/gacha/chip/ag97`）
 
 3. **加载活动配置**
    - GachaPage 根据路由参数加载对应 JSON 配置
-   - cdnService.js 从 CDN 获取配置文件
+   - cdnService.js 从本地 public 加载配置文件：`/gacha-configs/{type}/{activityId}.json`
 
 4. **动态渲染界面**
-   - 根据配置动态构建图片 URL（CDN_BASE_URL + assets.basePath + image）
+   - 通过 cdnService.js 的辅助函数构建图片 URL：
+     - `buildWidgetUrl()` - 活动卡片图
+     - `buildBackgroundUrl()` - 抽卡背景
+     - `buildItemImageUrl()` - 物品图片
+     - `buildCurrencyIconUrl()` - 货币图标
    - 使用配置中的概率、保底、物品数据等
 
 5. **抽卡交互**
@@ -329,38 +341,89 @@ CDN_BASE_URL/
 // App.jsx
 <BrowserRouter>
   <Routes>
-    <Route path="/" element={<Navigate to="/gacha/chip/2024-10-shadow-trade" />} />
+    <Route path="/" element={<Navigate to="/gacha/chip/ag97" replace />} />
+    <Route path="/test" element={<Navigate to="/test/lootbox-animation" replace />} />
+    <Route path="/test/lootbox-animation" element={<LootboxAnimationDemo />} />
     <Route path="/gacha/:type/:activityId" element={<GachaPage />} />
+    <Route path="*" element={<Navigate to="/gacha/chip/ag97" replace />} />
   </Routes>
 </BrowserRouter>
 ```
 
-示例路由：
-- `/gacha/chip/2024-10-shadow-trade` - 筹码类：暗影交易
-- `/gacha/chip/2024-09-xxx` - 筹码类：历史活动
-- `/gacha/cargo/2024-11-xxx` - 机密货物类
-- `/gacha/flagship/2024-12-xxx` - 旗舰宝箱类
+**路由说明：**
+- `/` - 默认重定向到最新活动（暗影交易 ag97）
+- `/gacha/:type/:activityId` - 抽卡页面主路由
+  - `:type` - 抽卡类型：`chip` / `cargo` / `flagship`
+  - `:activityId` - 活动ID（短格式，如：`ag97`, `lm25`, `pf25`）
+- `/test/lootbox-animation` - 宝箱开启动画测试页面
+
+**示例路由：**
+- `/gacha/chip/ag97` - 筹码类：暗影交易
+- `/gacha/chip/lm25` - 筹码类：漩涡之主
+- `/gacha/chip/pf25` - 筹码类：招财进宝
+- `/gacha/cargo/xxx` - 机密货物类（未来扩展）
+- `/gacha/flagship/xxx` - 旗舰宝箱类（未来扩展）
 
 ---
 
 ## 图片 URL 构建规则
 
+项目使用 `src/services/cdnService.js` 提供的辅助函数来构建图片 URL。所有资源优先从配置文件读取，若不存在则使用 `CDN_BASE_URL` 动态生成。
+
+### 核心辅助函数
+
 ```javascript
-// 示例：构建物品图片 URL
-const CDN_BASE_URL = 'https://your-cdn.com'
-const config = await loadConfig('2024-10-shadow-trade.json')
+import { buildWidgetUrl, buildBackgroundUrl, buildItemImageUrl, buildCurrencyIconUrl } from '@/services/cdnService'
 
-// 背景图
-const backgroundUrl = `${CDN_BASE_URL}${config.assets.basePath}/${config.assets.background}`
-// 结果: https://your-cdn.com/assets/chip/2024-10-shadow-trade/background.png
+// 1. 活动卡片图（Widget）
+const widgetUrl = buildWidgetUrl(activityConfig)
+// 优先级：config.metadata.image > config.image > 动态生成
+// 结果示例: https://cdn.com/assets/contentseparated_assets_activities/activity_gacha_ag97_widget.png
 
-// 物品图片
-const itemUrl = `${CDN_BASE_URL}${config.assets.basePath}/${item.image}`
-// 结果: https://your-cdn.com/assets/chip/2024-10-shadow-trade/items/item_001.png
+// 2. 抽卡背景图
+const backgroundUrl = buildBackgroundUrl(activityConfig)
+// 优先级：config.metadata.image > config.image > 动态生成
+// 结果示例: https://cdn.com/assets/contentseparated_assets_activities/activity_gacha_ag97_background.png
 
-// 商店图片
-const shopUrl = `${CDN_BASE_URL}${config.assets.basePath}/${pkg.image}`
-// 结果: https://your-cdn.com/assets/chip/2024-10-shadow-trade/shop/package_001.png
+// 3. 物品图片（根据稀有度和类型自动路由）
+const itemUrl = buildItemImageUrl(item, activityConfig)
+// - 货币(currency): /assets/.../currency/currency_gachacoins_{activityId}.png
+// - 战舰(epic/legendary): /assets/.../units_ships/{itemId}.png
+// - 涂装(epic/legendary): /assets/.../camouflages/{itemId}.png
+// - 武器类(epic/legendary): /assets/.../weapons/{itemId}.png
+// - 普通物品(common): /常驻奖励物品/{itemId}.png
+
+// 4. 货币图标
+const currencyUrl = buildCurrencyIconUrl(activityConfig)
+// 优先级：config.metadata.currency_gachacoins_image > config.currency_gachacoins_image > 动态生成
+```
+
+### 其他辅助函数
+
+```javascript
+import { buildInfoBackgroundUrl, buildResultBackgroundUrl, buildShopPackageUrl } from '@/services/cdnService'
+
+// 信息弹窗背景
+buildInfoBackgroundUrl(activityId)
+// /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_limited_background.png
+
+// 结果弹窗背景
+buildResultBackgroundUrl(activityId)
+// /assets/contentseparated_assets_activities/activity_gacha_{activityId}_widget.png
+
+// 商店套餐缩略图
+buildShopPackageUrl(activityId, packageId)
+// /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_{packageId+1}_thumbnail.png
+```
+
+### CDN_BASE_URL 配置
+
+```javascript
+// src/utils/constants.js
+export const CDN_BASE_URL = import.meta.env.VITE_CDN_BASE_URL || ''
+
+// 开发环境：VITE_CDN_BASE_URL = '' → 使用 public/ 目录
+// 生产环境：VITE_CDN_BASE_URL = 'https://your-cdn.com' → 使用 CDN
 ```
 
 ---
@@ -369,21 +432,38 @@ const shopUrl = `${CDN_BASE_URL}${config.assets.basePath}/${pkg.image}`
 
 ### 添加新活动
 
-1. 在 CDN 上传活动配置 JSON 和资源文件
-2. 在 `index.json` 添加活动索引
-3. 无需修改代码，直接通过侧边栏访问新活动
+1. 准备活动配置 JSON 文件和资源文件
+2. 将配置文件放到 `public/gacha-configs/{type}/{activityId}.json`
+3. 在 `public/gacha-configs/index.json` 添加活动索引
+4. 上传资源到 CDN 或放到 `public/assets/` 对应目录
+5. 无需修改代码，直接通过侧边栏访问新活动
+
+**活动ID命名规范：**
+- 使用短格式：`ag97`（暗影交易）、`lm25`（漩涡之主）
+- 避免使用日期格式（已废弃）
 
 ### 添加新抽卡类型
 
-1. 在 `src/components/` 创建新组件文件夹（如 `CargoGacha/`）
-2. 在 `GachaPage.jsx` 添加类型判断，渲染对应组件
-3. 在 CDN 创建对应类型的配置文件夹
+1. 在 `src/components/` 创建新组件文件夹（如 `CargoGacha/` 或 `FlagshipGacha/`）
+2. 在 `src/pages/GachaPage.jsx` 添加类型判断，渲染对应组件
+3. 在 `public/gacha-configs/` 创建对应类型的配置文件夹
+4. 在 `src/services/cdnService.js` 的 `GACHA_TYPE_MAP` 添加类型映射
+
+### 添加测试/演示页面
+
+1. 在 `src/pages/` 创建新页面组件（参考 `LootboxAnimationDemo.jsx`）
+2. 在 `src/App.jsx` 添加路由：
+   ```javascript
+   <Route path="/test/your-demo" element={<YourDemo />} />
+   ```
+3. 访问 `/test/your-demo` 查看效果
 
 ### 组件复用原则
 
-- 三种抽卡类型共享底层逻辑（services/gachaService.js）
+- 三种抽卡类型共享底层逻辑（`services/gachaService.js`）
 - 各自实现独特的 UI 展示
 - 通过配置文件控制差异（概率、保底机制等）
+- 所有图片URL构建统一使用 `cdnService.js` 辅助函数
 
 ---
 
