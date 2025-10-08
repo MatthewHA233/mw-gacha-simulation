@@ -27,7 +27,7 @@ export function Header({
     }
   }, [isModalOpen])
   // 动态生成货币图标 URL（优先使用activityConfig，fallback到activityId）
-  const currencyIconUrl = buildCurrencyIconUrl(activityConfig || activityId)
+  const currencyIconUrl = buildCurrencyIconUrl('currency_gachacoins', activityConfig || activityId)
   // 计算艺术硬币总数
   const getArtstormTotal = () => {
     let total = 0

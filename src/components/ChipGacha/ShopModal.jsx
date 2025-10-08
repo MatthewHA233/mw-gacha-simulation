@@ -7,7 +7,7 @@ import { buildCurrencyIconUrl } from '../../services/cdnService'
 export function ShopModal({ isOpen, onClose, shopPackages, onBuyPackage, onUpdateQuantity, activityConfig }) {
   if (!isOpen) return null
 
-  const currencyIconUrl = buildCurrencyIconUrl(activityConfig)
+  const currencyIconUrl = buildCurrencyIconUrl('currency_gachacoins', activityConfig)
 
   return (
     <motion.div
