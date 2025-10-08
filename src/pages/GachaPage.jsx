@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { Sidebar } from '../components/Layout/Sidebar'
 import { ChipGacha } from '../components/ChipGacha/ChipGacha'
@@ -10,6 +10,7 @@ import { ChipGacha } from '../components/ChipGacha/ChipGacha'
  */
 export function GachaPage() {
   const { type, activityId } = useParams()
+  const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sponsorModal, setSponsorModal] = useState(false)
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
@@ -54,11 +55,35 @@ export function GachaPage() {
           />
         )
       case 'cargo':
-        // 未来实现
-        return <div className="text-white">机密货物类抽卡（开发中）</div>
+        return (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-black">
+            <div className="text-center space-y-6">
+              <h1 className="text-white text-3xl md:text-4xl font-bold">机密货物类抽卡</h1>
+              <p className="text-white/60 text-lg md:text-xl">功能开发中，敬请期待...</p>
+              <button
+                onClick={() => navigate('/gacha/chip/ag97')}
+                className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg font-bold transition-colors"
+              >
+                返回主页
+              </button>
+            </div>
+          </div>
+        )
       case 'flagship':
-        // 未来实现
-        return <div className="text-white">旗舰宝箱类抽卡（开发中）</div>
+        return (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-black">
+            <div className="text-center space-y-6">
+              <h1 className="text-white text-3xl md:text-4xl font-bold">旗舰宝箱类抽卡</h1>
+              <p className="text-white/60 text-lg md:text-xl">功能开发中，敬请期待...</p>
+              <button
+                onClick={() => navigate('/gacha/chip/ag97')}
+                className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg font-bold transition-colors"
+              >
+                返回主页
+              </button>
+            </div>
+          </div>
+        )
       default:
         return (
           <ChipGacha

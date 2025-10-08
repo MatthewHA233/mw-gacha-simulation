@@ -35,10 +35,9 @@ CDN_BASE_URL/
 │
 └── assets/                                          # 抽卡所需的全部素材
     ├── contentseparated_assets_activities/          # 按活动 ID 区分的界面元素
-    │   ├── activity_gacha_{activityId}_background.png  # 筹码类/机密货物类抽卡背景
+    │   ├── activity_gacha_{activityId}_background.png  # 抽卡背景
     │   ├── activity_gacha_{activityId}_widget.png      # 筹码类/机密货物类活动卡片 & 抽卡结果面板
-    │   ├── lootbox_activity_{activityId}_background.png  # 旗舰宝箱类抽卡背景
-    │   └── lootbox_activity_{activityId}_widget.png      # 旗舰宝箱类活动卡片 & 抽卡结果面板
+    │   └── lootbox_activity_{activityId}_widget.png    # 旗舰宝箱类活动卡片（侧边栏展示）
     ├── contentseparated_assets_offers/              # 商店/弹窗相关资源
     │   ├── eventgachaoffer_{activityId}_limited_background.png     # 商店弹窗背景
     │   └── eventgachaoffer_{activityId}_{packageIndex}_thumbnail.png # 商店套餐缩略图（packageIndex = packageId + 1）
@@ -469,12 +468,7 @@ const widgetUrl = buildWidgetUrl(activityConfig)
 // 2. 抽卡背景图
 const backgroundUrl = buildBackgroundUrl(activityConfig)
 // 优先级：config.metadata.image > config.image > 动态生成
-// 动态生成规则（根据 gacha_type）：
-//   - 旗舰宝箱类: lootbox_activity_{activityId}_background.png
-//   - 其他类型: activity_gacha_{activityId}_background.png
-// 结果示例:
-//   - 筹码类: https://cdn.com/assets/contentseparated_assets_activities/activity_gacha_ag97_background.png
-//   - 旗舰宝箱类: https://cdn.com/assets/contentseparated_assets_activities/lootbox_activity_la96_background.png
+// 结果示例: https://cdn.com/assets/contentseparated_assets_activities/activity_gacha_ag97_background.png
 
 // 3. 物品图片（根据稀有度和类型自动路由）
 const itemUrl = buildItemImageUrl(item, activityConfig)
@@ -503,10 +497,8 @@ buildInfoBackgroundUrl(activityId)
 // /assets/contentseparated_assets_offers/eventgachaoffer_{activityId}_limited_background.png
 
 // 结果弹窗背景
-buildResultBackgroundUrl(activityIdOrConfig)
-// 动态生成规则（根据 gacha_type）：
-//   - 旗舰宝箱类: lootbox_activity_{activityId}_widget.png
-//   - 其他类型: activity_gacha_{activityId}_widget.png
+buildResultBackgroundUrl(activityId)
+// /assets/contentseparated_assets_activities/activity_gacha_{activityId}_widget.png
 
 // 商店套餐缩略图
 buildShopPackageUrl(activityId, packageId)
