@@ -37,8 +37,8 @@
       "name": "6 高级修理包",
       "probability": 12.5,
       "limit": 0,
-      "id": "PremiumRepairKit",
-      "type": "道具",
+      "id": "RepairKit",
+      "type": "资源",
       "rarity": "common"
     },
     {
@@ -123,7 +123,7 @@
       "name": "筹码",
       "probability": 4.06,
       "limit": 0,
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

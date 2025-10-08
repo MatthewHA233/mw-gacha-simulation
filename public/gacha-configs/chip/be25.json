@@ -63,7 +63,7 @@
       "name": "3 筹码",
       "probability": 2.53,
       "limit": 0,
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     },
@@ -80,10 +80,10 @@
       "name": "战争之犬",
       "probability": 1.0,
       "limit": 1,
-      "id": "Camo_WarDogs",
-      "type": "涂装",
+      "id": "Title_WarDog",
+      "type": "头衔",
       "rarity": "legendary",
-      "nameEn": "War Dogs"
+      "nameEn": "War Dog"
     },
     {
       "name": "15 黄金",
@@ -123,7 +123,7 @@
       "name": "筹码",
       "probability": 6.0,
       "limit": 0,
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

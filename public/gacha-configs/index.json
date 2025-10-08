@@ -15,6 +15,13 @@
       "nameEn": "Contraband Hunt"
     },
     {
+      "id": "la96",
+      "gacha_type": "旗舰宝箱类",
+      "name": "头奖行动",
+      "formattedDate": "2025年9月",
+      "nameEn": "Operation Jackpot"
+    },
+    {
       "id": "fw25",
       "gacha_type": "筹码类",
       "name": "梦幻之战",
@@ -22,25 +29,42 @@
       "nameEn": "Fantasy Warfare"
     },
     {
+      "id": "hp25",
+      "gacha_type": "旗舰宝箱类",
+      "name": "荣耀之力",
+      "formattedDate": "2025年8月",
+      "nameEn": "Honor and Power"
+    },
+    {
       "id": "lm25",
       "gacha_type": "筹码类",
       "name": "漩涡之主",
       "formattedDate": "2025年7月",
-      "nameEn": "Lords of the Maelstrom"
+      "nameEn": "Lords of the Maelstrom",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_lm25.webp?v=bf7e26c1"
+    },
+    {
+      "id": "sf25",
+      "gacha_type": "旗舰宝箱类",
+      "name": "舰队之星",
+      "formattedDate": "2025年7月",
+      "nameEn": "Stars of the Fleet"
     },
     {
       "id": "ms25",
       "gacha_type": "筹码类",
       "name": "黑帮之影",
       "formattedDate": "2025年6月",
-      "nameEn": "Mafia's Shadow"
+      "nameEn": "Mafia's Shadow",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_ms25.webp?v=81603138"
     },
     {
       "id": "rf25",
       "gacha_type": "筹码类",
       "name": "狂怒律动",
       "formattedDate": "2025年5月",
-      "nameEn": "Rhythm of Fury"
+      "nameEn": "Rhythm of Fury",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_rf25.webp?v=37f64842"
     },
     {
       "id": "pf25",
@@ -48,7 +72,8 @@
       "name": "招财进宝",
       "formattedDate": "2025年2月",
       "nameEn": "Pursuit of Fortune",
-      "image": "https://mwstats.info/images/gacha-preview/gacha_c_pf25.jpg?v=6993bfbd"
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_pf25.jpg?v=6993bfbd",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_pf25.webp?v=8cacbb22"
     },
     {
       "id": "be25",
@@ -64,7 +89,8 @@
       "name": "抽奖",
       "formattedDate": "2024年11月",
       "nameEn": "Prize Draw",
-      "image": "https://mwstats.info/images/gacha-preview/gacha_c_bf24.jpg?v=87a5be7f"
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_bf24.jpg?v=87a5be7f",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bf24.webp?v=40bbfdc8"
     },
     {
       "id": "cc24",
@@ -72,7 +98,8 @@
       "name": "混乱嘉年华",
       "formattedDate": "2024年10月",
       "nameEn": "Carnival of Chaos",
-      "image": "https://mwstats.info/images/gacha-preview/gacha_c_cc24.jpg?v=52e25ddd"
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_cc24.jpg?v=52e25ddd",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_cc24.webp?v=1d21ba87"
     }
   ]
 }

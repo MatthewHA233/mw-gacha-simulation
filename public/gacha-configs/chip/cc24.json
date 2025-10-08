@@ -64,7 +64,7 @@
       "name": "3 筹码",
       "probability": 2.53,
       "limit": 0,
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     },
@@ -124,7 +124,7 @@
       "name": "筹码",
       "probability": 6.0,
       "limit": 0,
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

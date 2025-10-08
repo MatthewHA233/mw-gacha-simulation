@@ -41,7 +41,7 @@
     },
     {
       "name": "1 筹码",
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common",
       "probability": 4.0,

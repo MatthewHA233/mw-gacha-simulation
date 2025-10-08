@@ -1,0 +1,390 @@
+{
+  "id": "sf25",
+  "gacha_type": "旗舰宝箱类",
+  "metadata": {
+    "name": "舰队之星",
+    "formattedDate": "2025年7月",
+    "nameEn": "Stars of the Fleet"
+  },
+  "lootboxes": [
+    {
+      "type": "container",
+      "metadata": {
+        "name": "宝箱"
+      },
+      "items": [
+        {
+          "name": "雅克-141\"自由\"",
+          "probability": 0.4,
+          "limit": 1,
+          "id": "Yak141",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Yak-141 Freestyle"
+        },
+        {
+          "name": "9K720\"伊斯坎德尔\"",
+          "probability": 0.4,
+          "limit": 1,
+          "id": "Iskander",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "9K720 Iskander"
+        },
+        {
+          "name": "A-222\"海岸\"(130 mm)",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "A222Bereg",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "A-222 Bereg (130mm)"
+        },
+        {
+          "name": "6 旗舰钥匙",
+          "probability": 1.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "幽灵来客",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "Camo_SpectralGuest",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Spectral Guest"
+        },
+        {
+          "name": "狂战士",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "Camo_Berserker",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Berserker"
+        },
+        {
+          "name": "3 旗舰钥匙",
+          "probability": 3.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "自豪舰长",
+          "probability": 5.0,
+          "limit": 1,
+          "id": "AvatarPortrait_ProudAdmiral",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "A Proud Captain"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "2 旗舰钥匙",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "统御旗帜",
+          "probability": 6.0,
+          "limit": 3,
+          "id": "Flag_AnchorTorpedo",
+          "type": "旗帜",
+          "rarity": "epic",
+          "nameEn": "Banner of Dominance"
+        },
+        {
+          "name": "10 钥匙",
+          "probability": 6.0,
+          "limit": 0,
+          "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 升级芯片",
+          "probability": 9.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 烟幕",
+          "probability": 9.7,
+          "limit": 0,
+          "id": "TankSmokeBombs",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 10.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 000 美金",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "100 导弹诱饵",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "",
+          "type": "道具",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "flagship",
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "items": [
+        {
+          "name": "[俄]莫斯科",
+          "probability": 0.09,
+          "limit": 1,
+          "id": "Moscow",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "RF Moscow"
+        },
+        {
+          "name": "[俄]22350M型",
+          "probability": 0.09,
+          "limit": 1,
+          "id": "Project22350M",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Project 22350M"
+        },
+        {
+          "name": "[俄]喀琅施塔得",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Kronshtadt",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "RF Kronshtadt"
+        },
+        {
+          "name": "SP-12\"游隼\"",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "SP12",
+          "type": "无人机",
+          "rarity": "legendary",
+          "nameEn": "SP-12 Sapsan"
+        },
+        {
+          "name": "[俄]伊萨科夫海军上将",
+          "probability": 0.11,
+          "limit": 1,
+          "id": "AdmiralIsakov",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "RF Admiral Isakov"
+        },
+        {
+          "name": "[中]共青团员(1164E型)",
+          "probability": 0.11,
+          "limit": 1,
+          "id": "Project2164E",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN Project 1164E"
+        },
+        {
+          "name": "[俄]刻赤(1134BM型)",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "Kerch",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Kerch (1134-BM)"
+        },
+        {
+          "name": "[俄]巴辛斯蒂海军上将",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "AdmiralBasisty",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Admiral Basisty"
+        },
+        {
+          "name": "[俄]别尔哥罗德(K-329)",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "K239Belgorod",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Belgorod (K-329)"
+        },
+        {
+          "name": "苏-37\"终结者\"",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "SU37",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Su-37 Terminator"
+        },
+        {
+          "name": "米格-41M\"超级管鼻鸌\"",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "MIG41M",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "MiG-41M Super Fulmar"
+        },
+        {
+          "name": "海之泰坦",
+          "probability": 2.5,
+          "limit": 1,
+          "id": "Title_SF25LootboxActivity",
+          "type": "头衔",
+          "rarity": "epic",
+          "nameEn": "Titan of the Seas"
+        },
+        {
+          "name": "130 艺术硬币",
+          "probability": 3.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "400 黄金",
+          "probability": 4.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "75 艺术硬币",
+          "probability": 6.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "250 黄金",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "10 机载电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "AirElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级鱼雷诱饵",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "15 电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "15 引擎过载",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级修理包",
+          "probability": 7.6,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "15 高级导弹诱饵",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级机载导弹诱饵",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 烟幕",
+          "probability": 8.9,
+          "limit": 0,
+          "id": "TankSmokeBombs",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "600 000 美金",
+          "probability": 9.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

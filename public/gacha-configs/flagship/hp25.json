@@ -1,0 +1,390 @@
+{
+  "id": "hp25",
+  "gacha_type": "旗舰宝箱类",
+  "metadata": {
+    "name": "荣耀之力",
+    "formattedDate": "2025年8月",
+    "nameEn": "Honor and Power"
+  },
+  "lootboxes": [
+    {
+      "type": "container",
+      "metadata": {
+        "name": "宝箱"
+      },
+      "items": [
+        {
+          "name": "彩虹-7",
+          "probability": 0.25,
+          "limit": 1,
+          "id": "CH7Rainbow",
+          "type": "无人机",
+          "rarity": "epic",
+          "nameEn": "CH-7 Rainbow"
+        },
+        {
+          "name": "URWS (30 mm)",
+          "probability": 0.4,
+          "limit": 2,
+          "id": "URWS",
+          "type": "自卫炮",
+          "rarity": "legendary",
+          "nameEn": "URWS (30 mm)"
+        },
+        {
+          "name": "相控阵1130",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "Type1130AESA",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "Type 1130 AESA (30 mm)"
+        },
+        {
+          "name": "6 旗舰钥匙",
+          "probability": 1.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "勇士数码迷彩",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "Camo_MightofHonor",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Pixels of Valor"
+        },
+        {
+          "name": "3 旗舰钥匙",
+          "probability": 3.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 4.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "勇士徽章",
+          "probability": 4.5,
+          "limit": 2,
+          "id": "Flag_ValiantInsignia",
+          "type": "旗帜",
+          "rarity": "epic",
+          "nameEn": "Valiant Insignia"
+        },
+        {
+          "name": "雷宇",
+          "probability": 5.0,
+          "limit": 1,
+          "id": "AvatarPortrait_HP25LootboxFemale",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Lei Yu"
+        },
+        {
+          "name": "周凯",
+          "probability": 5.0,
+          "limit": 1,
+          "id": "AvatarPortrait_HP25LootboxMale",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Zhou Kai"
+        },
+        {
+          "name": "2 旗舰钥匙",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "10 钥匙",
+          "probability": 6.0,
+          "limit": 0,
+          "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 升级芯片",
+          "probability": 8.15,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "15 高级导弹诱饵",
+          "probability": 9.7,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 10.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 000 美金",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "100 导弹诱饵",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "",
+          "type": "道具",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "flagship",
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "items": [
+        {
+          "name": "[中]利刃",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "Liren",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN Liren"
+        },
+        {
+          "name": "[中]华清(BBE-01)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Huaqing",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN Huaqing (BBE-01)"
+        },
+        {
+          "name": "[中]十堰",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "ShiYan",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN ShiYan"
+        },
+        {
+          "name": "彩虹-4",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "CH4Rainbow",
+          "type": "无人机",
+          "rarity": "epic",
+          "nameEn": "CH-4 Rainbow"
+        },
+        {
+          "name": "[中]承影",
+          "probability": 0.11,
+          "limit": 1,
+          "id": "Chengying",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN Chengying"
+        },
+        {
+          "name": "[中]漯河(054B型)",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "Type054B",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 054B"
+        },
+        {
+          "name": "[中]达州(052DM型)",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "Type052DM",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 052DM Dazhou"
+        },
+        {
+          "name": "[中]中船探索01(07X型)",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "07X",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN 07X"
+        },
+        {
+          "name": "[中]四川(076型)",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "Type076",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 076 Sichuan"
+        },
+        {
+          "name": "SR-5 122/300",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "SR5",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "SR-5 122/300"
+        },
+        {
+          "name": "[西飞]轰-10\"太阳黑子\"",
+          "probability": 1.5,
+          "limit": 2,
+          "id": "H10",
+          "type": "轰炸机",
+          "rarity": "epic",
+          "nameEn": "Xian H-10"
+        },
+        {
+          "name": "胜利黎明",
+          "probability": 2.5,
+          "limit": 1,
+          "id": "Camo_HP25Lootbox",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Dawn of Victory"
+        },
+        {
+          "name": "130 艺术硬币",
+          "probability": 3.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "400 黄金",
+          "probability": 4.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "75 艺术硬币",
+          "probability": 6.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "40 升级芯片",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "10 机载电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "AirElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级鱼雷诱饵",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "15 电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "15 引擎过载",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级修理包",
+          "probability": 7.6,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "15 高级导弹诱饵",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级机载导弹诱饵",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "10 烟幕",
+          "probability": 8.9,
+          "limit": 0,
+          "id": "TankSmokeBombs",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "600 000 美金",
+          "probability": 9.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}
