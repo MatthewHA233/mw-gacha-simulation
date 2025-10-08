@@ -247,11 +247,37 @@ CDN_BASE_URL/
       "name": "筹码",
       "probability": 4.0,
       "limit": 0,
-      "id": "currency",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }
   ]
+}
+```
+
+### 货币类物品说明
+
+货币类物品使用特殊的 ID 命名规则，以 `currency_` 开头：
+
+- **筹码**：`currency_gachacoins`
+- **旗舰钥匙**：`currency_premium_lootboxkey`
+- **其他货币类型**：`currency_{type}`
+
+**图片URL构建规则**：
+```
+{currencyId}_{activityId}.png
+例如：
+- currency_gachacoins_ag97.png（ag97 活动的筹码）
+- currency_premium_lootboxkey_la97.png（la97 活动的旗舰钥匙）
+```
+
+**配置文件中的外部图片字段**：
+```json
+{
+  "metadata": {
+    "currency_gachacoins_image": "https://外部CDN/currency_gachacoins_ag97.webp",
+    "currency_premium_lootboxkey_image": "https://外部CDN/currency_premium_lootboxkey_la97.webp"
+  }
 }
 ```
 
@@ -440,15 +466,19 @@ const backgroundUrl = buildBackgroundUrl(activityConfig)
 
 // 3. 物品图片（根据稀有度和类型自动路由）
 const itemUrl = buildItemImageUrl(item, activityConfig)
-// - 货币(currency): /assets/.../currency/currency_gachacoins_{activityId}.png
+// - 货币类(id以currency_开头): /assets/.../currency/{currencyId}_{activityId}.png
+//   - 筹码: currency_gachacoins_ag97.png
+//   - 旗舰钥匙: currency_premium_lootboxkey_la97.png
 // - 战舰(epic/legendary): /assets/.../units_ships/{itemId}.png
 // - 涂装(epic/legendary): /assets/.../camouflages/{itemId}.png
 // - 武器类(epic/legendary): /assets/.../weapons/{itemId}.png
 // - 普通物品(common): /assets/common-items/{itemId}.png
 
-// 4. 货币图标
-const currencyUrl = buildCurrencyIconUrl(activityConfig)
-// 优先级：config.metadata.currency_gachacoins_image > config.currency_gachacoins_image > 动态生成
+// 4. 货币图标（支持多种货币类型）
+const currencyUrl = buildCurrencyIconUrl(currencyId, activityConfig)
+// 参数：currencyId（如：currency_gachacoins, currency_premium_lootboxkey）
+// 优先级：config.metadata.{currencyId}_image > config.{currencyId}_image > 动态生成
+// 动态生成格式：{currencyId}_{activityId}.png
 ```
 
 ### 其他辅助函数

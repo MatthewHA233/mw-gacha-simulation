@@ -439,8 +439,8 @@ export function ChipGacha({
 
   // ========== 辅助函数：提取筹码数量 ==========
   const extractCurrencyAmount = (item) => {
-    // 通过 id 判断是否为筹码
-    if (item.id === 'currency') {
+    // 通过 id 判断是否为货币类物品（以 currency_ 开头）
+    if (item.id.startsWith('currency_')) {
       // 从名称中提取数量，如 "1 筹码" → 1, "3 筹码" → 3, "筹码" → 1
       const match = item.name.match(/^(\d+)\s*筹码/)
       return match ? parseInt(match[1]) : 1 // 默认为 1

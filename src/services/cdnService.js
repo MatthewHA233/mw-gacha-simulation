@@ -147,24 +147,27 @@ export function buildResultBackgroundUrl(activityId) {
 
 /**
  * 构建货币图标 URL
+ * @param {string} currencyId - 货币ID（如：currency_gachacoins, currency_premium_lootboxkey）
  * @param {string|Object} activityIdOrConfig - 活动ID 或活动配置对象
  * @returns {string} 货币图标 URL
  */
-export function buildCurrencyIconUrl(activityIdOrConfig) {
+export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
   // 如果传入的是对象
   if (typeof activityIdOrConfig === 'object') {
-    // 优先使用 metadata.currency_gachacoins_image
-    if (activityIdOrConfig?.metadata?.currency_gachacoins_image) {
-      return activityIdOrConfig.metadata.currency_gachacoins_image
+    // 优先使用 metadata.{currencyId}_image（如：currency_gachacoins_image）
+    const imageKey = `${currencyId}_image`
+    if (activityIdOrConfig?.metadata?.[imageKey]) {
+      return activityIdOrConfig.metadata[imageKey]
     }
-    // 其次使用顶层 currency_gachacoins_image
-    if (activityIdOrConfig?.currency_gachacoins_image) {
-      return activityIdOrConfig.currency_gachacoins_image
+    // 其次使用顶层 {currencyId}_image
+    if (activityIdOrConfig?.[imageKey]) {
+      return activityIdOrConfig[imageKey]
     }
   }
-  // 否则使用动态路由
+  // 动态生成：{currencyId}_{activityId}.png
+  // 例如：currency_gachacoins_ag97.png, currency_premium_lootboxkey_la97.png
   const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/currency_gachacoins_${activityId}.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png`
 }
 
 /**
@@ -186,9 +189,10 @@ export function buildShopPackageUrl(activityId, packageId) {
 export function buildItemImageUrl(item, activityIdOrConfig) {
   if (!item.id) return null
 
-  // 特殊情况：货币（筹码）- 传递完整的配置对象或ID
-  if (item.id === 'currency') {
-    return buildCurrencyIconUrl(activityIdOrConfig)
+  // 特殊情况：货币类物品（以 currency_ 开头）
+  // 例如：currency_gachacoins（筹码）、currency_premium_lootboxkey（旗舰钥匙）
+  if (item.id.startsWith('currency_')) {
+    return buildCurrencyIconUrl(item.id, activityIdOrConfig)
   }
 
   // 提取 activityId（用于其他类型的动态路径）
