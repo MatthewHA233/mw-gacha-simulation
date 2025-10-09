@@ -14,8 +14,36 @@ function getStorageKey(activityId) {
 
 /**
  * 获取活动的初始状态
+ * @param {string} gachaType - 抽卡类型：'筹码类' 或 '旗舰宝箱类'
  */
-export function getDefaultGameState() {
+export function getDefaultGameState(gachaType = '筹码类') {
+  if (gachaType === '旗舰宝箱类') {
+    return {
+      currency: 30,
+      currencyName: "旗舰钥匙",
+      commonCurrency: 0, // 普通宝箱钥匙（初始为0）
+      rmb: -25,
+      singleCost: 10,
+      // 旗舰宝箱数据
+      totalDraws: 0,
+      legendaryCount: 0,
+      epicCount: 0,
+      rareCount: 0,
+      history: [],
+      epicLegendaryHistory: [],
+      items: [],
+      // 普通宝箱数据（使用 _else 尾缀）
+      totalDraws_else: 0,
+      legendaryCount_else: 0,
+      epicCount_else: 0,
+      rareCount_else: 0,
+      history_else: [],
+      epicLegendaryHistory_else: [],
+      items_else: []
+    }
+  }
+
+  // 筹码类默认
   return {
     currency: 40,
     currencyName: "筹码",
