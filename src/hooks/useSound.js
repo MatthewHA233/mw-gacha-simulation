@@ -2,7 +2,7 @@ import { CDN_BASE_URL } from '../utils/constants'
 
 /**
  * 音效播放 Hook
- * @returns {Function} playSound - 播放音效的函数
+ * @returns {Object} 音效播放函数集合
  */
 export function useSound() {
   const playSound = (soundName) => {
@@ -17,5 +17,15 @@ export function useSound() {
     }
   }
 
-  return playSound
+  // 普通按钮点击音效
+  const playButtonClick = () => {
+    playSound('Button_01_UI.Button_01_UI.wav')
+  }
+
+  // 抽卡按钮点击音效
+  const playGachaClick = () => {
+    playSound('Button_02_UI.Button_02_UI.wav')
+  }
+
+  return { playSound, playButtonClick, playGachaClick }
 }
