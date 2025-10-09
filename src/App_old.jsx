@@ -1536,7 +1536,7 @@ function App() {
                   <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-500" />
                   <div className="relative bg-white p-3 rounded-xl">
                     <img
-                      src={`${CDN_BASE_URL}/assets/common-items/payment-qr.png`}
+                      src={`${CDN_BASE_URL}/assets/ui-common/payment-qr.png`}
                       alt="收款码"
                       className="w-40 h-40 md:w-48 md:h-48 object-contain"
                     />
