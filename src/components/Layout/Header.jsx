@@ -3,6 +3,7 @@ import { CDN_BASE_URL } from '../../utils/constants'
 import { buildCurrencyIconUrl } from '../../services/cdnService'
 import { useEffect } from 'react'
 import { useSound } from '../../hooks/useSound'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -23,6 +24,7 @@ export function Header({
   isModalOpen = false
 }) {
   const { playButtonClick } = useSound()
+  const navigate = useNavigate()
 
   // 当弹窗打开时，自动收缩侧边栏
   useEffect(() => {
@@ -150,6 +152,29 @@ export function Header({
               </svg>
             )}
           </motion.button>
+
+          {/* 武库舰抽奖链接 - 只在主页(ag97)显示 */}
+          {activityId === 'ag97' && (
+            <motion.button
+              onClick={() => {
+                playButtonClick();
+                navigate('/gacha/flagship/la96');
+              }}
+              className="p-[2px] relative"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg" />
+              <div className="px-2 py-1 md:px-3 md:py-1.5 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent flex items-center gap-1.5 md:gap-2">
+                <img
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/units_ships/Monitor.png`}
+                  alt="武库舰"
+                  className="w-7 h-7 md:w-10 md:h-10 object-contain"
+                />
+                <span className="text-xs md:text-sm font-bold">武库舰抽奖已上线！</span>
+              </div>
+            </motion.button>
+          )}
 
           {/* 标题 */}
           <div>
