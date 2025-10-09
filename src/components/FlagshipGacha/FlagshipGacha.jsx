@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
+import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
 import { loadActivityConfig, buildItemImageUrl } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
@@ -81,6 +82,12 @@ export function FlagshipGacha({
 
   // 用于防止初始加载时触发保存
   const isInitialLoad = useRef(true)
+
+  // ========== 里程碑追踪 ==========
+  const { resetMilestones } = useMilestoneTracker(
+    gameState.rmb,
+    `flagship_${activityId}`
+  )
 
   // 商店套餐数据（旗舰钥匙）
   const [shopPackages, setShopPackages] = useState([
@@ -1055,6 +1062,9 @@ export function FlagshipGacha({
     // 清除 localStorage
     clearGameState(activityId)
 
+    // 重置里程碑
+    resetMilestones()
+
     // 重置状态，保留物品列表但清零obtained
     setGameState(prev => {
       const defaultState = getDefaultGameState('旗舰宝箱类')
@@ -1107,6 +1117,24 @@ export function FlagshipGacha({
 
     // 清除所有 localStorage
     clearAllGameStates()
+
+    // 清除所有活动的里程碑记录
+    try {
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && key.endsWith('_milestones')) {
+          keysToRemove.push(key)
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key))
+      console.log(`[里程碑] 已清除 ${keysToRemove.length} 个活动的里程碑记录`)
+    } catch (error) {
+      console.error('Failed to clear milestone data:', error)
+    }
+
+    // 重置当前活动的里程碑（清空内存状态）
+    resetMilestones()
 
     // 重置当前状态，保留物品列表但清零obtained
     setGameState(prev => {

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
+import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
 import { buildShopPackageUrl, buildItemImageUrl, buildBackgroundUrl, loadActivityConfig } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
@@ -41,6 +42,12 @@ export function ChipGacha({
 
   // 用于防止初始加载时触发保存
   const isInitialLoad = useRef(true)
+
+  // ========== 里程碑追踪 ==========
+  const { resetMilestones } = useMilestoneTracker(
+    gameState.rmb,
+    `chip_${activityId}`
+  )
 
   // 从 JSON 配置加载物品数据和活动配置
   useEffect(() => {
@@ -190,6 +197,9 @@ export function ChipGacha({
     // 清除 localStorage
     clearGameState(activityId)
 
+    // 重置里程碑
+    resetMilestones()
+
     // 重置状态为默认值（保留items配置）
     setGameState(prev => ({
       ...getDefaultGameState(),
@@ -238,6 +248,24 @@ export function ChipGacha({
 
     // 清除所有 localStorage 数据
     clearAllGameStates()
+
+    // 清除所有活动的里程碑记录
+    try {
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && key.endsWith('_milestones')) {
+          keysToRemove.push(key)
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key))
+      console.log(`[里程碑] 已清除 ${keysToRemove.length} 个活动的里程碑记录`)
+    } catch (error) {
+      console.error('Failed to clear milestone data:', error)
+    }
+
+    // 重置当前活动的里程碑（清空内存状态）
+    resetMilestones()
 
     // 重置当前活动状态
     setGameState(prev => ({
