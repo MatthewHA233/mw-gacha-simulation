@@ -75,7 +75,8 @@ export function FlagshipGacha({
     isGenerating: false,
     isPaused: false,
     isComplete: false,
-    processedIndex: 0
+    processedIndex: 0,
+    canSkip: false  // 是否可以双击快进
   })
 
   // 用于防止初始加载时触发保存
@@ -323,6 +324,17 @@ export function FlagshipGacha({
     return 0
   }
 
+  // 计算剩余的史诗/传说物品数量
+  const getRemainingEpicLegendaryCount = (allItems, currentIndex) => {
+    let count = 0
+    for (let i = currentIndex; i < allItems.length; i++) {
+      if (allItems[i].rarity === 'epic' || allItems[i].rarity === 'legendary') {
+        count++
+      }
+    }
+    return count
+  }
+
   // 逐个显示物品
   const progressivelyShowItems = (allItems, drawType) => {
     stopAnimationRef.current = false // 重置停止标志
@@ -372,10 +384,15 @@ export function FlagshipGacha({
           newDisplayedItems = [...epicLegendary, ...remainingOthers]
         }
 
+        // 检查剩余的史诗/传说物品数量
+        const remainingCount = getRemainingEpicLegendaryCount(allItems, currentIndex + 1)
+        const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingCount <= 1
+
         return {
           ...prev,
           displayedItems: newDisplayedItems,
-          processedIndex: currentIndex + 1
+          processedIndex: currentIndex + 1,
+          canSkip
         }
       })
 
@@ -456,10 +473,15 @@ export function FlagshipGacha({
           newDisplayedItems = [...epicLegendary, ...remainingOthers]
         }
 
+        // 检查剩余的史诗/传说物品数量
+        const remainingCount = getRemainingEpicLegendaryCount(allItems, index + 1)
+        const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingCount <= 1
+
         return {
           ...prev,
           displayedItems: newDisplayedItems,
-          processedIndex: index + 1
+          processedIndex: index + 1,
+          canSkip
         }
       })
 
@@ -482,6 +504,8 @@ export function FlagshipGacha({
 
   // 快进到下一个史诗/传说物品或结束
   const skipToNext = () => {
+    // 只有在可以快进时才执行（剩余史诗/传说物品 ≤ 1）
+    if (!resultModal.canSkip) return
     if (!resultModal.isGenerating || resultModal.isPaused) return
 
     // 停止当前的动画流程
@@ -681,10 +705,15 @@ export function FlagshipGacha({
           isGenerating: false,
           isPaused: false,
           isComplete: true,
-          processedIndex: 1
+          processedIndex: 1,
+          canSkip: false
         })
       } else {
         console.log('[FlagshipGacha] 显示多抽结果弹窗')
+        // 计算初始剩余的史诗/传说物品数量
+        const initialRemainingCount = getRemainingEpicLegendaryCount(resultsWithDrawNum, 0)
+        const initialCanSkip = (drawType === 'multi100' || drawType === 'multi500') && initialRemainingCount <= 1
+
         setResultModal({
           show: true,
           items: resultsWithDrawNum,
@@ -694,7 +723,8 @@ export function FlagshipGacha({
           isGenerating: true,
           isPaused: false,
           isComplete: false,
-          processedIndex: 0
+          processedIndex: 0,
+          canSkip: initialCanSkip
         })
 
         setTimeout(() => {
@@ -1057,7 +1087,8 @@ export function FlagshipGacha({
       isGenerating: false,
       isPaused: false,
       isComplete: false,
-      processedIndex: 0
+      processedIndex: 0,
+      canSkip: false
     })
 
     setResetModal(false)
@@ -1109,7 +1140,8 @@ export function FlagshipGacha({
       isGenerating: false,
       isPaused: false,
       isComplete: false,
-      processedIndex: 0
+      processedIndex: 0,
+      canSkip: false
     })
 
     setConfirmModal(false)

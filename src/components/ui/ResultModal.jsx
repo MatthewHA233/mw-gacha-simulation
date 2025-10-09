@@ -28,8 +28,9 @@ export function ResultModal({
     const now = Date.now()
     const timeSinceLastClick = now - lastClickTime.current
 
-    // 双击检测：只在 multi100 和 multi500 时启用
-    if ((resultModal.drawType === 'multi100' || resultModal.drawType === 'multi500') &&
+    // 双击检测：只在 multi100 和 multi500 时启用，且只有剩余史诗/传说物品 ≤ 1 时才允许
+    if (resultModal.canSkip &&
+        (resultModal.drawType === 'multi100' || resultModal.drawType === 'multi500') &&
         resultModal.isGenerating &&
         !resultModal.isPaused &&
         timeSinceLastClick < 300) { // 300ms 内的连续点击视为双击
@@ -77,6 +78,21 @@ export function ResultModal({
       }}
       onClick={handleClick}
     >
+      {/* 双击快进提示 - 只在可以快进时显示 */}
+      {resultModal.canSkip && resultModal.isGenerating && !resultModal.isPaused && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50"
+        >
+          <div className="bg-black/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg border border-amber-500/50 shadow-lg">
+            <p className="text-sm md:text-base font-medium whitespace-nowrap">
+              双击空白区域快进至下一个稀有奖励
+            </p>
+          </div>
+        </motion.div>
+      )}
       {/* 物品展示区域 - 小屏手机 */}
       <div className="sm:hidden h-full flex items-center justify-center p-2 translate-y-[11px]">
         {resultModal.drawType === 'single' ? (
