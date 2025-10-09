@@ -4,7 +4,7 @@ import { buildLootboxTicketUrl } from '../../services/cdnService'
  * 旗舰宝箱选择器组件
  * 显示4个宝箱选项（2x2布局）
  */
-export function LootboxSelector({ activityId, selectedType, onSelect }) {
+export function LootboxSelector({ activityId, selectedType, onSelect, isScrolling = false }) {
   const lootboxes = [
     {
       type: 'common',
@@ -29,7 +29,12 @@ export function LootboxSelector({ activityId, selectedType, onSelect }) {
   ]
 
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className="flex flex-col gap-4 transition-opacity duration-500"
+      style={{
+        opacity: isScrolling ? 0 : 1
+      }}
+    >
       {/* 第一排：常驻宝箱 */}
       <div className="flex gap-4">
         {lootboxes.slice(0, 2).map((lootbox) => {

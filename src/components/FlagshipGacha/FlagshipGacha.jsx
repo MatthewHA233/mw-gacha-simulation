@@ -8,6 +8,7 @@ import { HeaderSpacer } from '../Layout/HeaderSpacer'
 import { LootboxSelector } from './LootboxSelector'
 import { LootboxAnimation } from './LootboxAnimation'
 import { LootboxRewardBar } from './LootboxRewardBar'
+import { LootboxItemGrid } from './LootboxItemGrid'
 import { ResultModal } from '../ui/ResultModal'
 import { ShopModal } from '../ChipGacha/ShopModal'
 import { HistoryModal } from '../ChipGacha/HistoryModal'
@@ -1061,18 +1062,24 @@ export function FlagshipGacha({
       />
 
       {/* 主内容区域 */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-12">
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 md:px-12">
         {/* 左上角：宝箱选择器 */}
-        <div className="absolute top-8 left-8">
+        <div className="absolute top-4 md:top-8 left-2 md:left-8 scale-[0.65] md:scale-100 origin-top-left">
           <LootboxSelector
             activityId={activityId}
             selectedType={selectedLootboxType}
             onSelect={setSelectedLootboxType}
+            isScrolling={isScrolling}
           />
         </div>
 
+        {/* 右上角：物品展示栏 */}
+        <div className="absolute top-4 md:top-8 right-2 md:right-8 w-64 scale-[0.65] md:scale-100 origin-top-right">
+          <LootboxItemGrid items={getCurrentItems()} isScrolling={isScrolling} />
+        </div>
+
         {/* 中间：宝箱动画区域 */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center scale-50 md:scale-100">
           <LootboxAnimation
             ref={lootboxAnimationRef}
             activityId={activityId}
@@ -1083,18 +1090,18 @@ export function FlagshipGacha({
         </div>
 
         {/* 底部：抽奖按钮/滚动条区域 */}
-        <div className="relative w-full mt-12 flex justify-center items-center" style={{ minHeight: '112px' }}>
+        <div className="relative w-full -mt-16 md:mt-12 flex justify-center items-center" style={{ minHeight: '112px' }}>
           {/* 抽奖按钮组 */}
           {!isScrolling && (
-            <div className="flex gap-8">
+            <div className="flex flex-wrap gap-2 md:gap-8 justify-center">
               {/* 抽奖 x1 */}
               <button
                 onClick={() => handleButtonClick(handleSingleDraw)}
                 disabled={isAnimating}
-                className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
                   抽奖 ×1
                 </span>
               </button>
@@ -1103,10 +1110,10 @@ export function FlagshipGacha({
               <button
                 onClick={() => handleButtonClick(handleMultiDraw)}
                 disabled={isAnimating}
-                className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
                   抽奖 ×10
                 </span>
               </button>
@@ -1115,10 +1122,10 @@ export function FlagshipGacha({
               <button
                 onClick={() => handleButtonClick(handleDraw100)}
                 disabled={isAnimating}
-                className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
                   抽奖 ×100
                 </span>
               </button>
@@ -1127,10 +1134,10 @@ export function FlagshipGacha({
               <button
                 onClick={() => handleButtonClick(handleDraw500)}
                 disabled={isAnimating}
-                className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
                   抽奖 ×500
                 </span>
               </button>
