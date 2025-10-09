@@ -160,7 +160,7 @@
           "name": "100 导弹诱饵",
           "probability": 12.0,
           "limit": 0,
-          "id": "",
+          "id": "MissileDecoy",
           "type": "道具",
           "rarity": "common"
         }
