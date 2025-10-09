@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { Sidebar } from '../components/Layout/Sidebar'
+import { Header } from '../components/Layout/Header'
 import { ChipGacha } from '../components/ChipGacha/ChipGacha'
+import { FlagshipGacha } from '../components/FlagshipGacha/FlagshipGacha'
 
 /**
  * 抽卡页面容器
- * 整合侧边栏和抽卡组件
+ * 整合侧边栏、顶部栏和抽卡组件
  */
 export function GachaPage() {
   const { type, activityId } = useParams()
@@ -16,6 +18,18 @@ export function GachaPage() {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
   const [itemScale, setItemScale] = useState(1)
   const [shouldRotate, setShouldRotate] = useState(false)
+
+  // Header 需要的数据，由子组件提供
+  const [headerData, setHeaderData] = useState({
+    activityConfig: null,
+    gameState: { currency: 0, rmb: 0, items: [] },
+    activityName: '',
+    activityNameEn: '',
+    isModalOpen: false,
+    onOpenInfo: () => {},
+    onOpenShop: () => {},
+    onResetData: () => {}
+  })
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,10 +62,9 @@ export function GachaPage() {
           <ChipGacha
             activityId={activityId}
             itemScale={itemScale}
-            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-            sidebarOpen={sidebarOpen}
             sponsorModal={sponsorModal}
             onSetSponsorModal={setSponsorModal}
+            onUpdateHeader={setHeaderData}
           />
         )
       case 'cargo':
@@ -71,28 +84,22 @@ export function GachaPage() {
         )
       case 'flagship':
         return (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-black">
-            <div className="text-center space-y-6">
-              <h1 className="text-white text-3xl md:text-4xl font-bold">旗舰宝箱类抽卡</h1>
-              <p className="text-white/60 text-lg md:text-xl">功能开发中，敬请期待...</p>
-              <button
-                onClick={() => navigate('/gacha/chip/ag97')}
-                className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg font-bold transition-colors"
-              >
-                返回主页
-              </button>
-            </div>
-          </div>
+          <FlagshipGacha
+            activityId={activityId}
+            itemScale={itemScale}
+            sponsorModal={sponsorModal}
+            onSetSponsorModal={setSponsorModal}
+            onUpdateHeader={setHeaderData}
+          />
         )
       default:
         return (
           <ChipGacha
             activityId={activityId}
             itemScale={itemScale}
-            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-            sidebarOpen={sidebarOpen}
             sponsorModal={sponsorModal}
             onSetSponsorModal={setSponsorModal}
+            onUpdateHeader={setHeaderData}
           />
         )
     }
@@ -142,6 +149,26 @@ export function GachaPage() {
 
         {/* 主内容区 */}
         <div className="overflow-hidden relative flex-1">
+          {/* 统一的顶部导航栏 */}
+          {type !== 'cargo' && (
+            <Header
+              activityId={activityId}
+              activityConfig={headerData.activityConfig}
+              sidebarOpen={sidebarOpen}
+              onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+              onOpenInfo={headerData.onOpenInfo}
+              onOpenSponsor={() => setSponsorModal(true)}
+              onOpenShop={headerData.onOpenShop}
+              onResetData={headerData.onResetData}
+              onAddCommonKeys={headerData.onAddCommonKeys}
+              gameState={headerData.gameState}
+              activityName={headerData.activityName}
+              activityNameEn={headerData.activityNameEn}
+              isModalOpen={headerData.isModalOpen}
+            />
+          )}
+
+          {/* 抽卡组件内容 */}
           {renderGachaComponent()}
         </div>
       </div>
