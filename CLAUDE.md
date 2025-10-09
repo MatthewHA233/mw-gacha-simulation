@@ -477,6 +477,9 @@ const itemUrl = buildItemImageUrl(item, activityConfig)
 //   - 旗舰钥匙: currency_premium_lootboxkey_la97.png
 // - 战舰(epic/legendary): /assets/.../units_ships/{itemId}.png
 // - 涂装(epic/legendary): /assets/.../camouflages/{itemId}.png
+// - 头像(epic/legendary): /assets/.../avataricons/{itemId}.png
+// - 旗帜(epic/legendary): /assets/.../flags/{itemId}.png
+// - 称号(epic/legendary): /assets/.../titles/TitleIcon_{Rarity}.png（特殊：根据稀有度而非id）
 // - 武器类(epic/legendary): /assets/.../weapons/{itemId}.png
 // - 普通物品(common): /assets/common-items/{itemId}.png
 
@@ -564,3 +567,53 @@ export const CDN_BASE_URL = import.meta.env.VITE_CDN_BASE_URL || ''
 - **样式**: Tailwind CSS
 - **部署**: Vercel
 - **CDN**: 阿里云 OSS
+
+---
+
+## 双奖池数据状态规范
+
+旗舰宝箱类支持双奖池系统：两种货币对应两个独立奖池，使用 `_else` 后缀区分数据。
+
+### 数据字段命名规则
+
+```javascript
+// 奖池1（旗舰钥匙）：无后缀
+items, totalDraws, history, epicLegendaryHistory...
+
+// 奖池2（普通钥匙）：_else 后缀
+items_else, totalDraws_else, history_else, epicLegendaryHistory_else...
+
+// 共享字段
+currency         // 货币1：旗舰钥匙（初始30）
+commonCurrency   // 货币2：普通钥匙（初始0）
+rmb, singleCost  // 人民币和单次消耗
+```
+
+### 动态字段访问
+
+通过后缀实现数据路由，避免重复代码：
+
+```javascript
+const suffix = selectedLootboxType === 'event_premium' ? '' : '_else'
+const itemsKey = suffix ? `items${suffix}` : 'items'
+
+setGameState(prev => ({
+  ...prev,
+  [itemsKey]: updatedItems  // 自动路由到正确奖池
+}))
+```
+
+### 资源聚合
+
+顶部栏资源统计需聚合两个奖池数据：
+
+```javascript
+const getAllItems = () => {
+  const items = []
+  if (gameState.items) items.push(...gameState.items)
+  if (gameState.items_else) items.push(...gameState.items_else)
+  return items
+}
+```
+
+**注意**：使用 `_else` 而非 `_common`，是为了未来扩展性（可复用到其他双奖池系统）
