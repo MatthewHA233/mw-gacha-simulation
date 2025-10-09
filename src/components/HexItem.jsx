@@ -84,7 +84,7 @@ export const HexItem = ({
   // 根据类型调整图标大小
   const getIconSize = () => {
     if (type === '战舰') return 'max-w-[90%] max-h-[90%]'; // 战舰放大
-    if (type === '涂装') return 'max-w-[50%] max-h-[50%]'; // 涂装缩小
+    if (type === '涂装' || type === '旗帜' || type === '头像') return 'max-w-[50%] max-h-[50%]'; // 涂装、旗帜、头像缩小
     return 'max-w-[70%] max-h-[70%]'; // 默认
   };
 
@@ -241,17 +241,17 @@ export const HexItem = ({
         </div>
       )}
 
-      {/* 提示框：概率和名称（传说/史诗专属） */}
+      {/* 提示框：类型+概率和名称（传说/史诗专属） */}
       {isEpicOrLegendary && showTooltip && (
         <>
-          {/* 上方：概率 */}
+          {/* 上方：类型 + 概率 */}
           {probability && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full text-white text-xs font-bold whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-              {probability}%
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-[-6px] text-white text-xs font-bold whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              {type} {probability}%
             </div>
           )}
           {/* 下方：物品名称 */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-full text-white text-xs font-bold whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-[-6px] text-white text-xs font-bold whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
             {name}
           </div>
         </>
