@@ -198,9 +198,24 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
   if (!item.id) return null
 
   // 特殊情况：货币类物品（以 currency_ 开头）
-  // 例如：currency_gachacoins（筹码）、currency_premium_lootboxkey（旗舰钥匙）
+  // 例如：currency_gachacoins（筹码）、currency_premium_lootboxkey（旗舰钥匙）、currency_common_lootboxkey（钥匙）
   if (item.id.startsWith('currency_')) {
     return buildCurrencyIconUrl(item.id, activityIdOrConfig)
+  }
+
+  // 特殊资源：美金和升级芯片（在 currency 目录下，但不需要 activityId 后缀）
+  if (item.id === 'Soft') {
+    // 美金
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png`
+  }
+  if (item.id === 'Upgrades') {
+    // 升级芯片
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png`
+  }
+
+  // 特殊道具：导弹诱饵（在 common-items 目录下）
+  if (item.id === 'MissileDecoy') {
+    return `${CDN_BASE_URL}/assets/common-items/MissileDecoy.png`
   }
 
   // 提取 activityId（用于其他类型的动态路径）
@@ -215,6 +230,15 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
       folder = 'units_ships'
     } else if (item.type === '涂装') {
       folder = 'camouflages'
+    } else if (item.type === '头像') {
+      folder = 'avataricons'
+    } else if (item.type === '旗帜') {
+      folder = 'flags'
+    } else if (item.type === '头衔') {
+      // 称号特殊：使用稀有度而非id作为文件名
+      // 格式：TitleIcon_Legendary.png 或 TitleIcon_Epic.png
+      const rarityCapitalized = item.rarity.charAt(0).toUpperCase() + item.rarity.slice(1)
+      return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/titles/TitleIcon_${rarityCapitalized}.png`
     } else {
       // 所有武器类型：武器、火箭炮、导弹、攻击机、自卫炮、主炮等
       folder = 'weapons'
@@ -223,6 +247,7 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
   }
 
   // 普通物品（common）：common-items
+  // 包括：艺术硬币(Artstorm)、黄金(Hard)、修理包(RepairKit)等
   if (item.rarity === 'common') {
     return `${CDN_BASE_URL}/assets/common-items/${item.id}.png`
   }
@@ -257,5 +282,28 @@ export function clearConfigCache(key) {
     configCache.delete(key)
   } else {
     configCache.clear()
+  }
+}
+
+/**
+ * 构建宝箱票图片 URL
+ * @param {string} type - 宝箱类型 ('common' | 'ad' | 'event_common' | 'event_premium')
+ * @param {string} activityId - 活动ID（仅event类型需要）
+ * @returns {string} 宝箱票图片 URL
+ */
+export function buildLootboxTicketUrl(type, activityId = null) {
+  const basePath = `${CDN_BASE_URL}/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets`
+
+  switch (type) {
+    case 'common':
+      return `${basePath}/common_lootbox_ticket.png`
+    case 'ad':
+      return `${basePath}/ad_lootbox_ticket.png`
+    case 'event_common':
+      return `${basePath}/${activityId}_common_lootbox_ticket.png`
+    case 'event_premium':
+      return `${basePath}/${activityId}_premium_lootbox_ticket.png`
+    default:
+      return `${basePath}/common_lootbox_ticket.png`
   }
 }
