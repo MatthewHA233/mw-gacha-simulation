@@ -27,6 +27,7 @@ export const SquareItem = ({
   index = 0,
   onClick,
   drawNumber, // 第几抽获得的（可选）
+  disableHover = false, // 禁用 hover 放大效果
 }) => {
   const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
@@ -119,7 +120,7 @@ export const SquareItem = ({
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: index * 0.05 }}
-      whileHover={{ scale: 1.05 }}
+      whileHover={disableHover ? {} : { scale: 1.05 }}
       onClick={handleClick}
       onMouseEnter={() => isEpicOrLegendary && setShowTooltip(true)}
       onMouseLeave={() => isEpicOrLegendary && setShowTooltip(false)}
