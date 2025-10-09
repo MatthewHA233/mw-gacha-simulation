@@ -26,7 +26,7 @@ export function FlagshipGacha({
   onSetSponsorModal,
   onUpdateHeader
 }) {
-  const playSound = useSound()
+  const { playSound } = useSound()
   const [infoModal, setInfoModal] = useState(false)
   const [shopModal, setShopModal] = useState(false)
   const [historyModal, setHistoryModal] = useState(false)

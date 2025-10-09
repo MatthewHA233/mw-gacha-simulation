@@ -25,7 +25,7 @@ export function ChipGacha({
   onSetSponsorModal,
   onUpdateHeader
 }) {
-  const playSound = useSound()
+  const { playSound } = useSound()
 
   // 活动配置（包含 metadata 和可能的 image 字段）
   const [activityConfig, setActivityConfig] = useState({
