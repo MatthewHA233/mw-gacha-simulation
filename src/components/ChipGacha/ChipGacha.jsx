@@ -4,9 +4,9 @@ import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
 import { buildShopPackageUrl, buildItemImageUrl, buildBackgroundUrl, loadActivityConfig } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
-import { Header } from '../Layout/Header'
+import { HeaderSpacer } from '../Layout/HeaderSpacer'
 import { GachaDisplay } from './GachaDisplay'
-import { ResultModal } from './ResultModal'
+import { ResultModal } from '../ui/ResultModal'
 import { InfoModal } from './InfoModal'
 import { HistoryModal } from './HistoryModal'
 import { ShopModal } from './ShopModal'
@@ -21,10 +21,9 @@ import { ConfirmModal } from '../ui/ConfirmModal'
 export function ChipGacha({
   activityId,
   itemScale = 1,
-  onToggleSidebar,
-  sidebarOpen = false,
   sponsorModal = false,
-  onSetSponsorModal
+  onSetSponsorModal,
+  onUpdateHeader
 }) {
   const playSound = useSound()
 
@@ -58,11 +57,12 @@ export function ChipGacha({
         }
         setActivityConfig(fullConfig)
 
-        // 为每个物品生成 icon URL
+        // 为每个物品生成 icon URL 并添加 tier 字段
         const itemsWithIcons = config.items.map(item => ({
           ...item,
           icon: buildItemImageUrl(item, fullConfig),
-          obtained: 0
+          obtained: 0,
+          tier: (item.rarity === 'epic' || item.rarity === 'legendary') ? true : undefined
         }))
 
         // 尝试从 localStorage 加载该活动的状态
@@ -158,6 +158,20 @@ export function ChipGacha({
       })))
     }
   }, [activityId])
+
+  // 更新 Header 数据
+  useEffect(() => {
+    onUpdateHeader({
+      activityConfig,
+      gameState,
+      activityName: activityConfig.metadata?.name || '',
+      activityNameEn: activityConfig.metadata?.nameEn || '',
+      isModalOpen: resultModal.show || infoModal || historyModal || shopModal || sponsorModal,
+      onOpenInfo: () => setInfoModal(true),
+      onOpenShop: () => setShopModal(true),
+      onResetData: handleResetData
+    })
+  }, [activityConfig, gameState, resultModal.show, infoModal, historyModal, shopModal, sponsorModal, onUpdateHeader])
 
   // ========== 重置相关函数 ==========
   // 打开重置弹窗
@@ -914,10 +928,10 @@ export function ChipGacha({
   }
 
   // ========== 更新135筹码档位的数量 ==========
-  const updateQuantity = (newQuantity) => {
-    if (newQuantity < 1) return
+  const updateQuantity = (packageId, newQuantity) => {
+    if (packageId !== 3 || newQuantity < 1) return
     setShopPackages(prev => prev.map(pkg => {
-      if (pkg.id === 3) {
+      if (pkg.id === packageId) {
         return {
           ...pkg,
           quantity: newQuantity,
@@ -936,6 +950,9 @@ export function ChipGacha({
 
   return (
     <>
+      {/* Header 占位容器 */}
+      <HeaderSpacer />
+
       {/* 背景图 - 横向铺满 */}
       <div
         className="absolute inset-0 w-full h-full"
@@ -951,22 +968,6 @@ export function ChipGacha({
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* 顶部导航栏 */}
-      <Header
-        activityId={activityId}
-        activityConfig={activityConfig}
-        sidebarOpen={sidebarOpen}
-        onToggleSidebar={onToggleSidebar}
-        onOpenInfo={() => setInfoModal(true)}
-        onOpenSponsor={() => onSetSponsorModal(true)}
-        onOpenShop={() => setShopModal(true)}
-        onResetData={handleResetData}
-        gameState={gameState}
-        activityName={activityConfig.metadata?.name}
-        activityNameEn={activityConfig.metadata?.nameEn}
-        isModalOpen={resultModal.show}
-      />
-
       {/* 主内容区域 */}
       <GachaDisplay
         premiumItems={getPremiumItems()}
@@ -976,6 +977,7 @@ export function ChipGacha({
         onDraw100={draw100}
         onDraw500={draw500}
         onPlaySound={playSound}
+        isDrawing={isDrawing}
       />
 
       {/* 结果弹窗 */}
@@ -993,6 +995,7 @@ export function ChipGacha({
         epicLegendaryHistory={gameState.epicLegendaryHistory}
         itemScale={itemScale}
         activityId={activityId}
+        totalDraws={gameState.totalDraws}
       />
 
       {/* 所有抽奖记录弹窗 */}
