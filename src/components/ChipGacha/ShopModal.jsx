@@ -50,9 +50,10 @@ export function ShopModal({
       className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center"
       onClick={onClose}
     >
-      {/* 商品展示区域 */}
-      <div className="flex gap-6 px-8 scale-[0.6] md:scale-100" onClick={e => e.stopPropagation()}>
-        {shopPackages.map((pkg) => {
+      <div className="flex flex-col items-center gap-4" onClick={e => e.stopPropagation()}>
+        {/* 商品展示区域 */}
+        <div className="flex gap-6 px-8 scale-[0.6] md:scale-100">
+          {shopPackages.map((pkg) => {
           const chipAdjustable = mode === 'chip' && typeof pkg.quantity === 'number' && typeof onUpdateQuantity === 'function'
           const flagshipAdjustable = mode === 'flagship' && pkg.id === topFlagshipId && typeof onUpdateQuantity === 'function'
           const canAdjustQuantity = chipAdjustable || flagshipAdjustable
@@ -196,7 +197,22 @@ export function ShopModal({
               </div>
             </div>
           )
-        })}
+          })}
+        </div>
+
+        {/* 价格参考来源 */}
+        <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30">
+          价格参考来源：
+          <a
+            href="https://m.tb.cn/h.S6Gh2Ta?tk=xN9WfZpATH7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cyan-400 hover:text-cyan-300 underline ml-1 transition-colors"
+            onClick={e => e.stopPropagation()}
+          >
+            闲鱼 小璃现代战舰
+          </a>
+        </div>
       </div>
     </motion.div>
   )
