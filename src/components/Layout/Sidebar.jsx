@@ -194,7 +194,18 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
         }
 
         draw()
-      } catch (error) {}
+      } catch (error) {
+        console.error('[BGM播放失败]', error)
+        setIsPlaying(false)
+        localStorage.setItem('sidebar_music_playing', 'false')
+
+        // 友好的错误提示
+        if (error.name === 'NotAllowedError') {
+          console.warn('浏览器阻止自动播放，需要用户交互')
+        } else if (error.name === 'NotSupportedError') {
+          console.error('音频格式不支持或CORS问题')
+        }
+      }
     }
   }
 
