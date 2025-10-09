@@ -15,6 +15,7 @@ export function Header({
   onOpenSponsor,
   onOpenShop,
   onResetData,
+  onAddCommonKeys,
   gameState,
   activityName = '暗影交易',
   activityNameEn = 'Deal with the Shadow',
@@ -28,10 +29,22 @@ export function Header({
   }, [isModalOpen])
   // 动态生成货币图标 URL（优先使用activityConfig，fallback到activityId）
   const currencyIconUrl = buildCurrencyIconUrl('currency_gachacoins', activityConfig || activityId)
+
+  // 判断是否为旗舰宝箱类
+  const isFlagshipGacha = activityConfig?.gacha_type === '旗舰宝箱类'
+
+  // 获取所有物品列表（包括旗舰和普通宝箱）
+  const getAllItems = () => {
+    const items = []
+    if (gameState.items) items.push(...gameState.items)
+    if (gameState.items_else) items.push(...gameState.items_else)
+    return items
+  }
+
   // 计算艺术硬币总数
   const getArtstormTotal = () => {
     let total = 0
-    gameState.items.forEach(item => {
+    getAllItems().forEach(item => {
       if (item.name.includes('艺术硬币')) {
         const match = item.name.match(/^(\d+)\s/)
         const quantity = match ? parseInt(match[1]) : 0
@@ -44,7 +57,7 @@ export function Header({
   // 计算黄金总数
   const getGoldTotal = () => {
     let total = 0
-    gameState.items.forEach(item => {
+    getAllItems().forEach(item => {
       if (item.name.includes('黄金')) {
         const match = item.name.match(/^(\d+)\s/)
         const quantity = match ? parseInt(match[1]) : 0
@@ -54,8 +67,62 @@ export function Header({
     return total
   }
 
+  // 计算美金总数
+  const getSoftTotal = () => {
+    let total = 0
+    getAllItems().forEach(item => {
+      if (item.name.includes('美金')) {
+        const match = item.name.match(/^([\d\s]+)\s*美金/)
+        if (match) {
+          const quantity = parseInt(match[1].replace(/\s/g, ''))
+          total += item.obtained * quantity
+        }
+      }
+    })
+    return total
+  }
+
+  // 计算升级芯片总数
+  const getUpgradesTotal = () => {
+    let total = 0
+    getAllItems().forEach(item => {
+      if (item.name.includes('升级芯片')) {
+        const match = item.name.match(/^(\d+)\s/)
+        const quantity = match ? parseInt(match[1]) : 0
+        total += item.obtained * quantity
+      }
+    })
+    return total
+  }
+
+  // 计算钥匙总数（普通宝箱钥匙） - 从物品奖励中累计
+  const getCommonKeyTotal = () => {
+    let total = 0
+    getAllItems().forEach(item => {
+      if (item.name.includes('钥匙') && !item.name.includes('旗舰')) {
+        const match = item.name.match(/^(\d+)\s/)
+        const quantity = match ? parseInt(match[1]) : 0
+        total += item.obtained * quantity
+      }
+    })
+    return total
+  }
+
+  // 计算旗舰钥匙总数 - 从物品奖励中累计
+  const getPremiumKeyTotal = () => {
+    let total = 0
+    getAllItems().forEach(item => {
+      if (item.name.includes('旗舰钥匙')) {
+        const match = item.name.match(/^(\d+)\s/)
+        const quantity = match ? parseInt(match[1]) : 0
+        total += item.obtained * quantity
+      }
+    })
+    return total
+  }
+
   return (
-    <div className="relative z-50">
+    <div className="absolute top-0 left-0 right-0 z-50">
       <div className="flex items-center justify-between px-4 py-1 md:py-3 bg-gradient-to-b from-black/80 to-black/40">
         {/* 左侧：返回按钮 + 标题 */}
         <div className="flex items-center gap-4">
@@ -128,22 +195,64 @@ export function Header({
 
           {/* 货币显示 */}
           <div className="flex items-center gap-1.5 md:gap-2">
-            {/* 筹码 */}
-            <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-cyan-500/30">
-              <img
-                src={currencyIconUrl}
-                alt="筹码"
-                className="w-5 h-5 md:w-6 md:h-6"
-              />
-              <span className="text-cyan-400 font-bold text-xs md:text-sm">{gameState.currency}</span>
-              {/* 加号按钮 */}
-              <button
-                onClick={onOpenShop}
-                className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
-              >
-                +
-              </button>
-            </div>
+            {/* 筹码类：筹码 */}
+            {!isFlagshipGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-cyan-500/30">
+                <img
+                  src={currencyIconUrl}
+                  alt="筹码"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-cyan-400 font-bold text-xs md:text-sm">{gameState.currency}</span>
+                {/* 加号按钮 */}
+                <button
+                  onClick={onOpenShop}
+                  className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            )}
+
+            {/* 旗舰宝箱类：普通钥匙 */}
+            {isFlagshipGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-gray-500/30">
+                <img
+                  src={buildCurrencyIconUrl('currency_common_lootboxkey', activityConfig)}
+                  alt="钥匙"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-gray-300 font-bold text-xs md:text-sm">{gameState.commonCurrency || 0}</span>
+                {/* 加号按钮 */}
+                {onAddCommonKeys && (
+                  <button
+                    onClick={onAddCommonKeys}
+                    className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-gray-500 hover:bg-gray-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                  >
+                    +
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* 旗舰宝箱类：旗舰钥匙 */}
+            {isFlagshipGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-amber-500/30">
+                <img
+                  src={buildCurrencyIconUrl('currency_premium_lootboxkey', activityConfig)}
+                  alt="旗舰钥匙"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-amber-400 font-bold text-xs md:text-sm">{gameState.currency}</span>
+                {/* 加号按钮 */}
+                <button
+                  onClick={onOpenShop}
+                  className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-amber-500 hover:bg-amber-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            )}
 
             {/* 人民币 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-red-500/30">
@@ -167,7 +276,21 @@ export function Header({
               </span>
             </div>
 
-            {/* 金条 */}
+            {/* 旗舰宝箱类：美金 */}
+            {isFlagshipGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-green-500/30">
+                <img
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png`}
+                  alt="美金"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-green-400 font-bold text-xs md:text-sm">
+                  {getSoftTotal()}
+                </span>
+              </div>
+            )}
+
+            {/* 黄金 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
               <img
                 src={`${CDN_BASE_URL}/assets/common-items/Hard.png`}
@@ -178,6 +301,20 @@ export function Header({
                 {getGoldTotal()}
               </span>
             </div>
+
+            {/* 旗舰宝箱类：升级芯片 */}
+            {isFlagshipGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
+                <img
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png`}
+                  alt="升级芯片"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-blue-400 font-bold text-xs md:text-sm">
+                  {getUpgradesTotal()}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
