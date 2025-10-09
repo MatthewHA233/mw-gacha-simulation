@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useState, useRef } from 'react'
 import { SquareItem } from '../SquareItem'
 import { CDN_BASE_URL } from '../../utils/constants'
 
@@ -9,11 +10,50 @@ export function ResultModal({
   resultModal,
   itemScale,
   onContinueGeneration,
+  onSkipToNext,
   onClose
 }) {
   if (!resultModal.show) return null
 
+  const [isLocked, setIsLocked] = useState(false) // 防误触锁
+  const lastClickTime = useRef(0)
+  const lockTimeout = useRef(null)
+
   const handleClick = () => {
+    // 如果被锁定（快进后0.5秒内），忽略所有点击
+    if (isLocked) {
+      return
+    }
+
+    const now = Date.now()
+    const timeSinceLastClick = now - lastClickTime.current
+
+    // 双击检测：只在 multi100 和 multi500 时启用
+    if ((resultModal.drawType === 'multi100' || resultModal.drawType === 'multi500') &&
+        resultModal.isGenerating &&
+        !resultModal.isPaused &&
+        timeSinceLastClick < 300) { // 300ms 内的连续点击视为双击
+
+      // 触发快进
+      if (onSkipToNext) {
+        onSkipToNext()
+
+        // 启动防误触锁
+        setIsLocked(true)
+        if (lockTimeout.current) {
+          clearTimeout(lockTimeout.current)
+        }
+        lockTimeout.current = setTimeout(() => {
+          setIsLocked(false)
+        }, 1500) // 1.5秒后解锁
+      }
+
+      lastClickTime.current = 0 // 重置点击时间
+      return
+    }
+
+    lastClickTime.current = now
+
     // 如果正在暂停（遇到史诗/传说），点击继续生成
     if (resultModal.isPaused) {
       onContinueGeneration()

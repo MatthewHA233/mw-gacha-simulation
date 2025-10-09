@@ -50,6 +50,9 @@ export function FlagshipGacha({
   // 待执行的抽奖参数
   const pendingDrawRef = useRef(null)
 
+  // 停止动画标志
+  const stopAnimationRef = useRef(false)
+
   // 活动配置
   const [activityConfig, setActivityConfig] = useState({
     id: activityId,
@@ -322,9 +325,15 @@ export function FlagshipGacha({
 
   // 逐个显示物品
   const progressivelyShowItems = (allItems, drawType) => {
+    stopAnimationRef.current = false // 重置停止标志
     let currentIndex = 0
 
     const showNextItem = () => {
+      // 检查是否需要停止动画
+      if (stopAnimationRef.current) {
+        return
+      }
+
       if (currentIndex >= allItems.length) {
         const hasEpicOrLegendary = allItems.some(item =>
           item.rarity === 'epic' || item.rarity === 'legendary'
@@ -391,6 +400,8 @@ export function FlagshipGacha({
   const continueGeneration = () => {
     if (!resultModal.isPaused) return
 
+    stopAnimationRef.current = false // 重置停止标志
+
     setResultModal(prev => ({
       ...prev,
       isPaused: false,
@@ -402,6 +413,11 @@ export function FlagshipGacha({
     let index = resultModal.processedIndex
 
     const showNextItem = () => {
+      // 检查是否需要停止动画
+      if (stopAnimationRef.current) {
+        return
+      }
+
       if (index >= allItems.length) {
         const hasEpicOrLegendary = allItems.some(item =>
           item.rarity === 'epic' || item.rarity === 'legendary'
@@ -462,6 +478,96 @@ export function FlagshipGacha({
     }
 
     showNextItem()
+  }
+
+  // 快进到下一个史诗/传说物品或结束
+  const skipToNext = () => {
+    if (!resultModal.isGenerating || resultModal.isPaused) return
+
+    // 停止当前的动画流程
+    stopAnimationRef.current = true
+
+    const allItems = resultModal.items
+    const drawType = resultModal.drawType
+    const currentIndex = resultModal.processedIndex
+
+    // 从当前位置开始查找下一个 epic/legendary 物品
+    let nextEpicLegendaryIndex = -1
+    for (let i = currentIndex; i < allItems.length; i++) {
+      if (allItems[i].rarity === 'epic' || allItems[i].rarity === 'legendary') {
+        nextEpicLegendaryIndex = i
+        break
+      }
+    }
+
+    if (nextEpicLegendaryIndex !== -1) {
+      // 找到了下一个 epic/legendary，添加从当前到这个位置的所有物品
+      const itemsToAdd = allItems.slice(currentIndex, nextEpicLegendaryIndex + 1)
+
+      setResultModal(prev => {
+        let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
+
+        // 如果是大批量抽奖，只保留 epic/legendary 和最近的 common 物品
+        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+          const epicLegendary = newDisplayedItems.filter(item =>
+            item.rarity === 'epic' || item.rarity === 'legendary'
+          )
+          const others = newDisplayedItems.filter(item =>
+            item.rarity !== 'epic' && item.rarity !== 'legendary'
+          )
+
+          const remainingOthers = others.slice(Math.max(0, others.length - (20 - epicLegendary.length)))
+          newDisplayedItems = [...epicLegendary, ...remainingOthers]
+        }
+
+        return {
+          ...prev,
+          displayedItems: newDisplayedItems,
+          processedIndex: nextEpicLegendaryIndex + 1,
+          isPaused: true,
+          isGenerating: false
+        }
+      })
+
+      // 播放音效
+      playSound('Reward_Daily_02_UI.Reward_Daily_02_UI.wav')
+    } else {
+      // 没有找到更多 epic/legendary，直接显示所有剩余物品
+      const itemsToAdd = allItems.slice(currentIndex)
+
+      setResultModal(prev => {
+        let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
+
+        // 如果是大批量抽奖，只保留 epic/legendary 和最近的 common 物品
+        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+          const epicLegendary = newDisplayedItems.filter(item =>
+            item.rarity === 'epic' || item.rarity === 'legendary'
+          )
+          const others = newDisplayedItems.filter(item =>
+            item.rarity !== 'epic' && item.rarity !== 'legendary'
+          )
+
+          const remainingOthers = others.slice(Math.max(0, others.length - (20 - epicLegendary.length)))
+          newDisplayedItems = [...epicLegendary, ...remainingOthers]
+        }
+
+        return {
+          ...prev,
+          displayedItems: newDisplayedItems,
+          processedIndex: allItems.length,
+          isGenerating: false,
+          isComplete: true
+        }
+      })
+
+      const hasEpicOrLegendary = allItems.some(item =>
+        item.rarity === 'epic' || item.rarity === 'legendary'
+      )
+
+      if (!hasEpicOrLegendary) {
+        playSound('UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav')
+      }
+    }
   }
 
   // 执行抽奖逻辑
@@ -1024,7 +1130,7 @@ export function FlagshipGacha({
   }
 
   const handleButtonClick = (callback) => {
-    playSound('Button_01_UI.Button_01_UI.wav')
+    playSound('Button_02_UI.Button_02_UI.wav')
     callback()
   }
 
@@ -1164,6 +1270,7 @@ export function FlagshipGacha({
         resultModal={resultModal}
         itemScale={itemScale}
         onContinueGeneration={continueGeneration}
+        onSkipToNext={skipToNext}
         onClose={() => setResultModal({ ...resultModal, show: false })}
       />
 
