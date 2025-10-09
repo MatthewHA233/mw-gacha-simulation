@@ -324,15 +324,13 @@ export function FlagshipGacha({
     return 0
   }
 
-  // 计算剩余的史诗/传说物品数量
-  const getRemainingEpicLegendaryCount = (allItems, currentIndex) => {
-    let count = 0
-    for (let i = currentIndex; i < allItems.length; i++) {
-      if (allItems[i].rarity === 'epic' || allItems[i].rarity === 'legendary') {
-        count++
-      }
-    }
-    return count
+  // 检查奖池中剩余未抽满的限定史诗/传说物品数量
+  const getRemainingLimitedEpicLegendary = (items) => {
+    return items.filter(item =>
+      (item.rarity === 'epic' || item.rarity === 'legendary') &&
+      item.limit > 0 &&
+      item.obtained < item.limit
+    ).length
   }
 
   // 逐个显示物品
@@ -384,15 +382,10 @@ export function FlagshipGacha({
           newDisplayedItems = [...epicLegendary, ...remainingOthers]
         }
 
-        // 检查剩余的史诗/传说物品数量
-        const remainingCount = getRemainingEpicLegendaryCount(allItems, currentIndex + 1)
-        const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingCount <= 1
-
         return {
           ...prev,
           displayedItems: newDisplayedItems,
-          processedIndex: currentIndex + 1,
-          canSkip
+          processedIndex: currentIndex + 1
         }
       })
 
@@ -473,15 +466,10 @@ export function FlagshipGacha({
           newDisplayedItems = [...epicLegendary, ...remainingOthers]
         }
 
-        // 检查剩余的史诗/传说物品数量
-        const remainingCount = getRemainingEpicLegendaryCount(allItems, index + 1)
-        const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingCount <= 1
-
         return {
           ...prev,
           displayedItems: newDisplayedItems,
-          processedIndex: index + 1,
-          canSkip
+          processedIndex: index + 1
         }
       })
 
@@ -710,9 +698,9 @@ export function FlagshipGacha({
         })
       } else {
         console.log('[FlagshipGacha] 显示多抽结果弹窗')
-        // 计算初始剩余的史诗/传说物品数量
-        const initialRemainingCount = getRemainingEpicLegendaryCount(resultsWithDrawNum, 0)
-        const initialCanSkip = (drawType === 'multi100' || drawType === 'multi500') && initialRemainingCount <= 1
+        // 检查当前奖池中剩余未抽满的限定史诗/传说物品数量
+        const remainingLimited = getRemainingLimitedEpicLegendary(tempItems)
+        const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingLimited <= 1
 
         setResultModal({
           show: true,
@@ -724,7 +712,7 @@ export function FlagshipGacha({
           isPaused: false,
           isComplete: false,
           processedIndex: 0,
-          canSkip: initialCanSkip
+          canSkip
         })
 
         setTimeout(() => {
