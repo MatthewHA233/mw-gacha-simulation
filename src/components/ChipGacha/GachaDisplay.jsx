@@ -1,5 +1,6 @@
 import { HexGrid } from '../HexGrid'
 import { CDN_BASE_URL } from '../../utils/constants'
+import { useSound } from '../../hooks/useSound'
 
 /**
  * 抽卡展示区域组件
@@ -15,8 +16,10 @@ export function GachaDisplay({
   onPlaySound,
   isDrawing = false
 }) {
+  const { playGachaClick } = useSound()
+
   const handleButtonClick = (callback) => {
-    onPlaySound('Button_01_UI.Button_01_UI.wav')
+    playGachaClick()  // 使用抽卡音效 Button_02_UI.wav
     callback()
   }
 

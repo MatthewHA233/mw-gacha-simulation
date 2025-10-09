@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion'
+import { useSound } from '../../hooks/useSound'
 
 /**
  * 确认弹窗组件（危险操作二次确认）
  */
 export function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText = '确认', cancelText = '取消' }) {
+  const { playButtonClick } = useSound()
+
   if (!isOpen) return null
 
   return (
@@ -56,7 +59,7 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confi
           <div className="flex gap-2 w-full pt-1">
             {/* 取消 */}
             <button
-              onClick={onClose}
+              onClick={() => { playButtonClick(); onClose(); }}
               className="flex-1 bg-zinc-800 hover:bg-zinc-700 rounded-lg py-2 px-3 ring-1 ring-white/10 transition-all"
             >
               <span className="text-xs md:text-sm text-white">{cancelText}</span>
@@ -64,7 +67,7 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confi
 
             {/* 确认 */}
             <button
-              onClick={onConfirm}
+              onClick={() => { playButtonClick(); onConfirm(); }}
               className="flex-1 bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg py-2 px-3 ring-1 ring-red-500/50 transition-all"
             >
               <span className="text-xs md:text-sm font-bold text-white">{confirmText}</span>

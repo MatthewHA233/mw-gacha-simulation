@@ -1,9 +1,12 @@
 import { getRarityText, getRarityClass, getRarityBgClass } from '../../utils/rarityHelpers'
+import { useSound } from '../../hooks/useSound'
 
 /**
  * 所有抽奖记录弹窗组件
  */
 export function HistoryModal({ isOpen, onClose, history }) {
+  const { playButtonClick } = useSound()
+
   if (!isOpen) return null
 
   return (
@@ -18,7 +21,7 @@ export function HistoryModal({ isOpen, onClose, history }) {
         <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
           <h3 className="text-3xl font-bold text-cyan-400">所有抽奖记录</h3>
           <button
-            onClick={onClose}
+            onClick={() => { playButtonClick(); onClose(); }}
             className="text-4xl text-gray-400 hover:text-white transition-colors"
           >
             &times;

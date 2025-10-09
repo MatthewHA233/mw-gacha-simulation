@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { buildCurrencyIconUrl } from '../../services/cdnService'
 import { useEffect } from 'react'
+import { useSound } from '../../hooks/useSound'
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -21,6 +22,8 @@ export function Header({
   activityNameEn = 'Deal with the Shadow',
   isModalOpen = false
 }) {
+  const { playButtonClick } = useSound()
+
   // 当弹窗打开时，自动收缩侧边栏
   useEffect(() => {
     if (isModalOpen && sidebarOpen) {
@@ -128,7 +131,7 @@ export function Header({
         <div className="flex items-center gap-4">
           {/* 侧边栏切换按钮 */}
           <motion.button
-            onClick={isModalOpen ? undefined : onToggleSidebar}
+            onClick={isModalOpen ? undefined : () => { playButtonClick(); onToggleSidebar(); }}
             className={`relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-colors ${
               isModalOpen
                 ? 'text-white/30 cursor-not-allowed'
@@ -159,7 +162,7 @@ export function Header({
         <div className="flex items-center gap-4">
           {/* 信息按钮 */}
           <button
-            onClick={onOpenInfo}
+            onClick={() => { playButtonClick(); onOpenInfo(); }}
             className="text-white/80 hover:text-white transition-colors"
           >
             <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -171,7 +174,7 @@ export function Header({
 
           {/* 赞助按钮 */}
           <button
-            onClick={onOpenSponsor}
+            onClick={() => { playButtonClick(); onOpenSponsor(); }}
             className="text-white/80 hover:text-yellow-400 transition-colors"
           >
             <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -181,7 +184,7 @@ export function Header({
 
           {/* 重置数据按钮 */}
           <button
-            onClick={onResetData}
+            onClick={() => { playButtonClick(); onResetData(); }}
             className="text-white/80 hover:text-red-400 transition-colors"
             title="重置本活动数据"
           >
@@ -206,7 +209,7 @@ export function Header({
                 <span className="text-cyan-400 font-bold text-xs md:text-sm">{gameState.currency}</span>
                 {/* 加号按钮 */}
                 <button
-                  onClick={onOpenShop}
+                  onClick={() => { playButtonClick(); onOpenShop(); }}
                   className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
                 >
                   +
@@ -226,7 +229,7 @@ export function Header({
                 {/* 加号按钮 */}
                 {onAddCommonKeys && (
                   <button
-                    onClick={onAddCommonKeys}
+                    onClick={() => { playButtonClick(); onAddCommonKeys(); }}
                     className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-gray-500 hover:bg-gray-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
                   >
                     +
@@ -246,7 +249,7 @@ export function Header({
                 <span className="text-amber-400 font-bold text-xs md:text-sm">{gameState.currency}</span>
                 {/* 加号按钮 */}
                 <button
-                  onClick={onOpenShop}
+                  onClick={() => { playButtonClick(); onOpenShop(); }}
                   className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-amber-500 hover:bg-amber-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
                 >
                   +

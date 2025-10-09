@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion'
+import { useSound } from '../../hooks/useSound'
 
 /**
  * 重置数据弹窗组件（紧凑版）
  */
 export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activityName }) {
+  const { playButtonClick } = useSound()
+
   if (!isOpen) return null
 
   return (
@@ -35,7 +38,7 @@ export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activi
 
         {/* 关闭按钮 */}
         <button
-          onClick={onClose}
+          onClick={() => { playButtonClick(); onClose(); }}
           className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -71,7 +74,7 @@ export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activi
           <div className="grid grid-cols-2 gap-2">
             {/* 重置当前 */}
             <button
-              onClick={onResetCurrent}
+              onClick={() => { playButtonClick(); onResetCurrent(); }}
               className="bg-gradient-to-b from-red-950 to-zinc-950 hover:from-red-900 hover:to-zinc-900 rounded-lg py-2 px-3 ring-1 ring-red-900/50 border border-red-900/30 transition-all"
             >
               <span className="text-xs md:text-sm font-bold text-red-400">重置当前</span>
@@ -80,7 +83,7 @@ export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activi
 
             {/* 取消 */}
             <button
-              onClick={onClose}
+              onClick={() => { playButtonClick(); onClose(); }}
               className="bg-zinc-950 hover:bg-zinc-900 rounded-lg py-2 px-3 ring-1 ring-white/10 transition-all"
             >
               <span className="text-xs md:text-sm text-white">取消</span>
@@ -89,7 +92,7 @@ export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activi
 
           {/* 重置全部（单独一行） */}
           <button
-            onClick={onResetAll}
+            onClick={() => { playButtonClick(); onResetAll(); }}
             className="bg-gradient-to-b from-red-950 to-red-900/50 hover:from-red-900 hover:to-red-800/50 rounded-lg py-2 px-3 ring-1 ring-red-900/50 border border-red-900/30 transition-all flex items-center justify-center gap-1.5"
           >
             <svg className="w-3 h-3 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
