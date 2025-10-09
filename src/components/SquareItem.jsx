@@ -60,6 +60,9 @@ export const SquareItem = ({
 
   const quantity = getQuantity();
 
+  // 判断是否已抽完
+  const isSoldOut = limit > 0 && obtained >= limit;
+
   // 清除定时器
   useEffect(() => {
     return () => {
@@ -142,6 +145,82 @@ export const SquareItem = ({
           <div style={{ fontSize: `${Math.round(30 * scale)}px` }}>🎁</div>
         )}
       </div>
+
+      {/* 变暗遮罩（抽完时） */}
+      {isSoldOut && (
+        <>
+          <div
+            className="absolute inset-0 bg-black/70 z-20"
+          />
+
+          {/* 绿色成功勾选图标 */}
+          <div className="absolute inset-0 flex items-center justify-center z-30">
+            <motion.svg
+              viewBox="0 0 50 50"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+                delay: 0.1
+              }}
+              style={{ width: size * 0.45, height: size * 0.45 }}
+            >
+              {/* 外发光圆环 */}
+              <circle
+                cx="25"
+                cy="25"
+                r="23"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="1.5"
+                className="drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+              />
+
+              {/* 主圆环边框 */}
+              <motion.circle
+                cx="25"
+                cy="25"
+                r="23"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="2.5"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              />
+
+              {/* 勾选图标 */}
+              <motion.path
+                d="M15 25 L22 32 L35 18"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.4, delay: 0.25 }}
+              />
+            </motion.svg>
+          </div>
+        </>
+      )}
+
+      {/* 左上角：限量进度 */}
+      {limit > 0 && (
+        <div
+          className="absolute font-bold text-white z-10"
+          style={{
+            left: `${cornerOffset}px`,
+            top: `${cornerOffset}px`,
+            fontSize: `${quantityFontSize}px`,
+          }}
+        >
+          {Math.max(limit - obtained, 0)}/{limit}
+        </div>
+      )}
 
       {/* 右上角：单位数量 */}
       {quantity && (
