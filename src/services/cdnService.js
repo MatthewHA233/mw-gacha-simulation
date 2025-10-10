@@ -134,6 +134,14 @@ export function buildBackgroundUrl(activityIdOrConfig) {
   }
   // 否则使用动态路由
   const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
+  const gachaType = activityIdOrConfig?.gacha_type
+
+  // 机密货物类使用特殊路径
+  if (gachaType === '机密货物类') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_background.png`
+  }
+
+  // 其他类型使用默认路径
   return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_background.png`
 }
 
@@ -155,7 +163,7 @@ export function buildResultBackgroundUrl(activityId) {
 
 /**
  * 构建货币图标 URL
- * @param {string} currencyId - 货币ID（如：currency_gachacoins, currency_premium_lootboxkey）
+ * @param {string} currencyId - 货币ID（如：currency_gachacoins, currency_premium_lootboxkey, bigevent_currency_gacha_gameplay, bigevent_currency_gacha_rm）
  * @param {string|Object} activityIdOrConfig - 活动ID 或活动配置对象
  * @returns {string} 货币图标 URL
  */
@@ -172,9 +180,17 @@ export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
       return activityIdOrConfig[imageKey]
     }
   }
-  // 动态生成：{currencyId}_{activityId}.png
-  // 例如：currency_gachacoins_ag97.png, currency_premium_lootboxkey_la97.png
+
   const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
+
+  // 机密货物类专用货币：bigevent_currency_gacha_gameplay（无人机电池）、bigevent_currency_gacha_rm（授权密钥）
+  // 格式：bigevent_currency_gacha_gameplay_{id}.png、bigevent_currency_gacha_rm_{id}.png
+  if (currencyId === 'bigevent_currency_gacha_gameplay' || currencyId === 'bigevent_currency_gacha_rm') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png`
+  }
+
+  // 其他货币类型：currency_gachacoins, currency_premium_lootboxkey 等
+  // 动态生成：{currencyId}_{activityId}.png
   return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png`
 }
 
@@ -283,6 +299,18 @@ export function clearConfigCache(key) {
   } else {
     configCache.clear()
   }
+}
+
+/**
+ * 构建机密货物类奖池配图 URL
+ * @param {string} activityId - 活动ID
+ * @param {number} poolIndex - 奖池索引（1: 货运无人机奖池, 2: 机密货物奖池）
+ * @returns {string} 奖池配图 URL
+ */
+export function buildCargoPoolImageUrl(activityId, poolIndex) {
+  // 货运无人机奖池：event_{id}_gacha1.png
+  // 机密货物奖池：event_{id}_gacha2.png
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_gacha${poolIndex}.png`
 }
 
 /**
