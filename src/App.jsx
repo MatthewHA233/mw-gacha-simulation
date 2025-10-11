@@ -4,6 +4,7 @@ import { GachaPage } from './pages/GachaPage'
 import { LootboxAnimationDemo } from './pages/LootboxAnimationDemo'
 import MilestoneToastDemo from './pages/MilestoneToastDemo'
 import { MilestoneToastProvider } from './components/ui/MilestoneToastProvider'
+import { HomeRedirect } from './components/HomeRedirect'
 import './App.css'
 
 function App() {
@@ -14,12 +15,12 @@ function App() {
           <Analytics />
 
           <Routes>
-            <Route path="/" element={<Navigate to="/gacha/cargo/be97" replace />} />
+            <Route path="/" element={<HomeRedirect />} />
             <Route path="/test" element={<Navigate to="/test/lootbox-animation" replace />} />
             <Route path="/test/lootbox-animation" element={<LootboxAnimationDemo />} />
             <Route path="/test/milestone-toast" element={<MilestoneToastDemo />} />
             <Route path="/gacha/:type/:activityId" element={<GachaPage />} />
-            <Route path="*" element={<Navigate to="/gacha/cargo/be97" replace />} />
+            <Route path="*" element={<HomeRedirect />} />
           </Routes>
         </div>
       </MilestoneToastProvider>

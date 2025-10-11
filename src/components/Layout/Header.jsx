@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
-import { buildCurrencyIconUrl } from '../../services/cdnService'
-import { useEffect } from 'react'
+import { buildCurrencyIconUrl, loadActivityIndex } from '../../services/cdnService'
+import { useEffect, useState } from 'react'
 import { useSound } from '../../hooks/useSound'
 import { useNavigate } from 'react-router-dom'
 
@@ -26,6 +26,22 @@ export function Header({
 }) {
   const { playButtonClick } = useSound()
   const navigate = useNavigate()
+  const [firstActivityId, setFirstActivityId] = useState(null)
+
+  // 加载第一个活动ID
+  useEffect(() => {
+    const loadFirstActivity = async () => {
+      try {
+        const data = await loadActivityIndex()
+        if (data.activities && data.activities.length > 0) {
+          setFirstActivityId(data.activities[0].id)
+        }
+      } catch (error) {
+        console.error('[Header] Failed to load activity index:', error)
+      }
+    }
+    loadFirstActivity()
+  }, [])
 
   // 当弹窗打开时，自动收缩侧边栏
   useEffect(() => {
@@ -157,8 +173,8 @@ export function Header({
             )}
           </motion.button>
 
-          {/* 武库舰抽奖链接 - 只在主页(be97)显示 */}
-          {activityId === 'be97' && (
+          {/* 武库舰抽奖链接 - 只在首页（第一个活动）显示 */}
+          {activityId === firstActivityId && (
             <motion.button
               onClick={() => {
                 playButtonClick();
