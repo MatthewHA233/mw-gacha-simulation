@@ -3,6 +3,7 @@
   "gacha_type": "筹码类",
   "metadata": {
     "name": "暗影交易",
+    "nameEn": "Deal with the Shadow",
     "formattedDate": "2024年10月"
   },
   "items": [
@@ -22,7 +23,7 @@
       "name": "2 高级鱼雷诱饵",
       "probability": 17,
       "rarity": "common",
-      "type": "战斗增益"
+      "type": "道具"
     },
     {
       "id": "RBU10000",
@@ -75,7 +76,7 @@
       "name": "6 高级导弹诱饵",
       "probability": 12.5,
       "rarity": "common",
-      "type": "战斗增益"
+      "type": "道具"
     },
     {
       "id": "Artstorm",
