@@ -1,0 +1,180 @@
+{
+  "id": "be97",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "诅咒之船",
+    "formattedDate": "2025年10月"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "items": [
+        {
+          "id": "Nasir",
+          "limit": 1,
+          "name": "纳西尔",
+          "probability": 0.25,
+          "rarity": "epic",
+          "type": "导弹"
+        },
+        {
+          "id": "Artstorm",
+          "limit": 0,
+          "name": "10 艺术硬币",
+          "probability": 2,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "MI8TV",
+          "limit": 1,
+          "name": "米-8TV\"河马\"-E",
+          "probability": 0.5,
+          "rarity": "epic",
+          "type": "直升机"
+        },
+        {
+          "id": "bigevent_currency_gacha_gameplay",
+          "limit": 0,
+          "name": "20 无人机电池",
+          "probability": 20,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "Token",
+          "limit": 0,
+          "name": "300 代币",
+          "probability": 30,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "PremiumMissileDecoy",
+          "limit": 0,
+          "name": "5 高级导弹诱饵",
+          "probability": 22,
+          "rarity": "common",
+          "type": "道具"
+        },
+        {
+          "id": "EngineBoost",
+          "limit": 0,
+          "name": "引擎过载",
+          "probability": 15,
+          "rarity": "common",
+          "type": "道具"
+        },
+        {
+          "id": "Hard",
+          "limit": 0,
+          "name": "20 黄金",
+          "probability": 8,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "bigevent_currency_gacha_rm",
+          "limit": 0,
+          "name": "授权密钥",
+          "probability": 1.5,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "RapidFireLMM",
+          "limit": 2,
+          "name": "RapidFire LMM",
+          "probability": 0.75,
+          "rarity": "legendary",
+          "type": "自卫炮"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "items": [
+        {
+          "id": "Forbin",
+          "limit": 1,
+          "name": "[法]福尔宾",
+          "probability": 0.05,
+          "rarity": "epic",
+          "type": "战舰"
+        },
+        {
+          "id": "bigevent_currency_gacha_rm",
+          "limit": 0,
+          "name": "授权密钥",
+          "probability": 4.3,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "SH16",
+          "limit": 3,
+          "name": "SH-16 (155 mm)",
+          "probability": 0.3,
+          "rarity": "epic",
+          "type": "主炮"
+        },
+        {
+          "id": "Type093AG",
+          "limit": 1,
+          "name": "[中]093AG型",
+          "probability": 0.1,
+          "rarity": "epic",
+          "type": "战舰"
+        },
+        {
+          "id": "Hard",
+          "limit": 0,
+          "name": "25 黄金",
+          "probability": 29.5,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "Token",
+          "limit": 180,
+          "name": "200 代币",
+          "probability": 20,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "PremiumRepairKit",
+          "limit": 0,
+          "name": "高级修理包",
+          "probability": 17,
+          "rarity": "common",
+          "type": "道具"
+        },
+        {
+          "id": "Artstorm",
+          "limit": 0,
+          "name": "5 艺术硬币",
+          "probability": 28,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "TRG300Tiger",
+          "limit": 2,
+          "name": "TRG-300\"虎\"(300 mm)",
+          "probability": 0.4,
+          "rarity": "epic",
+          "type": "火箭炮"
+        },
+        {
+          "id": "Archer",
+          "limit": 2,
+          "name": "弓箭手(155 MM)",
+          "probability": 0.35,
+          "rarity": "legendary",
+          "type": "主炮"
+        }
+      ]
+    }
+  ]
+}

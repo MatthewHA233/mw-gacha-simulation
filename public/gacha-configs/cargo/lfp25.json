@@ -1,0 +1,197 @@
+{
+  "id": "lfp25",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "新春阅舰",
+    "formattedDate": "2025年2月",
+    "nameEn": "Lunar Fleet Parade"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机",
+        "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_lfp25.webp?v=7ee13649"
+      },
+      "items": [
+        {
+          "name": "直-18F",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "Z18F",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Z-18F"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "A-220M (57 mm)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "A220M",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "A-220M (57mm)"
+        },
+        {
+          "name": "15 升级芯片",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "40 高级修理包",
+          "probability": 2.15,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 32.7,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "鱼-8",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "YU8",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "YU-8"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 25.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物",
+        "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_lfp25.webp?v=34928292"
+      },
+      "items": [
+        {
+          "name": "[中]093AG型",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "Type093AG",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 093AG"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 4.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "飞天一号",
+          "probability": 0.23,
+          "limit": 2,
+          "id": "Feitian1",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "Feitian-1"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 33.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "102式",
+          "probability": 0.2,
+          "limit": 1,
+          "id": "Type102UUV",
+          "type": "无人潜航器",
+          "rarity": "legendary",
+          "nameEn": "Type 102"
+        },
+        {
+          "name": "年年有鱼",
+          "probability": 4.0,
+          "limit": 3,
+          "id": "Flag_RedCarp",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Red Carp"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "寂静狩猎者",
+          "probability": 0.3,
+          "limit": 3,
+          "id": "SilentHunter",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "Silent Hunter"
+        },
+        {
+          "name": "200 代币",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

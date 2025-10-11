@@ -1,0 +1,197 @@
+{
+  "id": "wd25",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "深海守望",
+    "formattedDate": "2025年7月",
+    "nameEn": "Wardens of the Deep"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机",
+        "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_gameplay_wd25.webp?v=9bf006c1"
+      },
+      "items": [
+        {
+          "name": "HSTDV",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "HSTDV",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "HSTDV"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "A129\"猫鼬\"-CBT",
+          "probability": 0.65,
+          "limit": 2,
+          "id": "A129CBT",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "A129 CBT Mangusta"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "7 高级导弹诱饵",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "阿卡亚(533 mm)",
+          "probability": 0.45,
+          "limit": 1,
+          "id": "Akya",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Akya (533mm)"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 22.15,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物",
+        "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_rm_wd25.webp?v=334ea9ca"
+      },
+      "items": [
+        {
+          "name": "[美]衣阿华(BB-61)",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "Iowa",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "USS Iowa (BB-61)"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "飞天一号",
+          "probability": 2.17,
+          "limit": 2,
+          "id": "Feitian1",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "Feitian-1"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "[美]圣安东尼奥(LPD-17)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "SanAntonio",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "USS San Antonio (LPD-17)"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "ERS电浆炮(127 mm)",
+          "probability": 0.16,
+          "limit": 2,
+          "id": "ERSTensho",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "ERS Tensho (127 mm)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 31.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "虎鲸XLUUV",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "OrcaXLUUV",
+          "type": "无人潜航器",
+          "rarity": "epic",
+          "nameEn": "Orca XLUUV"
+        },
+        {
+          "name": "200 代币",
+          "probability": 16.0,
+          "limit": 170,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

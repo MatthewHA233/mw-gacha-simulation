@@ -1,0 +1,198 @@
+{
+  "id": "bfe24",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "Unidentified threat",
+    "formattedDate": "2024年5月",
+    "nameEn": "Unidentified threat"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机",
+        "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_bfe24.webp?v=673f4294"
+      },
+      "items": [
+        {
+          "name": "图-160M\"海盗旗\"",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "TU160M",
+          "type": "轰炸机",
+          "rarity": "epic",
+          "nameEn": "TU-160M"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "红鲨(382 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "RedShark",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Red Shark (382 mm)"
+        },
+        {
+          "name": "25 000 美金",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "30 无人机电池",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "350 打捞零件",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "",
+          "type": "其它",
+          "rarity": "common"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "铜",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Camo_Copper",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Copper"
+        },
+        {
+          "name": "15 升级芯片",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物",
+        "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bfe24.webp?v=dc12d013"
+      },
+      "items": [
+        {
+          "name": "[美]杰克·H·卢卡斯(DDG-125)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "JackHLucas",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "USS Jack H. Lucas (DDG-125)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "M270 MLRS (270 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "M270Launcher",
+          "type": "火箭炮",
+          "rarity": "legendary",
+          "nameEn": "M270 MLRS (270mm)"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "15 无人机电池",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "UFO",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Flag_UFO",
+          "type": "旗帜",
+          "rarity": "rare",
+          "nameEn": "UFO"
+        },
+        {
+          "name": "东风-12",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "DF12",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "DF-12"
+        },
+        {
+          "name": "OSU-35K (35 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "OSU35K",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "OSU-35K (35 mm)"
+        },
+        {
+          "name": "黄铜",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Camo_Brass",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Brass"
+        }
+      ]
+    }
+  ]
+}

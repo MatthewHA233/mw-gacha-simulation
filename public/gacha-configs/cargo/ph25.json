@@ -1,0 +1,197 @@
+{
+  "id": "ph25",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "幻影狩猎",
+    "formattedDate": "2025年6月",
+    "nameEn": "Phantom Hunt"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机",
+        "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_gameplay_ph25.webp?v=ffa0394b"
+      },
+      "items": [
+        {
+          "name": "T-122\"萨卡里亚\"(122 mm)",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "T122Sakarya",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "T-122 Sakarya (122 mm)"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "A-220M (57 mm)",
+          "probability": 0.65,
+          "limit": 2,
+          "id": "A220M",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "A-220M (57mm)"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "7 高级导弹诱饵",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "ASN4G",
+          "probability": 0.45,
+          "limit": 1,
+          "id": "ASN4G",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "ASN4G"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 22.15,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物",
+        "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_rm_ph25.webp?v=94634ebd"
+      },
+      "items": [
+        {
+          "name": "[俄]守卫者",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "Straj",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Strazh"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "达纳-M2(152 mm)",
+          "probability": 2.17,
+          "limit": 2,
+          "id": "DanaM2",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Dana-M2 (152 mm)"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "[美]弗莱彻(DD-992)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Fletcher",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "USS Fletcher (DD-992)"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "TRG-300\"虎\"(300 mm)",
+          "probability": 0.16,
+          "limit": 2,
+          "id": "TRG300Tiger",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "TRG-300 Tiger (300 mm)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 31.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "XM1203 NLOS-C (155 mm)",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "XM1203",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "XM1203 NLOS-C (155 mm)"
+        },
+        {
+          "name": "200 代币",
+          "probability": 16.0,
+          "limit": 170,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

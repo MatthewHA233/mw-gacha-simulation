@@ -1,0 +1,197 @@
+{
+  "id": "fp24",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "节日巡航",
+    "formattedDate": "2024年12月",
+    "nameEn": "Festive Patrol"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机",
+        "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_fp24.webp?v=037363c6"
+      },
+      "items": [
+        {
+          "name": "CVS401\"英仙座\"",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "CVS401Perseus",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "CVS401 Perseus"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "SH-16 (155 mm)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "SH16",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "SH-16 (155 mm)"
+        },
+        {
+          "name": "15 升级芯片",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 2.15,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "350 冰霜代币",
+          "probability": 32.7,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "[博福斯]40/L70 Mk.4",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "BoforsL70MK4",
+          "type": "自卫炮",
+          "rarity": "epic",
+          "nameEn": "Bofors 40/L70 Mk.4 (40mm)"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 25.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物",
+        "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_fp24.webp?v=ac624d74"
+      },
+      "items": [
+        {
+          "name": "[法]黎塞留",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "Richelieu",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS Richelieu"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 4.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "国王轨道炮(180 mm)",
+          "probability": 0.23,
+          "limit": 2,
+          "id": "MRPGKonigEMRG",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "EMRG Konig (180 mm)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 33.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "东风-100",
+          "probability": 0.2,
+          "limit": 0,
+          "id": "DF100",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "DF-100"
+        },
+        {
+          "name": "北极星",
+          "probability": 4.0,
+          "limit": 3,
+          "id": "Flag_CrystalSnowflake",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Polar Star"
+        },
+        {
+          "name": "7 升级芯片",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "Sahi-209 Block-II",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "Sahi209",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Sahi-209 Block-II"
+        },
+        {
+          "name": "200 冰霜代币",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

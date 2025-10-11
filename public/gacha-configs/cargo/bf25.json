@@ -1,0 +1,195 @@
+{
+  "id": "bf25",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "自由之息",
+    "formattedDate": "2025年8月",
+    "nameEn": "Breath of Freedom"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机"
+      },
+      "items": [
+        {
+          "name": "ET40 (324 mm)",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "ET40",
+          "type": "鱼雷",
+          "rarity": "epic",
+          "nameEn": "ET40 (324 mm)"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 22.15,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "超级军旗",
+          "probability": 0.45,
+          "limit": 1,
+          "id": "SuperEtendard",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Super Etendard"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "7 高级导弹诱饵",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "普拉雷",
+          "probability": 0.65,
+          "limit": 1,
+          "id": "Pralay",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Pralay"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物"
+      },
+      "items": [
+        {
+          "name": "[中]深圳(051B型)",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "Type051B",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 051B Shenzhen"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "UGST\"物理学家\"-2(533 mm)",
+          "probability": 0.32,
+          "limit": 2,
+          "id": "UGSTPhysic2",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "UGST Futlyar (533 mm)"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.5,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "[法]阿基坦(D650)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Aquitaine",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS Aquitaine (D650)"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "蜂群-2\"阿特拉斯\"",
+          "probability": 0.16,
+          "limit": 2,
+          "id": "Swarmer2Atlas",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "Swarmer-2 Atlas"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 31.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "格克德尼兹增程型",
+          "probability": 1.65,
+          "limit": 2,
+          "id": "GOKDENIZER",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "GOKDENIZ ER"
+        },
+        {
+          "name": "200 代币",
+          "probability": 16.0,
+          "limit": 170,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

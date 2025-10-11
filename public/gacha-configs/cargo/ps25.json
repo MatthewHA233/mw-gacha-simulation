@@ -1,0 +1,197 @@
+{
+  "id": "ps25",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "海上瘟疫",
+    "formattedDate": "2025年4月",
+    "nameEn": "Plague of the Seas"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机",
+        "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_gameplay_ps25.webp?v=fb11a842"
+      },
+      "items": [
+        {
+          "name": "RapidFire LMM",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "RapidFireLMM",
+          "type": "自卫炮",
+          "rarity": "legendary",
+          "nameEn": "RapidFire LMM"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "雅克-141\"自由\"",
+          "probability": 0.45,
+          "limit": 1,
+          "id": "Yak141",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Yak-141 Freestyle"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "7 高级导弹诱饵",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "M270 MLRS (270 mm)",
+          "probability": 0.65,
+          "limit": 2,
+          "id": "M270Launcher",
+          "type": "火箭炮",
+          "rarity": "legendary",
+          "nameEn": "M270 MLRS (270mm)"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 22.15,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物",
+        "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_rm_ps25.webp?v=88ed96e5"
+      },
+      "items": [
+        {
+          "name": "[意]维托里奥·维内托(C 550)",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "VittorioVeneto",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "IT Vittorio Veneto (C 550)"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "HyFly-2(核)",
+          "probability": 0.16,
+          "limit": 2,
+          "id": "HyFly2Nuke",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "HyFly-2 (Nuke)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "加百利V",
+          "probability": 0.27,
+          "limit": 2,
+          "id": "GabrielV",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Gabriel V"
+        },
+        {
+          "name": "无畏X",
+          "probability": 4.0,
+          "limit": 2,
+          "id": "DefiantX",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Defiant X"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "道具",
+          "rarity": "common"
+        },
+        {
+          "name": "半人马-155(155 mm)",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "Centauro155",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Centauro 155 (155 mm)"
+        },
+        {
+          "name": "200 代币",
+          "probability": 15.0,
+          "limit": 170,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}
