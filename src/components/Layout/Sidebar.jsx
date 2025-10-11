@@ -380,7 +380,7 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
       {/* 隐藏的音频元素 */}
       <audio
         ref={audioRef}
-        src={`${CDN_BASE_URL}/audio/ModernWarships_Main_Theme_OST.wav`}
+        src={`${CDN_BASE_URL}/audio/ModernWarships_Menu_Halloween2025_OST.wav`}
         loop
         preload="auto"
         crossOrigin="anonymous"
