@@ -157,8 +157,8 @@ export function Header({
             )}
           </motion.button>
 
-          {/* 武库舰抽奖链接 - 只在主页(ag97)显示 */}
-          {activityId === 'ag97' && (
+          {/* 武库舰抽奖链接 - 只在主页(be97)显示 */}
+          {activityId === 'be97' && (
             <motion.button
               onClick={() => {
                 playButtonClick();
@@ -175,7 +175,7 @@ export function Header({
                   alt="武库舰"
                   className="w-7 h-7 md:w-10 md:h-10 object-contain"
                 />
-                <span className="text-xs md:text-sm font-bold">武库舰抽奖已上线！</span>
+                <span className="text-xs md:text-sm font-bold">武库舰抽奖！</span>
               </div>
             </motion.button>
           )}
