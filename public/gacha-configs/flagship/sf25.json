@@ -161,7 +161,7 @@
           "probability": 12.0,
           "limit": 0,
           "id": "MissileDecoy",
-          "type": "道具",
+          "type": "资源",
           "rarity": "common"
         }
       ]
@@ -356,16 +356,16 @@
           "name": "15 高级导弹诱饵",
           "probability": 8.0,
           "limit": 0,
-          "id": "PremiumMissileDecoy",
-          "type": "道具",
+          "id": "MissileDecoy",
+          "type": "资源",
           "rarity": "common"
         },
         {
           "name": "10 高级机载导弹诱饵",
           "probability": 8.0,
           "limit": 0,
-          "id": "PremiumAircraftMissileDecoy",
-          "type": "道具",
+          "id": "MissileDecoy",
+          "type": "资源",
           "rarity": "common"
         },
         {
