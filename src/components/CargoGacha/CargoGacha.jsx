@@ -197,7 +197,7 @@ export function CargoGacha({
   const handleAddBatteries = () => {
     playSound('Buy_01_UI.Buy_01_UI.wav')
 
-    const batteriesToAdd = 3000
+    const batteriesToAdd = 450
 
     setGameState(prev => ({
       ...prev,
@@ -1060,6 +1060,12 @@ export function CargoGacha({
     setSelectedCargoType(type)
   }
 
+  // 处理按钮点击（添加音效）
+  const handleButtonClick = (callback) => {
+    playSound('Button_02_UI.Button_02_UI.wav')
+    callback()
+  }
+
   // 重置当前活动数据
   const handleResetCurrent = () => {
     console.log(`[CargoGacha] Resetting data for ${activityId}`)
@@ -1200,11 +1206,6 @@ export function CargoGacha({
     }))
 
     setShopModal(false)
-
-    toast.success(`成功购买 ${pkg.coins} 个${selectedCargoType === 'rm' ? '授权密钥' : '无人机电池'}！`, {
-      duration: 2000,
-      position: 'top-center'
-    })
   }
 
   // 获取当前奖池图片URL（gameplay=gacha2, rm=gacha1）
@@ -1225,38 +1226,57 @@ export function CargoGacha({
       />
 
       {/* 主内容区域 */}
-      <div className="relative z-10 h-full flex items-center justify-center px-12 gap-8 pb-64">
+      <div className="relative z-10 h-full flex items-center justify-center px-4 md:px-8 lg:px-12 gap-2 md:gap-4 lg:gap-8 pb-64">
         {/* 左侧：奖池选择标签 */}
-        <div className="flex flex-col gap-2 items-end mr-4">
-          {[
-            { type: 'rm', label: '机密货物' },
-            { type: 'gameplay', label: '货运无人机' }
-          ].map((tab) => (
-            <button
-              key={tab.type}
-              onClick={() => handleTabSelect(tab.type)}
-              className={`
-                relative w-32 py-2 font-bold text-base whitespace-nowrap transition-all text-right
-                ${selectedCargoType === tab.type
-                  ? 'text-emerald-400 scale-110'
-                  : 'text-white/50 hover:text-white/80 scale-100'
-                }
-              `}
-            >
-              {tab.label}
-              {selectedCargoType === tab.type && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute bottom-0 left-16 right-1 h-0.5 bg-emerald-400"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
+        <div className="flex justify-center lg:justify-start scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-x-12 translate-y-20 sm:-translate-x-6 sm:translate-y-0 md:translate-x-1 lg:translate-x-2 xl:translate-x-0">
+          <div className="flex flex-col items-center gap-3 px-6 py-4 rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-md shadow-[0_15px_35px_rgba(15,23,42,0.45)]">
+            {[
+              { type: 'rm', label: '机密货物' },
+              { type: 'gameplay', label: '货运无人机' }
+            ].map((tab) => {
+              const isActive = selectedCargoType === tab.type
+
+              return (
+                <button
+                  key={tab.type}
+                  onClick={() => handleTabSelect(tab.type)}
+                  className={`group relative min-w-[8.5rem] px-4 py-2 rounded-full font-bold text-xs md:text-xs lg:text-sm whitespace-nowrap text-center transition-all duration-300 ${isActive ? 'scale-105' : 'hover:scale-[1.02]'}`}
+                >
+                  <span
+                    className={`absolute inset-0 rounded-full transition-all duration-300 ${isActive
+                      ? 'bg-gradient-to-b from-emerald-400/35 via-emerald-500/20 to-emerald-400/10'
+                      : 'bg-slate-900/60 group-hover:bg-slate-900/80'
+                    }`}
+                  />
+                  <span
+                    className={`absolute inset-0 rounded-full border transition-all duration-300 ${isActive
+                      ? 'border-emerald-300/70 shadow-[0_0_32px_rgba(16,185,129,0.55)]'
+                      : 'border-white/10 group-hover:border-white/25'
+                    }`}
+                  />
+                  <span
+                    className={`relative z-10 tracking-wide transition-colors duration-300 ${isActive
+                      ? 'text-emerald-100 drop-shadow-[0_0_12px_rgba(16,185,129,0.75)]'
+                      : 'text-white/55 group-hover:text-white/75'
+                    }`}
+                  >
+                    {tab.label}
+                  </span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute -bottom-1 left-[10%] h-0.5 w-4/5 rounded-full bg-emerald-300/80 shadow-[0_0_12px_rgba(16,185,129,0.6)]"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* 中间：物品网格 */}
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center -translate-x-16 translate-y-20 sm:-translate-x-12 sm:translate-y-0 md:-translate-x-10 lg:-translate-x-8 xl:translate-x-0">
           {/* 物品网格 */}
           <div className="flex flex-col gap-2">
             {/* 上排 4 个 */}
@@ -1313,7 +1333,7 @@ export function CargoGacha({
         </div>
 
         {/* 右侧：大图展示 */}
-        <div className="flex-1 flex justify-center items-center max-w-xl self-start pt-12">
+        <div className="flex-1 flex justify-center items-center max-w-xl -translate-x-28 translate-y-20 sm:-translate-x-20 sm:translate-y-0 md:-translate-x-20 lg:-translate-x-16 xl:translate-x-0">
           {/* 图片容器 */}
           <motion.div
             key={selectedCargoType}
@@ -1328,8 +1348,8 @@ export function CargoGacha({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className={`absolute text-white text-lg font-bold drop-shadow-lg z-10 whitespace-nowrap ${
-                selectedCargoType === 'rm' ? 'top-16 left-16' : 'top-8 left-8'
+              className={`absolute text-white text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm xl:text-lg font-bold drop-shadow-lg z-10 whitespace-nowrap -translate-x-32 xs:-translate-x-28 sm:-translate-x-24 md:-translate-x-24 lg:-translate-x-20 xl:translate-x-0 ${
+                selectedCargoType === 'rm' ? 'top-[15%] left-6 sm:left-8 md:left-10 lg:left-12 xl:left-16' : 'top-[12%] left-3 sm:left-4 md:left-5 lg:left-6 xl:left-8'
               }`}
             >
               {selectedCargoType === 'gameplay'
@@ -1340,57 +1360,57 @@ export function CargoGacha({
             <img
               src={poolImageUrl}
               alt={selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
-              className="w-full h-auto object-contain drop-shadow-2xl"
+              className="w-full h-auto min-w-[200px] object-contain drop-shadow-2xl"
             />
           </motion.div>
         </div>
       </div>
 
       {/* 底部：抽奖按钮区域 */}
-      <div className="absolute bottom-24 left-0 right-0 flex justify-center items-center z-20">
-        <div className="flex flex-wrap gap-2 md:gap-8 justify-center">
+      <div className="absolute bottom-16 md:bottom-20 lg:bottom-24 left-0 right-0 flex justify-center items-center z-20">
+        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-8 justify-center scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-y-10 sm:translate-y-0">
           {/* 抽奖 x1 */}
           <button
-            onClick={handleSingleDraw}
-            className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
+            onClick={() => handleButtonClick(handleSingleDraw)}
+            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
               抽奖 ×1
             </span>
           </button>
 
           {/* 抽奖 x10 */}
           <button
-            onClick={handleMultiDraw}
-            className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
+            onClick={() => handleButtonClick(handleMultiDraw)}
+            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
               抽奖 ×10
             </span>
           </button>
 
           {/* 抽奖 x100 - 金色主题 */}
           <button
-            onClick={handleDraw100}
+            onClick={() => handleButtonClick(handleDraw100)}
             disabled={isDrawing}
-            className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
               抽奖 ×100
             </span>
           </button>
 
           {/* 抽奖 x500 - 特殊紫色主题 */}
           <button
-            onClick={handleDraw500}
+            onClick={() => handleButtonClick(handleDraw500)}
             disabled={isDrawing}
-            className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
               抽奖 ×500
             </span>
           </button>
