@@ -39,10 +39,9 @@ export const SquareItem = ({
   // 右下角三角形颜色（史诗/传说专属）
   const triangleColor = rarity === 'legendary' ? '#a280d2' : rarity === 'epic' ? '#e0932e' : null;
 
-  // 提示框状态（只对传说/史诗生效）
+  // 提示框状态（所有物品都支持）
   const [showTooltip, setShowTooltip] = useState(false);
   const timerRef = useRef(null);
-  const isEpicOrLegendary = rarity === 'epic' || rarity === 'legendary';
 
   // 从名称中提取单位数量
   const getQuantity = () => {
@@ -75,20 +74,18 @@ export const SquareItem = ({
 
   // 处理点击（手机端）
   const handleClick = (e) => {
-    if (isEpicOrLegendary) {
-      e.stopPropagation();
-      setShowTooltip(true);
+    e.stopPropagation();
+    setShowTooltip(true);
 
-      // 清除之前的定时器
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-
-      // 5秒后自动隐藏
-      timerRef.current = setTimeout(() => {
-        setShowTooltip(false);
-      }, 5000);
+    // 清除之前的定时器
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
     }
+
+    // 5秒后自动隐藏
+    timerRef.current = setTimeout(() => {
+      setShowTooltip(false);
+    }, 5000);
 
     if (onClick) {
       onClick(e);
@@ -133,8 +130,8 @@ export const SquareItem = ({
       }}
       whileHover={disableHover ? {} : { scale: 1.05 }}
       onClick={handleClick}
-      onMouseEnter={() => isEpicOrLegendary && setShowTooltip(true)}
-      onMouseLeave={() => isEpicOrLegendary && setShowTooltip(false)}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
     >
       {/* 内容层 */}
       <div
@@ -285,8 +282,8 @@ export const SquareItem = ({
         </div>
       )}
 
-      {/* 提示框：类型+概率和名称（传说/史诗专属） */}
-      {isEpicOrLegendary && showTooltip && (
+      {/* 提示框：类型+概率和名称（所有物品） */}
+      {showTooltip && (
         <>
           {/* 上方：类型 + 概率 */}
           {probability && (
