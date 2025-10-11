@@ -5,7 +5,7 @@ import { useSound } from '../../hooks/useSound'
  * 重置数据弹窗组件（紧凑版）
  */
 export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activityName }) {
-  const { playButtonClick } = useSound()
+  const { playButtonClick, playSound } = useSound()
 
   if (!isOpen) return null
 
@@ -74,7 +74,7 @@ export function ResetModal({ isOpen, onClose, onResetCurrent, onResetAll, activi
           <div className="grid grid-cols-2 gap-2">
             {/* 重置当前 */}
             <button
-              onClick={() => { playButtonClick(); onResetCurrent(); }}
+              onClick={() => { playSound('Upgrade_01_UI.Upgrade_01_UI.wav'); onResetCurrent(); }}
               className="bg-gradient-to-b from-red-950 to-zinc-950 hover:from-red-900 hover:to-zinc-900 rounded-lg py-2 px-3 ring-1 ring-red-900/50 border border-red-900/30 transition-all"
             >
               <span className="text-xs md:text-sm font-bold text-red-400">重置当前</span>

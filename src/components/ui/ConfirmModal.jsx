@@ -5,7 +5,7 @@ import { useSound } from '../../hooks/useSound'
  * 确认弹窗组件（危险操作二次确认）
  */
 export function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText = '确认', cancelText = '取消' }) {
-  const { playButtonClick } = useSound()
+  const { playButtonClick, playSound } = useSound()
 
   if (!isOpen) return null
 
@@ -67,7 +67,7 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confi
 
             {/* 确认 */}
             <button
-              onClick={() => { playButtonClick(); onConfirm(); }}
+              onClick={() => { playSound('Upgrade_01_UI.Upgrade_01_UI.wav'); onConfirm(); }}
               className="flex-1 bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg py-2 px-3 ring-1 ring-red-500/50 transition-all"
             >
               <span className="text-xs md:text-sm font-bold text-white">{confirmText}</span>
