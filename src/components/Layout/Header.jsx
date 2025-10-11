@@ -18,6 +18,7 @@ export function Header({
   onOpenShop,
   onResetData,
   onAddCommonKeys,
+  onAddBatteries,
   gameState,
   activityName = '暗影交易',
   activityNameEn = 'Deal with the Shadow',
@@ -37,6 +38,9 @@ export function Header({
 
   // 判断是否为旗舰宝箱类
   const isFlagshipGacha = activityConfig?.gacha_type === '旗舰宝箱类'
+
+  // 判断是否为机密货物类
+  const isCargoGacha = activityConfig?.gacha_type === '机密货物类'
 
   // 获取所有物品列表（包括旗舰和普通宝箱）
   const getAllItems = () => {
@@ -224,7 +228,7 @@ export function Header({
           {/* 货币显示 */}
           <div className="flex items-center gap-1.5 md:gap-2">
             {/* 筹码类：筹码 */}
-            {!isFlagshipGacha && (
+            {!isFlagshipGacha && !isCargoGacha && (
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-cyan-500/30">
                 <img
                   src={currencyIconUrl}
@@ -236,6 +240,46 @@ export function Header({
                 <button
                   onClick={() => { playButtonClick(); onOpenShop(); }}
                   className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            )}
+
+            {/* 机密货物类：无人机电池 */}
+            {isCargoGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
+                <img
+                  src={buildCurrencyIconUrl('bigevent_currency_gacha_gameplay', activityConfig)}
+                  alt="无人机电池"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-blue-400 font-bold text-xs md:text-sm">{gameState.commonCurrency || 0}</span>
+                {/* 加号按钮 - 直接添加电池 */}
+                {onAddBatteries && (
+                  <button
+                    onClick={onAddBatteries}
+                    className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-blue-500 hover:bg-blue-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                  >
+                    +
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* 机密货物类：授权密钥 */}
+            {isCargoGacha && (
+              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-emerald-500/30">
+                <img
+                  src={buildCurrencyIconUrl('bigevent_currency_gacha_rm', activityConfig)}
+                  alt="授权密钥"
+                  className="w-5 h-5 md:w-6 md:h-6"
+                />
+                <span className="text-emerald-400 font-bold text-xs md:text-sm">{gameState.currency || 0}</span>
+                {/* 加号按钮 */}
+                <button
+                  onClick={() => { playButtonClick(); onOpenShop(); }}
+                  className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
                 >
                   +
                 </button>

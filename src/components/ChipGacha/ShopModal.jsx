@@ -2,11 +2,11 @@ import { motion } from 'framer-motion'
 import { buildCurrencyIconUrl } from '../../services/cdnService'
 
 /**
- * 充值商店弹窗组件（支持筹码和旗舰钥匙两种模式）
- * 
+ * 充值商店弹窗组件（支持筹码、机密货物和旗舰钥匙三种模式）
+ *
  * 改进：
  * 1. ±1 / ±5 调节按钮改为苹果风玻璃拟态风格。
- * 2. 支持旗舰模式下显示“购买数量、赠送数量、人民币扣款”动态计算。
+ * 2. 支持旗舰模式下显示"购买数量、赠送数量、人民币扣款"动态计算。
  */
 export function ShopModal({
   isOpen,
@@ -15,12 +15,14 @@ export function ShopModal({
   onBuyPackage,
   onUpdateQuantity,
   activityConfig,
-  mode = 'chip' // 'chip' 或 'flagship'
+  mode = 'chip' // 'chip' 或 'flagship' 或 'cargo'
 }) {
   if (!isOpen) return null
 
   const currencyIconUrl = mode === 'flagship'
     ? buildCurrencyIconUrl('currency_premium_lootboxkey', activityConfig)
+    : mode === 'cargo'
+    ? buildCurrencyIconUrl('bigevent_currency_gacha_rm', activityConfig)
     : buildCurrencyIconUrl('currency_gachacoins', activityConfig)
 
   // 识别旗舰模式的“最高购买档位”（用 coins 最大的包）
@@ -56,7 +58,8 @@ export function ShopModal({
           {shopPackages.map((pkg) => {
           const chipAdjustable = mode === 'chip' && typeof pkg.quantity === 'number' && typeof onUpdateQuantity === 'function'
           const flagshipAdjustable = mode === 'flagship' && pkg.id === topFlagshipId && typeof onUpdateQuantity === 'function'
-          const canAdjustQuantity = chipAdjustable || flagshipAdjustable
+          const cargoAdjustable = mode === 'cargo' && typeof pkg.quantity === 'number' && typeof onUpdateQuantity === 'function'
+          const canAdjustQuantity = chipAdjustable || flagshipAdjustable || cargoAdjustable
           const displayQty = typeof pkg.quantity === 'number' ? pkg.quantity : 1
 
           // 动态计算旗舰模式数值
@@ -74,6 +77,8 @@ export function ShopModal({
               <div className="bg-gradient-to-r from-slate-700/80 to-slate-600/80 px-3 py-1 text-white text-sm font-bold border-b border-slate-500/30">
                 {mode === 'flagship'
                   ? (pkg.id === 1 ? '少量旗舰钥匙' : pkg.id === 2 ? '一套旗舰钥匙' : '一箱旗舰钥匙')
+                  : mode === 'cargo'
+                  ? (pkg.id === 1 ? '一组授权密钥' : pkg.id === 2 ? '一包授权密钥' : '一箱授权密钥')
                   : (pkg.id === 1 ? '一组筹码' : pkg.id === 2 ? '一盒筹码' : pkg.id === 3 ? '一箱筹码' : '两箱筹码')
                 }
               </div>

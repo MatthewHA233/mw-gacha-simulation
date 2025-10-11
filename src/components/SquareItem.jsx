@@ -28,6 +28,7 @@ export const SquareItem = ({
   onClick,
   drawNumber, // 第几抽获得的（可选）
   disableHover = false, // 禁用 hover 放大效果
+  isHighlighted = false, // 是否高亮
 }) => {
   const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
@@ -118,11 +119,18 @@ export const SquareItem = ({
         width: size,
         height: size,
         backgroundColor: colors.bg,
-        border: `${borderWidth}px solid ${colors.border}`,
+        border: isHighlighted ? `${borderWidth * 2}px solid #ffd700` : `${borderWidth}px solid ${colors.border}`,
+        boxShadow: isHighlighted ? '0 0 20px rgba(255, 215, 0, 0.8)' : 'none',
       }}
       initial={{ opacity: 0, scale: 0.85 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: index * 0.05 }}
+      animate={{
+        opacity: 1,
+        scale: isHighlighted ? 1.1 : 1
+      }}
+      transition={{
+        delay: index * 0.05,
+        scale: { duration: 0.2 }
+      }}
       whileHover={disableHover ? {} : { scale: 1.05 }}
       onClick={handleClick}
       onMouseEnter={() => isEpicOrLegendary && setShowTooltip(true)}
