@@ -3,136 +3,135 @@
   "gacha_type": "筹码类",
   "metadata": {
     "name": "暗影交易",
-    "nameEn": "Deal with the Shadow",
     "formattedDate": "2024年10月"
   },
   "items": [
     {
-      "name": "2 高级鱼雷诱饵",
-      "id": "PremiumTorpedoDecoy",
-      "type": "道具",
-      "rarity": "common",
-      "probability": 17.0,
-      "limit": 0
-    },
-    {
-      "name": "4 艺术硬币",
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common",
-      "probability": 22.0,
-      "limit": 0
-    },
-    {
-      "name": "6 高级导弹诱饵",
-      "id": "PremiumMissileDecoy",
-      "type": "道具",
-      "rarity": "common",
-      "probability": 12.5,
-      "limit": 0
-    },
-    {
-      "name": "10 艺术硬币",
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common",
-      "probability": 8.0,
-      "limit": 0
-    },
-    {
-      "name": "1 筹码",
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common",
-      "probability": 4.0,
-      "limit": 0
-    },
-    {
-      "name": "15 黄金",
-      "id": "Hard",
-      "type": "资源",
-      "rarity": "common",
-      "probability": 33.0,
-      "limit": 0
-    },
-    {
-      "name": "[意]FREMM-EVO",
       "id": "FREMMEVO",
-      "type": "战舰",
-      "rarity": "epic",
+      "limit": 1,
+      "name": "[意]FREMM-EVO",
+      "nameEn": "IT FREMM-EVO",
       "probability": 0.08,
-      "limit": 1,
+      "rarity": "epic",
       "tier": 3,
-      "nameEn": "IT FREMM-EVO"
+      "type": "战舰"
     },
     {
-      "name": "RBU-10000 (300 mm)",
+      "id": "PremiumTorpedoDecoy",
+      "limit": 0,
+      "name": "2 高级鱼雷诱饵",
+      "probability": 17,
+      "rarity": "common",
+      "type": "战斗增益"
+    },
+    {
       "id": "RBU10000",
-      "type": "火箭炮",
+      "limit": 1,
+      "name": "RBU-10000 (300 mm)",
+      "nameEn": "RBU-10000 (300 mm)",
+      "probability": 1.525,
       "rarity": "epic",
-      "probability": 1.53,
-      "limit": 1,
       "tier": 3,
-      "nameEn": "RBU-10000 (300 mm)"
+      "type": "火箭炮"
     },
     {
-      "name": "[德]萨克森(F124型)",
-      "id": "F124",
-      "type": "战舰",
-      "rarity": "epic",
-      "probability": 0.14,
-      "limit": 1,
-      "tier": 3,
-      "nameEn": "FGS F124"
-    },
-    {
-      "name": "[美]衣阿华(BB-61)",
-      "id": "Iowa",
-      "type": "战舰",
-      "rarity": "legendary",
-      "probability": 0.09,
-      "limit": 1,
-      "tier": 3,
-      "nameEn": "USS Iowa (BB-61)"
-    },
-    {
-      "name": "Mark-71 (203 mm)",
-      "id": "Mark71",
-      "type": "主炮",
-      "rarity": "legendary",
-      "probability": 0.52,
-      "limit": 2,
-      "tier": 3,
-      "nameEn": "Mark-71 (203 mm)"
-    },
-    {
-      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
-      "id": "Mark45Astor",
-      "type": "鱼雷",
-      "rarity": "legendary",
-      "probability": 0.23,
-      "limit": 2,
-      "tier": 3,
-      "nameEn": "Mark-45 ASTOR (483mm)"
-    },
-    {
-      "name": "ASN4G",
-      "id": "ASN4G",
-      "type": "导弹",
-      "rarity": "legendary",
-      "probability": 0.35,
-      "limit": 2,
-      "tier": 3,
-      "nameEn": "ASN4G"
-    },
-    {
-      "name": "龟船",
       "id": "Camo_TurtleShip",
-      "type": "涂装",
-      "rarity": "legendary",
-      "probability": 0.5,
       "limit": 1,
-      "nameEn": "Geobukseon"
+      "name": "龟船",
+      "nameEn": "Geobukseon",
+      "probability": 0.5,
+      "rarity": "legendary",
+      "type": "涂装"
+    },
+    {
+      "id": "Hard",
+      "limit": 0,
+      "name": "15 黄金",
+      "probability": 33,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "Mark45Astor",
+      "limit": 2,
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "nameEn": "Mark-45 ASTOR (483mm)",
+      "probability": 0.235,
+      "rarity": "legendary",
+      "tier": 3,
+      "type": "鱼雷"
+    },
+    {
+      "id": "Artstorm",
+      "limit": 0,
+      "name": "4 艺术硬币",
+      "probability": 22,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "PremiumMissileDecoy",
+      "limit": 0,
+      "name": "6 高级导弹诱饵",
+      "probability": 12.5,
+      "rarity": "common",
+      "type": "战斗增益"
+    },
+    {
+      "id": "Artstorm",
+      "limit": 0,
+      "name": "10 艺术硬币",
+      "probability": 8,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "currency_gachacoins",
+      "limit": 0,
+      "name": "1 筹码",
+      "probability": 4.06,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "Mark71",
+      "limit": 2,
+      "name": "Mark-71 (203 mm)",
+      "nameEn": "Mark-71 (203 mm)",
+      "probability": 0.52,
+      "rarity": "legendary",
+      "tier": 3,
+      "type": "主炮"
+    },
+    {
+      "id": "ASN4G",
+      "limit": 2,
+      "name": "ASN4G",
+      "nameEn": "ASN4G",
+      "probability": 0.35,
+      "rarity": "legendary",
+      "tier": 3,
+      "type": "导弹"
+    },
+    {
+      "id": "F124",
+      "limit": 1,
+      "name": "[德]萨克森(F124型)",
+      "nameEn": "FGS F124",
+      "probability": 0.14,
+      "rarity": "epic",
+      "tier": 3,
+      "type": "战舰"
+    },
+    {
+      "id": "Iowa",
+      "limit": 1,
+      "name": "[美]衣阿华(BB-61)",
+      "nameEn": "USS Iowa (BB-61)",
+      "probability": 0.09,
+      "rarity": "legendary",
+      "tier": 3,
+      "type": "战舰"
     }
   ]
 }

@@ -128,16 +128,16 @@
           "name": "15 高级导弹诱饵",
           "probability": 9.7,
           "limit": 0,
-          "id": "MissileDecoy",
-          "type": "资源",
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
           "name": "5 高级修理包",
           "probability": 10.0,
           "limit": 0,
-          "id": "RepairKit",
-          "type": "资源",
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -153,7 +153,7 @@
           "probability": 12.0,
           "limit": 0,
           "id": "RepairKit",
-          "type": "资源",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -161,7 +161,7 @@
           "probability": 12.0,
           "limit": 0,
           "id": "MissileDecoy",
-          "type": "资源",
+          "type": "战斗增益",
           "rarity": "common"
         }
       ]
@@ -317,7 +317,7 @@
           "probability": 7.0,
           "limit": 0,
           "id": "AirElectronicWarfare",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -325,7 +325,7 @@
           "probability": 7.0,
           "limit": 0,
           "id": "PremiumTorpedoDecoy",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -333,7 +333,7 @@
           "probability": 7.0,
           "limit": 0,
           "id": "ElectronicWarfare",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -341,31 +341,31 @@
           "probability": 7.0,
           "limit": 0,
           "id": "EngineBoost",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
           "name": "10 高级修理包",
           "probability": 7.6,
           "limit": 0,
-          "id": "RepairKit",
-          "type": "资源",
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
           "name": "15 高级导弹诱饵",
           "probability": 8.0,
           "limit": 0,
-          "id": "MissileDecoy",
-          "type": "资源",
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
           "name": "10 高级机载导弹诱饵",
           "probability": 8.0,
           "limit": 0,
-          "id": "MissileDecoy",
-          "type": "资源",
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -373,7 +373,7 @@
           "probability": 8.9,
           "limit": 0,
           "id": "TankSmokeBombs",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {

@@ -250,7 +250,7 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png`
   }
 
-  // 特殊道具：导弹诱饵（在 common-items 目录下）
+  // 特殊战斗增益：导弹诱饵（在 common-items 目录下）
   if (item.id === 'MissileDecoy') {
     return `${CDN_BASE_URL}/assets/common-items/MissileDecoy.png`
   }

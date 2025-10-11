@@ -38,8 +38,8 @@
       "name": "5 高级修理包",
       "probability": 3.0,
       "limit": 0,
-      "id": "RepairKit",
-      "type": "资源",
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {
@@ -90,7 +90,7 @@
       "probability": 23.0,
       "limit": 0,
       "id": "TankSmokeBombs",
-      "type": "道具",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {

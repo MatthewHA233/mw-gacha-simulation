@@ -163,7 +163,7 @@ CDN_BASE_URL/
       "probability": 11.5,
       "limit": 0,
       "id": "PremiumRepairKit",
-      "type": "道具",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {
@@ -215,7 +215,7 @@ CDN_BASE_URL/
       "probability": 15.0,
       "limit": 0,
       "id": "TankSmokeBombs",
-      "type": "道具",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {

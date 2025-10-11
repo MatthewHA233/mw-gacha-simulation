@@ -34,8 +34,8 @@
           "name": "5 高级导弹诱饵",
           "probability": 22.0,
           "limit": 0,
-          "id": "MissileDecoy",
-          "type": "资源",
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -68,7 +68,7 @@
           "probability": 15.0,
           "limit": 0,
           "id": "EngineBoost",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -151,8 +151,8 @@
           "name": "5 高级修理包",
           "probability": 17.0,
           "limit": 0,
-          "id": "RepairKit",
-          "type": "资源",
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {

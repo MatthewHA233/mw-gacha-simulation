@@ -94,7 +94,7 @@
           "probability": 5.0,
           "limit": 0,
           "id": "Eventbooster",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         }
       ]
@@ -171,7 +171,7 @@
           "probability": 15.52,
           "limit": 0,
           "id": "Eventbooster",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {

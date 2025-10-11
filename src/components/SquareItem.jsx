@@ -98,7 +98,7 @@ export const SquareItem = ({
   // 根据类型调整图标大小
   const getIconSize = () => {
     if (type === '涂装' || type === '旗帜' || type === '头像') return 'max-w-[65%] max-h-[65%]';
-    if (type === '资源' || type === '道具') return 'max-w-[70%] max-h-[70%]';
+    if (type === '资源' || type === '战斗增益') return 'max-w-[70%] max-h-[70%]';
     return 'w-full h-full'; // 战舰、武器、鱼雷、导弹、称号等其他类型
   };
 

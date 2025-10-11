@@ -55,7 +55,7 @@
           "name": "5 高级导弹诱饵",
           "probability": 22,
           "rarity": "common",
-          "type": "道具"
+          "type": "战斗增益"
         },
         {
           "id": "EngineBoost",
@@ -63,7 +63,7 @@
           "name": "引擎过载",
           "probability": 15,
           "rarity": "common",
-          "type": "道具"
+          "type": "战斗增益"
         },
         {
           "id": "Hard",
@@ -148,7 +148,7 @@
           "name": "高级修理包",
           "probability": 17,
           "rarity": "common",
-          "type": "道具"
+          "type": "战斗增益"
         },
         {
           "id": "Artstorm",

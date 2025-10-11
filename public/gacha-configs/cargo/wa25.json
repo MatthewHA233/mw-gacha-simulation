@@ -44,8 +44,8 @@
           "name": "5 高级修理包",
           "probability": 30.0,
           "limit": 0,
-          "id": "RepairKit",
-          "type": "资源",
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -93,8 +93,8 @@
           "name": "7 高级导弹诱饵",
           "probability": 2.15,
           "limit": 0,
-          "id": "MissileDecoy",
-          "type": "资源",
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
           "rarity": "common"
         }
       ]
@@ -153,7 +153,7 @@
           "probability": 17.52,
           "limit": 0,
           "id": "ElectronicWarfare",
-          "type": "道具",
+          "type": "战斗增益",
           "rarity": "common"
         },
         {
