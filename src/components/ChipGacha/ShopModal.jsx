@@ -52,9 +52,9 @@ export function ShopModal({
       className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center"
       onClick={onClose}
     >
-      <div className="flex flex-col items-center gap-4" onClick={e => e.stopPropagation()}>
+      <div className="flex flex-col items-center gap-4 pointer-events-none">
         {/* 商品展示区域 */}
-        <div className="flex gap-6 px-8 scale-[0.6] md:scale-100">
+        <div className="flex gap-6 px-8 scale-[0.6] md:scale-100 pointer-events-auto">
           {shopPackages.map((pkg) => {
           const chipAdjustable = mode === 'chip' && typeof pkg.quantity === 'number' && typeof onUpdateQuantity === 'function'
           const flagshipAdjustable = mode === 'flagship' && pkg.id === topFlagshipId && typeof onUpdateQuantity === 'function'
@@ -206,7 +206,7 @@ export function ShopModal({
         </div>
 
         {/* 价格参考来源 */}
-        <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30">
+        <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto">
           价格参考来源：
           <a
             href="https://m.tb.cn/h.S6Gh2Ta?tk=xN9WfZpATH7"
