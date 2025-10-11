@@ -1188,10 +1188,10 @@ export function FlagshipGacha({
 
     setGameState(prev => ({
       ...prev,
-      commonCurrency: (prev.commonCurrency || 0) + 25
+      commonCurrency: (prev.commonCurrency || 0) + 150
     }))
 
-    toast.success('做完当日任务奖励25个钥匙', {
+    toast.success('做完6轮当日任务奖励150个钥匙', {
       duration: 2000,
       position: 'top-center',
       style: {
