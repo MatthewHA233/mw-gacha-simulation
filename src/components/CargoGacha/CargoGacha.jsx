@@ -1224,138 +1224,143 @@ export function CargoGacha({
         }}
       />
 
+      {/* 背景蒙版，提升前景对比度 */}
+      <div className="absolute inset-0 bg-black/35" />
+
       {/* 主内容区域 */}
-      <div className="relative z-10 h-full flex items-center justify-center px-12 gap-8 pb-64">
-        {/* 左侧：奖池选择标签 */}
-        <div className="flex flex-col gap-2 items-end mr-4">
-          {[
-            { type: 'rm', label: '机密货物' },
-            { type: 'gameplay', label: '货运无人机' }
-          ].map((tab) => (
-            <button
-              key={tab.type}
-              onClick={() => handleTabSelect(tab.type)}
-              className={`
-                relative w-32 py-2 font-bold text-base whitespace-nowrap transition-all text-right
-                ${selectedCargoType === tab.type
-                  ? 'text-emerald-400 scale-110'
-                  : 'text-white/50 hover:text-white/80 scale-100'
-                }
-              `}
-            >
-              {tab.label}
-              {selectedCargoType === tab.type && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute bottom-0 left-16 right-1 h-0.5 bg-emerald-400"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* 中间：物品网格 */}
-        <div className="flex flex-col items-center gap-4">
-          {/* 物品网格 */}
-          <div className="flex flex-col gap-2">
-            {/* 上排 4 个 */}
-            <div className="flex gap-2">
-              {getCurrentItems().slice(0, 4).map((item, i) => (
-                <SquareItem
-                  key={item.id || i}
-                  item={item}
-                  activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === item.id}
-                />
-              ))}
-            </div>
-
-            {/* 中间行：左1 + 提示文字 + 右1 */}
-            <div className="flex gap-2 items-center justify-between">
-              {getCurrentItems()[4] && (
-                <SquareItem
-                  item={getCurrentItems()[4]}
-                  activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === getCurrentItems()[4].id}
-                />
-              )}
-
-              <div className="flex-1 flex items-center justify-center px-4">
-                <p className="text-emerald-400 text-xs font-bold text-center leading-snug">
-                  开启{selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
-                  <br/>
-                  获取稀有及史诗级物品
-                </p>
-              </div>
-
-              {getCurrentItems()[5] && (
-                <SquareItem
-                  item={getCurrentItems()[5]}
-                  activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === getCurrentItems()[5].id}
-                />
-              )}
-            </div>
-
-            {/* 下排 4 个 */}
-            <div className="flex gap-2">
-              {getCurrentItems().slice(6, 10).map((item, i) => (
-                <SquareItem
-                  key={item.id || i + 6}
-                  item={item}
-                  activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === item.id}
-                />
+      <div className="relative z-10 h-full px-4 sm:px-6 lg:px-12 pt-4 sm:pt-8 pb-32 sm:pb-40 lg:pb-64">
+        <div className="mx-auto flex h-full w-full max-w-7xl flex-col lg:flex-row items-center lg:items-start justify-center gap-6 md:gap-8">
+          {/* 左侧：奖池选择标签 */}
+          <div className="order-1 lg:order-none w-full lg:w-auto flex justify-center lg:justify-start">
+            <div className="flex flex-row lg:flex-col items-center lg:items-end gap-2 sm:gap-3 p-2 sm:p-3 lg:py-4 rounded-full lg:rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-md shadow-[0_15px_35px_rgba(15,23,42,0.45)]">
+              {[
+                { type: 'rm', label: '机密货物' },
+                { type: 'gameplay', label: '货运无人机' }
+              ].map((tab) => (
+                <button
+                  key={tab.type}
+                  onClick={() => handleTabSelect(tab.type)}
+                  className={`relative min-w-[7.5rem] sm:min-w-[8.5rem] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all text-center lg:text-right border ${selectedCargoType === tab.type
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/60 shadow-[0_0_18px_rgba(16,185,129,0.45)] scale-105'
+                    : 'text-white/60 hover:text-white/80 border-white/10 hover:border-white/30'
+                  }`}
+                >
+                  {tab.label}
+                  {selectedCargoType === tab.type && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute -bottom-1 right-4 left-4 h-0.5 bg-emerald-400/80"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </button>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* 右侧：大图展示 */}
-        <div className="flex-1 flex justify-center items-center max-w-xl self-start pt-12">
-          {/* 图片容器 */}
-          <motion.div
-            key={selectedCargoType}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="relative"
-          >
-            {/* 提示文字 - 悬浮在图片左上区域 */}
-            <motion.p
-              key={`text-${selectedCargoType}`}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+          {/* 中间：物品网格 */}
+          <div className="order-2 flex w-full justify-center">
+            <div className="flex flex-col items-center gap-2 sm:gap-3 origin-center scale-[0.68] sm:scale-90 md:scale-95 lg:scale-100">
+              {/* 上排 4 个 */}
+              <div className="flex gap-2 sm:gap-3">
+                {getCurrentItems().slice(0, 4).map((item, i) => (
+                  <SquareItem
+                    key={item.id || i}
+                    item={item}
+                    activityConfig={activityConfig}
+                    isHighlighted={highlightedItemId === item.id}
+                  />
+                ))}
+              </div>
+
+              {/* 中间行：左1 + 提示文字 + 右1 */}
+              <div className="flex w-full items-center justify-between gap-2 sm:gap-3">
+                {getCurrentItems()[4] && (
+                  <SquareItem
+                    item={getCurrentItems()[4]}
+                    activityConfig={activityConfig}
+                    isHighlighted={highlightedItemId === getCurrentItems()[4].id}
+                  />
+                )}
+
+                <div className="flex-1 flex items-center justify-center px-2 sm:px-4">
+                  <p className="text-emerald-400 text-[10px] sm:text-xs font-bold text-center leading-snug">
+                    开启{selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
+                    <br/>
+                    获取稀有及史诗级物品
+                  </p>
+                </div>
+
+                {getCurrentItems()[5] && (
+                  <SquareItem
+                    item={getCurrentItems()[5]}
+                    activityConfig={activityConfig}
+                    isHighlighted={highlightedItemId === getCurrentItems()[5].id}
+                  />
+                )}
+              </div>
+
+              {/* 下排 4 个 */}
+              <div className="flex gap-2 sm:gap-3">
+                {getCurrentItems().slice(6, 10).map((item, i) => (
+                  <SquareItem
+                    key={item.id || i + 6}
+                    item={item}
+                    activityConfig={activityConfig}
+                    isHighlighted={highlightedItemId === item.id}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 右侧：大图展示 */}
+          <div className="order-3 lg:order-none w-full lg:flex-1 flex justify-center items-center pt-6 lg:pt-12">
+            {/* 图片容器 */}
+            <motion.div
+              key={selectedCargoType}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className={`absolute text-white text-lg font-bold drop-shadow-lg z-10 whitespace-nowrap ${
-                selectedCargoType === 'rm' ? 'top-16 left-16' : 'top-8 left-8'
-              }`}
+              className="relative w-full max-w-[420px] sm:max-w-[520px] lg:max-w-none"
             >
-              {selectedCargoType === 'gameplay'
-                ? '使用无人机电池启动货运无人机，以获取炫酷奖励！'
-                : '开启机密货物，以获取稀有及史诗级物品！'}
-            </motion.p>
+              {/* 提示文字 - 悬浮在图片左上区域 */}
+              <motion.p
+                key={`text-${selectedCargoType}`}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`absolute text-white text-sm sm:text-base lg:text-lg font-bold drop-shadow-lg z-10 whitespace-nowrap ${
+                  selectedCargoType === 'rm'
+                    ? 'top-6 left-6 sm:top-10 sm:left-12 lg:top-16 lg:left-16'
+                    : 'top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8'
+                }`}
+              >
+                {selectedCargoType === 'gameplay'
+                  ? '使用无人机电池启动货运无人机，以获取炫酷奖励！'
+                  : '开启机密货物，以获取稀有及史诗级物品！'}
+              </motion.p>
 
-            <img
-              src={poolImageUrl}
-              alt={selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
-              className="w-full h-auto object-contain drop-shadow-2xl"
-            />
-          </motion.div>
+              <img
+                src={poolImageUrl}
+                alt={selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
+                className="w-full h-auto object-contain drop-shadow-2xl"
+              />
+            </motion.div>
+          </div>
         </div>
       </div>
 
       {/* 底部：抽奖按钮区域 */}
-      <div className="absolute bottom-24 left-0 right-0 flex justify-center items-center z-20">
-        <div className="flex flex-wrap gap-2 md:gap-8 justify-center">
+      <div className="absolute left-0 right-0 bottom-8 sm:bottom-12 md:bottom-16 lg:bottom-24 flex justify-center items-center z-20 px-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4 md:gap-6 lg:gap-8 justify-center">
           {/* 抽奖 x1 */}
           <button
             onClick={handleSingleDraw}
             className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-3 sm:px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
               抽奖 ×1
             </span>
           </button>
@@ -1366,7 +1371,7 @@ export function CargoGacha({
             className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-3 sm:px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
               抽奖 ×10
             </span>
           </button>
@@ -1378,7 +1383,7 @@ export function CargoGacha({
             className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 sm:px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
               抽奖 ×100
             </span>
           </button>
@@ -1390,7 +1395,7 @@ export function CargoGacha({
             className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 sm:px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
               抽奖 ×500
             </span>
           </button>
