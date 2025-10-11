@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import { Sidebar } from '../components/Layout/Sidebar'
 import { Header } from '../components/Layout/Header'
 import { ChipGacha } from '../components/ChipGacha/ChipGacha'
+import { CargoGacha } from '../components/CargoGacha/CargoGacha'
 import { FlagshipGacha } from '../components/FlagshipGacha/FlagshipGacha'
 
 /**
@@ -69,18 +70,12 @@ export function GachaPage() {
         )
       case 'cargo':
         return (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-black">
-            <div className="text-center space-y-6">
-              <h1 className="text-white text-3xl md:text-4xl font-bold">机密货物类抽卡</h1>
-              <p className="text-white/60 text-lg md:text-xl">功能开发中，敬请期待...</p>
-              <button
-                onClick={() => navigate('/gacha/chip/ag97')}
-                className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg font-bold transition-colors"
-              >
-                返回主页
-              </button>
-            </div>
-          </div>
+          <CargoGacha
+            activityId={activityId}
+            sponsorModal={sponsorModal}
+            onSetSponsorModal={setSponsorModal}
+            onUpdateHeader={setHeaderData}
+          />
         )
       case 'flagship':
         return (
@@ -150,23 +145,22 @@ export function GachaPage() {
         {/* 主内容区 */}
         <div className="overflow-hidden relative flex-1">
           {/* 统一的顶部导航栏 */}
-          {type !== 'cargo' && (
-            <Header
-              activityId={activityId}
-              activityConfig={headerData.activityConfig}
-              sidebarOpen={sidebarOpen}
-              onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-              onOpenInfo={headerData.onOpenInfo}
-              onOpenSponsor={() => setSponsorModal(true)}
-              onOpenShop={headerData.onOpenShop}
-              onResetData={headerData.onResetData}
-              onAddCommonKeys={headerData.onAddCommonKeys}
-              gameState={headerData.gameState}
-              activityName={headerData.activityName}
-              activityNameEn={headerData.activityNameEn}
-              isModalOpen={headerData.isModalOpen}
-            />
-          )}
+          <Header
+            activityId={activityId}
+            activityConfig={headerData.activityConfig}
+            sidebarOpen={sidebarOpen}
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            onOpenInfo={headerData.onOpenInfo}
+            onOpenSponsor={() => setSponsorModal(true)}
+            onOpenShop={headerData.onOpenShop}
+            onResetData={headerData.onResetData}
+            onAddCommonKeys={headerData.onAddCommonKeys}
+            onAddBatteries={headerData.onAddBatteries}
+            gameState={headerData.gameState}
+            activityName={headerData.activityName}
+            activityNameEn={headerData.activityNameEn}
+            isModalOpen={headerData.isModalOpen}
+          />
 
           {/* 抽卡组件内容 */}
           {renderGachaComponent()}
