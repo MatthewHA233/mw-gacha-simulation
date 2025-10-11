@@ -238,10 +238,28 @@ export function CargoGacha({
   }
 
   // ========== 抽奖核心逻辑 ==========
-  const drawLottery = (customItems = null) => {
+  const drawLottery = (customItems = null, customCounter = null) => {
     const suffix = selectedCargoType === 'rm' ? '' : '_else'
     const itemsKey = suffix ? `items${suffix}` : 'items'
+    const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
     const items = customItems || gameState[itemsKey]
+
+    // 保底机制：机密货物1150抽，货运无人机950抽
+    const guaranteeThreshold = selectedCargoType === 'rm' ? 1150 : 950
+    const currentCounter = customCounter !== null ? customCounter : (gameState[guaranteeCounterKey] || 0)
+
+    // 检查是否达到保底（在保底抽数-1时触发，因为计数器从0开始）
+    if (currentCounter >= guaranteeThreshold - 1) {
+      // 强制抽出头奖物品（items[0]）
+      const prizeItem = items[0]
+      // 检查头奖是否还能抽取
+      if (prizeItem && (prizeItem.limit === 0 || prizeItem.obtained < prizeItem.limit)) {
+        console.log(`[CargoGacha] 触发保底机制！强制抽出头奖: ${prizeItem.name}`)
+        return prizeItem
+      }
+      // 如果头奖已达上限，正常抽取
+      console.log(`[CargoGacha] 头奖已达上限，保底失效，正常抽取`)
+    }
 
     const availableItems = items.filter(item =>
       item.limit === 0 || item.obtained < item.limit
@@ -611,6 +629,7 @@ export function CargoGacha({
           const rareCountKey = suffix ? `rareCount${suffix}` : 'rareCount'
           const historyKey = suffix ? `history${suffix}` : 'history'
           const epicLegendaryHistoryKey = suffix ? `epicLegendaryHistory${suffix}` : 'epicLegendaryHistory'
+          const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
 
           setGameState(prev => {
             const updatedItems = prev[itemsKey].map(item => {
@@ -626,6 +645,21 @@ export function CargoGacha({
             let updatedLegendaryCount = prev[legendaryCountKey]
             let updatedRareCount = prev[rareCountKey]
             let updatedEpicLegendaryHistory = [...prev[epicLegendaryHistoryKey]]
+
+            // 检查是否抽中头奖（items[0]）
+            const prizeItem = prev[itemsKey][0]
+            const isPrizeItem = prizeItem && result.name === prizeItem.name && result.id === prizeItem.id
+
+            // 更新保底计数器
+            let updatedGuaranteeCounter = prev[guaranteeCounterKey] || 0
+            if (isPrizeItem) {
+              // 抽中头奖，重置保底计数器
+              updatedGuaranteeCounter = 0
+              console.log(`[CargoGacha] 抽中头奖，重置保底计数器`)
+            } else {
+              // 未抽中头奖，增加保底计数器
+              updatedGuaranteeCounter++
+            }
 
             if (result.rarity === 'legendary') {
               updatedLegendaryCount++
@@ -654,7 +688,8 @@ export function CargoGacha({
               [legendaryCountKey]: updatedLegendaryCount,
               [rareCountKey]: updatedRareCount,
               [historyKey]: [...prev[historyKey], result],
-              [epicLegendaryHistoryKey]: updatedEpicLegendaryHistory
+              [epicLegendaryHistoryKey]: updatedEpicLegendaryHistory,
+              [guaranteeCounterKey]: updatedGuaranteeCounter
             }
           })
 
@@ -724,6 +759,7 @@ export function CargoGacha({
       const rareCountKey = suffix ? `rareCount${suffix}` : 'rareCount'
       const historyKey = suffix ? `history${suffix}` : 'history'
       const epicLegendaryHistoryKey = suffix ? `epicLegendaryHistory${suffix}` : 'epicLegendaryHistory'
+      const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
 
       const results = []
       let tempGameState = { ...gameState }
@@ -731,10 +767,14 @@ export function CargoGacha({
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 10
 
       for (let i = 0; i < 10; i++) {
-        const result = drawLottery(tempGameState[itemsKey])
+        const result = drawLottery(tempGameState[itemsKey], tempGameState[guaranteeCounterKey])
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+
+        // 检查是否抽中头奖
+        const prizeItem = tempGameState[itemsKey][0]
+        const isPrizeItem = prizeItem && result.name === prizeItem.name && result.id === prizeItem.id
 
         tempGameState = {
           ...tempGameState,
@@ -745,6 +785,13 @@ export function CargoGacha({
             }
             return item
           })
+        }
+
+        // 更新保底计数器
+        if (isPrizeItem) {
+          tempGameState[guaranteeCounterKey] = 0
+        } else {
+          tempGameState[guaranteeCounterKey] = (tempGameState[guaranteeCounterKey] || 0) + 1
         }
 
         if (result.rarity === 'legendary') {
@@ -844,6 +891,7 @@ export function CargoGacha({
       const rareCountKey = suffix ? `rareCount${suffix}` : 'rareCount'
       const historyKey = suffix ? `history${suffix}` : 'history'
       const epicLegendaryHistoryKey = suffix ? `epicLegendaryHistory${suffix}` : 'epicLegendaryHistory'
+      const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
 
       const results = []
       let tempGameState = { ...gameState }
@@ -851,10 +899,14 @@ export function CargoGacha({
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 100
 
       for (let i = 0; i < 100; i++) {
-        const result = drawLottery(tempGameState[itemsKey])
+        const result = drawLottery(tempGameState[itemsKey], tempGameState[guaranteeCounterKey])
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+
+        // 检查是否抽中头奖
+        const prizeItem = tempGameState[itemsKey][0]
+        const isPrizeItem = prizeItem && result.name === prizeItem.name && result.id === prizeItem.id
 
         tempGameState = {
           ...tempGameState,
@@ -865,6 +917,13 @@ export function CargoGacha({
             }
             return item
           })
+        }
+
+        // 更新保底计数器
+        if (isPrizeItem) {
+          tempGameState[guaranteeCounterKey] = 0
+        } else {
+          tempGameState[guaranteeCounterKey] = (tempGameState[guaranteeCounterKey] || 0) + 1
         }
 
         if (result.rarity === 'legendary') {
@@ -967,6 +1026,7 @@ export function CargoGacha({
       const rareCountKey = suffix ? `rareCount${suffix}` : 'rareCount'
       const historyKey = suffix ? `history${suffix}` : 'history'
       const epicLegendaryHistoryKey = suffix ? `epicLegendaryHistory${suffix}` : 'epicLegendaryHistory'
+      const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
 
       const results = []
       let tempGameState = { ...gameState }
@@ -974,10 +1034,14 @@ export function CargoGacha({
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 500
 
       for (let i = 0; i < 500; i++) {
-        const result = drawLottery(tempGameState[itemsKey])
+        const result = drawLottery(tempGameState[itemsKey], tempGameState[guaranteeCounterKey])
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+
+        // 检查是否抽中头奖
+        const prizeItem = tempGameState[itemsKey][0]
+        const isPrizeItem = prizeItem && result.name === prizeItem.name && result.id === prizeItem.id
 
         tempGameState = {
           ...tempGameState,
@@ -988,6 +1052,13 @@ export function CargoGacha({
             }
             return item
           })
+        }
+
+        // 更新保底计数器
+        if (isPrizeItem) {
+          tempGameState[guaranteeCounterKey] = 0
+        } else {
+          tempGameState[guaranteeCounterKey] = (tempGameState[guaranteeCounterKey] || 0) + 1
         }
 
         if (result.rarity === 'legendary') {
@@ -1302,11 +1373,26 @@ export function CargoGacha({
               )}
 
               <div className="flex-1 flex items-center justify-center px-4">
-                <p className="text-emerald-400 text-xs font-bold text-center leading-snug">
-                  开启{selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
-                  <br/>
-                  获取稀有及史诗级物品
-                </p>
+                {(() => {
+                  const currentItems = getCurrentItems()
+                  const prizeItem = currentItems[0] // 头奖物品
+                  const suffix = selectedCargoType === 'rm' ? '' : '_else'
+                  const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
+                  const guaranteeThreshold = selectedCargoType === 'rm' ? 1150 : 950
+                  const currentCounter = gameState[guaranteeCounterKey] || 0
+                  const remainingDraws = guaranteeThreshold - currentCounter
+
+                  // 检查头奖是否已获得（达到上限）
+                  const isPrizeObtained = prizeItem && prizeItem.limit > 0 && prizeItem.obtained >= prizeItem.limit
+
+                  return (
+                    <p className="text-emerald-400 text-xs font-bold text-center leading-snug">
+                      {prizeItem ? prizeItem.name : '头奖物品'}
+                      <br/>
+                      {isPrizeObtained ? '已得到' : `在${remainingDraws}次抽奖后必得`}
+                    </p>
+                  )
+                })()}
               </div>
 
               {getCurrentItems()[5] && (

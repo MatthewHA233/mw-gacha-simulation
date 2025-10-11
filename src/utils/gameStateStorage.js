@@ -60,6 +60,7 @@ export function getDefaultGameState(gachaType = '筹码类') {
       history: [],
       epicLegendaryHistory: [],
       items: [],
+      guaranteeCounter: 0, // 机密货物保底计数器（1150抽保底）
       // 货运无人机数据（gameplay，使用 _else 尾缀）
       totalDraws_else: 0,
       legendaryCount_else: 0,
@@ -67,7 +68,8 @@ export function getDefaultGameState(gachaType = '筹码类') {
       rareCount_else: 0,
       history_else: [],
       epicLegendaryHistory_else: [],
-      items_else: []
+      items_else: [],
+      guaranteeCounter_else: 0 // 货运无人机保底计数器（950抽保底）
     }
   }
 
