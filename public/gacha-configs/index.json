@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "be97",
+      "gacha_type": "机密货物类",
+      "name": "诅咒之船",
+      "nameEn": "Cursed Crew",
+      "formattedDate": "2025年10月"
+    },
+    {
       "id": "ag97",
       "gacha_type": "筹码类",
       "name": "暗影交易",
@@ -22,6 +29,13 @@
       "nameEn": "Operation Jackpot"
     },
     {
+      "id": "be96",
+      "gacha_type": "机密货物类",
+      "name": "自由之光",
+      "formattedDate": "2025年9月",
+      "nameEn": "Lights of Liberty"
+    },
+    {
       "id": "fw25",
       "gacha_type": "筹码类",
       "name": "梦幻之战",
@@ -34,6 +48,13 @@
       "name": "荣耀之力",
       "formattedDate": "2025年8月",
       "nameEn": "Honor and Power"
+    },
+    {
+      "id": "bf25",
+      "gacha_type": "机密货物类",
+      "name": "自由之息",
+      "formattedDate": "2025年8月",
+      "nameEn": "Breath of Freedom"
     },
     {
       "id": "lm25",
@@ -51,6 +72,15 @@
       "nameEn": "Stars of the Fleet"
     },
     {
+      "id": "wd25",
+      "gacha_type": "机密货物类",
+      "name": "深海守望",
+      "formattedDate": "2025年7月",
+      "nameEn": "Wardens of the Deep",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_gameplay_wd25.webp?v=9bf006c1",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_rm_wd25.webp?v=334ea9ca"
+    },
+    {
       "id": "ms25",
       "gacha_type": "筹码类",
       "name": "黑帮之影",
@@ -59,12 +89,39 @@
       "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_ms25.webp?v=81603138"
     },
     {
+      "id": "ph25",
+      "gacha_type": "机密货物类",
+      "name": "幻影狩猎",
+      "formattedDate": "2025年6月",
+      "nameEn": "Phantom Hunt",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_gameplay_ph25.webp?v=ffa0394b",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_rm_ph25.webp?v=94634ebd"
+    },
+    {
       "id": "rf25",
       "gacha_type": "筹码类",
       "name": "狂怒律动",
       "formattedDate": "2025年5月",
       "nameEn": "Rhythm of Fury",
       "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_rf25.webp?v=37f64842"
+    },
+    {
+      "id": "ps25",
+      "gacha_type": "机密货物类",
+      "name": "海上瘟疫",
+      "formattedDate": "2025年4月",
+      "nameEn": "Plague of the Seas",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_gameplay_ps25.webp?v=fb11a842",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/bigevent_currency_gacha_rm_ps25.webp?v=88ed96e5"
+    },
+    {
+      "id": "wa25",
+      "gacha_type": "机密货物类",
+      "name": "深渊之怒",
+      "formattedDate": "2025年4月",
+      "nameEn": "Wrath of the Abyss",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_wa25.webp?v=f7a9e202",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_wa25.webp?v=f7602a2a"
     },
     {
       "id": "pf25",
@@ -76,12 +133,39 @@
       "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_pf25.webp?v=8cacbb22"
     },
     {
+      "id": "lfp25",
+      "gacha_type": "机密货物类",
+      "name": "新春阅舰",
+      "formattedDate": "2025年2月",
+      "nameEn": "Lunar Fleet Parade",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_lfp25.webp?v=7ee13649",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_lfp25.webp?v=34928292"
+    },
+    {
       "id": "be25",
       "gacha_type": "筹码类",
       "name": "战争回声",
       "formattedDate": "2025年1月",
       "nameEn": "Battle’s Echo",
       "image": "https://mwstats.info/images/gacha-preview/activity_c_be25_background.jpg?v=e9d95635"
+    },
+    {
+      "id": "sj25",
+      "gacha_type": "机密货物类",
+      "name": "正义风暴",
+      "formattedDate": "2025年1月",
+      "nameEn": "Storm of Justice",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sj25.webp?v=e4f97c62",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sj25.webp?v=c9befcb2"
+    },
+    {
+      "id": "fp24",
+      "gacha_type": "机密货物类",
+      "name": "节日巡航",
+      "formattedDate": "2024年12月",
+      "nameEn": "Festive Patrol",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_fp24.webp?v=037363c6",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_fp24.webp?v=ac624d74"
     },
     {
       "id": "bf24",
@@ -93,6 +177,15 @@
       "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bf24.webp?v=40bbfdc8"
     },
     {
+      "id": "al24",
+      "gacha_type": "机密货物类",
+      "name": "古代遗产",
+      "formattedDate": "2024年11月",
+      "nameEn": "Ancient Legacy",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_al24.webp?v=96bc7d39",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_al24.webp?v=ab2c262c"
+    },
+    {
       "id": "cc24",
       "gacha_type": "筹码类",
       "name": "混乱嘉年华",
@@ -100,6 +193,42 @@
       "nameEn": "Carnival of Chaos",
       "image": "https://mwstats.info/images/gacha-preview/gacha_c_cc24.jpg?v=52e25ddd",
       "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_cc24.webp?v=1d21ba87"
+    },
+    {
+      "id": "ps24",
+      "gacha_type": "机密货物类",
+      "name": "行星围攻",
+      "formattedDate": "2024年10月",
+      "nameEn": "Planetary Siege",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_ps24.webp?v=7be16b3d",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_ps24.webp?v=a6b2ceec"
+    },
+    {
+      "id": "az24",
+      "gacha_type": "机密货物类",
+      "name": "未知世界",
+      "formattedDate": "2024年8月",
+      "nameEn": "Unknown World",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_az24.webp?v=a4eb01d3",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_az24.webp?v=8dde519d"
+    },
+    {
+      "id": "sph24",
+      "gacha_type": "机密货物类",
+      "name": "Secret of Pharaoh",
+      "formattedDate": "2024年7月",
+      "nameEn": "Secret of Pharaoh",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sph24.webp?v=8e1f3950",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sph24.webp?v=bbab669e"
+    },
+    {
+      "id": "bfe24",
+      "gacha_type": "机密货物类",
+      "name": "Unidentified threat",
+      "formattedDate": "2024年5月",
+      "nameEn": "Unidentified threat",
+      "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_bfe24.webp?v=673f4294",
+      "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bfe24.webp?v=dc12d013"
     }
   ]
 }
