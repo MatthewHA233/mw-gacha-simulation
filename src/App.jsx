@@ -14,12 +14,12 @@ function App() {
           <Analytics />
 
           <Routes>
-            <Route path="/" element={<Navigate to="/gacha/chip/be97" replace />} />
+            <Route path="/" element={<Navigate to="/gacha/cargo/be97" replace />} />
             <Route path="/test" element={<Navigate to="/test/lootbox-animation" replace />} />
             <Route path="/test/lootbox-animation" element={<LootboxAnimationDemo />} />
             <Route path="/test/milestone-toast" element={<MilestoneToastDemo />} />
             <Route path="/gacha/:type/:activityId" element={<GachaPage />} />
-            <Route path="*" element={<Navigate to="/gacha/chip/ag97" replace />} />
+            <Route path="*" element={<Navigate to="/gacha/cargo/be97" replace />} />
           </Routes>
         </div>
       </MilestoneToastProvider>
