@@ -14,7 +14,7 @@ function getStorageKey(activityId) {
 
 /**
  * 获取活动的初始状态
- * @param {string} gachaType - 抽卡类型：'筹码类' 或 '旗舰宝箱类'
+ * @param {string} gachaType - 抽卡类型：'筹码类' 或 '旗舰宝箱类' 或 '机密货物类'
  */
 export function getDefaultGameState(gachaType = '筹码类') {
   if (gachaType === '旗舰宝箱类') {
@@ -33,6 +33,34 @@ export function getDefaultGameState(gachaType = '筹码类') {
       epicLegendaryHistory: [],
       items: [],
       // 普通宝箱数据（使用 _else 尾缀）
+      totalDraws_else: 0,
+      legendaryCount_else: 0,
+      epicCount_else: 0,
+      rareCount_else: 0,
+      history_else: [],
+      epicLegendaryHistory_else: [],
+      items_else: []
+    }
+  }
+
+  if (gachaType === '机密货物类') {
+    return {
+      currency: 30, // 授权密钥（对应机密货物 rm）
+      currencyName: "授权密钥",
+      commonCurrency: 3000, // 无人机电池（对应货运无人机 gameplay）
+      commonCurrencyName: "无人机电池",
+      rmb: -25,
+      singleCost: 1, // 授权密钥每抽消耗1
+      singleCost_else: 30, // 无人机电池每抽消耗30
+      // 机密货物数据（rm）
+      totalDraws: 0,
+      legendaryCount: 0,
+      epicCount: 0,
+      rareCount: 0,
+      history: [],
+      epicLegendaryHistory: [],
+      items: [],
+      // 货运无人机数据（gameplay，使用 _else 尾缀）
       totalDraws_else: 0,
       legendaryCount_else: 0,
       epicCount_else: 0,

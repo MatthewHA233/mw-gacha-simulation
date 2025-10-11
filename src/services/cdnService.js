@@ -86,7 +86,7 @@ export function buildConfigUrl(gachaType, activityId) {
 }
 
 /**
- * 构建活动 Widget 图片 URL
+ * 构建活动 Widget 图片 URL（侧边栏预览图）
  * @param {string|Object} activityIdOrConfig - 活动ID 或活动配置对象
  * @returns {string} Widget 图片 URL
  */
@@ -111,7 +111,12 @@ export function buildWidgetUrl(activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_widget.png`
   }
 
-  // 其他类型使用默认格式
+  // 机密货物类使用特殊格式
+  if (gachaType === '机密货物类') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_widget.png`
+  }
+
+  // 筹码类使用默认格式
   return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png`
 }
 
@@ -170,8 +175,23 @@ export function buildResultBackgroundUrl(activityId) {
 export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
   // 如果传入的是对象
   if (typeof activityIdOrConfig === 'object') {
-    // 优先使用 metadata.{currencyId}_image（如：currency_gachacoins_image）
     const imageKey = `${currencyId}_image`
+
+    // 机密货物类：从 cargos 数组中查找对应货币的图片
+    if (currencyId === 'bigevent_currency_gacha_gameplay' || currencyId === 'bigevent_currency_gacha_rm') {
+      if (activityIdOrConfig?.cargos && Array.isArray(activityIdOrConfig.cargos)) {
+        // 根据货币类型确定要查找的 cargo 类型
+        const cargoType = currencyId === 'bigevent_currency_gacha_gameplay' ? 'gameplay' : 'rm'
+        // 在 cargos 数组中查找对应类型的 cargo
+        const cargo = activityIdOrConfig.cargos.find(c => c.type === cargoType)
+        // 如果找到且有自定义图片，使用自定义图片
+        if (cargo?.metadata?.[imageKey]) {
+          return cargo.metadata[imageKey]
+        }
+      }
+    }
+
+    // 筹码类/旗舰宝箱类：优先使用 metadata.{currencyId}_image
     if (activityIdOrConfig?.metadata?.[imageKey]) {
       return activityIdOrConfig.metadata[imageKey]
     }
@@ -213,9 +233,10 @@ export function buildShopPackageUrl(activityId, packageId) {
 export function buildItemImageUrl(item, activityIdOrConfig) {
   if (!item.id) return null
 
-  // 特殊情况：货币类物品（以 currency_ 开头）
-  // 例如：currency_gachacoins（筹码）、currency_premium_lootboxkey（旗舰钥匙）、currency_common_lootboxkey（钥匙）
-  if (item.id.startsWith('currency_')) {
+  // 特殊情况：货币类物品
+  // 1. currency_ 开头：currency_gachacoins（筹码）、currency_premium_lootboxkey（旗舰钥匙）、currency_common_lootboxkey（钥匙）
+  // 2. bigevent_currency_ 开头：bigevent_currency_gacha_rm（授权密钥）、bigevent_currency_gacha_gameplay（无人机电池）
+  if (item.id.startsWith('currency_') || item.id.startsWith('bigevent_currency_')) {
     return buildCurrencyIconUrl(item.id, activityIdOrConfig)
   }
 
