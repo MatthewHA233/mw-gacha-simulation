@@ -19,11 +19,21 @@ export function ShopModal({
 }) {
   if (!isOpen) return null
 
+  // 根据活动类型选择正确的货币ID
+  const isSpType = activityConfig?.gacha_type === '无人机补给类'
+
   const currencyIconUrl = mode === 'flagship'
     ? buildCurrencyIconUrl('currency_premium_lootboxkey', activityConfig)
     : mode === 'cargo'
-    ? buildCurrencyIconUrl('bigevent_currency_gacha_rm', activityConfig)
+    ? buildCurrencyIconUrl(isSpType ? 'Authorization_Key' : 'bigevent_currency_gacha_rm', activityConfig)
     : buildCurrencyIconUrl('currency_gachacoins', activityConfig)
+
+  // 货币名称
+  const currencyName = mode === 'flagship'
+    ? '旗舰钥匙'
+    : mode === 'cargo'
+    ? (isSpType ? '开锁器' : '授权密钥')
+    : '筹码'
 
   // 识别旗舰模式的“最高购买档位”（用 coins 最大的包）
   let topFlagshipId = null
@@ -78,7 +88,10 @@ export function ShopModal({
                 {mode === 'flagship'
                   ? (pkg.id === 1 ? '少量旗舰钥匙' : pkg.id === 2 ? '一套旗舰钥匙' : '一箱旗舰钥匙')
                   : mode === 'cargo'
-                  ? (pkg.id === 1 ? '一组授权密钥' : pkg.id === 2 ? '一包授权密钥' : '一箱授权密钥')
+                  ? (isSpType
+                    ? (pkg.id === 1 ? '一组开锁器' : pkg.id === 2 ? '一包开锁器' : '一箱开锁器')
+                    : (pkg.id === 1 ? '一组授权密钥' : pkg.id === 2 ? '一包授权密钥' : '一箱授权密钥')
+                  )
                   : (pkg.id === 1 ? '一组筹码' : pkg.id === 2 ? '一盒筹码' : pkg.id === 3 ? '一箱筹码' : '两箱筹码')
                 }
               </div>
@@ -114,7 +127,7 @@ export function ShopModal({
 
                 <img
                   src={pkg.image}
-                  alt={mode === 'flagship' ? `${pkg.coins}旗舰钥匙` : `${pkg.coins}筹码`}
+                  alt={mode === 'flagship' ? `${pkg.coins}旗舰钥匙` : mode === 'cargo' ? `${pkg.coins}${currencyName}` : `${pkg.coins}筹码`}
                   className={mode === 'flagship'
                     ? 'w-full h-full object-cover object-center'
                     : 'max-h-full object-contain group-hover:scale-110 transition-transform'
@@ -168,7 +181,7 @@ export function ShopModal({
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <img
                     src={currencyIconUrl}
-                    alt={mode === 'flagship' ? '旗舰钥匙' : '筹码'}
+                    alt={currencyName}
                     className="w-5 h-5"
                   />
                   <span className="text-white font-bold text-lg">
