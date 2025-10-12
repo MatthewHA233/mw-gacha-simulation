@@ -3,7 +3,7 @@
  * 为每个活动独立存储数据
  */
 
-import { APP_VERSION } from './version'
+import { getAppVersion } from './version'
 
 const STORAGE_KEY_PREFIX = 'mw_gacha_state_'
 const VERSION_KEY = 'mw_gacha_app_version'
@@ -186,12 +186,10 @@ export function saveVersion(version) {
 export function checkAndResetIfNeeded() {
   try {
     const storedVersion = getStoredVersion()
+    const currentVersion = getAppVersion()
 
     // 如果版本不匹配，执行强制重置
-    if (storedVersion !== APP_VERSION) {
-      console.log(`版本更新检测: ${storedVersion || '初次访问'} -> ${APP_VERSION}`)
-      console.log('执行数据重置...')
-
+    if (storedVersion !== currentVersion) {
       // 清除所有游戏数据
       clearAllGameStates()
 
@@ -204,27 +202,18 @@ export function checkAndResetIfNeeded() {
       localStorage.removeItem(musicKey)
 
       // 更新版本号
-      saveVersion(APP_VERSION)
-
-      console.log('数据重置完成')
-
-      // 设置一个临时标记，用于显示 Toast
-      sessionStorage.setItem('mw_gacha_version_updated', JSON.stringify({
-        newVersion: APP_VERSION,
-        oldVersion: storedVersion || '初次访问'
-      }))
+      saveVersion(currentVersion)
 
       return {
         wasReset: true,
-        newVersion: APP_VERSION,
+        newVersion: currentVersion,
         oldVersion: storedVersion || '初次访问'
       }
     }
 
-    console.log(`当前版本: ${APP_VERSION}（无需重置）`)
     return null
   } catch (error) {
-    console.error('版本检查失败:', error)
+    console.error('Version check failed:', error)
     return null
   }
 }
