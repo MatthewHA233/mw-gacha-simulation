@@ -59,11 +59,11 @@ export function CargoGacha({
 
         const config = await loadActivityConfig('cargo', activityId)
 
-        // 保存完整的活动配置
+        // 保存完整的活动配置（保留原始 gacha_type）
         const fullConfig = {
-          ...config,
           id: activityId,
-          gacha_type: '机密货物类'
+          gacha_type: config.gacha_type || '机密货物类',
+          ...config
         }
         setActivityConfig(fullConfig)
 
@@ -193,18 +193,20 @@ export function CargoGacha({
     canSkip: false
   })
 
-  // 添加电池的处理函数
+  // 添加电池/遥控器的处理函数
   const handleAddBatteries = () => {
     playSound('Buy_01_UI.Buy_01_UI.wav')
 
     const batteriesToAdd = 450
+    const isSpType = activityConfig.gacha_type === '无人机补给类'
+    const currencyName = isSpType ? '遥控器' : '电池'
 
     setGameState(prev => ({
       ...prev,
       commonCurrency: prev.commonCurrency + batteriesToAdd
     }))
 
-    toast.success(`已完成几轮任务，获得电池 ${batteriesToAdd}`, {
+    toast.success(`已完成几轮任务，获得${currencyName} ${batteriesToAdd}`, {
       duration: 2000,
       position: 'top-center',
       style: {
@@ -556,7 +558,11 @@ export function CargoGacha({
   const handleSingleDraw = () => {
     const suffix = selectedCargoType === 'rm' ? '' : '_else'
     const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
-    const currencyName = selectedCargoType === 'rm' ? '授权密钥' : '无人机电池'
+    // 根据活动类型动态获取货币名称
+    const isSpType = activityConfig.gacha_type === '无人机补给类'
+    const currencyName = selectedCargoType === 'rm'
+      ? (isSpType ? '开锁器' : '授权密钥')
+      : (isSpType ? '遥控器' : '无人机电池')
     const singleCost = gameState.singleCost
 
     if (gameState[currencyKey] < singleCost) {
@@ -728,7 +734,11 @@ export function CargoGacha({
   const handleMultiDraw = () => {
     const suffix = selectedCargoType === 'rm' ? '' : '_else'
     const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
-    const currencyName = selectedCargoType === 'rm' ? '授权密钥' : '无人机电池'
+    // 根据活动类型动态获取货币名称
+    const isSpType = activityConfig.gacha_type === '无人机补给类'
+    const currencyName = selectedCargoType === 'rm'
+      ? (isSpType ? '开锁器' : '授权密钥')
+      : (isSpType ? '遥控器' : '无人机电池')
 
     if (gameState[currencyKey] < 10) {
       toast.error(`${currencyName}不够，请充值`, {
@@ -860,7 +870,11 @@ export function CargoGacha({
   const handleDraw100 = () => {
     const suffix = selectedCargoType === 'rm' ? '' : '_else'
     const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
-    const currencyName = selectedCargoType === 'rm' ? '授权密钥' : '无人机电池'
+    // 根据活动类型动态获取货币名称
+    const isSpType = activityConfig.gacha_type === '无人机补给类'
+    const currencyName = selectedCargoType === 'rm'
+      ? (isSpType ? '开锁器' : '授权密钥')
+      : (isSpType ? '遥控器' : '无人机电池')
 
     if (gameState[currencyKey] < 100) {
       toast.error(`${currencyName}不够，请充值`, {
@@ -995,7 +1009,11 @@ export function CargoGacha({
   const handleDraw500 = () => {
     const suffix = selectedCargoType === 'rm' ? '' : '_else'
     const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
-    const currencyName = selectedCargoType === 'rm' ? '授权密钥' : '无人机电池'
+    // 根据活动类型动态获取货币名称
+    const isSpType = activityConfig.gacha_type === '无人机补给类'
+    const currencyName = selectedCargoType === 'rm'
+      ? (isSpType ? '开锁器' : '授权密钥')
+      : (isSpType ? '遥控器' : '无人机电池')
 
     if (gameState[currencyKey] < 500) {
       toast.error(`${currencyName}不够，请充值`, {
@@ -1301,10 +1319,16 @@ export function CargoGacha({
         {/* 左侧：奖池选择标签 */}
         <div className="flex justify-center lg:justify-start scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-x-12 translate-y-20 sm:-translate-x-6 sm:translate-y-0 md:translate-x-1 lg:translate-x-2 xl:translate-x-0">
           <div className="flex flex-col items-center gap-3 px-6 py-4 rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-md shadow-[0_15px_35px_rgba(15,23,42,0.45)]">
-            {[
-              { type: 'rm', label: '机密货物' },
-              { type: 'gameplay', label: '货运无人机' }
-            ].map((tab) => {
+            {(() => {
+              // 从 cargos 配置中读取标签名称
+              const rmCargo = activityConfig.cargos?.find(c => c.type === 'rm')
+              const gameplayCargo = activityConfig.cargos?.find(c => c.type === 'gameplay')
+
+              return [
+                { type: 'rm', label: rmCargo?.metadata?.name || '机密货物' },
+                { type: 'gameplay', label: gameplayCargo?.metadata?.name || '货运无人机' }
+              ]
+            })().map((tab) => {
               const isActive = selectedCargoType === tab.type
 
               return (
@@ -1438,14 +1462,29 @@ export function CargoGacha({
                 selectedCargoType === 'rm' ? 'top-[15%] left-6 sm:left-8 md:left-10 lg:left-12 xl:left-16' : 'top-[12%] left-3 sm:left-4 md:left-5 lg:left-6 xl:left-8'
               }`}
             >
-              {selectedCargoType === 'gameplay'
-                ? '使用无人机电池启动货运无人机，以获取炫酷奖励！'
-                : '开启机密货物，以获取稀有及史诗级物品！'}
+              {(() => {
+                // 从 cargos 配置中读取奖池名称
+                const cargo = activityConfig.cargos?.find(c => c.type === selectedCargoType)
+                const cargoName = cargo?.metadata?.name
+
+                // 根据活动类型和奖池类型生成文案
+                const isSpType = activityConfig.gacha_type === '无人机补给类'
+
+                if (selectedCargoType === 'gameplay') {
+                  const currencyName = isSpType ? '遥控器' : '无人机电池'
+                  return `使用${currencyName}启动${cargoName || '货运无人机'}，以获取炫酷奖励！`
+                } else {
+                  return `开启${cargoName || '机密货物'}，以获取稀有及史诗级物品！`
+                }
+              })()}
             </motion.p>
 
             <img
               src={poolImageUrl}
-              alt={selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物'}
+              alt={(() => {
+                const cargo = activityConfig.cargos?.find(c => c.type === selectedCargoType)
+                return cargo?.metadata?.name || (selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物')
+              })()}
               className="w-full h-auto min-w-[200px] object-contain drop-shadow-2xl"
             />
           </motion.div>
