@@ -76,33 +76,34 @@ export function useMilestoneTracker(totalRmb, storageKey) {
     }
 
     // 找出所有新达成的里程碑（按金额从小到大排序）
-    const newMilestones = MILESTONES
-      .filter(m =>
-        totalSpent >= m.amount &&
-        !triggeredMilestones.has(m.amount) &&
-        prevSpent < m.amount  // 只触发刚刚达成的（避免重复触发）
-      )
-      .sort((a, b) => a.amount - b.amount)  // 从小到大排序
-
-    if (newMilestones.length === 0) {
-      return
-    }
-
-    console.log(`[里程碑] 当前累计消耗: ¥${totalSpent}, 达成 ${newMilestones.length} 个新里程碑:`, newMilestones.map(m => `¥${m.amount}`).join(', '))
-
-    // 添加到队列
-    toastQueueRef.current.push(...newMilestones)
-
-    // 标记为已触发
+    // 使用函数式更新访问最新的 triggeredMilestones，避免将其加入依赖项
     setTriggeredMilestones(prev => {
+      const newMilestones = MILESTONES
+        .filter(m =>
+          totalSpent >= m.amount &&
+          !prev.has(m.amount) &&
+          prevSpent < m.amount  // 只触发刚刚达成的（避免重复触发）
+        )
+        .sort((a, b) => a.amount - b.amount)  // 从小到大排序
+
+      if (newMilestones.length === 0) {
+        return prev  // 没有新里程碑，直接返回
+      }
+
+      console.log(`[里程碑] 当前累计消耗: ¥${totalSpent}, 达成 ${newMilestones.length} 个新里程碑:`, newMilestones.map(m => `¥${m.amount}`).join(', '))
+
+      // 添加到队列
+      toastQueueRef.current.push(...newMilestones)
+
+      // 开始处理队列（只在确实有新里程碑时调用）
+      processToastQueue()
+
+      // 更新已触发的里程碑
       const updated = new Set(prev)
       newMilestones.forEach(m => updated.add(m.amount))
       return updated
     })
-
-    // 开始处理队列
-    processToastQueue()
-  }, [totalRmb, triggeredMilestones, showToast])
+  }, [totalRmb])  // 只依赖 totalRmb，showToast 在 processToastQueue 闭包中捕获
 
   // 重置已触发里程碑的函数
   const resetMilestones = () => {

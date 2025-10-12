@@ -78,9 +78,9 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
     <MilestoneToastContext.Provider value={{ showToast, closeToast, closeAll }}>
       {children}
 
-      {/* 渲染所有Toast（堆叠显示） - 支持手机横屏旋转 */}
+      {/* 渲染所有Toast（堆叠显示） - 支持手机横屏旋转 - z-index 高于 VersionModal */}
       <div
-        className="fixed pointer-events-none z-[100]"
+        className="fixed pointer-events-none z-[10000]"
         style={shouldRotate ? {
           width: '100vh',
           height: '100vw',
@@ -106,7 +106,7 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
               style={{
                 // 堆叠时稍微偏移，营造层叠效果
                 transform: `translateY(${index * -2}px)`,
-                zIndex: 100 + index
+                zIndex: 10000 + index
               }}
             >
               <MilestoneToast
