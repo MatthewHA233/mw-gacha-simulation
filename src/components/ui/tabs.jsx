@@ -28,7 +28,7 @@ export const Tabs = ({
             {active.value === tab.value && (
               <motion.div
                 layoutId="activetab"
-                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
                 className={cn(
                   "absolute inset-0 rounded-full",
                   activeTabClassName

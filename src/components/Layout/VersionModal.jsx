@@ -1,24 +1,37 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Github, Mail, Info, ChevronDown, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
-import {
-  APP_VERSION,
-  SITE_INFO,
-  VERSION_RULES,
-  VERSION_DETAILS,
-  VERSION_STATS
-} from '../../utils/version'
+import { X, Github, Mail, Info, ChevronDown } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { getAppVersion } from '../../utils/version'
 import { useSound } from '../../hooks/useSound'
+import { useVersionData } from '../../hooks/useVersionData'
+import { useSiteInfo } from '../../hooks/useSiteInfo'
 import { Tabs } from '../ui/tabs'
 
 /**
- * 版本信息与网站声明弹窗（简洁版）
+ * 版本信息与网站声明弹窗（性能优化版）
  * 展示版本历史、网站信息、免责声明等
  */
 export function VersionModal({ isOpen, onClose }) {
   const { playButtonClick } = useSound()
   const [showAllVersions, setShowAllVersions] = useState(false)
-  const [selectedVersion, setSelectedVersion] = useState(VERSION_DETAILS[0]) // 默认选中第一个版本
+  const [selectedVersion, setSelectedVersion] = useState(null)
+
+  // 加载版本数据和网站信息
+  const { versionData, loading: versionLoading, error: versionError } = useVersionData()
+  const { siteInfo, loading: siteLoading, error: siteError } = useSiteInfo()
+
+  // 解构版本数据
+  const VERSION_RULES = versionData?.versionRules || {}
+  const VERSION_DETAILS = versionData?.versionDetails || []
+  const VERSION_STATS = versionData?.versionStats || {}
+  const SITE_INFO = siteInfo || {}
+
+  // ✅ 修复：在 useEffect 中设置默认选中版本，避免渲染期间 setState
+  useEffect(() => {
+    if (!selectedVersion && VERSION_DETAILS.length > 0) {
+      setSelectedVersion(VERSION_DETAILS[0])
+    }
+  }, [VERSION_DETAILS, selectedVersion])
 
   const handleClose = () => {
     playButtonClick()
@@ -31,8 +44,8 @@ export function VersionModal({ isOpen, onClose }) {
     setSelectedVersion(version)
   }
 
-  // 分页显示版本：默认显示最近10个
-  const displayedVersions = showAllVersions ? VERSION_DETAILS : VERSION_DETAILS.slice(0, 10)
+  // ✅ 性能优化：默认只显示最近 5 个版本（手机渲染更快）
+  const displayedVersions = showAllVersions ? VERSION_DETAILS : VERSION_DETAILS.slice(0, 5)
 
   // GitHub 仓库地址
   const GITHUB_REPO = 'https://github.com/MatthewHA233/mw-gacha-simulation'
@@ -61,7 +74,7 @@ export function VersionModal({ isOpen, onClose }) {
               <div className="p-1 hover:bg-white/10 rounded cursor-help transition-colors">
                 <Info className="w-4 h-4 text-cyan-400" />
               </div>
-              <div className="absolute right-0 top-full mt-2 w-72 bg-black/95 backdrop-blur-xl border border-cyan-400/30 rounded-lg p-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-2xl">
+              <div className="absolute right-0 top-full mt-2 w-72 bg-black/95 border border-cyan-400/30 rounded-lg p-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-2xl">
                 <h4 className="text-white font-bold text-xs mb-2">语义化版本规则</h4>
                 <div className="space-y-1.5">
                   {Object.values(VERSION_RULES).map((rule) => (
@@ -87,7 +100,7 @@ export function VersionModal({ isOpen, onClose }) {
                 {/* 左侧：版本卡片 */}
                 <div
                   onClick={() => selectVersion(version)}
-                  className={`bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border cursor-pointer transition-all ${
+                  className={`bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border cursor-pointer ${
                     selectedVersion?.version === version.version
                       ? version.milestone
                         ? 'bg-gradient-to-r from-yellow-900/40 via-orange-900/40 to-yellow-900/40 border-yellow-400/60 shadow-lg'
@@ -101,7 +114,7 @@ export function VersionModal({ isOpen, onClose }) {
                     {version.milestone && <span className="text-yellow-400 text-xs sm:text-sm">★</span>}
                     <span
                       className="px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold text-white"
-                      style={{ backgroundColor: VERSION_RULES[version.type].color }}
+                      style={{ backgroundColor: VERSION_RULES[version.type]?.color || '#6b7280' }}
                     >
                       v{version.version}
                     </span>
@@ -119,7 +132,7 @@ export function VersionModal({ isOpen, onClose }) {
                 </div>
 
                 {/* 右侧：对应的提交记录卡片 */}
-                <div className="bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/20">
+                <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/20">
                   <div className="space-y-0.5">
                     {version.commits.map((commit, idx) => (
                       <a
@@ -146,15 +159,15 @@ export function VersionModal({ isOpen, onClose }) {
             ))}
 
             {/* 加载更多按钮 */}
-            {!showAllVersions && VERSION_DETAILS.length > 10 && (
+            {!showAllVersions && VERSION_DETAILS.length > 5 && (
               <button
                 onClick={() => {
                   playButtonClick()
                   setShowAllVersions(true)
                 }}
-                className="w-full mt-2 sm:mt-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 rounded-lg text-white text-xs sm:text-sm font-medium transition-all flex items-center justify-center gap-1.5 sm:gap-2"
+                className="w-full mt-2 sm:mt-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 rounded-lg text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5 sm:gap-2"
               >
-                <span>加载更多版本 ({VERSION_DETAILS.length - 10})</span>
+                <span>加载更多版本 ({VERSION_DETAILS.length - 5})</span>
                 <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             )}
@@ -178,7 +191,7 @@ export function VersionModal({ isOpen, onClose }) {
               </div>
               <div className="flex items-center gap-1 sm:gap-2 text-white/70">
                 <span>版本:</span>
-                <span className="text-cyan-400 font-bold">v{APP_VERSION}</span>
+                <span className="text-cyan-400 font-bold">v{getAppVersion()}</span>
               </div>
             </div>
           </div>
@@ -214,7 +227,7 @@ export function VersionModal({ isOpen, onClose }) {
                   href={SITE_INFO.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 sm:gap-3 bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-3 border border-white/10 hover:border-cyan-400/50 transition-colors"
+                  className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-3 border border-white/10 hover:border-cyan-400/50"
                 >
                   <Github className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -228,7 +241,7 @@ export function VersionModal({ isOpen, onClose }) {
                   href={SITE_INFO.contact.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 sm:gap-3 bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-3 border border-white/10 hover:border-cyan-400/50 transition-colors"
+                  className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-3 border border-white/10 hover:border-cyan-400/50"
                 >
                   <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -241,7 +254,7 @@ export function VersionModal({ isOpen, onClose }) {
           </div>
 
           {/* 开发统计 */}
-          <div className="bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-white/20">
+          <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-white/20">
             <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base mb-2 sm:mb-3">开发统计</h3>
             <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
               <div className="text-center">
@@ -268,12 +281,12 @@ export function VersionModal({ isOpen, onClose }) {
               <span className="text-base sm:text-lg lg:text-xl">⚠️</span>
               免责声明
             </h3>
-            <div className="bg-yellow-900/20 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-yellow-400/40 space-y-1 sm:space-y-1.5 lg:space-y-2">
-              {SITE_INFO.disclaimer.map((text, idx) => (
+            <div className="bg-yellow-900/20 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-yellow-400/40 space-y-1 sm:space-y-1.5 lg:space-y-2">
+              {SITE_INFO.disclaimer?.map((text, idx) => (
                 <p key={idx} className="text-white/80 text-[10px] sm:text-xs leading-relaxed">
                   {text}
                 </p>
-              ))}
+              )) || <p className="text-white/60 text-sm">暂无免责声明</p>}
             </div>
           </div>
 
@@ -284,7 +297,7 @@ export function VersionModal({ isOpen, onClose }) {
                 <span className="text-base sm:text-lg lg:text-xl">💖</span>
                 致谢：赞赏者
               </h3>
-              <div className="bg-gradient-to-br from-pink-900/20 to-purple-900/20 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-pink-400/40">
+              <div className="bg-gradient-to-br from-pink-900/20 to-purple-900/20 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-pink-400/40">
                 {SITE_INFO.sponsors.length === 0 ? (
                   <p className="text-white/60 text-[10px] sm:text-xs text-center py-3 sm:py-4">
                     暂无赞赏记录
@@ -325,28 +338,28 @@ export function VersionModal({ isOpen, onClose }) {
             </h3>
             {/* 游戏开发商 + 数据来源 + 托管平台 + CDN服务 */}
             <div className="grid grid-cols-4 gap-2 sm:gap-2.5 lg:gap-3">
-              <div className="bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
+              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
                 <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">游戏开发商</h4>
-                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits.gameDeveloper}</p>
+                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits?.gameDeveloper || '暂无'}</p>
               </div>
-              <div className="bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
+              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
                 <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">数据来源</h4>
                 <a
-                  href={SITE_INFO.credits.dataSource.url}
+                  href={SITE_INFO.credits?.dataSource?.url || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-cyan-400 hover:text-cyan-300 text-[10px] sm:text-xs underline transition-colors break-all"
                 >
-                  {SITE_INFO.credits.dataSource.name}
+                  {SITE_INFO.credits?.dataSource?.name || '暂无'}
                 </a>
               </div>
-              <div className="bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
+              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
                 <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">托管平台</h4>
-                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits.hosting}</p>
+                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits?.hosting || '暂无'}</p>
               </div>
-              <div className="bg-black/40 backdrop-blur-sm rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
+              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
                 <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">CDN服务</h4>
-                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits.cdn}</p>
+                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits?.cdn || '暂无'}</p>
               </div>
             </div>
           </div>
@@ -359,25 +372,25 @@ export function VersionModal({ isOpen, onClose }) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* 背景遮罩 */}
+          {/* 背景遮罩 - 移除 backdrop-blur 优化性能 */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9998]"
+            className="fixed inset-0 bg-black/70 z-[9998]"
           />
 
-          {/* 弹窗内容 */}
+          {/* 弹窗内容 - 简化动画 */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
             className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 pointer-events-none"
           >
             <div
-              className="relative bg-black/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 w-full max-w-[98vw] sm:max-w-4xl lg:max-w-5xl max-h-[95vh] overflow-hidden pointer-events-auto"
+              className="relative bg-black/95 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 w-full max-w-[98vw] sm:max-w-4xl lg:max-w-5xl max-h-[95vh] overflow-hidden pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* 顶部标题栏 */}
@@ -396,7 +409,7 @@ export function VersionModal({ isOpen, onClose }) {
                       {SITE_INFO.name}
                     </h2>
                     <p className="text-cyan-400 text-[10px] sm:text-xs lg:text-sm mt-0.5 sm:mt-1 truncate">
-                      {SITE_INFO.nameEn} v{APP_VERSION}
+                      {SITE_INFO.nameEn} v{getAppVersion()}
                     </p>
                   </div>
                   <button
@@ -410,13 +423,45 @@ export function VersionModal({ isOpen, onClose }) {
 
               {/* Tab 切换 + 内容区域 */}
               <div className="overflow-y-auto max-h-[calc(40vh-60px)] sm:max-h-[calc(60vh-80px)] lg:max-h-[calc(85vh-120px)] custom-scrollbar">
-                <Tabs
-                  tabs={tabs}
-                  containerClassName="p-2 sm:p-3 lg:p-4"
-                  activeTabClassName="bg-gradient-to-r from-cyan-500 to-blue-500"
-                  tabClassName="text-white/70 hover:text-white transition-colors text-xs sm:text-sm"
-                  contentClassName=""
-                />
+                {/* 加载状态 */}
+                {(versionLoading || siteLoading) && (
+                  <div className="flex items-center justify-center p-8 sm:p-12">
+                    <div className="text-center">
+                      <div className="w-12 h-12 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin mx-auto mb-4"></div>
+                      <p className="text-white/70 text-sm">加载版本数据中...</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 错误状态 */}
+                {(versionError || siteError) && !versionLoading && !siteLoading && (
+                  <div className="flex items-center justify-center p-8 sm:p-12">
+                    <div className="text-center max-w-md">
+                      <div className="text-red-400 text-4xl mb-4">⚠️</div>
+                      <p className="text-white font-semibold mb-2">加载失败</p>
+                      <p className="text-white/60 text-sm mb-4">
+                        {versionError || siteError}
+                      </p>
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors text-sm"
+                      >
+                        刷新页面
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* 正常内容 */}
+                {!versionLoading && !siteLoading && !versionError && !siteError && (
+                  <Tabs
+                    tabs={tabs}
+                    containerClassName="p-2 sm:p-3 lg:p-4"
+                    activeTabClassName="bg-gradient-to-r from-cyan-500 to-blue-500"
+                    tabClassName="text-white/70 hover:text-white transition-colors text-xs sm:text-sm"
+                    contentClassName=""
+                  />
+                )}
               </div>
             </div>
           </motion.div>
