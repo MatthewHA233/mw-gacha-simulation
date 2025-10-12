@@ -23,12 +23,14 @@ from PyQt6.QtWidgets import (
     QTableWidget, QTableWidgetItem, QMessageBox, QHeaderView,
     QGroupBox, QFormLayout, QDateEdit, QComboBox, QDialog,
     QDialogButtonBox, QSpinBox, QDoubleSpinBox, QProgressDialog,
-    QSplitter, QScrollArea, QFrame, QTreeWidget, QTreeWidgetItem
+    QSplitter, QScrollArea, QFrame, QTreeWidget, QTreeWidgetItem,
+    QCheckBox, QListWidget, QListWidgetItem, QPlainTextEdit
 )
 from PyQt6.QtCore import Qt, QDate, QTimer
 from PyQt6.QtGui import QFont, QColor
 import oss2
 from dotenv import load_dotenv
+from version_edit_dialog import VersionEditDialog
 
 # 加载 .env 文件
 load_dotenv()
@@ -112,6 +114,9 @@ class ConfigEditor(QMainWindow):
         self.version_data = {}
         self.siteinfo_data = {}
         self.version_card_map = {}  # 存储版本号 -> 卡片widget 的映射
+        self.selected_commits = []  # 存储选中的提交
+        self.commit_checkboxes = {}  # 存储 hash -> checkbox 的映射
+        self.all_git_commits = []  # 存储所有 Git 提交
         self.init_ui()
         self.load_data()
 
@@ -194,9 +199,27 @@ class ConfigEditor(QMainWindow):
         left_layout.setContentsMargins(0, 0, 0, 0)
         left_layout.setSpacing(0)
 
+        # 左侧头部
+        left_header_container = QWidget()
+        left_header_layout = QHBoxLayout()
+        left_header_layout.setContentsMargins(6, 6, 6, 6)
+        left_header_layout.setSpacing(8)
+
         left_header = QLabel('📋 版本历史')
-        left_header.setStyleSheet('font-weight: bold; font-size: 13px; padding: 6px; background: #e8f4f8; color: #000;')
-        left_layout.addWidget(left_header)
+        left_header.setStyleSheet('font-weight: bold; font-size: 13px; color: #000;')
+        left_header_layout.addWidget(left_header)
+
+        left_header_layout.addStretch()
+
+        add_version_btn = QPushButton('➕ 新增版本')
+        add_version_btn.setMaximumWidth(90)
+        add_version_btn.setStyleSheet('background: #000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold;')
+        add_version_btn.clicked.connect(self.add_version)
+        left_header_layout.addWidget(add_version_btn)
+
+        left_header_container.setLayout(left_header_layout)
+        left_header_container.setStyleSheet('background: #e8f4f8;')
+        left_layout.addWidget(left_header_container)
 
         # 版本卡片滚动区域
         self.version_scroll = QScrollArea()
@@ -220,9 +243,53 @@ class ConfigEditor(QMainWindow):
         right_layout.setContentsMargins(0, 0, 0, 0)
         right_layout.setSpacing(0)
 
+        # 右侧头部
+        right_header_container = QWidget()
+        right_header_layout = QVBoxLayout()
+        right_header_layout.setContentsMargins(0, 0, 0, 0)
+        right_header_layout.setSpacing(0)
+
         right_header = QLabel('🔀 Git 提交时间线')
         right_header.setStyleSheet('font-weight: bold; font-size: 13px; padding: 6px; background: #f8f4e8; color: #000;')
-        right_layout.addWidget(right_header)
+        right_header_layout.addWidget(right_header)
+
+        # 工具栏
+        toolbar = QWidget()
+        toolbar.setStyleSheet('background: #fff9e6; border-bottom: 1px solid #ddd;')
+        toolbar_layout = QHBoxLayout()
+        toolbar_layout.setContentsMargins(5, 3, 5, 3)
+        toolbar_layout.setSpacing(5)
+
+        self.selected_count_label = QLabel('已选 0 项')
+        self.selected_count_label.setStyleSheet('color: #666; font-size: 11px;')
+        toolbar_layout.addWidget(self.selected_count_label)
+
+        btn_style = 'background: #000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold;'
+
+        copy_btn = QPushButton('📋 复制')
+        copy_btn.setMaximumWidth(70)
+        copy_btn.setStyleSheet(btn_style)
+        copy_btn.clicked.connect(self.copy_selected_commits)
+        toolbar_layout.addWidget(copy_btn)
+
+        ai_prompt_btn = QPushButton('🤖 生成AI提示词')
+        ai_prompt_btn.setMaximumWidth(130)
+        ai_prompt_btn.setStyleSheet(btn_style)
+        ai_prompt_btn.clicked.connect(self.generate_ai_prompt)
+        toolbar_layout.addWidget(ai_prompt_btn)
+
+        clear_btn = QPushButton('✖️ 清空')
+        clear_btn.setMaximumWidth(70)
+        clear_btn.setStyleSheet(btn_style)
+        clear_btn.clicked.connect(self.clear_selection)
+        toolbar_layout.addWidget(clear_btn)
+
+        toolbar_layout.addStretch()
+        toolbar.setLayout(toolbar_layout)
+        right_header_layout.addWidget(toolbar)
+
+        right_header_container.setLayout(right_header_layout)
+        right_layout.addWidget(right_header_container)
 
         # Git 时间线滚动区域
         self.git_scroll = QScrollArea()
@@ -509,6 +576,7 @@ class ConfigEditor(QMainWindow):
             progress.setLabelText('正在获取 Git 提交...')
             QApplication.processEvents()
             git_commits = self.get_git_commits()
+            self.all_git_commits = git_commits  # 保存所有提交供编辑使用
 
             # 获取版本历史数据
             version_details = self.version_data.get('versionDetails', [])
@@ -580,6 +648,11 @@ class ConfigEditor(QMainWindow):
         # 清空版本卡片映射
         self.version_card_map.clear()
 
+        # 清空选中的提交
+        self.selected_commits.clear()
+        self.commit_checkboxes.clear()
+        self.update_selected_count()
+
         # 清空左侧版本卡片
         while self.version_cards_layout.count():
             item = self.version_cards_layout.takeAt(0)
@@ -591,6 +664,203 @@ class ConfigEditor(QMainWindow):
             item = self.git_timeline_layout.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
+
+    def on_commit_selected(self, commit, state):
+        """处理提交选中/取消"""
+        if state == Qt.CheckState.Checked.value:
+            if commit not in self.selected_commits:
+                self.selected_commits.append(commit)
+        else:
+            if commit in self.selected_commits:
+                self.selected_commits.remove(commit)
+
+        self.update_selected_count()
+
+    def update_selected_count(self):
+        """更新选中数量显示"""
+        count = len(self.selected_commits)
+        self.selected_count_label.setText(f'已选 {count} 项')
+
+    def copy_selected_commits(self):
+        """复制选中的提交信息"""
+        if not self.selected_commits:
+            QMessageBox.warning(self, '提示', '请先选择至少一个提交')
+            return
+
+        # 格式化提交信息
+        text = '\n'.join([
+            f"{commit['hash']} {commit['message']}"
+            for commit in self.selected_commits
+        ])
+
+        # 复制到剪贴板
+        clipboard = QApplication.clipboard()
+        clipboard.setText(text)
+
+        QMessageBox.information(
+            self, '成功',
+            f'✅ 已复制 {len(self.selected_commits)} 个提交信息到剪贴板'
+        )
+
+    def generate_ai_prompt(self):
+        """生成 AI 提示词对话框"""
+        if not self.selected_commits:
+            QMessageBox.warning(self, '提示', '请先选择至少一个提交')
+            return
+
+        # 创建对话框
+        dialog = QDialog(self)
+        dialog.setWindowTitle('生成 AI 提示词')
+        dialog.setMinimumWidth(500)
+
+        layout = QVBoxLayout()
+
+        # 版本号输入
+        version_layout = QHBoxLayout()
+        version_layout.addWidget(QLabel('目标版本号:'))
+        version_input = QLineEdit()
+        version_input.setPlaceholderText('例如: 1.2.9')
+        version_input.setText(self.current_version_input.text())
+        version_layout.addWidget(version_input)
+        layout.addLayout(version_layout)
+
+        # 额外要求输入
+        layout.addWidget(QLabel('额外要求（可选）:'))
+        requirements_input = QPlainTextEdit()
+        requirements_input.setPlaceholderText('例如: 需要简洁明了，每条不超过15字')
+        requirements_input.setMaximumHeight(80)
+        layout.addWidget(requirements_input)
+
+        # 预览区域
+        layout.addWidget(QLabel('生成的提示词预览:'))
+        preview = QPlainTextEdit()
+        preview.setReadOnly(True)
+        preview.setMaximumHeight(200)
+        layout.addWidget(preview)
+
+        # 实时更新预览
+        def update_preview():
+            version = version_input.text() or '(未指定)'
+            requirements = requirements_input.toPlainText().strip()
+
+            commits_text = '\n'.join([
+                f"- {commit['hash']}: {commit['message']}"
+                for commit in self.selected_commits
+            ])
+
+            prompt = f"""请将以下 {len(self.selected_commits)} 个提交信息，汇总起来，生成 public\\gacha-configs\\version-history.json 里面 v{version} 版本的 features 信息。
+
+提交记录：
+{commits_text}
+
+要求：
+1. 每个 feature 简洁明了，重点突出功能亮点
+2. 按重要性和逻辑分组
+3. 使用用户友好的语言（避免技术术语）"""
+
+            if requirements:
+                prompt += f"\n4. {requirements}"
+
+            preview.setPlainText(prompt)
+
+        version_input.textChanged.connect(update_preview)
+        requirements_input.textChanged.connect(update_preview)
+        update_preview()  # 初始化预览
+
+        # 按钮
+        button_layout = QHBoxLayout()
+        copy_btn = QPushButton('📋 复制到剪贴板')
+        copy_btn.clicked.connect(lambda: self.copy_ai_prompt(preview.toPlainText(), dialog))
+        cancel_btn = QPushButton('取消')
+        cancel_btn.clicked.connect(dialog.reject)
+
+        button_layout.addWidget(copy_btn)
+        button_layout.addWidget(cancel_btn)
+        layout.addLayout(button_layout)
+
+        dialog.setLayout(layout)
+        dialog.exec()
+
+    def copy_ai_prompt(self, text, dialog):
+        """复制 AI 提示词到剪贴板"""
+        clipboard = QApplication.clipboard()
+        clipboard.setText(text)
+        QMessageBox.information(dialog, '成功', '✅ AI 提示词已复制到剪贴板')
+        dialog.accept()
+
+    def clear_selection(self):
+        """清空选择"""
+        self.selected_commits.clear()
+
+        # 取消所有复选框
+        for checkbox in self.commit_checkboxes.values():
+            checkbox.setChecked(False)
+
+        self.update_selected_count()
+
+    def add_version(self):
+        """新增版本"""
+        if not self.all_git_commits:
+            QMessageBox.warning(self, '提示', '请先刷新时间线以加载 Git 提交历史')
+            return
+
+        dialog = VersionEditDialog(all_commits=self.all_git_commits, parent=self)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            new_version = dialog.get_version_data()
+
+            # 验证版本号
+            if not new_version['version']:
+                QMessageBox.warning(self, '错误', '版本号不能为空')
+                return
+
+            # 检查版本号是否已存在
+            version_details = self.version_data.setdefault('versionDetails', [])
+            for existing in version_details:
+                if existing['version'] == new_version['version']:
+                    QMessageBox.warning(self, '错误', f'版本 {new_version["version"]} 已存在')
+                    return
+
+            # 添加到版本列表头部（最新版本在前）
+            version_details.insert(0, new_version)
+
+            # 刷新界面
+            self.refresh_timeline()
+
+            QMessageBox.information(self, '成功', f'✅ 版本 v{new_version["version"]} 已添加')
+
+    def edit_version(self, existing_version):
+        """编辑现有版本"""
+        if not self.all_git_commits:
+            QMessageBox.warning(self, '提示', '请先刷新时间线以加载 Git 提交历史')
+            return
+
+        dialog = VersionEditDialog(
+            all_commits=self.all_git_commits,
+            existing_version=existing_version,
+            parent=self
+        )
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            updated_version = dialog.get_version_data()
+
+            # 验证版本号
+            if not updated_version['version']:
+                QMessageBox.warning(self, '错误', '版本号不能为空')
+                return
+
+            # 在 versionDetails 中找到并更新
+            version_details = self.version_data.get('versionDetails', [])
+            for i, v in enumerate(version_details):
+                if v['version'] == existing_version['version']:
+                    # 更新版本信息
+                    version_details[i] = updated_version
+                    break
+
+            # 刷新界面
+            self.refresh_timeline()
+
+            QMessageBox.information(self, '成功', f'✅ 版本 v{updated_version["version"]} 已更新')
 
     def create_version_card(self, version):
         """创建版本卡片"""
@@ -641,6 +911,14 @@ class ConfigEditor(QMainWindow):
         header_layout.addWidget(type_label)
 
         header_layout.addStretch()
+
+        # 编辑按钮
+        edit_btn = QPushButton('✏️')
+        edit_btn.setMaximumWidth(30)
+        edit_btn.setStyleSheet('background: #000; color: #fff; border: none; padding: 4px; border-radius: 4px; font-size: 13px;')
+        edit_btn.clicked.connect(lambda: self.edit_version(version))
+        header_layout.addWidget(edit_btn)
+
         layout.addLayout(header_layout)
 
         # 主题
@@ -711,9 +989,21 @@ class ConfigEditor(QMainWindow):
             }}
         """)
 
-        layout = QVBoxLayout()
-        layout.setSpacing(2)
-        layout.setContentsMargins(4, 4, 4, 4)
+        # 主布局 - 使用水平布局包含复选框
+        main_layout = QHBoxLayout()
+        main_layout.setSpacing(8)
+        main_layout.setContentsMargins(4, 4, 4, 4)
+
+        # 复选框
+        checkbox = QCheckBox()
+        checkbox.setMaximumWidth(20)
+        checkbox.stateChanged.connect(lambda state: self.on_commit_selected(commit, state))
+        self.commit_checkboxes[commit['hash']] = checkbox
+        main_layout.addWidget(checkbox, 0, Qt.AlignmentFlag.AlignTop)
+
+        # 右侧内容布局
+        content_layout = QVBoxLayout()
+        content_layout.setSpacing(2)
 
         # Hash + 状态
         hash_label = QLabel(
@@ -723,15 +1013,17 @@ class ConfigEditor(QMainWindow):
         hash_label.setTextFormat(Qt.TextFormat.RichText)
         hash_label.setOpenExternalLinks(False)  # 不打开外部链接
         hash_label.linkActivated.connect(self.on_version_link_clicked)  # 连接点击事件
-        layout.addWidget(hash_label)
+        content_layout.addWidget(hash_label)
 
         # 提交信息
         message_label = QLabel(commit['message'])
         message_label.setWordWrap(True)
         message_label.setStyleSheet('color: #000; font-size: 12px;')
-        layout.addWidget(message_label)
+        content_layout.addWidget(message_label)
 
-        item.setLayout(layout)
+        main_layout.addLayout(content_layout, 1)
+
+        item.setLayout(main_layout)
         return item
 
     def on_version_link_clicked(self, link):
