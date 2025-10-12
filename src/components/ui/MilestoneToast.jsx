@@ -54,14 +54,6 @@ export function MilestoneToast({
     handleClose()
   }
 
-  // 位置配置
-  const positionClasses = {
-    'top-right': 'top-4 right-4',
-    'top-left': 'top-4 left-4',
-    'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4'
-  }
-
   // 动画变体
   const variants = {
     initial: {
@@ -97,7 +89,7 @@ export function MilestoneToast({
           animate="animate"
           exit="exit"
           variants={variants}
-          className={`fixed ${positionClasses[position]} z-[100] w-[95vw] max-w-[520px]`}
+          className="w-[95vw] max-w-[520px]"
         >
           {/* Toast主体 - 手机端整体缩小为65% */}
           <div

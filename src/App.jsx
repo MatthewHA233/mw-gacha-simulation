@@ -8,6 +8,7 @@ import { HomeRedirect } from './components/HomeRedirect'
 import './App.css'
 
 function App() {
+
   return (
     <BrowserRouter>
       <MilestoneToastProvider maxToasts={3} position="top-right">

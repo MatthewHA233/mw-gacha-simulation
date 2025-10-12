@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { Sidebar } from '../components/Layout/Sidebar'
 import { Header } from '../components/Layout/Header'
 import { ChipGacha } from '../components/ChipGacha/ChipGacha'
@@ -19,6 +19,42 @@ export function GachaPage() {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
   const [itemScale, setItemScale] = useState(1)
   const [shouldRotate, setShouldRotate] = useState(false)
+
+  // 检查版本更新标记并显示 Toast
+  useEffect(() => {
+    try {
+      const versionUpdateData = sessionStorage.getItem('mw_gacha_version_updated')
+      if (versionUpdateData) {
+        const { newVersion, oldVersion } = JSON.parse(versionUpdateData)
+
+        // 显示版本更新 Toast
+        toast.success(
+          `版本已更新至 v${newVersion}\n已自动重置全部数据`,
+          {
+            duration: 5000,
+            style: {
+              background: '#10b981',
+              color: '#fff',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              padding: '16px 24px',
+              borderRadius: '12px',
+              whiteSpace: 'pre-line'
+            },
+            iconTheme: {
+              primary: '#fff',
+              secondary: '#10b981'
+            }
+          }
+        )
+
+        // 清除标记
+        sessionStorage.removeItem('mw_gacha_version_updated')
+      }
+    } catch (error) {
+      console.error('读取版本更新标记失败:', error)
+    }
+  }, [])
 
   // Header 需要的数据，由子组件提供
   const [headerData, setHeaderData] = useState({
