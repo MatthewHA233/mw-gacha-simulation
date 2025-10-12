@@ -11,6 +11,7 @@ const configCache = new Map()
 const GACHA_TYPE_MAP = {
   '筹码类': 'chip',
   '机密货物类': 'cargo',
+  '无人机补给类': 'cargo',  // 无人机补给类也使用 cargo 路径
   '旗舰宝箱类': 'flagship'
 }
 
@@ -111,8 +112,8 @@ export function buildWidgetUrl(activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_widget.png`
   }
 
-  // 机密货物类使用特殊格式
-  if (gachaType === '机密货物类') {
+  // 机密货物类和无人机补给类使用特殊格式
+  if (gachaType === '机密货物类' || gachaType === '无人机补给类') {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_widget.png`
   }
 
@@ -141,8 +142,8 @@ export function buildBackgroundUrl(activityIdOrConfig) {
   const activityId = typeof activityIdOrConfig === 'string' ? activityIdOrConfig : activityIdOrConfig?.id
   const gachaType = activityIdOrConfig?.gacha_type
 
-  // 机密货物类使用特殊路径
-  if (gachaType === '机密货物类') {
+  // 机密货物类和无人机补给类使用特殊路径
+  if (gachaType === '机密货物类' || gachaType === '无人机补给类') {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_background.png`
   }
 
@@ -177,11 +178,17 @@ export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
   if (typeof activityIdOrConfig === 'object') {
     const imageKey = `${currencyId}_image`
 
-    // 机密货物类：从 cargos 数组中查找对应货币的图片
-    if (currencyId === 'bigevent_currency_gacha_gameplay' || currencyId === 'bigevent_currency_gacha_rm') {
+    // 机密货物类/无人机补给类：从 cargos 数组中查找对应货币的图片
+    if (currencyId === 'bigevent_currency_gacha_gameplay' || currencyId === 'bigevent_currency_gacha_rm' ||
+        currencyId === 'Drone_Fob' || currencyId === 'Authorization_Key') {
       if (activityIdOrConfig?.cargos && Array.isArray(activityIdOrConfig.cargos)) {
         // 根据货币类型确定要查找的 cargo 类型
-        const cargoType = currencyId === 'bigevent_currency_gacha_gameplay' ? 'gameplay' : 'rm'
+        let cargoType
+        if (currencyId === 'bigevent_currency_gacha_gameplay' || currencyId === 'Drone_Fob') {
+          cargoType = 'gameplay'
+        } else {
+          cargoType = 'rm'
+        }
         // 在 cargos 数组中查找对应类型的 cargo
         const cargo = activityIdOrConfig.cargos.find(c => c.type === cargoType)
         // 如果找到且有自定义图片，使用自定义图片
@@ -233,10 +240,17 @@ export function buildShopPackageUrl(activityId, packageId) {
 export function buildItemImageUrl(item, activityIdOrConfig) {
   if (!item.id) return null
 
+  // 优先使用物品自定义的 image 字段（如参赛者徽章等）
+  if (item.image) {
+    return item.image
+  }
+
   // 特殊情况：货币类物品
   // 1. currency_ 开头：currency_gachacoins（筹码）、currency_premium_lootboxkey（旗舰钥匙）、currency_common_lootboxkey（钥匙）
   // 2. bigevent_currency_ 开头：bigevent_currency_gacha_rm（授权密钥）、bigevent_currency_gacha_gameplay（无人机电池）
-  if (item.id.startsWith('currency_') || item.id.startsWith('bigevent_currency_')) {
+  // 3. 无人机补给类货币：Drone_Fob（遥控器）、Authorization_Key（开锁器）
+  if (item.id.startsWith('currency_') || item.id.startsWith('bigevent_currency_') ||
+      item.id === 'Drone_Fob' || item.id === 'Authorization_Key') {
     return buildCurrencyIconUrl(item.id, activityIdOrConfig)
   }
 
