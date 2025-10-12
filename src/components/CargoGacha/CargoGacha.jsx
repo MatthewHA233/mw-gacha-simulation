@@ -563,7 +563,9 @@ export function CargoGacha({
     const currencyName = selectedCargoType === 'rm'
       ? (isSpType ? '开锁器' : '授权密钥')
       : (isSpType ? '遥控器' : '无人机电池')
-    const singleCost = gameState.singleCost
+
+    // gameplay货币（遥控器/电池）消耗是rm货币的30倍
+    const singleCost = selectedCargoType === 'rm' ? gameState.singleCost : 30
 
     if (gameState[currencyKey] < singleCost) {
       toast.error(`${currencyName}不够，请充值`, {
@@ -740,7 +742,10 @@ export function CargoGacha({
       ? (isSpType ? '开锁器' : '授权密钥')
       : (isSpType ? '遥控器' : '无人机电池')
 
-    if (gameState[currencyKey] < 10) {
+    // gameplay货币（遥控器/电池）消耗是rm货币的30倍
+    const multiCost = selectedCargoType === 'rm' ? 10 : 300
+
+    if (gameState[currencyKey] < multiCost) {
       toast.error(`${currencyName}不够，请充值`, {
         duration: 2000,
         position: 'top-center',
@@ -757,7 +762,7 @@ export function CargoGacha({
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - 10,
+      [currencyKey]: prev[currencyKey] - multiCost,
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 10
     }))
 
@@ -773,7 +778,7 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - 10
+      tempGameState[currencyKey] = gameState[currencyKey] - multiCost
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 10
 
       for (let i = 0; i < 10; i++) {
@@ -876,7 +881,10 @@ export function CargoGacha({
       ? (isSpType ? '开锁器' : '授权密钥')
       : (isSpType ? '遥控器' : '无人机电池')
 
-    if (gameState[currencyKey] < 100) {
+    // gameplay货币（遥控器/电池）消耗是rm货币的30倍
+    const draw100Cost = selectedCargoType === 'rm' ? 100 : 3000
+
+    if (gameState[currencyKey] < draw100Cost) {
       toast.error(`${currencyName}不够，请充值`, {
         duration: 2000,
         position: 'top-center',
@@ -893,7 +901,7 @@ export function CargoGacha({
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - 100,
+      [currencyKey]: prev[currencyKey] - draw100Cost,
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 100
     }))
 
@@ -909,7 +917,7 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - 100
+      tempGameState[currencyKey] = gameState[currencyKey] - draw100Cost
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 100
 
       for (let i = 0; i < 100; i++) {
@@ -1015,7 +1023,10 @@ export function CargoGacha({
       ? (isSpType ? '开锁器' : '授权密钥')
       : (isSpType ? '遥控器' : '无人机电池')
 
-    if (gameState[currencyKey] < 500) {
+    // gameplay货币（遥控器/电池）消耗是rm货币的30倍
+    const draw500Cost = selectedCargoType === 'rm' ? 500 : 15000
+
+    if (gameState[currencyKey] < draw500Cost) {
       toast.error(`${currencyName}不够，请充值`, {
         duration: 2000,
         position: 'top-center',
@@ -1032,7 +1043,7 @@ export function CargoGacha({
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - 500,
+      [currencyKey]: prev[currencyKey] - draw500Cost,
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 500
     }))
 
@@ -1048,7 +1059,7 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - 500
+      tempGameState[currencyKey] = gameState[currencyKey] - draw500Cost
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 500
 
       for (let i = 0; i < 500; i++) {
