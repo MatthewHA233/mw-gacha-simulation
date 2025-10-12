@@ -1,0 +1,199 @@
+{
+  "id": "sp04",
+  "gacha_type": "无人机补给类",
+  "metadata": {
+    "name": "Seas of Prey: Renegades",
+    "formattedDate": "2024年6月",
+    "nameEn": "Seas of Prey: Renegades"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "无人深潜器",
+        "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp04.webp?v=f41f2a44"
+      },
+      "items": [
+        {
+          "name": "米-24\"超级雌鹿\"Mk.III",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "MI24SH",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Mi-24 SuperHind Mk.III"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "JM61-RFS Dual (20 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "JM61RFSDual",
+          "type": "防空设备",
+          "rarity": "legendary",
+          "nameEn": "JM61-RFS Dual (20 mm)"
+        },
+        {
+          "name": "15 升级芯片",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "30 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "350 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp04.webp?v=190060ae"
+        },
+        {
+          "name": "开锁器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Authorization_Key",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "橄榄卡其",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Camo_MilitaryKhakiOlive",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Khaki Olive"
+        },
+        {
+          "name": "10 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "无人机补给",
+        "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp04.webp?v=61042c53"
+      },
+      "items": [
+        {
+          "name": "[法]夏尔·戴高乐(R91)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "R91CharlesDeGaulle",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS Charles de Gaulle (R91)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "超级军旗",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "SuperEtendard",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Super Etendard"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "15 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "金顶",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Flag_GoldenPeak",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Golden Peak"
+        },
+        {
+          "name": "A-220M (57 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "A220M",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "A-220M (57mm)"
+        },
+        {
+          "name": "阿卡亚(533 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Akya",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Akya (533mm)"
+        },
+        {
+          "name": "灰青",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Camo_MilitaryGreyBlue",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Grey Blue"
+        }
+      ]
+    }
+  ]
+}

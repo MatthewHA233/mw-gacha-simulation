@@ -1,0 +1,199 @@
+{
+  "id": "sp03",
+  "gacha_type": "无人机补给类",
+  "metadata": {
+    "name": "Seas of Prey S03: Corporation",
+    "formattedDate": "2024年4月",
+    "nameEn": "Seas of Prey S03: Corporation"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "无人深潜器",
+        "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp03.webp?v=4f3723dc"
+      },
+      "items": [
+        {
+          "name": "C-AS\"铁穹\"",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "CAS",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "C-AS"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "无畏X",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "DefiantX",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Defiant X"
+        },
+        {
+          "name": "25 000 美金",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "400 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp03.webp?v=260e4add"
+        },
+        {
+          "name": "开锁器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Authorization_Key",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "钢",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Camo_Steel",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Steel"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "40 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "无人机补给",
+        "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp03.webp?v=6b5757a5"
+      },
+      "items": [
+        {
+          "name": "[韩]幽灵指挥官",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "GhostCommander",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "ROKS Ghost Commander"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "海星-III",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "HaeseongIII",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "Haeseong III"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "15 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "鲨鱼",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Flag_Shark",
+          "type": "旗帜",
+          "rarity": "rare",
+          "nameEn": "Shark"
+        },
+        {
+          "name": "[泛空间]龙翼",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "DragonWing",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Pan Spatial Dragon Wing"
+        },
+        {
+          "name": "K-76L/62 (76 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "K76L62",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "K-76L/62 (76mm)"
+        },
+        {
+          "name": "金",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Camo_Gold",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Gold"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "id": "sp02",
+  "gacha_type": "无人机补给类",
+  "metadata": {
+    "name": "Seas of Prey S02: 王权之巅",
+    "formattedDate": "2023年11月",
+    "nameEn": "Seas of Prey S02: King's Crest"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "无人深潜器",
+        "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp02.webp?v=d3e2fe2c"
+      },
+      "items": [
+        {
+          "name": "K-76L/62 (76 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "K76L62",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "K-76L/62 (76mm)"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "红鲨(382 mm)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "RedShark",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Red Shark (382 mm)"
+        },
+        {
+          "name": "200 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp02.webp?v=8193d4cf"
+        },
+        {
+          "name": "20 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "500 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp02.webp?v=8193d4cf"
+        },
+        {
+          "name": "[S2]开锁器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Authorization_Key",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "B-21\"突袭者\"",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "B21",
+          "type": "轰炸机",
+          "rarity": "legendary",
+          "nameEn": "B-21 Raider"
+        },
+        {
+          "name": "1 000 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp02.webp?v=8193d4cf"
+        },
+        {
+          "name": "40 遥控器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "无人机补给",
+        "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp02.webp?v=b1b22164"
+      },
+      "items": [
+        {
+          "name": "[韩]联合火力攻击舰(JSS)",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "JSS",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "ROKS JSS"
+        },
+        {
+          "name": "50 艺术硬币",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "[日]伊邪那美",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Izanami",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "JS Izanami"
+        },
+        {
+          "name": "500 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp02.webp?v=8193d4cf"
+        },
+        {
+          "name": "[S2]开锁器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Authorization_Key",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 000 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp02.webp?v=8193d4cf"
+        },
+        {
+          "name": "野性精神",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Flag_FeralSpirit",
+          "type": "旗帜",
+          "rarity": "rare",
+          "nameEn": "Feral Spirit"
+        },
+        {
+          "name": "MV-75(V-280\"勇士\")",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Valor",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "MV-75 (V-280 Valor)"
+        },
+        {
+          "name": "2 000 参赛者徽章",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp02.webp?v=8193d4cf"
+        },
+        {
+          "name": "3 [S2]开锁器",
+          "probability": 0.0,
+          "limit": 0,
+          "id": "Authorization_Key",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

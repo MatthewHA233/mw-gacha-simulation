@@ -1,0 +1,199 @@
+{
+  "id": "sp05",
+  "gacha_type": "无人机补给类",
+  "metadata": {
+    "name": "狩猎之海：黑暗水域",
+    "formattedDate": "2024年9月",
+    "nameEn": "Seas of Prey: Dark Waters"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "无人深潜器",
+        "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp05.webp?v=53a8c7ca"
+      },
+      "items": [
+        {
+          "name": "62型鱼雷(533mm)",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "Torped62",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Torped 62 (533 mm)"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "MKE 76 (76 mm)",
+          "probability": 0.1,
+          "limit": 2,
+          "id": "MKE76",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "MKE 76 (76 mm)"
+        },
+        {
+          "name": "15 升级芯片",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "350 参赛者徽章",
+          "probability": 27.7,
+          "limit": 0,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp05.webp?v=f766e928"
+        },
+        {
+          "name": "开锁器",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "Authorization_Key",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "相控阵1130",
+          "probability": 1.0,
+          "limit": 3,
+          "id": "Type1130AESA",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "Type 1130 AESA (30 mm)"
+        },
+        {
+          "name": "20 遥控器",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Drone_Fob",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 2.15,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "无人机补给",
+        "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp05.webp?v=a94ff009"
+      },
+      "items": [
+        {
+          "name": "[美]圣安东尼奥(LPD-17)",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "SanAntonio",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "USS San Antonio (LPD-17)"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 16.67,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "Mark-71 (203 mm)",
+          "probability": 0.23,
+          "limit": 3,
+          "id": "Mark71",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "Mark-71 (203 mm)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 33.0,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "350 参赛者徽章",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Entrant_Badges",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp05.webp?v=f766e928"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 10.52,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "自由不可阻挡",
+          "probability": 4.0,
+          "limit": 1,
+          "id": "Flag_WarDog",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Unstoppable Freedom"
+        },
+        {
+          "name": "102式",
+          "probability": 0.2,
+          "limit": 0,
+          "id": "Type102UUV",
+          "type": "无人潜航器",
+          "rarity": "legendary",
+          "nameEn": "Type 102"
+        },
+        {
+          "name": "RBU-10000 (300 mm)",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "RBU10000",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "RBU-10000 (300 mm)"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 25.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}
