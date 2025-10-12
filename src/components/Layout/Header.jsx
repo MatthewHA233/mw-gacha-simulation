@@ -55,8 +55,8 @@ export function Header({
   // 判断是否为旗舰宝箱类
   const isFlagshipGacha = activityConfig?.gacha_type === '旗舰宝箱类'
 
-  // 判断是否为机密货物类
-  const isCargoGacha = activityConfig?.gacha_type === '机密货物类'
+  // 判断是否为机密货物类或无人机补给类
+  const isCargoGacha = activityConfig?.gacha_type === '机密货物类' || activityConfig?.gacha_type === '无人机补给类'
 
   // 获取所有物品列表（包括旗舰和普通宝箱）
   const getAllItems = () => {
@@ -262,45 +262,59 @@ export function Header({
               </div>
             )}
 
-            {/* 机密货物类：无人机电池 */}
-            {isCargoGacha && (
-              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
-                <img
-                  src={buildCurrencyIconUrl('bigevent_currency_gacha_gameplay', activityConfig)}
-                  alt="无人机电池"
-                  className="w-5 h-5 md:w-6 md:h-6"
-                />
-                <span className="text-blue-400 font-bold text-xs md:text-sm">{gameState.commonCurrency || 0}</span>
-                {/* 加号按钮 - 直接添加电池 */}
-                {onAddBatteries && (
+            {/* 机密货物类/无人机补给类：无人机电池/遥控器 */}
+            {isCargoGacha && (() => {
+              // 根据活动类型选择正确的货币ID
+              const isSpType = activityConfig?.gacha_type === '无人机补给类'
+              const currencyId = isSpType ? 'Drone_Fob' : 'bigevent_currency_gacha_gameplay'
+              const currencyName = isSpType ? '遥控器' : '无人机电池'
+
+              return (
+                <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
+                  <img
+                    src={buildCurrencyIconUrl(currencyId, activityConfig)}
+                    alt={currencyName}
+                    className="w-5 h-5 md:w-6 md:h-6"
+                  />
+                  <span className="text-blue-400 font-bold text-xs md:text-sm">{gameState.commonCurrency || 0}</span>
+                  {/* 加号按钮 - 直接添加电池/遥控器 */}
+                  {onAddBatteries && (
+                    <button
+                      onClick={onAddBatteries}
+                      className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-blue-500 hover:bg-blue-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                    >
+                      +
+                    </button>
+                  )}
+                </div>
+              )
+            })()}
+
+            {/* 机密货物类/无人机补给类：授权密钥/开锁器 */}
+            {isCargoGacha && (() => {
+              // 根据活动类型选择正确的货币ID
+              const isSpType = activityConfig?.gacha_type === '无人机补给类'
+              const currencyId = isSpType ? 'Authorization_Key' : 'bigevent_currency_gacha_rm'
+              const currencyName = isSpType ? '开锁器' : '授权密钥'
+
+              return (
+                <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-emerald-500/30">
+                  <img
+                    src={buildCurrencyIconUrl(currencyId, activityConfig)}
+                    alt={currencyName}
+                    className="w-5 h-5 md:w-6 md:h-6"
+                  />
+                  <span className="text-emerald-400 font-bold text-xs md:text-sm">{gameState.currency || 0}</span>
+                  {/* 加号按钮 */}
                   <button
-                    onClick={onAddBatteries}
-                    className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-blue-500 hover:bg-blue-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
+                    onClick={() => { playButtonClick(); onOpenShop(); }}
+                    className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
                   >
                     +
                   </button>
-                )}
-              </div>
-            )}
-
-            {/* 机密货物类：授权密钥 */}
-            {isCargoGacha && (
-              <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-emerald-500/30">
-                <img
-                  src={buildCurrencyIconUrl('bigevent_currency_gacha_rm', activityConfig)}
-                  alt="授权密钥"
-                  className="w-5 h-5 md:w-6 md:h-6"
-                />
-                <span className="text-emerald-400 font-bold text-xs md:text-sm">{gameState.currency || 0}</span>
-                {/* 加号按钮 */}
-                <button
-                  onClick={() => { playButtonClick(); onOpenShop(); }}
-                  className="ml-0.5 md:ml-1 w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 rounded-full text-white text-base md:text-lg font-bold transition-colors"
-                >
-                  +
-                </button>
-              </div>
-            )}
+                </div>
+              )
+            })()}
 
             {/* 旗舰宝箱类：普通钥匙 */}
             {isFlagshipGacha && (
