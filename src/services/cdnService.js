@@ -1,7 +1,11 @@
-import { CDN_BASE_URL } from '../utils/constants'
+import { CDN_BASE_URL, OSS_BASE_URL } from '../utils/constants'
 
 /**
  * CDN 数据加载服务
+ *
+ * 资源加载策略：
+ * - 配置文件（JSON）：从 OSS_BASE_URL 直连加载（不经过 CDN，实时更新）
+ * - 静态资源（图片/音频）：从 CDN_BASE_URL 加载（CDN 加速）
  */
 
 // 缓存已加载的配置，避免重复请求
@@ -34,8 +38,12 @@ export async function loadActivityIndex() {
   }
 
   try {
-    // 配置文件始终从本地public加载
-    const response = await fetch('/gacha-configs/index.json')
+    // 配置文件：优先从 OSS 直连加载，fallback 到本地
+    const url = OSS_BASE_URL
+      ? `${OSS_BASE_URL}/gacha-configs/index.json?t=${Date.now()}`
+      : '/gacha-configs/index.json'
+
+    const response = await fetch(url)
     if (!response.ok) {
       throw new Error(`Failed to load activity index: ${response.status}`)
     }
@@ -62,8 +70,12 @@ export async function loadActivityConfig(gachaType, activityId) {
   }
 
   try {
-    // 配置文件始终从本地public加载
-    const response = await fetch(`/gacha-configs/${gachaType}/${activityId}.json`)
+    // 配置文件：优先从 OSS 直连加载，fallback 到本地
+    const url = OSS_BASE_URL
+      ? `${OSS_BASE_URL}/gacha-configs/${gachaType}/${activityId}.json?t=${Date.now()}`
+      : `/gacha-configs/${gachaType}/${activityId}.json`
+
+    const response = await fetch(url)
     if (!response.ok) {
       throw new Error(`Failed to load activity config: ${response.status}`)
     }
@@ -72,6 +84,66 @@ export async function loadActivityConfig(gachaType, activityId) {
     return data
   } catch (error) {
     console.error(`Error loading activity config (${gachaType}/${activityId}):`, error)
+    throw error
+  }
+}
+
+/**
+ * 加载版本历史数据（始终从本地public加载）
+ * @returns {Promise<Object>} 版本历史数据
+ */
+export async function loadVersionHistory() {
+  const cacheKey = 'version-history'
+
+  if (configCache.has(cacheKey)) {
+    return configCache.get(cacheKey)
+  }
+
+  try {
+    // 配置文件：优先从 OSS 直连加载，fallback 到本地
+    const url = OSS_BASE_URL
+      ? `${OSS_BASE_URL}/gacha-configs/version-history.json?t=${Date.now()}`
+      : `/gacha-configs/version-history.json?t=${Date.now()}`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to load version history: ${response.status}`)
+    }
+    const data = await response.json()
+    configCache.set(cacheKey, data)
+    return data
+  } catch (error) {
+    console.error('Error loading version history:', error)
+    throw error
+  }
+}
+
+/**
+ * 加载网站信息和赞赏者数据（始终从本地public加载）
+ * @returns {Promise<Object>} 网站信息数据
+ */
+export async function loadSiteInfo() {
+  const cacheKey = 'site-info'
+
+  if (configCache.has(cacheKey)) {
+    return configCache.get(cacheKey)
+  }
+
+  try {
+    // 配置文件：优先从 OSS 直连加载，fallback 到本地
+    const url = OSS_BASE_URL
+      ? `${OSS_BASE_URL}/gacha-configs/site-info.json?t=${Date.now()}`
+      : `/gacha-configs/site-info.json?t=${Date.now()}`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to load site info: ${response.status}`)
+    }
+    const data = await response.json()
+    configCache.set(cacheKey, data)
+    return data
+  } catch (error) {
+    console.error('Error loading site info:', error)
     throw error
   }
 }

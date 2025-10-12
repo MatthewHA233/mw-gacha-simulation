@@ -36,3 +36,5 @@ public/gacha-configs/version-history.json
 
 # 环境变量文件
 .env
+.env.local
+.env.production
