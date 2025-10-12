@@ -124,6 +124,15 @@
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_wa25.webp?v=f7602a2a"
     },
     {
+      "id": "sp06",
+      "gacha_type": "无人机补给类",
+      "name": "Seas of Prey: 混沌竞技场",
+      "formattedDate": "2025年3月",
+      "nameEn": "Seas of Prey: Arena of Chaos",
+      "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp06.webp?v=ff6ffe8a",
+      "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp06.webp?v=6482080b"
+    },
+    {
       "id": "pf25",
       "gacha_type": "筹码类",
       "name": "招财进宝",
@@ -204,6 +213,15 @@
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_ps24.webp?v=a6b2ceec"
     },
     {
+      "id": "sp05",
+      "gacha_type": "无人机补给类",
+      "name": "狩猎之海：黑暗水域",
+      "formattedDate": "2024年9月",
+      "nameEn": "Seas of Prey: Dark Waters",
+      "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp05.webp?v=53a8c7ca",
+      "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp05.webp?v=a94ff009"
+    },
+    {
       "id": "az24",
       "gacha_type": "机密货物类",
       "name": "未知世界",
@@ -222,6 +240,15 @@
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sph24.webp?v=bbab669e"
     },
     {
+      "id": "sp04",
+      "gacha_type": "无人机补给类",
+      "name": "Seas of Prey: Renegades",
+      "formattedDate": "2024年6月",
+      "nameEn": "Seas of Prey: Renegades",
+      "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp04.webp?v=f41f2a44",
+      "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp04.webp?v=61042c53"
+    },
+    {
       "id": "bfe24",
       "gacha_type": "机密货物类",
       "name": "Unidentified threat",
@@ -229,6 +256,24 @@
       "nameEn": "Unidentified threat",
       "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_bfe24.webp?v=673f4294",
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bfe24.webp?v=dc12d013"
+    },
+    {
+      "id": "sp03",
+      "gacha_type": "无人机补给类",
+      "name": "Seas of Prey S03: Corporation",
+      "formattedDate": "2024年4月",
+      "nameEn": "Seas of Prey S03: Corporation",
+      "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp03.webp?v=4f3723dc",
+      "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp03.webp?v=6b5757a5"
+    },
+    {
+      "id": "sp02",
+      "gacha_type": "无人机补给类",
+      "name": "Seas of Prey S02: 王权之巅",
+      "formattedDate": "2023年11月",
+      "nameEn": "Seas of Prey S02: King's Crest",
+      "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp02.webp?v=d3e2fe2c",
+      "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp02.webp?v=b1b22164"
     }
   ]
 }
