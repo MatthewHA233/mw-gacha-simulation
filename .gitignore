@@ -38,3 +38,8 @@ public/gacha-configs/version-history.json
 .env
 .env.local
 .env.production
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
