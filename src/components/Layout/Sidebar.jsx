@@ -8,14 +8,18 @@ import { useSound } from '../../hooks/useSound'
 import { VersionModal } from './VersionModal'
 import './Sidebar.css'
 
-export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
+export function Sidebar({
+  isOpen,
+  onClose,
+  onOpenSponsor,
+  isMobile = false,
+  versionModalOpen = false,
+  onVersionModalChange = () => {}
+}) {
   const { activities, loading, error } = useActivityList()
   const navigate = useNavigate()
   const { activityId: currentActivityId } = useParams()
   const { playButtonClick } = useSound()
-
-  // 版本信息弹窗状态
-  const [versionModalOpen, setVersionModalOpen] = useState(false)
 
   // 音乐播放器状态 - 从本地存储读取初始状态
   const [isPlaying, setIsPlaying] = useState(() => {
@@ -223,7 +227,7 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
   const handleLogoClick = (e) => {
     e.stopPropagation()
     playButtonClick()
-    setVersionModalOpen(true)
+    onVersionModalChange(true)
   }
 
   return (
@@ -402,7 +406,7 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
       {/* 版本信息弹窗 */}
       <VersionModal
         isOpen={versionModalOpen}
-        onClose={() => setVersionModalOpen(false)}
+        onClose={() => onVersionModalChange(false)}
       />
     </motion.div>
   )

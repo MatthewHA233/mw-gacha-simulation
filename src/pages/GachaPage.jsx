@@ -16,22 +16,21 @@ export function GachaPage() {
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sponsorModal, setSponsorModal] = useState(false)
+  const [versionModalOpen, setVersionModalOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
   const [itemScale, setItemScale] = useState(1)
   const [shouldRotate, setShouldRotate] = useState(false)
 
-  // 检查版本更新标记并显示 Toast
+  // 检查版本更新标记并显示 Toast + 打开版本弹窗
   useEffect(() => {
     try {
       const versionUpdateData = sessionStorage.getItem('mw_gacha_version_updated')
       if (versionUpdateData) {
-        const { newVersion, oldVersion } = JSON.parse(versionUpdateData)
-
-        // 显示版本更新 Toast
+        // 显示版本更新 Toast（不显示具体版本号）
         toast.success(
-          `版本已更新至 v${newVersion}\n已自动重置全部数据`,
+          '版本已更新\n已自动重置全部数据',
           {
-            duration: 5000,
+            duration: 4000,
             style: {
               background: '#10b981',
               color: '#fff',
@@ -48,7 +47,12 @@ export function GachaPage() {
           }
         )
 
-        // 清除标记
+        // 延迟 500ms 后打开版本弹窗，让用户查看详情
+        setTimeout(() => {
+          setVersionModalOpen(true)
+        }, 500)
+
+        // 清除标记（确保只显示一次）
         sessionStorage.removeItem('mw_gacha_version_updated')
       }
     } catch (error) {
@@ -153,9 +157,12 @@ export function GachaPage() {
         position: 'relative'
       }}
     >
-      {/* Toast 通知（在旋转容器内） */}
+      {/* Toast 通知（在旋转容器内） - z-index 高于 VersionModal */}
       <Toaster
         position="top-center"
+        containerStyle={{
+          zIndex: 10000,
+        }}
         toastOptions={{
           style: {
             marginTop: isMobile ? '20px' : '60px',
@@ -176,6 +183,8 @@ export function GachaPage() {
             setSidebarOpen(false)
           }}
           isMobile={isMobile}
+          versionModalOpen={versionModalOpen}
+          onVersionModalChange={setVersionModalOpen}
         />
 
         {/* 主内容区 */}
