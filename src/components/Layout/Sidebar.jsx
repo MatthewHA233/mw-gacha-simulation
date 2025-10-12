@@ -5,6 +5,7 @@ import { useActivityList } from '../../hooks/useActivityList'
 import { buildWidgetUrl, getGachaTypePath } from '../../services/cdnService'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
+import { VersionModal } from './VersionModal'
 import './Sidebar.css'
 
 export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
@@ -12,6 +13,9 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
   const navigate = useNavigate()
   const { activityId: currentActivityId } = useParams()
   const { playButtonClick } = useSound()
+
+  // 版本信息弹窗状态
+  const [versionModalOpen, setVersionModalOpen] = useState(false)
 
   // 音乐播放器状态 - 从本地存储读取初始状态
   const [isPlaying, setIsPlaying] = useState(() => {
@@ -216,6 +220,12 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
     onClose()
   }
 
+  const handleLogoClick = (e) => {
+    e.stopPropagation()
+    playButtonClick()
+    setVersionModalOpen(true)
+  }
+
   return (
     <motion.div
       initial={false}
@@ -226,7 +236,9 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
     >
       <div className="w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex flex-col">
         {/* 顶部网站Logo */}
-        <div className="py-3 md:py-4 px-4 border-b border-white/10 bg-gradient-to-br from-slate-950 to-black relative overflow-hidden">
+        <div
+          className="py-3 md:py-4 px-4 border-b border-white/10 bg-gradient-to-br from-slate-950 to-black relative overflow-hidden"
+        >
           {/* 音频波纹背景 */}
           <canvas
             ref={canvasRef}
@@ -236,9 +248,10 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
           />
 
           <div className="flex items-center gap-2 md:gap-3 relative z-10">
-            {/* Logo - 播放时脉冲发光 */}
+            {/* Logo - 播放时脉冲发光，可点击打开版本信息 */}
             <motion.div
-              className="relative flex-shrink-0"
+              onClick={handleLogoClick}
+              className="relative flex-shrink-0 cursor-pointer"
               animate={isPlaying ? {
                 scale: [1, 1.15, 1]
               } : {}}
@@ -384,6 +397,12 @@ export function Sidebar({ isOpen, onClose, onOpenSponsor, isMobile = false }) {
         loop
         preload="auto"
         crossOrigin="anonymous"
+      />
+
+      {/* 版本信息弹窗 */}
+      <VersionModal
+        isOpen={versionModalOpen}
+        onClose={() => setVersionModalOpen(false)}
       />
     </motion.div>
   )
