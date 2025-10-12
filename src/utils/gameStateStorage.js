@@ -45,7 +45,7 @@ export function getDefaultGameState(gachaType = '筹码类') {
 
   if (gachaType === '机密货物类') {
     return {
-      currency: 30, // 授权密钥（对应机密货物 rm）
+      currency: 70, // 授权密钥（对应机密货物 rm）
       currencyName: "授权密钥",
       commonCurrency: 3000, // 无人机电池（对应货运无人机 gameplay）
       commonCurrencyName: "无人机电池",

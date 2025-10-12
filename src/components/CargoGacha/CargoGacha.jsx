@@ -568,7 +568,7 @@ export function CargoGacha({
     const singleCost = selectedCargoType === 'rm' ? gameState.singleCost : 30
 
     if (gameState[currencyKey] < singleCost) {
-      toast.error(`${currencyName}不够，请充值`, {
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
         style: {
@@ -577,7 +577,10 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      setShopModal(true)
+      // 只有rm货币不够时才弹出商店
+      if (selectedCargoType === 'rm') {
+        setShopModal(true)
+      }
       return
     }
 
@@ -746,7 +749,7 @@ export function CargoGacha({
     const multiCost = selectedCargoType === 'rm' ? 10 : 300
 
     if (gameState[currencyKey] < multiCost) {
-      toast.error(`${currencyName}不够，请充值`, {
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
         style: {
@@ -755,7 +758,10 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      setShopModal(true)
+      // 只有rm货币不够时才弹出商店
+      if (selectedCargoType === 'rm') {
+        setShopModal(true)
+      }
       return
     }
 
@@ -885,7 +891,7 @@ export function CargoGacha({
     const draw100Cost = selectedCargoType === 'rm' ? 100 : 3000
 
     if (gameState[currencyKey] < draw100Cost) {
-      toast.error(`${currencyName}不够，请充值`, {
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
         style: {
@@ -894,7 +900,10 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      setShopModal(true)
+      // 只有rm货币不够时才弹出商店
+      if (selectedCargoType === 'rm') {
+        setShopModal(true)
+      }
       return
     }
 
@@ -1027,7 +1036,7 @@ export function CargoGacha({
     const draw500Cost = selectedCargoType === 'rm' ? 500 : 15000
 
     if (gameState[currencyKey] < draw500Cost) {
-      toast.error(`${currencyName}不够，请充值`, {
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
         style: {
@@ -1036,7 +1045,10 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      setShopModal(true)
+      // 只有rm货币不够时才弹出商店
+      if (selectedCargoType === 'rm') {
+        setShopModal(true)
+      }
       return
     }
 
