@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { LEVEL_STYLES } from '@/data/milestoneConfig'
-import { useSound } from '@/hooks/useSound'
 
 /**
  * Steam成就样式的里程碑Toast组件
@@ -16,7 +15,6 @@ export function MilestoneToast({
 }) {
   const [isVisible, setIsVisible] = useState(true)
   const [progress, setProgress] = useState(100)
-  const { playButtonClick } = useSound()
 
   // 获取样式配置
   const finalStyle = LEVEL_STYLES[milestone.level] || LEVEL_STYLES.dense
@@ -42,14 +40,12 @@ export function MilestoneToast({
 
   // 关闭处理
   const handleClose = () => {
-    playButtonClick()
     setIsVisible(false)
     setTimeout(() => onClose(id), 300)
   }
 
   // 按钮点击处理
   const handleButtonClick = (buttonText) => {
-    playButtonClick()
     onButtonClick?.(milestone, buttonText)
     handleClose()
   }

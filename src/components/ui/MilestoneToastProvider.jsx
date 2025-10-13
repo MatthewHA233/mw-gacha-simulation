@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { MilestoneToast } from './MilestoneToast'
 
 /**
@@ -13,6 +13,7 @@ const MilestoneToastContext = createContext(null)
 export function MilestoneToastProvider({ children, maxToasts = 3, position = 'top-right' }) {
   const [toasts, setToasts] = useState([])
   const [shouldRotate, setShouldRotate] = useState(false)
+  const resolveMapRef = useRef(new Map())  // 存储 toast id 到 resolve 函数的映射
 
   // 检测是否需要横屏旋转（与 GachaPage 逻辑一致）
   useEffect(() => {
@@ -34,9 +35,15 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
    * @param {object} milestone - 里程碑配置对象
    * @param {function} onButtonClick - 按钮点击回调
    * @param {number} duration - 显示时长（毫秒）
+   * @returns {Promise} 在 Toast 关闭时 resolve
    */
   const showToast = useCallback((milestone, { onButtonClick, duration = 5000 } = {}) => {
     const id = Date.now() + Math.random()
+
+    // 创建 Promise，在 Toast 关闭时 resolve
+    const promise = new Promise((resolve) => {
+      resolveMapRef.current.set(id, resolve)
+    })
 
     setToasts((prev) => {
       const newToasts = [
@@ -57,7 +64,7 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
       return newToasts
     })
 
-    return id
+    return promise
   }, [maxToasts])
 
   /**
@@ -65,12 +72,23 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
    */
   const closeToast = useCallback((id) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
+
+    // 调用对应的 resolve 函数
+    const resolve = resolveMapRef.current.get(id)
+    if (resolve) {
+      resolve()
+      resolveMapRef.current.delete(id)
+    }
   }, [])
 
   /**
    * 关闭所有Toast
    */
   const closeAll = useCallback(() => {
+    // 调用所有待解决的 resolve 函数
+    resolveMapRef.current.forEach((resolve) => resolve())
+    resolveMapRef.current.clear()
+
     setToasts([])
   }, [])
 
@@ -96,16 +114,13 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
           absolute
           ${position.includes('top') ? 'top-4' : 'bottom-4'}
           ${position.includes('right') ? 'right-4' : 'left-4'}
-          flex flex-col gap-3
           pointer-events-none
         `}>
           {toasts.map((toast, index) => (
             <div
               key={toast.id}
-              className="pointer-events-auto"
+              className="absolute top-0 right-0 pointer-events-auto"
               style={{
-                // 堆叠时稍微偏移，营造层叠效果
-                transform: `translateY(${index * -2}px)`,
                 zIndex: 10000 + index
               }}
             >
