@@ -349,7 +349,8 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
   // 史诗/传说物品：根据 type 和 id 动态生成
   if (item.rarity === 'epic' || item.rarity === 'legendary') {
     let folder
-    if (item.type === '战舰') {
+    if (item.type === '战舰' || item.type === '无人潜航器') {
+      // 战舰和无人潜航器都使用 units_ships 路径
       folder = 'units_ships'
     } else if (item.type === '涂装') {
       folder = 'camouflages'
