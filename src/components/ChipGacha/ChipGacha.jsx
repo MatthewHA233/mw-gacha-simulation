@@ -769,6 +769,51 @@ export function ChipGacha({
     setIsDrawing(true)
     setGameState(prev => ({ ...prev, currency: prev.currency - 10, totalDraws: prev.totalDraws + 10 }))
 
+    // 播放随机跳动动画
+    const availableItems = gameState.items.filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemName(null)
+        // 动画结束后执行抽奖逻辑
+        performMultiDraw()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行十连抽逻辑（从 multiDraw 中提取出来）
+  const performMultiDraw = () => {
     setTimeout(() => {
       const results = []
       let tempGameState = { ...gameState }
@@ -875,6 +920,51 @@ export function ChipGacha({
     setIsDrawing(true)
     setGameState(prev => ({ ...prev, currency: prev.currency - 100, totalDraws: prev.totalDraws + 100 }))
 
+    // 播放随机跳动动画
+    const availableItems = gameState.items.filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemName(null)
+        // 动画结束后执行抽奖逻辑
+        performDraw100()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行百连抽逻辑（从 draw100 中提取出来）
+  const performDraw100 = () => {
     setTimeout(() => {
       const results = []
       let tempGameState = { ...gameState }
@@ -985,6 +1075,51 @@ export function ChipGacha({
     setIsDrawing(true)
     setGameState(prev => ({ ...prev, currency: prev.currency - 500, totalDraws: prev.totalDraws + 500 }))
 
+    // 播放随机跳动动画
+    const availableItems = gameState.items.filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemName(null)
+        // 动画结束后执行抽奖逻辑
+        performDraw500()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行五百连抽逻辑（从 draw500 中提取出来）
+  const performDraw500 = () => {
     setTimeout(() => {
       const results = []
       let tempGameState = { ...gameState }

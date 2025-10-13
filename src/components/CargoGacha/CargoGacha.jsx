@@ -772,6 +772,56 @@ export function CargoGacha({
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 10
     }))
 
+    // 播放随机跳动动画
+    const itemsKey = suffix ? `items${suffix}` : 'items'
+    const availableItems = gameState[itemsKey].filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemId(null)
+        // 动画结束后执行抽奖逻辑
+        performMultiDraw()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行十连抽逻辑（从 handleMultiDraw 中提取出来）
+  const performMultiDraw = () => {
+    const suffix = selectedCargoType === 'rm' ? '' : '_else'
+    const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
+    const multiCost = selectedCargoType === 'rm' ? 10 : 300
+
     setTimeout(() => {
       const itemsKey = suffix ? `items${suffix}` : 'items'
       const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
@@ -913,6 +963,56 @@ export function CargoGacha({
       [currencyKey]: prev[currencyKey] - draw100Cost,
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 100
     }))
+
+    // 播放随机跳动动画
+    const itemsKey = suffix ? `items${suffix}` : 'items'
+    const availableItems = gameState[itemsKey].filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemId(null)
+        // 动画结束后执行抽奖逻辑
+        performDraw100()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行百连抽逻辑（从 handleDraw100 中提取出来）
+  const performDraw100 = () => {
+    const suffix = selectedCargoType === 'rm' ? '' : '_else'
+    const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
+    const draw100Cost = selectedCargoType === 'rm' ? 100 : 3000
 
     setTimeout(() => {
       const itemsKey = suffix ? `items${suffix}` : 'items'
@@ -1058,6 +1158,56 @@ export function CargoGacha({
       [currencyKey]: prev[currencyKey] - draw500Cost,
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 500
     }))
+
+    // 播放随机跳动动画
+    const itemsKey = suffix ? `items${suffix}` : 'items'
+    const availableItems = gameState[itemsKey].filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemId(null)
+        // 动画结束后执行抽奖逻辑
+        performDraw500()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行五百连抽逻辑（从 handleDraw500 中提取出来）
+  const performDraw500 = () => {
+    const suffix = selectedCargoType === 'rm' ? '' : '_else'
+    const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
+    const draw500Cost = selectedCargoType === 'rm' ? 500 : 15000
 
     setTimeout(() => {
       const itemsKey = suffix ? `items${suffix}` : 'items'
@@ -1520,7 +1670,8 @@ export function CargoGacha({
           {/* 抽奖 x1 */}
           <button
             onClick={() => handleButtonClick(handleSingleDraw)}
-            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
+            disabled={isDrawing}
+            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
             <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
@@ -1531,7 +1682,8 @@ export function CargoGacha({
           {/* 抽奖 x10 */}
           <button
             onClick={() => handleButtonClick(handleMultiDraw)}
-            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none"
+            disabled={isDrawing}
+            className="relative inline-flex h-10 overflow-hidden rounded-md p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#059669_50%,#10b981_100%)]" />
             <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-gradient-to-b from-emerald-500 to-emerald-700 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:from-emerald-400 hover:to-emerald-600 transition-all">
