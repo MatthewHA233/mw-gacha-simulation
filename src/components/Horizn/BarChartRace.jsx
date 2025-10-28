@@ -190,7 +190,10 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       onDataUpdate({
         current: timeline[currentFrame],
         latestTimestamp: timeline[timeline.length - 1].timestamp,
-        isLatest: currentFrame === timeline.length - 1
+        isLatest: currentFrame === timeline.length - 1,
+        allTimestamps: timeline.map(t => t.timestamp),
+        currentFrameIndex: currentFrame,
+        timeline: timeline
       })
     }
   }, [currentFrame, timeline, onDataUpdate])

@@ -14,6 +14,7 @@ export default function HoriznPage() {
   const [copyMode, setCopyMode] = useState('rank') // 'rank' 或 'threshold'
   const [thresholdValue, setThresholdValue] = useState('4500') // 默认周活跃度阈值
   const [currentData, setCurrentData] = useState(null)
+  const [selectedTimestampIndex, setSelectedTimestampIndex] = useState(null) // 选择的时间戳索引
 
   // 根据当前 tab 获取默认阈值
   const getDefaultThreshold = () => {
@@ -39,7 +40,16 @@ export default function HoriznPage() {
   const handleOpenCopyModal = () => {
     setShowAdminMenu(false)
     setThresholdValue(getDefaultThreshold()) // 打开时设置为当前 tab 的默认阈值
+    setSelectedTimestampIndex(currentData?.currentFrameIndex ?? null) // 初始化为当前帧
     setShowCopyModal(true)
+  }
+
+  // 获取选中时间戳的数据
+  const getSelectedData = () => {
+    if (!currentData || !currentData.timeline || selectedTimestampIndex === null) {
+      return currentData?.current
+    }
+    return currentData.timeline[selectedTimestampIndex]
   }
 
   // 切换 tab 时更新阈值默认值
@@ -74,22 +84,23 @@ export default function HoriznPage() {
 
   // 复制名单
   const handleCopyList = () => {
-    if (!currentData || !currentData.current || !currentData.current.allData) return
+    const selectedData = getSelectedData()
+    if (!selectedData || !selectedData.allData) return
 
     let selectedPlayers = []
     let title = ''
     const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
-    const formattedTime = formatTimestamp(currentData.current.timestamp)
+    const formattedTime = formatTimestamp(selectedData.timestamp)
 
     if (copyMode === 'rank') {
       // 按名次模式
       const count = parseInt(copyCount) || 20
-      selectedPlayers = currentData.current.allData.slice(0, count)
+      selectedPlayers = selectedData.allData.slice(0, count)
       title = `${formattedTime} HORIZN地平线${tabName}前${count}名`
     } else {
       // 按阈值模式
       const threshold = parseInt(thresholdValue) || 0
-      selectedPlayers = currentData.current.allData.filter(player => player.value >= threshold)
+      selectedPlayers = selectedData.allData.filter(player => player.value >= threshold)
       title = `${formattedTime} HORIZN地平线${tabName}活跃度≥${threshold}（共${selectedPlayers.length}人）`
     }
 
@@ -114,6 +125,7 @@ export default function HoriznPage() {
       setCopyCount('20')
       setCopyMode('rank')
       setThresholdValue(getDefaultThreshold())
+      setSelectedTimestampIndex(null)
     }).catch(err => {
       console.error('复制失败:', err)
       alert('复制失败，请重试')
@@ -295,6 +307,7 @@ export default function HoriznPage() {
                   setCopyCount('20')
                   setCopyMode('rank')
                   setThresholdValue(getDefaultThreshold())
+                  setSelectedTimestampIndex(null)
                 }}
                 className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-1 transition-all"
               >
@@ -349,37 +362,67 @@ export default function HoriznPage() {
                 {/* 按名次模式 */}
                 {copyMode === 'rank' && (
                   <>
-                    <label htmlFor="copyCount" className="block text-xs font-medium text-gray-400 mb-1.5">
-                      选择人数
-                    </label>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => setCopyCount(String(Math.max(5, parseInt(copyCount || 20) - 5)))}
-                        className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base"
-                      >
-                        −
-                      </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* 选择人数 */}
+                      <div>
+                        <label htmlFor="copyCount" className="block text-xs font-medium text-gray-400 mb-1">
+                          人数
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setCopyCount(String(Math.max(5, parseInt(copyCount || 20) - 5)))}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            −
+                          </button>
+                          <input
+                            id="copyCount"
+                            type="number"
+                            min="1"
+                            max={getSelectedData()?.allData?.length || 100}
+                            step="5"
+                            value={copyCount}
+                            onChange={(e) => setCopyCount(e.target.value)}
+                            className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-sm font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <button
+                            onClick={() => setCopyCount(String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
 
-                      <input
-                        id="copyCount"
-                        type="number"
-                        min="1"
-                        max={currentData?.current?.allData?.length || 100}
-                        step="5"
-                        value={copyCount}
-                        onChange={(e) => setCopyCount(e.target.value)}
-                        className="flex-1 px-3 py-2 bg-gray-700/50 text-white text-center text-base font-semibold rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-
-                      <button
-                        onClick={() => setCopyCount(String(Math.min(currentData?.current?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
-                        className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base"
-                      >
-                        +
-                      </button>
+                      {/* 选择时间 */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1">
+                          时间
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setSelectedTimestampIndex(Math.max(0, selectedTimestampIndex - 1))}
+                            disabled={selectedTimestampIndex <= 0}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            ←
+                          </button>
+                          <div className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-xs font-mono rounded-md border border-gray-600 truncate">
+                            {currentData?.allTimestamps?.[selectedTimestampIndex]?.split(' ')[1] || '--:--'}
+                          </div>
+                          <button
+                            onClick={() => setSelectedTimestampIndex(Math.min((currentData?.allTimestamps?.length || 1) - 1, selectedTimestampIndex + 1))}
+                            disabled={selectedTimestampIndex >= (currentData?.allTimestamps?.length || 1) - 1}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            →
+                          </button>
+                        </div>
+                      </div>
                     </div>
                     <p className="mt-1.5 text-xs text-gray-500 text-center">
-                      当前共有 <span className="text-blue-400 font-medium">{currentData?.current?.allData?.length || 0}</span> 名队员
+                      共 <span className="text-blue-400 font-medium">{getSelectedData()?.allData?.length || 0}</span> 人 ·
+                      时间戳 <span className="text-blue-400 font-medium">{(selectedTimestampIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
                     </p>
                   </>
                 )}
@@ -416,10 +459,10 @@ export default function HoriznPage() {
                       </button>
                     </div>
                     <p className="mt-1.5 text-xs text-gray-500 text-center">
-                      {currentData && currentData.current && (
+                      {getSelectedData() && (
                         <>
                           符合条件：<span className="text-blue-400 font-medium">
-                            {currentData.current.allData.filter(p => p.value >= (parseInt(thresholdValue) || 0)).length}
+                            {getSelectedData().allData.filter(p => p.value >= (parseInt(thresholdValue) || 0)).length}
                           </span> 人
                         </>
                       )}
@@ -429,7 +472,7 @@ export default function HoriznPage() {
               </div>
 
               {/* 预览 */}
-              {currentData && currentData.current && (
+              {getSelectedData() && (
                 <div className="bg-gray-900/50 rounded-lg p-2.5 border border-gray-700/50">
                   <div className="flex items-center justify-between mb-1.5">
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">预览</p>
@@ -442,19 +485,20 @@ export default function HoriznPage() {
                   </div>
                   <div className="text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar">
                     {(() => {
+                      const selectedData = getSelectedData()
                       const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
-                      const formattedTime = formatTimestamp(currentData.current.timestamp)
+                      const formattedTime = formatTimestamp(selectedData.timestamp)
 
                       let selectedPlayers = []
                       let title = ''
 
                       if (copyMode === 'rank') {
                         const count = parseInt(copyCount) || 20
-                        selectedPlayers = currentData.current.allData.slice(0, count)
+                        selectedPlayers = selectedData.allData.slice(0, count)
                         title = `${formattedTime} HORIZN地平线${tabName}前${count}名`
                       } else {
                         const threshold = parseInt(thresholdValue) || 0
-                        selectedPlayers = currentData.current.allData.filter(p => p.value >= threshold)
+                        selectedPlayers = selectedData.allData.filter(p => p.value >= threshold)
                         title = `${formattedTime} HORIZN地平线${tabName}活跃度≥${threshold}（共${selectedPlayers.length}人）`
                       }
 
@@ -481,6 +525,7 @@ export default function HoriznPage() {
                   setCopyCount('20')
                   setCopyMode('rank')
                   setThresholdValue(getDefaultThreshold())
+                  setSelectedTimestampIndex(null)
                 }}
                 className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
               >
