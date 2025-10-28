@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import BarChartRace from '@/components/Horizn/BarChartRace'
+import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
@@ -14,9 +15,10 @@ export default function HoriznPage() {
     }
   }, [])
 
+  // 动态构建 CSV 路径
   const tabs = [
-    { id: 'weekly', name: '周活跃度', csvPath: 'horizn/202510/weekly_20251027~20251102.csv' },
-    { id: 'season', name: '赛季活跃度', csvPath: 'horizn/202510/season_2025_10.csv' }
+    { id: 'weekly', name: '周活跃度', csvPath: buildHoriznWeeklyCsvPath() },
+    { id: 'season', name: '赛季活跃度', csvPath: buildHoriznSeasonCsvPath() }
   ]
 
   const currentTab = tabs.find(tab => tab.id === activeTab)

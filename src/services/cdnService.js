@@ -443,3 +443,72 @@ export function buildLootboxTicketUrl(type, activityId = null) {
       return `${basePath}/common_lootbox_ticket.png`
   }
 }
+
+/**
+ * 获取本周的周一和周日日期
+ * @param {Date} [date=new Date()] - 参考日期，默认为今天
+ * @returns {{ monday: Date, sunday: Date }} 本周的周一和周日
+ */
+function getWeekRange(date = new Date()) {
+  const d = new Date(date)
+  const day = d.getDay() // 0 (周日) 到 6 (周六)
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1) // 调整到周一
+
+  const monday = new Date(d.setDate(diff))
+  monday.setHours(0, 0, 0, 0)
+
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+  sunday.setHours(23, 59, 59, 999)
+
+  return { monday, sunday }
+}
+
+/**
+ * 格式化日期为 YYYYMMDD 格式
+ * @param {Date} date - 日期对象
+ * @returns {string} 格式化后的日期字符串
+ */
+function formatDate(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}${month}${day}`
+}
+
+/**
+ * 格式化年月为 YYYYMM 格式
+ * @param {Date} date - 日期对象
+ * @returns {string} 格式化后的年月字符串
+ */
+function formatYearMonth(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  return `${year}${month}`
+}
+
+/**
+ * 构建 HORIZN 周活跃度 CSV 路径
+ * @param {Date} [date=new Date()] - 参考日期，默认为今天
+ * @returns {string} 周活跃度 CSV 路径
+ */
+export function buildHoriznWeeklyCsvPath(date = new Date()) {
+  const { monday, sunday } = getWeekRange(date)
+  const yearMonth = formatYearMonth(monday) // 使用周一所在的年月
+  const mondayStr = formatDate(monday)
+  const sundayStr = formatDate(sunday)
+  return `horizn/${yearMonth}/weekly_${mondayStr}~${sundayStr}.csv`
+}
+
+/**
+ * 构建 HORIZN 赛季活跃度 CSV 路径
+ * @param {Date} [date=new Date()] - 参考日期，默认为今天
+ * @returns {string} 赛季活跃度 CSV 路径
+ */
+export function buildHoriznSeasonCsvPath(date = new Date()) {
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const yearMonth = formatYearMonth(d)
+  return `horizn/${yearMonth}/season_${year}_${month}.csv`
+}
