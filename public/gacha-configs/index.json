@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "la97",
+      "gacha_type": "旗舰宝箱类",
+      "name": "暗海宝藏",
+      "nameEn": "Dark Seas Bounty",
+      "formattedDate": "2025年10月"
+    },
+    {
       "id": "be97",
       "gacha_type": "机密货物类",
       "name": "诅咒之船",
