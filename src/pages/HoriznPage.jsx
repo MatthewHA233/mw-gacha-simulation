@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
 import '@/components/Layout/Sidebar.css'
@@ -15,11 +15,16 @@ export default function HoriznPage() {
     }
   }, [])
 
-  // 动态构建 CSV 路径
-  const tabs = [
+  // 切换标签时重置状态信息（避免显示旧标签页的状态）
+  useEffect(() => {
+    setStatusInfo(null)
+  }, [activeTab])
+
+  // 动态构建 CSV 路径（useMemo 缓存，避免切换标签时重新创建导致组件重新挂载）
+  const tabs = useMemo(() => [
     { id: 'weekly', name: '周活跃度', csvPath: buildHoriznWeeklyCsvPath() },
     { id: 'season', name: '赛季活跃度', csvPath: buildHoriznSeasonCsvPath() }
-  ]
+  ], [])
 
   const currentTab = tabs.find(tab => tab.id === activeTab)
 
