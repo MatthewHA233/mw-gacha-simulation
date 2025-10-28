@@ -28,14 +28,17 @@ export default function HoriznPage() {
     setShowCopyModal(true)
   }
 
-  // 格式化时间戳（年月日用当天，时分用数据时间）
+  // 格式化时间戳（从时间戳提取月日时分）
   const formatTimestamp = (timestamp) => {
     const now = new Date()
     const year = now.getFullYear()
-    const month = (now.getMonth() + 1).toString().padStart(2, '0')
-    const day = now.getDate().toString().padStart(2, '0')
-    const time = timestamp.split(' ')[1] || timestamp
-    return `${year}年${month}月${day}日${time}`
+    const match = timestamp.match(/(\d{2})-(\d{2}) (\d{2}:\d{2})/)
+    if (match) {
+      const [, month, day, time] = match
+      return `${year}年${month}月${day}日${time}`
+    }
+    // 如果格式不匹配，返回原始时间戳
+    return timestamp
   }
 
   // 格式化时间戳用于警告显示（仅显示月日时分）
