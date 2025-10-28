@@ -254,9 +254,17 @@ export default function HoriznPage() {
             {/* 内容区 */}
             <div className="px-4 sm:px-6 py-5 space-y-4">
               <div>
-                <label htmlFor="copyCount" className="block text-sm font-medium text-gray-300 mb-3">
-                  选择复制人数
-                </label>
+                <div className="flex items-center justify-between mb-3">
+                  <label htmlFor="copyCount" className="block text-sm font-medium text-gray-300">
+                    选择复制人数
+                  </label>
+                  <span className="text-xs text-yellow-400/80 flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    当前动画帧
+                  </span>
+                </div>
 
                 {/* 数字输入框 + 加减按钮 */}
                 <div className="flex items-center gap-2">
