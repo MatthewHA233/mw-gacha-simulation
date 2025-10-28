@@ -123,9 +123,32 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     return hour >= 1 && hour < 8
   }
 
-  // 获取更新阈值（秒）
-  const getUpdateThreshold = () => {
-    return isNightMode() ? 62 * 60 : 12 * 60 // 夜间62分钟，白天12分钟
+  // 获取更新间隔和首次检查点（分钟）
+  const getUpdateConfig = () => {
+    const nightMode = isNightMode()
+    return {
+      interval: nightMode ? 60 : 10,        // 更新间隔：夜间60分钟，白天10分钟
+      firstCheck: nightMode ? 62 : 12       // 首次检查点：夜间62分钟，白天12分钟
+    }
+  }
+
+  // 计算下一个检查点的剩余秒数
+  const getSecondsToNextCheckpoint = (elapsed) => {
+    const { interval, firstCheck } = getUpdateConfig()
+    const elapsedMinutes = elapsed / 60
+
+    if (elapsedMinutes < firstCheck) {
+      // 还没到第一个检查点
+      return (firstCheck * 60) - elapsed
+    }
+
+    // 计算距离第一个检查点过了多少时间
+    const timeSinceFirstCheck = elapsedMinutes - firstCheck
+    const remainder = timeSinceFirstCheck % interval
+
+    // 距离下一个检查点的时间
+    const minutesToNext = remainder === 0 ? interval : (interval - remainder)
+    return Math.ceil(minutesToNext * 60)
   }
 
   // 自动更新检查
@@ -138,11 +161,21 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       const elapsed = Math.floor((now - lastUpdateTime) / 1000)
       setTimeElapsed(elapsed)
 
-      // 检查是否需要自动刷新
-      const threshold = getUpdateThreshold()
-      if (elapsed >= threshold) {
-        console.log('[BarChartRace] Auto-refresh triggered')
-        window.location.reload()
+      // 检查是否到达刷新检查点
+      const { interval, firstCheck } = getUpdateConfig()
+      const elapsedMinutes = elapsed / 60
+
+      // 只在刚到达检查点的那几秒触发（允许3秒误差）
+      if (elapsedMinutes >= firstCheck) {
+        const timeSinceFirstCheck = elapsedMinutes - firstCheck
+        const remainder = timeSinceFirstCheck % interval
+        const secondsRemainder = remainder * 60
+
+        // 如果remainder接近0（或接近interval），说明刚好到达一个检查点
+        if (secondsRemainder <= 3) {
+          console.log('[BarChartRace] Auto-refresh at checkpoint:', Math.floor(elapsedMinutes), 'minutes')
+          window.location.reload()
+        }
       }
     }, 1000)
 
@@ -172,8 +205,8 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       return `${secs}秒前`
     }
 
-    const threshold = getUpdateThreshold()
-    const remainingSeconds = Math.max(0, threshold - timeElapsed)
+    // 计算到下一个检查点的剩余时间
+    const remainingSeconds = getSecondsToNextCheckpoint(timeElapsed)
     const remainingMinutes = Math.floor(remainingSeconds / 60)
     const remainingSecs = remainingSeconds % 60
 
