@@ -16,6 +16,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
   })
   const [lastUpdateTime, setLastUpdateTime] = useState(null) // 最近一次数据时间戳
   const [timeElapsed, setTimeElapsed] = useState(0) // 距离上次更新的秒数
+  const [maxVisibleItems, setMaxVisibleItems] = useState(20) // 最大可见条目数
   const intervalRef = useRef(null)
   const timerRef = useRef(null)
 
@@ -152,7 +153,8 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
 
   // 向父组件传递状态信息
   useEffect(() => {
-    if (!lastUpdateTime || !onStatusUpdate) return
+    // 确保数据完全加载后才更新状态
+    if (!lastUpdateTime || !onStatusUpdate || timeElapsed === 0) return
 
     const formatTimeElapsed = (seconds) => {
       const minutes = Math.floor(seconds / 60)
@@ -176,6 +178,39 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
       remainingText: `${remainingMinutes}:${remainingSecs.toString().padStart(2, '0')}`
     })
   }, [timeElapsed, lastUpdateTime, onStatusUpdate])
+
+  // 根据视窗高度计算最大可见条目数
+  useEffect(() => {
+    const calculateMaxItems = () => {
+      const viewportHeight = window.innerHeight
+      const isLargeScreen = window.innerWidth >= 1024
+
+      // 减去固定高度的元素
+      const topBarHeight = 50 // 顶部导航栏
+      const controlsHeight = 75 // 播放控制区
+      const padding = 40 // 上下内边距
+      const timeDisplayHeight = isLargeScreen ? 130 : 90 // 时间显示区域
+
+      // 可用高度
+      const availableHeight = viewportHeight - topBarHeight - controlsHeight - padding - timeDisplayHeight
+
+      // 每条数据的高度（包括间距）
+      const isMobile = window.innerWidth < 640
+      const itemHeight = isMobile ? 16 : 20
+
+      // 计算最大条目数（最少10条，最多40条）
+      const maxItems = Math.floor(availableHeight / itemHeight)
+      const finalMaxItems = Math.max(10, Math.min(40, maxItems))
+
+      console.log('[BarChartRace] 视窗高度:', viewportHeight, '可用高度:', availableHeight, '显示条数:', finalMaxItems)
+      setMaxVisibleItems(finalMaxItems)
+    }
+
+    calculateMaxItems()
+    window.addEventListener('resize', calculateMaxItems)
+
+    return () => window.removeEventListener('resize', calculateMaxItems)
+  }, [])
 
   // 播放控制 - 根据总时长动态计算帧间隔
   useEffect(() => {
@@ -245,7 +280,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
 
   const currentData = timeline[currentFrame]
   const maxValue = Math.max(...currentData.data.map(d => d.value))
-  const displayData = currentData.data.slice(0, 20) // 只显示前 20 名
+  const displayData = currentData.data.slice(0, maxVisibleItems) // 根据屏幕高度动态显示
 
   return (
     <div className="py-8">
