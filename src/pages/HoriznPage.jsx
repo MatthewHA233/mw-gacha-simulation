@@ -40,10 +40,10 @@ export default function HoriznPage() {
 
   // 复制名单
   const handleCopyList = () => {
-    if (!currentData || !currentData.data) return
+    if (!currentData || !currentData.allData) return
 
     const count = parseInt(copyCount) || 20
-    const topPlayers = currentData.data.slice(0, count)
+    const topPlayers = currentData.allData.slice(0, count)
 
     // 构建标题
     const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
@@ -271,7 +271,7 @@ export default function HoriznPage() {
                     id="copyCount"
                     type="number"
                     min="1"
-                    max={currentData?.data?.length || 100}
+                    max={currentData?.allData?.length || 100}
                     step="5"
                     value={copyCount}
                     onChange={(e) => setCopyCount(e.target.value)}
@@ -279,7 +279,7 @@ export default function HoriznPage() {
                   />
 
                   <button
-                    onClick={() => setCopyCount(String(Math.min(currentData?.data?.length || 100, parseInt(copyCount || 20) + 5)))}
+                    onClick={() => setCopyCount(String(Math.min(currentData?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
                     className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-xl transition-colors text-white font-bold text-lg"
                   >
                     +
@@ -287,7 +287,7 @@ export default function HoriznPage() {
                 </div>
 
                 <p className="mt-2 text-xs sm:text-sm text-gray-400 text-center">
-                  当前共有 <span className="text-blue-400 font-semibold">{currentData?.data?.length || 0}</span> 名队员
+                  当前共有 <span className="text-blue-400 font-semibold">{currentData?.allData?.length || 0}</span> 名队员
                 </p>
               </div>
 
@@ -303,7 +303,7 @@ export default function HoriznPage() {
                       const count = parseInt(copyCount) || 20
                       const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
                       const formattedTime = formatTimestamp(currentData.timestamp)
-                      return `${formattedTime} HORIZN地平线${tabName}前${count}名\n\n${currentData.data.slice(0, count).map((p, i) => `${i + 1}. ${p.name}`).join('\n')}`
+                      return `${formattedTime} HORIZN地平线${tabName}前${count}名\n\n${currentData.allData.slice(0, count).map((p, i) => `${i + 1}. ${p.name}`).join('\n')}`
                     })()}
                   </div>
                 </div>

@@ -33,19 +33,23 @@ export function parseBarChartRaceCSV(csvText) {
 
   // 转换为时间序列格式
   const timeline = timestamps.map((timestamp, index) => {
-    const frameData = players
+    // 所有玩家数据（包括0值）
+    const allData = players
       .map(player => ({
         name: player.name,
         value: player.data[index] || 0
       }))
-      .filter(item => item.value > 0) // 过滤掉 0 值
       .sort((a, b) => b.value - a.value) // 按值降序排序
 
-    const total = frameData.reduce((sum, item) => sum + item.value, 0)
+    // 过滤后的数据（仅用于图表显示，排除0值）
+    const displayData = allData.filter(item => item.value > 0)
+
+    const total = allData.reduce((sum, item) => sum + item.value, 0)
 
     return {
       timestamp: timestamp.trim(),
-      data: frameData,
+      data: displayData,      // 图表显示用（过滤0值）
+      allData: allData,       // 完整数据（包含0值，用于统计总人数）
       total
     }
   })
