@@ -27,21 +27,30 @@ export default function HoriznPage() {
       <div className="flex-shrink-0 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
-            {/* 左侧：标签页 */}
-            <div className="flex gap-0.5 sm:gap-1">
-              {tabs.map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 text-xs sm:text-sm font-medium transition-colors ${
-                    activeTab === tab.id
-                      ? 'text-white border-b-2 border-blue-500'
-                      : 'text-gray-400 hover:text-gray-200'
-                  }`}
-                >
-                  {tab.name}
-                </button>
-              ))}
+            {/* 左侧：联队logo + 标签页 */}
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+              {/* 联队logo */}
+              <img
+                src="/horizn.jpg"
+                alt="HORIZN"
+                className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full object-cover flex-shrink-0"
+              />
+              {/* 标签页 */}
+              <div className="flex gap-0.5 sm:gap-1">
+                {tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 text-xs sm:text-sm font-medium transition-colors ${
+                      activeTab === tab.id
+                        ? 'text-white border-b-2 border-blue-500'
+                        : 'text-gray-400 hover:text-gray-200'
+                    }`}
+                  >
+                    {tab.name}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* 右侧：状态信息 */}
