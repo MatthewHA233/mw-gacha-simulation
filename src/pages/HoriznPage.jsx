@@ -11,8 +11,13 @@ export default function HoriznPage() {
   const [showCopyModal, setShowCopyModal] = useState(false)
   const [copyCount, setCopyCount] = useState('20')
   const [copyMode, setCopyMode] = useState('rank') // 'rank' 或 'threshold'
-  const [thresholdValue, setThresholdValue] = useState('100')
+  const [thresholdValue, setThresholdValue] = useState('4500') // 默认周活跃度阈值
   const [currentData, setCurrentData] = useState(null)
+
+  // 根据当前 tab 获取默认阈值
+  const getDefaultThreshold = () => {
+    return activeTab === 'weekly' ? '4500' : '30000'
+  }
 
   // 检查是否有管理员权限
   const isAdmin = sessionStorage.getItem('horizn_admin_auth') === 'true'
@@ -27,8 +32,14 @@ export default function HoriznPage() {
   // 打开复制名单弹窗
   const handleOpenCopyModal = () => {
     setShowAdminMenu(false)
+    setThresholdValue(getDefaultThreshold()) // 打开时设置为当前 tab 的默认阈值
     setShowCopyModal(true)
   }
+
+  // 切换 tab 时更新阈值默认值
+  useEffect(() => {
+    setThresholdValue(getDefaultThreshold())
+  }, [activeTab])
 
   // 格式化时间戳（从时间戳提取月日时分）
   const formatTimestamp = (timestamp) => {
@@ -90,7 +101,7 @@ export default function HoriznPage() {
       setShowCopyModal(false)
       setCopyCount('20')
       setCopyMode('rank')
-      setThresholdValue('100')
+      setThresholdValue(getDefaultThreshold())
     }).catch(err => {
       console.error('复制失败:', err)
       alert('复制失败，请重试')
@@ -271,7 +282,7 @@ export default function HoriznPage() {
                   setShowCopyModal(false)
                   setCopyCount('20')
                   setCopyMode('rank')
-                  setThresholdValue('100')
+                  setThresholdValue(getDefaultThreshold())
                 }}
                 className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-1 transition-all"
               >
@@ -369,7 +380,7 @@ export default function HoriznPage() {
                     </label>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => setThresholdValue(String(Math.max(0, parseInt(thresholdValue || 100) - 50)))}
+                        onClick={() => setThresholdValue(String(Math.max(0, parseInt(thresholdValue || getDefaultThreshold()) - 100)))}
                         className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-xl transition-colors text-white font-bold text-lg"
                       >
                         −
@@ -379,14 +390,14 @@ export default function HoriznPage() {
                         id="thresholdValue"
                         type="number"
                         min="0"
-                        step="50"
+                        step="100"
                         value={thresholdValue}
                         onChange={(e) => setThresholdValue(e.target.value)}
                         className="flex-1 px-4 py-2.5 sm:py-3 bg-gray-700/50 text-white text-center text-lg font-semibold rounded-xl border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
 
                       <button
-                        onClick={() => setThresholdValue(String(parseInt(thresholdValue || 100) + 50))}
+                        onClick={() => setThresholdValue(String(parseInt(thresholdValue || getDefaultThreshold()) + 100))}
                         className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-xl transition-colors text-white font-bold text-lg"
                       >
                         +
@@ -449,7 +460,7 @@ export default function HoriznPage() {
                   setShowCopyModal(false)
                   setCopyCount('20')
                   setCopyMode('rank')
-                  setThresholdValue('100')
+                  setThresholdValue(getDefaultThreshold())
                 }}
                 className="flex-1 px-4 py-2.5 sm:py-3 bg-gray-700/50 hover:bg-gray-600 text-white font-medium rounded-xl transition-colors"
               >
