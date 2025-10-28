@@ -383,7 +383,7 @@ export default function HoriznPage() {
                             step="5"
                             value={copyCount}
                             onChange={(e) => setCopyCount(e.target.value)}
-                            className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-sm font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
                             onClick={() => setCopyCount(String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
@@ -407,7 +407,7 @@ export default function HoriznPage() {
                           >
                             ←
                           </button>
-                          <div className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-xs font-mono rounded-md border border-gray-600 truncate">
+                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-mono rounded-md border border-gray-600 flex items-center justify-center truncate">
                             {currentData?.allTimestamps?.[selectedTimestampIndex]?.split(' ')[1] || '--:--'}
                           </div>
                           <button
@@ -450,7 +450,7 @@ export default function HoriznPage() {
                             step={getThresholdStep()}
                             value={thresholdValue}
                             onChange={(e) => setThresholdValue(e.target.value)}
-                            className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-sm font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="flex-1 h-7 px-1.5 bg-gray-700/50 text-white text-center text-[10px] font-mono rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
                             onClick={() => setThresholdValue(String(parseInt(thresholdValue || getDefaultThreshold()) + getThresholdStep()))}
@@ -474,7 +474,7 @@ export default function HoriznPage() {
                           >
                             ←
                           </button>
-                          <div className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-xs font-mono rounded-md border border-gray-600 truncate">
+                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-mono rounded-md border border-gray-600 flex items-center justify-center truncate">
                             {currentData?.allTimestamps?.[selectedTimestampIndex]?.split(' ')[1] || '--:--'}
                           </div>
                           <button
