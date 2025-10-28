@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { ShieldCheck } from 'lucide-react'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
+import { CDN_BASE_URL } from '@/utils/constants'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
@@ -150,7 +151,7 @@ export default function HoriznPage() {
             <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
               {/* 联队logo */}
               <img
-                src="/horizn.png"
+                src={`${CDN_BASE_URL}/horizn.png`}
                 alt="HORIZN"
                 className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full object-cover flex-shrink-0"
               />

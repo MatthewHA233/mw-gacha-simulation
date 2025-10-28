@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, Lock, ArrowLeft, LogIn } from 'lucide-react'
+import { CDN_BASE_URL } from '@/utils/constants'
 
 export default function HoriznAdminLogin() {
   const [password, setPassword] = useState('')
@@ -66,7 +67,7 @@ export default function HoriznAdminLogin() {
               <div className="relative inline-block mb-4">
                 <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl"></div>
                 <img
-                  src="/horizn.png"
+                  src={`${CDN_BASE_URL}/horizn.png`}
                   alt="HORIZN"
                   className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover mx-auto ring-4 ring-blue-500/30"
                 />
