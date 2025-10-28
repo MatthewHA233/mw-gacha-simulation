@@ -430,40 +430,70 @@ export default function HoriznPage() {
                 {/* 按阈值模式 */}
                 {copyMode === 'threshold' && (
                   <>
-                    <label htmlFor="thresholdValue" className="block text-xs font-medium text-gray-400 mb-1.5">
-                      活跃度阈值（≥）
-                    </label>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => setThresholdValue(String(Math.max(0, parseInt(thresholdValue || getDefaultThreshold()) - getThresholdStep())))}
-                        className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base"
-                      >
-                        −
-                      </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* 活跃度阈值 */}
+                      <div>
+                        <label htmlFor="thresholdValue" className="block text-xs font-medium text-gray-400 mb-1">
+                          阈值
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setThresholdValue(String(Math.max(0, parseInt(thresholdValue || getDefaultThreshold()) - getThresholdStep())))}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            −
+                          </button>
+                          <input
+                            id="thresholdValue"
+                            type="number"
+                            min="0"
+                            step={getThresholdStep()}
+                            value={thresholdValue}
+                            onChange={(e) => setThresholdValue(e.target.value)}
+                            className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-sm font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <button
+                            onClick={() => setThresholdValue(String(parseInt(thresholdValue || getDefaultThreshold()) + getThresholdStep()))}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
 
-                      <input
-                        id="thresholdValue"
-                        type="number"
-                        min="0"
-                        step={getThresholdStep()}
-                        value={thresholdValue}
-                        onChange={(e) => setThresholdValue(e.target.value)}
-                        className="flex-1 px-3 py-2 bg-gray-700/50 text-white text-center text-base font-semibold rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-
-                      <button
-                        onClick={() => setThresholdValue(String(parseInt(thresholdValue || getDefaultThreshold()) + getThresholdStep()))}
-                        className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base"
-                      >
-                        +
-                      </button>
+                      {/* 选择时间 */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1">
+                          时间
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setSelectedTimestampIndex(Math.max(0, selectedTimestampIndex - 1))}
+                            disabled={selectedTimestampIndex <= 0}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            ←
+                          </button>
+                          <div className="flex-1 px-2 py-1.5 bg-gray-700/50 text-white text-center text-xs font-mono rounded-md border border-gray-600 truncate">
+                            {currentData?.allTimestamps?.[selectedTimestampIndex]?.split(' ')[1] || '--:--'}
+                          </div>
+                          <button
+                            onClick={() => setSelectedTimestampIndex(Math.min((currentData?.allTimestamps?.length || 1) - 1, selectedTimestampIndex + 1))}
+                            disabled={selectedTimestampIndex >= (currentData?.allTimestamps?.length || 1) - 1}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                          >
+                            →
+                          </button>
+                        </div>
+                      </div>
                     </div>
                     <p className="mt-1.5 text-xs text-gray-500 text-center">
                       {getSelectedData() && (
                         <>
                           符合条件：<span className="text-blue-400 font-medium">
                             {getSelectedData().allData.filter(p => p.value >= (parseInt(thresholdValue) || 0)).length}
-                          </span> 人
+                          </span> 人 ·
+                          时间戳 <span className="text-blue-400 font-medium">{(selectedTimestampIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
                         </>
                       )}
                     </p>
