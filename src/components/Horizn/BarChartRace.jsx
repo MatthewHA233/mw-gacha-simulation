@@ -184,10 +184,14 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     }
   }, [lastUpdateTime])
 
-  // 向父组件传递当前数据
+  // 向父组件传递当前数据和最新时间戳
   useEffect(() => {
     if (onDataUpdate && timeline.length > 0 && currentFrame !== null) {
-      onDataUpdate(timeline[currentFrame])
+      onDataUpdate({
+        current: timeline[currentFrame],
+        latestTimestamp: timeline[timeline.length - 1].timestamp,
+        isLatest: currentFrame === timeline.length - 1
+      })
     }
   }, [currentFrame, timeline, onDataUpdate])
 

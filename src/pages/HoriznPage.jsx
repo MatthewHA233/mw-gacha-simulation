@@ -38,16 +38,28 @@ export default function HoriznPage() {
     return `${year}年${month}月${day}日${time}`
   }
 
+  // 格式化时间戳用于警告显示（仅显示月日时分）
+  const formatTimestampShort = (timestamp) => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const match = timestamp.match(/(\d{2})-(\d{2}) (\d{2}:\d{2})/)
+    if (match) {
+      const [, month, day, time] = match
+      return `${year}年${month}月${day}日 ${time}`
+    }
+    return timestamp
+  }
+
   // 复制名单
   const handleCopyList = () => {
-    if (!currentData || !currentData.allData) return
+    if (!currentData || !currentData.current || !currentData.current.allData) return
 
     const count = parseInt(copyCount) || 20
-    const topPlayers = currentData.allData.slice(0, count)
+    const topPlayers = currentData.current.allData.slice(0, count)
 
     // 构建标题
     const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
-    const formattedTime = formatTimestamp(currentData.timestamp)
+    const formattedTime = formatTimestamp(currentData.current.timestamp)
     const title = `${formattedTime} HORIZN地平线${tabName}前${count}名`
 
     // 构建名单
@@ -258,12 +270,15 @@ export default function HoriznPage() {
                   <label htmlFor="copyCount" className="block text-sm font-medium text-gray-300">
                     选择复制人数
                   </label>
-                  <span className="text-xs text-yellow-400/80 flex items-center gap-1">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    当前动画帧
-                  </span>
+                  {/* 仅当不是最新帧时显示警告 */}
+                  {currentData && !currentData.isLatest && (
+                    <span className="text-xs text-yellow-400/80 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      {formatTimestampShort(currentData.current.timestamp)}
+                    </span>
+                  )}
                 </div>
 
                 {/* 数字输入框 + 加减按钮 */}
@@ -279,7 +294,7 @@ export default function HoriznPage() {
                     id="copyCount"
                     type="number"
                     min="1"
-                    max={currentData?.allData?.length || 100}
+                    max={currentData?.current?.allData?.length || 100}
                     step="5"
                     value={copyCount}
                     onChange={(e) => setCopyCount(e.target.value)}
@@ -287,7 +302,7 @@ export default function HoriznPage() {
                   />
 
                   <button
-                    onClick={() => setCopyCount(String(Math.min(currentData?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
+                    onClick={() => setCopyCount(String(Math.min(currentData?.current?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
                     className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-xl transition-colors text-white font-bold text-lg"
                   >
                     +
@@ -295,12 +310,12 @@ export default function HoriznPage() {
                 </div>
 
                 <p className="mt-2 text-xs sm:text-sm text-gray-400 text-center">
-                  当前共有 <span className="text-blue-400 font-semibold">{currentData?.allData?.length || 0}</span> 名队员
+                  当前共有 <span className="text-blue-400 font-semibold">{currentData?.current?.allData?.length || 0}</span> 名队员
                 </p>
               </div>
 
               {/* 预览 */}
-              {copyCount && parseInt(copyCount) > 0 && currentData && (
+              {copyCount && parseInt(copyCount) > 0 && currentData && currentData.current && (
                 <div className="bg-gray-900/50 rounded-xl p-3 sm:p-4 border border-gray-700/50">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs sm:text-sm text-gray-400 font-medium">复制预览</p>
@@ -310,8 +325,8 @@ export default function HoriznPage() {
                     {(() => {
                       const count = parseInt(copyCount) || 20
                       const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
-                      const formattedTime = formatTimestamp(currentData.timestamp)
-                      return `${formattedTime} HORIZN地平线${tabName}前${count}名\n\n${currentData.allData.slice(0, count).map((p, i) => `${i + 1}. ${p.name}`).join('\n')}`
+                      const formattedTime = formatTimestamp(currentData.current.timestamp)
+                      return `${formattedTime} HORIZN地平线${tabName}前${count}名\n\n${currentData.current.allData.slice(0, count).map((p, i) => `${i + 1}. ${p.name}`).join('\n')}`
                     })()}
                   </div>
                 </div>
