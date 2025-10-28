@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
 
-export default function BarChartRace({ csvPath, onStatusUpdate }) {
+export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false }) {
   const [timeline, setTimeline] = useState([])
   const [currentFrame, setCurrentFrame] = useState(null) // null 表示未初始化
   const [isPlaying, setIsPlaying] = useState(false)
@@ -150,6 +150,13 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
       if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [lastUpdateTime])
+
+  // 向父组件传递当前数据
+  useEffect(() => {
+    if (onDataUpdate && timeline.length > 0 && currentFrame !== null) {
+      onDataUpdate(timeline[currentFrame])
+    }
+  }, [currentFrame, timeline, onDataUpdate])
 
   // 向父组件传递状态信息
   useEffect(() => {
@@ -325,9 +332,12 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
                           className="h-full rounded"
                           style={{ backgroundColor: colorMap[item.name] || '#666' }}
                         />
-                        <div className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 text-white text-[10px] sm:text-xs font-semibold">
-                          {item.value.toLocaleString()}
-                        </div>
+                        {/* 数值显示（仅管理员可见） */}
+                        {showValues && (
+                          <div className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 text-white text-[10px] sm:text-xs font-semibold">
+                            {item.value.toLocaleString()}
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )
@@ -336,16 +346,21 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
             </div>
 
             {/* 小屏幕：时间和总计（浮动在右下角） */}
-            <div className="lg:hidden absolute bottom-0 right-8 sm:right-16 md:right-20 text-right pointer-events-none">
+            <div className={`lg:hidden absolute bottom-0 text-right pointer-events-none ${
+              showValues ? 'right-8 sm:right-16 md:right-20' : 'right-4 sm:right-8 md:right-12'
+            }`}>
               <div className="text-sm sm:text-base md:text-lg text-gray-400/80 font-mono leading-none">
                 {currentData.timestamp.split(' ')[0] || ''}
               </div>
               <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-300/80 font-mono leading-none mt-1">
                 {currentData.timestamp.split(' ')[1] || currentData.timestamp}
               </div>
-              <div className="text-base sm:text-lg md:text-xl text-gray-500/80 mt-1">
-                Total: {currentData.total.toLocaleString()}
-              </div>
+              {/* 总计（仅管理员可见） */}
+              {showValues && (
+                <div className="text-base sm:text-lg md:text-xl text-gray-500/80 mt-1">
+                  Total: {currentData.total.toLocaleString()}
+                </div>
+              )}
             </div>
           </div>
 
@@ -358,9 +373,12 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
               <div className="text-6xl xl:text-8xl font-bold text-gray-300 mb-3 xl:mb-4 font-mono leading-none">
                 {currentData.timestamp.split(' ')[1] || currentData.timestamp}
               </div>
-              <div className="text-xl xl:text-2xl text-gray-500 mb-6 xl:mb-8">
-                Total: {currentData.total.toLocaleString()}
-              </div>
+              {/* 总计（仅管理员可见） */}
+              {showValues && (
+                <div className="text-xl xl:text-2xl text-gray-500 mb-6 xl:mb-8">
+                  Total: {currentData.total.toLocaleString()}
+                </div>
+              )}
             </div>
           </div>
         </div>
