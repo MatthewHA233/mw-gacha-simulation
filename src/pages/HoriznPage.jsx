@@ -31,9 +31,9 @@ export default function HoriznPage() {
             <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
               {/* 联队logo */}
               <img
-                src="/horizn.jpg"
+                src="/horizn.png"
                 alt="HORIZN"
-                className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-full object-cover flex-shrink-0"
+                className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full object-cover flex-shrink-0"
               />
               {/* 标签页 */}
               <div className="flex gap-0.5 sm:gap-1">
