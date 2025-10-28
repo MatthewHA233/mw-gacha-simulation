@@ -337,7 +337,10 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
 
             {/* 小屏幕：时间和总计（浮动在右下角） */}
             <div className="lg:hidden absolute bottom-0 right-8 sm:right-16 md:right-20 text-right pointer-events-none">
-              <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-300/80 font-mono leading-none">
+              <div className="text-sm sm:text-base md:text-lg text-gray-400/80 font-mono leading-none">
+                {currentData.timestamp.split(' ')[0] || ''}
+              </div>
+              <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-300/80 font-mono leading-none mt-1">
                 {currentData.timestamp.split(' ')[1] || currentData.timestamp}
               </div>
               <div className="text-base sm:text-lg md:text-xl text-gray-500/80 mt-1">
@@ -349,6 +352,9 @@ export default function BarChartRace({ csvPath, onStatusUpdate }) {
           {/* 大屏幕：右侧时间和总计 */}
           <div className="hidden lg:flex w-64 xl:w-96 flex-col justify-center items-center flex-shrink-0">
             <div className="text-center">
+              <div className="text-xl xl:text-2xl text-gray-400 mb-2 font-mono leading-none">
+                {currentData.timestamp.split(' ')[0] || ''}
+              </div>
               <div className="text-6xl xl:text-8xl font-bold text-gray-300 mb-3 xl:mb-4 font-mono leading-none">
                 {currentData.timestamp.split(' ')[1] || currentData.timestamp}
               </div>
