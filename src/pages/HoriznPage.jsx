@@ -8,7 +8,7 @@ export default function HoriznPage() {
 
   // 设置页面标题
   useEffect(() => {
-    document.title = 'HORIZN地平线活跃度条形竞赛动画'
+    document.title = '地平线活跃度条形动画'
     return () => {
       document.title = '现代战舰抽奖模拟器' // 离开时恢复默认标题
     }
