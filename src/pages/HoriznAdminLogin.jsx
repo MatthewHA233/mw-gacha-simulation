@@ -18,6 +18,14 @@ export default function HoriznAdminLogin() {
     }
   }, [])
 
+  // 检查是否已登录，如果已登录则自动跳转
+  useEffect(() => {
+    const isAuthenticated = sessionStorage.getItem('horizn_admin_auth') === 'true'
+    if (isAuthenticated) {
+      navigate('/horizn')
+    }
+  }, [navigate])
+
   const handleLogin = (e) => {
     e.preventDefault()
     setError('')
