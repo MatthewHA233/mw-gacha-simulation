@@ -8,6 +8,7 @@ import HoriznPage from './pages/HoriznPage'
 import HoriznAdminLogin from './pages/HoriznAdminLogin'
 import { MilestoneToastProvider } from './components/ui/MilestoneToastProvider'
 import { HomeRedirect } from './components/HomeRedirect'
+import { HoriznRedirect } from './components/HoriznRedirect'
 import { loadVersionHistory, clearConfigCache } from './services/cdnService'
 import { setAppVersion, getAppVersion } from './utils/version'
 import { checkAndResetIfNeeded, getStoredVersion } from './utils/gameStateStorage'
@@ -90,8 +91,9 @@ function App() {
             <Route path="/test" element={<Navigate to="/test/lootbox-animation" replace />} />
             <Route path="/test/lootbox-animation" element={<LootboxAnimationDemo />} />
             <Route path="/test/milestone-toast" element={<MilestoneToastDemo />} />
-            <Route path="/horizn" element={<HoriznPage />} />
+            <Route path="/horizn" element={<HoriznRedirect />} />
             <Route path="/horizn/admin" element={<HoriznAdminLogin />} />
+            <Route path="/horizn/:yearMonth" element={<HoriznPage />} />
             <Route path="/gacha/:type/:activityId" element={<GachaPage />} />
             <Route path="*" element={<HomeRedirect />} />
           </Routes>

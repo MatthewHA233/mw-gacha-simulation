@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { useParams, Navigate } from 'react-router-dom'
 import { ShieldCheck } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
@@ -7,6 +8,12 @@ import { CDN_BASE_URL } from '@/utils/constants'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
+  const { yearMonth } = useParams()
+
+  // 验证 yearMonth 格式（YYYYMM）
+  if (!yearMonth || !/^\d{6}$/.test(yearMonth)) {
+    return <Navigate to="/horizn" replace />
+  }
   const [activeTab, setActiveTab] = useState('weekly')
   const [statusInfo, setStatusInfo] = useState(null)
   const [showAdminMenu, setShowAdminMenu] = useState(false)
@@ -250,9 +257,9 @@ export default function HoriznPage() {
 
   // 动态构建 CSV 路径（useMemo 缓存，避免切换标签时重新创建导致组件重新挂载）
   const tabs = useMemo(() => [
-    { id: 'weekly', name: '周活跃度', csvPath: buildHoriznWeeklyCsvPath() },
-    { id: 'season', name: '赛季活跃度', csvPath: buildHoriznSeasonCsvPath() }
-  ], [])
+    { id: 'weekly', name: '周活跃度', csvPath: buildHoriznWeeklyCsvPath(yearMonth) },
+    { id: 'season', name: '赛季活跃度', csvPath: buildHoriznSeasonCsvPath(yearMonth) }
+  ], [yearMonth])
 
   const currentTab = tabs.find(tab => tab.id === activeTab)
 

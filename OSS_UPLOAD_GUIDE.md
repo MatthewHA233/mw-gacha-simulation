@@ -3,14 +3,15 @@
 ## 📍 上传路径格式
 
 ```
-{OSS_PATH_PREFIX}/horizn/{年月时间戳}/{文件名}.csv
+{OSS_PATH_PREFIX}/horizn/{游戏月编号}/{文件名}.csv
 ```
 
 ### 示例
 
 ```
-mw-gacha-simulation/horizn/202510/weekly_20251027~20251102.csv
-mw-gacha-simulation/horizn/202510/season_2025_10.csv
+mw-gacha-simulation/horizn/202510/weekly_202510.csv
+mw-gacha-simulation/horizn/202510/season_202510.csv
+mw-gacha-simulation/horizn/202510/index.json
 ```
 
 ---
@@ -21,17 +22,31 @@ mw-gacha-simulation/horizn/202510/season_2025_10.csv
 |------|------|------|
 | `OSS_PATH_PREFIX` | 项目路径前缀（.env配置） | `mw-gacha-simulation` |
 | `horizn` | 固定子目录名 | `horizn` |
-| `{年月时间戳}` | 格式：YYYYMM（当前年月） | `202510` |
-| `{文件名}` | CSV文件原名 | `weekly_20251027~20251102.csv` |
+| `{游戏月编号}` | 格式：YYYYMM（游戏月，非自然月） | `202510` |
+| `{文件名}` | CSV/JSON文件原名 | `weekly_202510.csv` |
+
+---
+
+## 🎮 游戏月说明
+
+**游戏月的定义**：
+- 游戏日从每天早上 **8:00** 开始
+- 游戏月以游戏日的年月（YYYYMM）作为编号
+- 即使跨自然月，只要游戏日属于同一个YYYYMM，就属于同一个游戏月
+
+**示例**：
+- 2025-11-01 07:30 → 游戏日 20251031 → 属于游戏月 202510
+- 2025-11-01 08:00 → 游戏日 20251101 → 属于游戏月 202511
 
 ---
 
 ## 📄 上传文件类型
 
-| 文件类型 | 文件名格式 | 示例 |
-|---------|-----------|------|
-| 周活跃度 | `weekly_{开始日期}~{结束日期}.csv` | `weekly_20251027~20251102.csv` |
-| 月赛季活跃度 | `season_{年份}_{月份}.csv` | `season_2025_10.csv` |
+| 文件类型 | 文件名格式 | 示例 | 说明 |
+|---------|-----------|------|------|
+| 周活跃度 | `weekly_{游戏月}.csv` | `weekly_202510.csv` | 按游戏月组织的周活跃度时间序列 |
+| 赛季活跃度 | `season_{游戏月}.csv` | `season_202510.csv` | 按游戏月组织的赛季活跃度时间序列 |
+| 索引文件 | `index.json` | `index.json` | 记录所有游戏月的起止日期 |
 
 ---
 
@@ -51,12 +66,16 @@ mw-gacha-simulation/horizn/202510/season_2025_10.csv
 
 ### 自定义域名（推荐）
 ```
-https://assets.lingflow.cn/mw-gacha-simulation/horizn/202510/weekly_20251027~20251102.csv
+https://assets.lingflow.cn/mw-gacha-simulation/horizn/202510/weekly_202510.csv
+https://assets.lingflow.cn/mw-gacha-simulation/horizn/202510/season_202510.csv
+https://assets.lingflow.cn/mw-gacha-simulation/horizn/index.json
 ```
 
 ### OSS 原生域名
 ```
-https://lingflow.oss-cn-heyuan.aliyuncs.com/mw-gacha-simulation/horizn/202510/weekly_20251027~20251102.csv
+https://lingflow.oss-cn-heyuan.aliyuncs.com/mw-gacha-simulation/horizn/202510/weekly_202510.csv
+https://lingflow.oss-cn-heyuan.aliyuncs.com/mw-gacha-simulation/horizn/202510/season_202510.csv
+https://lingflow.oss-cn-heyuan.aliyuncs.com/mw-gacha-simulation/horizn/index.json
 ```
 
 ---

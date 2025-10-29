@@ -488,27 +488,53 @@ function formatYearMonth(date) {
 }
 
 /**
- * 构建 HORIZN 周活跃度 CSV 路径
- * @param {Date} [date=new Date()] - 参考日期，默认为今天
+ * 构建 HORIZN 周活跃度 CSV 路径（新格式）
+ * @param {string} yearMonth - 游戏月编号，格式：YYYYMM（如：202510）
  * @returns {string} 周活跃度 CSV 路径
  */
-export function buildHoriznWeeklyCsvPath(date = new Date()) {
-  const { monday, sunday } = getWeekRange(date)
-  const yearMonth = formatYearMonth(monday) // 使用周一所在的年月
-  const mondayStr = formatDate(monday)
-  const sundayStr = formatDate(sunday)
-  return `horizn/${yearMonth}/weekly_${mondayStr}~${sundayStr}.csv`
+export function buildHoriznWeeklyCsvPath(yearMonth) {
+  return `horizn/${yearMonth}/weekly_${yearMonth}.csv`
 }
 
 /**
- * 构建 HORIZN 赛季活跃度 CSV 路径
- * @param {Date} [date=new Date()] - 参考日期，默认为今天
+ * 构建 HORIZN 赛季活跃度 CSV 路径（新格式）
+ * @param {string} yearMonth - 游戏月编号，格式：YYYYMM（如：202510）
  * @returns {string} 赛季活跃度 CSV 路径
  */
-export function buildHoriznSeasonCsvPath(date = new Date()) {
-  const d = new Date(date)
-  const year = d.getFullYear()
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const yearMonth = formatYearMonth(d)
-  return `horizn/${yearMonth}/season_${year}_${month}.csv`
+export function buildHoriznSeasonCsvPath(yearMonth) {
+  return `horizn/${yearMonth}/season_${yearMonth}.csv`
+}
+
+/**
+ * 获取 HORIZN 数据索引（包含所有游戏月信息）
+ * @returns {Promise<Object>} 索引数据，包含所有游戏月的起止日期
+ */
+export async function loadHoriznIndex() {
+  const url = buildCdnUrl('horizn/index.json')
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Failed to load horizn index: ${response.status}`)
+  }
+  return await response.json()
+}
+
+/**
+ * 获取最新游戏月编号
+ * @returns {Promise<string>} 最新游戏月编号（YYYYMM格式）
+ */
+export async function getLatestHoriznMonth() {
+  try {
+    const index = await loadHoriznIndex()
+    // index 结构： { months: [{ yearMonth: "202510", startDate: "...", endDate: "..." }, ...] }
+    // 按 yearMonth 降序排序，取第一个
+    const sortedMonths = [...(index.months || [])].sort((a, b) => b.yearMonth.localeCompare(a.yearMonth))
+    return sortedMonths[0]?.yearMonth || null
+  } catch (error) {
+    console.error('Failed to get latest horizn month:', error)
+    // 失败时返回当前月份作为 fallback
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    return `${year}${month}`
+  }
 }
