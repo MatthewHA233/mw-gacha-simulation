@@ -795,16 +795,16 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                         const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
                         const isTablet = typeof window !== 'undefined' && window.innerWidth < 1024
 
-                        let maxTicks = 12
-                        if (isMobile) maxTicks = 6
-                        else if (isTablet) maxTicks = 8
-
                         const visibleRange = enableViewport ? (viewportEnd - viewportStart) : timeline.length
-                        const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(visibleRange / 10)))
-                        const step = Math.floor(visibleRange / tickCount)
+
+                        // 统一使用 12 刻度计算 step，保证所有设备刻度位置一致
+                        const baseTickCount = Math.min(12, Math.max(4, Math.floor(visibleRange / 10)))
+                        const step = Math.floor(visibleRange / baseTickCount)
                         const labels = []
 
-                        for (let i = 0; i <= tickCount; i++) {
+                        for (let i = 0; i <= baseTickCount; i++) {
+                          // 手机端只显示偶数刻度（每隔一个显示，6个刻度）
+                          if (isMobile && i % 2 !== 0 && i !== baseTickCount) continue
                           const frameIndex = enableViewport
                             ? Math.min(viewportStart + i * step, viewportEnd - 1)
                             : Math.min(i * step, timeline.length - 1)
@@ -967,16 +967,17 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
                     const isTablet = typeof window !== 'undefined' && window.innerWidth < 1024
 
-                    let maxTicks = 12
-                    if (isMobile) maxTicks = 6
-                    else if (isTablet) maxTicks = 8
-
                     const visibleRange = enableViewport ? (viewportEnd - viewportStart) : timeline.length
-                    const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(visibleRange / 10)))
-                    const step = Math.floor(visibleRange / tickCount)
+
+                    // 统一使用 12 刻度计算 step，保证所有设备刻度位置一致
+                    const baseTickCount = Math.min(12, Math.max(4, Math.floor(visibleRange / 10)))
+                    const step = Math.floor(visibleRange / baseTickCount)
+
                     const ticks = []
 
-                    for (let i = 0; i <= tickCount; i++) {
+                    for (let i = 0; i <= baseTickCount; i++) {
+                      // 手机端只显示偶数刻度（每隔一个显示，6个刻度）
+                      if (isMobile && i % 2 !== 0 && i !== baseTickCount) continue
                       const frameIndex = enableViewport
                         ? Math.min(viewportStart + i * step, viewportEnd - 1)
                         : Math.min(i * step, timeline.length - 1)
@@ -994,7 +995,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                         <div
                           key={i}
                           className="absolute w-px h-2 bg-gray-600"
-                          style={{ left: `${percentage}%` }}
+                          style={{ left: `${percentage}%`, transform: 'translateX(-100%)' }}
                         />
                       )
                     }
