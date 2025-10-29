@@ -535,39 +535,129 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
 
             {/* 时间轴和进度条 */}
             <div className="flex-1 relative px-4">
-              {/* 时间标签层 */}
-              <div className="relative h-5 mb-1">
-                {(() => {
-                  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
-                  const isTablet = typeof window !== 'undefined' && window.innerWidth < 1024
+              {/* 计算日期区间数据 */}
+              {(() => {
+                // 按日期分组帧
+                const dateRanges = []
+                let currentDate = null
+                let rangeStart = 0
+                let currentDay = null
 
-                  let maxTicks = 12
-                  if (isMobile) maxTicks = 6
-                  else if (isTablet) maxTicks = 8
+                timeline.forEach((frame, index) => {
+                  const date = frame.timestamp.split(' ')[0] // 提取日期部分 "10月27日"
+                  const dayMatch = date.match(/(\d+)日/) || date.match(/-(\d+)$/)
+                  const day = dayMatch ? dayMatch[1] : ''
 
-                  const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(timeline.length / 10)))
-                  const step = Math.floor(timeline.length / tickCount)
-                  const labels = []
-
-                  for (let i = 0; i <= tickCount; i++) {
-                    const index = Math.min(i * step, timeline.length - 1)
-                    const percentage = (index / (timeline.length - 1)) * 100
-
-                    labels.push(
-                      <div
-                        key={i}
-                        className="absolute -translate-x-1/2"
-                        style={{ left: `${percentage}%` }}
-                      >
-                        <div className="text-[9px] sm:text-[10px] text-gray-400 font-mono whitespace-nowrap">
-                          {timeline[index]?.timestamp.split(' ')[1] || ''}
-                        </div>
-                      </div>
-                    )
+                  if (date !== currentDate) {
+                    if (currentDate !== null) {
+                      // 保存上一个日期区间
+                      dateRanges.push({
+                        date: currentDate,
+                        day: currentDay,
+                        start: rangeStart,
+                        end: index - 1
+                      })
+                    }
+                    currentDate = date
+                    currentDay = day
+                    rangeStart = index
                   }
-                  return labels
-                })()}
-              </div>
+
+                  // 最后一个区间
+                  if (index === timeline.length - 1) {
+                    dateRanges.push({
+                      date: currentDate,
+                      day: currentDay,
+                      start: rangeStart,
+                      end: index
+                    })
+                  }
+                })
+
+                return (
+                  <>
+                    {/* 背景日期区间层 - 统一深色调 */}
+                    <div className="absolute top-0 left-4 right-4 h-full pointer-events-none">
+                      {dateRanges.map((range, idx) => {
+                        const startPercent = (range.start / (timeline.length - 1)) * 100
+                        const endPercent = (range.end / (timeline.length - 1)) * 100
+                        const width = endPercent - startPercent
+
+                        return (
+                          <div
+                            key={idx}
+                            className="absolute top-0 h-full"
+                            style={{
+                              left: `${startPercent}%`,
+                              width: `${width}%`,
+                              background: idx % 2 === 0
+                                ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08))'
+                                : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.10))',
+                              borderLeft: idx > 0 ? '1px solid rgba(139, 92, 246, 0.25)' : 'none'
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+
+                    {/* 时间标签层 */}
+                    <div className="relative h-5 mb-1">
+                      {/* 时间刻度标签 */}
+                      {(() => {
+                        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
+                        const isTablet = typeof window !== 'undefined' && window.innerWidth < 1024
+
+                        let maxTicks = 12
+                        if (isMobile) maxTicks = 6
+                        else if (isTablet) maxTicks = 8
+
+                        const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(timeline.length / 10)))
+                        const step = Math.floor(timeline.length / tickCount)
+                        const labels = []
+
+                        for (let i = 0; i <= tickCount; i++) {
+                          const index = Math.min(i * step, timeline.length - 1)
+                          const percentage = (index / (timeline.length - 1)) * 100
+
+                          labels.push(
+                            <div
+                              key={i}
+                              className="absolute -translate-x-1/2 z-10"
+                              style={{ left: `${percentage}%` }}
+                            >
+                              <div className="text-[9px] sm:text-[10px] text-gray-400 font-mono whitespace-nowrap">
+                                {timeline[index]?.timestamp.split(' ')[1] || ''}
+                              </div>
+                            </div>
+                          )
+                        }
+                        return labels
+                      })()}
+
+                      {/* 日期圆球层 - 贴着底部 */}
+                      {dateRanges.map((range, idx) => {
+                        const startPercent = (range.start / (timeline.length - 1)) * 100
+                        const endPercent = (range.end / (timeline.length - 1)) * 100
+                        const centerPercent = (startPercent + endPercent) / 2
+
+                        return (
+                          <div
+                            key={`ball-${idx}`}
+                            className="absolute bottom-0 translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"
+                            style={{ left: `${centerPercent}%` }}
+                          >
+                            <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center flex-shrink-0">
+                              <span className="text-[7px] sm:text-[8px] text-purple-200/90 font-bold leading-none">
+                                {range.day}
+                              </span>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </>
+                )
+              })()}
 
               {/* 进度条容器 */}
               <div
@@ -662,11 +752,13 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 </div>
 
                 {/* 进度条轨道 */}
-                <div className="absolute top-2 left-0 right-0 h-1 bg-gray-800 rounded-full overflow-hidden">
-                  {/* 进度条填充 */}
+                <div className="absolute top-2 left-0 right-0 h-1 bg-[#0a2e47] rounded-full overflow-hidden">
+                  {/* 进度条填充 - 简洁紫色渐变 */}
                   <div
-                    className="absolute inset-y-0 left-0 bg-blue-500 rounded-full"
-                    style={{ width: `${(currentFrame / (timeline.length - 1)) * 100}%` }}
+                    className="h-full bg-gradient-to-r from-purple-400 via-fuchsia-500 to-violet-600"
+                    style={{
+                      width: `${(currentFrame / (timeline.length - 1)) * 100}%`
+                    }}
                   />
                 </div>
 
@@ -679,8 +771,15 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                     transform: 'translateX(-50%)'
                   }}
                 >
-                  <svg width="14" height="12" viewBox="0 0 14 12" className="drop-shadow-lg">
-                    <polygon points="7,0 0,12 14,12" fill="white" opacity="0.95" />
+                  <svg width="14" height="12" viewBox="0 0 14 12" style={{ filter: 'drop-shadow(0 2px 4px rgba(168, 85, 247, 0.5))' }}>
+                    <defs>
+                      <linearGradient id="pointerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style={{ stopColor: 'rgb(216, 180, 254)', stopOpacity: 1 }} />
+                        <stop offset="50%" style={{ stopColor: 'rgb(192, 132, 252)', stopOpacity: 1 }} />
+                        <stop offset="100%" style={{ stopColor: 'rgb(147, 51, 234)', stopOpacity: 1 }} />
+                      </linearGradient>
+                    </defs>
+                    <polygon points="7,0 0,12 14,12" fill="url(#pointerGradient)" />
                   </svg>
                 </div>
               </div>
