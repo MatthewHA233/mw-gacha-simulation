@@ -21,6 +21,12 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [lastUpdateTime, setLastUpdateTime] = useState(null) // 最近一次数据时间戳
   const [timeElapsed, setTimeElapsed] = useState(0) // 距离上次更新的秒数
   const [maxVisibleItems, setMaxVisibleItems] = useState(20) // 最大可见条目数
+
+  // 视窗相关状态（用于超过400帧时的横向滚动）
+  const [viewportStart, setViewportStart] = useState(0) // 视窗起始帧索引
+  const [viewportWidth, setViewportWidth] = useState(400) // 视窗宽度（帧数）
+  const [isDraggingViewport, setIsDraggingViewport] = useState(false) // 是否正在拖动视窗
+
   const intervalRef = useRef(null)
   const timerRef = useRef(null)
   const animationRef = useRef(null)
@@ -118,6 +124,24 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       setIsPlaying(false) // 手动控制时暂停播放
     }
   }, [externalFrameIndex, timeline.length])
+
+  // 视窗逻辑：当帧数超过400时启用横向滚动
+  const enableViewport = timeline.length > 400
+  const viewportEnd = Math.min(viewportStart + viewportWidth, timeline.length)
+
+  // 当 currentFrame 改变时，自动调整视窗以确保当前帧可见
+  useEffect(() => {
+    if (!enableViewport || currentFrame === null) return
+
+    // 如果当前帧不在可见范围内，调整视窗
+    if (currentFrame < viewportStart) {
+      // 当前帧在视窗左侧，移动视窗使当前帧位于视窗左侧
+      setViewportStart(Math.max(0, currentFrame))
+    } else if (currentFrame >= viewportEnd) {
+      // 当前帧在视窗右侧，移动视窗使当前帧位于视窗右侧
+      setViewportStart(Math.max(0, currentFrame - viewportWidth + 1))
+    }
+  }, [currentFrame, enableViewport, viewportStart, viewportEnd, viewportWidth, timeline.length])
 
   // 解析时间戳（支持多种格式）
   const parseTimestamp = (timestamp) => {
@@ -534,7 +558,78 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
             </button>
 
             {/* 时间轴和进度条 */}
-            <div className="flex-1 relative px-4">
+            <div
+              className="flex-1 relative px-4 viewport-scroll-area"
+              style={{
+                cursor: enableViewport && isDraggingViewport ? 'grabbing' : enableViewport ? 'grab' : 'default'
+              }}
+              onMouseDown={(e) => {
+                // 如果点击的是进度条容器，不处理（让进度条自己处理）
+                const isProgressBar = e.target.closest('.progress-bar-container')
+                if (isProgressBar) return
+
+                // 视窗拖动
+                if (!enableViewport) return
+
+                e.preventDefault()
+                e.stopPropagation()
+                setIsDraggingViewport(true)
+                const startX = e.clientX
+                const startIndex = viewportStart
+                const containerWidth = e.currentTarget.offsetWidth - 32 // 缓存容器宽度，减去 padding
+
+                const handleMove = (moveEvent) => {
+                  const deltaX = moveEvent.clientX - startX
+                  const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
+                  const newStart = Math.max(0, Math.min(
+                    timeline.length - viewportWidth,
+                    startIndex - deltaFrames
+                  ))
+                  setViewportStart(newStart)
+                }
+
+                const handleEnd = () => {
+                  setIsDraggingViewport(false)
+                  document.removeEventListener('mousemove', handleMove)
+                  document.removeEventListener('mouseup', handleEnd)
+                }
+
+                document.addEventListener('mousemove', handleMove)
+                document.addEventListener('mouseup', handleEnd)
+              }}
+              onTouchStart={(e) => {
+                // 如果触摸的是进度条容器，不处理
+                if (e.target.closest('.progress-bar-container')) return
+
+                // 视窗拖动
+                if (!enableViewport) return
+
+                setIsDraggingViewport(true)
+                const startX = e.touches[0].clientX
+                const startIndex = viewportStart
+                const containerWidth = e.currentTarget.offsetWidth - 32 // 缓存容器宽度，减去 padding
+
+                const handleMove = (moveEvent) => {
+                  if (!moveEvent.touches || moveEvent.touches.length === 0) return
+                  const deltaX = moveEvent.touches[0].clientX - startX
+                  const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
+                  const newStart = Math.max(0, Math.min(
+                    timeline.length - viewportWidth,
+                    startIndex - deltaFrames
+                  ))
+                  setViewportStart(newStart)
+                }
+
+                const handleEnd = () => {
+                  setIsDraggingViewport(false)
+                  document.removeEventListener('touchmove', handleMove)
+                  document.removeEventListener('touchend', handleEnd)
+                }
+
+                document.addEventListener('touchmove', handleMove, { passive: true })
+                document.addEventListener('touchend', handleEnd)
+              }}
+            >
               {/* 计算日期区间数据 */}
               {(() => {
                 // 按日期分组帧
@@ -578,26 +673,60 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                   <>
                     {/* 背景日期区间层 - 统一深色调 */}
                     <div className="absolute top-0 left-4 right-4 h-full pointer-events-none">
-                      {dateRanges.map((range, idx) => {
-                        const startPercent = (range.start / (timeline.length - 1)) * 100
-                        const endPercent = (range.end / (timeline.length - 1)) * 100
-                        const width = endPercent - startPercent
+                      {dateRanges
+                        .filter(range => {
+                          // 视窗模式：只显示与视窗范围有交集的日期区间
+                          if (!enableViewport) return true
+                          return range.end >= viewportStart && range.start < viewportEnd
+                        })
+                        .map((range, idx) => {
+                          let visibleStart, visibleEnd
+                          if (enableViewport) {
+                            // 计算在视窗中的可见范围
+                            visibleStart = Math.max(range.start, viewportStart)
+                            visibleEnd = Math.min(range.end, viewportEnd - 1)
 
-                        return (
-                          <div
-                            key={idx}
-                            className="absolute top-0 h-full"
-                            style={{
-                              left: `${startPercent}%`,
-                              width: `${width}%`,
-                              background: idx % 2 === 0
-                                ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08))'
-                                : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.10))',
-                              borderLeft: idx > 0 ? '1px solid rgba(139, 92, 246, 0.25)' : 'none'
-                            }}
-                          />
-                        )
-                      })}
+                            // 计算相对于视窗的百分比
+                            const startPercent = ((visibleStart - viewportStart) / (viewportEnd - viewportStart)) * 100
+                            const endPercent = ((visibleEnd - viewportStart) / (viewportEnd - viewportStart)) * 100
+                            const width = endPercent - startPercent
+
+                            return (
+                              <div
+                                key={idx}
+                                className="absolute top-0 h-full"
+                                style={{
+                                  left: `${startPercent}%`,
+                                  width: `${width}%`,
+                                  background: idx % 2 === 0
+                                    ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08))'
+                                    : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.10))',
+                                  borderLeft: visibleStart > viewportStart ? '1px solid rgba(139, 92, 246, 0.25)' : 'none'
+                                }}
+                              />
+                            )
+                          } else {
+                            // 正常模式
+                            const startPercent = (range.start / (timeline.length - 1)) * 100
+                            const endPercent = (range.end / (timeline.length - 1)) * 100
+                            const width = endPercent - startPercent
+
+                            return (
+                              <div
+                                key={idx}
+                                className="absolute top-0 h-full"
+                                style={{
+                                  left: `${startPercent}%`,
+                                  width: `${width}%`,
+                                  background: idx % 2 === 0
+                                    ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08))'
+                                    : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.10))',
+                                  borderLeft: idx > 0 ? '1px solid rgba(139, 92, 246, 0.25)' : 'none'
+                                }}
+                              />
+                            )
+                          }
+                        })}
                     </div>
 
                     {/* 时间标签层 */}
@@ -611,13 +740,22 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                         if (isMobile) maxTicks = 6
                         else if (isTablet) maxTicks = 8
 
-                        const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(timeline.length / 10)))
-                        const step = Math.floor(timeline.length / tickCount)
+                        const visibleRange = enableViewport ? (viewportEnd - viewportStart) : timeline.length
+                        const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(visibleRange / 10)))
+                        const step = Math.floor(visibleRange / tickCount)
                         const labels = []
 
                         for (let i = 0; i <= tickCount; i++) {
-                          const index = Math.min(i * step, timeline.length - 1)
-                          const percentage = (index / (timeline.length - 1)) * 100
+                          const frameIndex = enableViewport
+                            ? Math.min(viewportStart + i * step, viewportEnd - 1)
+                            : Math.min(i * step, timeline.length - 1)
+
+                          let percentage
+                          if (enableViewport) {
+                            percentage = ((frameIndex - viewportStart) / (viewportEnd - viewportStart)) * 100
+                          } else {
+                            percentage = (frameIndex / (timeline.length - 1)) * 100
+                          }
 
                           labels.push(
                             <div
@@ -626,7 +764,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                               style={{ left: `${percentage}%` }}
                             >
                               <div className="text-[9px] sm:text-[10px] text-gray-400 font-mono whitespace-nowrap">
-                                {timeline[index]?.timestamp.split(' ')[1] || ''}
+                                {timeline[frameIndex]?.timestamp.split(' ')[1] || ''}
                               </div>
                             </div>
                           )
@@ -635,25 +773,40 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                       })()}
 
                       {/* 日期圆球层 - 贴着底部 */}
-                      {dateRanges.map((range, idx) => {
-                        const startPercent = (range.start / (timeline.length - 1)) * 100
-                        const endPercent = (range.end / (timeline.length - 1)) * 100
-                        const centerPercent = (startPercent + endPercent) / 2
+                      {dateRanges
+                        .filter(range => {
+                          if (!enableViewport) return true
+                          return range.end >= viewportStart && range.start < viewportEnd
+                        })
+                        .map((range, idx) => {
+                          const centerFrame = Math.floor((range.start + range.end) / 2)
 
-                        return (
-                          <div
-                            key={`ball-${idx}`}
-                            className="absolute bottom-0 translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"
-                            style={{ left: `${centerPercent}%` }}
-                          >
-                            <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center flex-shrink-0">
-                              <span className="text-[7px] sm:text-[8px] text-purple-200/90 font-bold leading-none">
-                                {range.day}
-                              </span>
+                          // 如果圆球的中心不在视窗范围内，则不显示
+                          if (enableViewport && (centerFrame < viewportStart || centerFrame >= viewportEnd)) {
+                            return null
+                          }
+
+                          let centerPercent
+                          if (enableViewport) {
+                            centerPercent = ((centerFrame - viewportStart) / (viewportEnd - viewportStart)) * 100
+                          } else {
+                            centerPercent = (centerFrame / (timeline.length - 1)) * 100
+                          }
+
+                          return (
+                            <div
+                              key={`ball-${idx}`}
+                              className="absolute bottom-0 translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"
+                              style={{ left: `${centerPercent}%` }}
+                            >
+                              <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center flex-shrink-0">
+                                <span className="text-[7px] sm:text-[8px] text-purple-200/90 font-bold leading-none">
+                                  {range.day}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        )
-                      })}
+                          )
+                        })}
                     </div>
                   </>
                 )
@@ -661,26 +814,48 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
 
               {/* 进度条容器 */}
               <div
-                className="relative h-6 cursor-pointer select-none"
-                style={{ touchAction: 'none' }}
+                className="progress-bar-container relative h-6 select-none"
+                style={{
+                  touchAction: 'none',
+                  cursor: 'pointer'
+                }}
                 onClick={(e) => {
+                  e.stopPropagation() // 防止触发外层的视窗拖动
+
                   const rect = e.currentTarget.getBoundingClientRect()
                   const x = e.clientX - rect.left
                   const percentage = Math.max(0, Math.min(1, x / rect.width))
-                  const newFrame = Math.round(percentage * (timeline.length - 1))
+
+                  let newFrame
+                  if (enableViewport) {
+                    // 视窗模式：点击位置映射到视窗范围内的帧
+                    newFrame = Math.round(viewportStart + percentage * (viewportEnd - viewportStart))
+                  } else {
+                    // 正常模式：点击位置映射到全部帧
+                    newFrame = Math.round(percentage * (timeline.length - 1))
+                  }
+
                   setCurrentFrame(newFrame)
                   setIsPlaying(false)
                 }}
                 onMouseDown={(e) => {
+                  e.stopPropagation() // 防止触发外层的视窗拖动
                   e.preventDefault()
-                  const container = e.currentTarget
-                  const rect = container.getBoundingClientRect()
+                  const rect = e.currentTarget.getBoundingClientRect()
 
+                  // 正常帧拖动模式
                   const handleMove = (moveEvent) => {
                     const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX
                     const x = clientX - rect.left
                     const percentage = Math.max(0, Math.min(1, x / rect.width))
-                    const newFrame = Math.round(percentage * (timeline.length - 1))
+
+                    let newFrame
+                    if (enableViewport) {
+                      newFrame = Math.round(viewportStart + percentage * (viewportEnd - viewportStart))
+                    } else {
+                      newFrame = Math.round(percentage * (timeline.length - 1))
+                    }
+
                     setCurrentFrame(newFrame)
                     setIsPlaying(false)
                   }
@@ -698,16 +873,22 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                   document.addEventListener('touchend', handleEnd)
                 }}
                 onTouchStart={(e) => {
-                  e.preventDefault()
-                  const container = e.currentTarget
-                  const rect = container.getBoundingClientRect()
+                  e.stopPropagation() // 防止触发外层的视窗拖动
+                  const rect = e.currentTarget.getBoundingClientRect()
 
+                  // 正常帧拖动模式
                   const handleMove = (moveEvent) => {
-                    moveEvent.preventDefault()
                     const clientX = moveEvent.touches[0].clientX
                     const x = clientX - rect.left
                     const percentage = Math.max(0, Math.min(1, x / rect.width))
-                    const newFrame = Math.round(percentage * (timeline.length - 1))
+
+                    let newFrame
+                    if (enableViewport) {
+                      newFrame = Math.round(viewportStart + percentage * (viewportEnd - viewportStart))
+                    } else {
+                      newFrame = Math.round(percentage * (timeline.length - 1))
+                    }
+
                     setCurrentFrame(newFrame)
                     setIsPlaying(false)
                   }
@@ -717,7 +898,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                     document.removeEventListener('touchend', handleEnd)
                   }
 
-                  document.addEventListener('touchmove', handleMove, { passive: false })
+                  document.addEventListener('touchmove', handleMove, { passive: true })
                   document.addEventListener('touchend', handleEnd)
                 }}
               >
@@ -731,13 +912,24 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                     if (isMobile) maxTicks = 6
                     else if (isTablet) maxTicks = 8
 
-                    const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(timeline.length / 10)))
-                    const step = Math.floor(timeline.length / tickCount)
+                    const visibleRange = enableViewport ? (viewportEnd - viewportStart) : timeline.length
+                    const tickCount = Math.min(maxTicks, Math.max(4, Math.floor(visibleRange / 10)))
+                    const step = Math.floor(visibleRange / tickCount)
                     const ticks = []
 
                     for (let i = 0; i <= tickCount; i++) {
-                      const index = Math.min(i * step, timeline.length - 1)
-                      const percentage = (index / (timeline.length - 1)) * 100
+                      const frameIndex = enableViewport
+                        ? Math.min(viewportStart + i * step, viewportEnd - 1)
+                        : Math.min(i * step, timeline.length - 1)
+
+                      let percentage
+                      if (enableViewport) {
+                        // 视窗模式：相对于视窗范围的百分比
+                        percentage = ((frameIndex - viewportStart) / (viewportEnd - viewportStart)) * 100
+                      } else {
+                        // 正常模式：相对于全部帧的百分比
+                        percentage = (frameIndex / (timeline.length - 1)) * 100
+                      }
 
                       ticks.push(
                         <div
@@ -757,7 +949,9 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                   <div
                     className="h-full bg-gradient-to-r from-purple-400 via-fuchsia-500 to-violet-600"
                     style={{
-                      width: `${(currentFrame / (timeline.length - 1)) * 100}%`
+                      width: enableViewport
+                        ? `${((currentFrame - viewportStart) / (viewportEnd - viewportStart)) * 100}%`
+                        : `${(currentFrame / (timeline.length - 1)) * 100}%`
                     }}
                   />
                 </div>
@@ -766,7 +960,9 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 <div
                   className="absolute pointer-events-none"
                   style={{
-                    left: `${(currentFrame / (timeline.length - 1)) * 100}%`,
+                    left: enableViewport
+                      ? `${((currentFrame - viewportStart) / (viewportEnd - viewportStart)) * 100}%`
+                      : `${(currentFrame / (timeline.length - 1)) * 100}%`,
                     top: '12px',
                     transform: 'translateX(-50%)'
                   }}
