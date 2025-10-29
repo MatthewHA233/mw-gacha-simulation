@@ -25,7 +25,15 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const timerRef = useRef(null)
   const animationRef = useRef(null)
   const startTimeRef = useRef(null)
+  const startFrameRef = useRef(0)
+  const totalDurationRef = useRef(totalDuration)
+  const prevDurationRef = useRef(totalDuration) // 追踪上一次的速度
   const prevFrameRef = useRef(currentFrame) // 追踪上一帧
+
+  // 同步 totalDuration 到 ref
+  useEffect(() => {
+    totalDurationRef.current = totalDuration
+  }, [totalDuration])
 
   // 加载 CSV 数据
   useEffect(() => {
@@ -292,16 +300,30 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     if (isPlaying && timeline.length > 0) {
       // 记录开始时间和开始帧
       startTimeRef.current = performance.now()
-      const startFrame = currentFrame
+      startFrameRef.current = currentFrame
+      prevDurationRef.current = totalDurationRef.current
       const totalFrames = timeline.length - 1 // 最大帧索引
+      let lastFrame = currentFrame
 
       const animate = (currentTime) => {
-        const elapsed = currentTime - startTimeRef.current
-        const progress = Math.min(elapsed / (totalDuration * 1000), 1)
+        // 检测速度是否改变
+        if (totalDurationRef.current !== prevDurationRef.current) {
+          // 速度改变了，重置时间基准
+          startTimeRef.current = currentTime
+          startFrameRef.current = lastFrame
+          prevDurationRef.current = totalDurationRef.current
+        }
 
-        // 根据时间进度计算当前应该显示的帧（从 startFrame 播放到 totalFrames）
+        const elapsed = currentTime - startTimeRef.current
+        const currentDuration = totalDurationRef.current
+        const remainingFrames = totalFrames - startFrameRef.current
+        const remainingDuration = (remainingFrames / totalFrames) * currentDuration
+
+        const progress = Math.min(elapsed / (remainingDuration * 1000), 1)
+
+        // 根据时间进度计算当前应该显示的帧
         const targetFrame = Math.min(
-          Math.floor(startFrame + progress * (totalFrames - startFrame)),
+          Math.floor(startFrameRef.current + progress * remainingFrames),
           totalFrames
         )
 
@@ -312,6 +334,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
           return
         }
 
+        lastFrame = targetFrame
         setCurrentFrame(targetFrame)
         animationRef.current = requestAnimationFrame(animate)
       }
@@ -329,7 +352,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [isPlaying, timeline.length, totalDuration])
+  }, [isPlaying, timeline.length])
 
   if (loading) {
     return (
