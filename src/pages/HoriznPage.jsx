@@ -137,7 +137,7 @@ export default function HoriznPage() {
     return timestamp
   }
 
-  // 复制名单
+  // 复制名单（兼容移动端）
   const handleCopyList = () => {
     const selectedData = getSelectedData()
     if (!selectedData || !selectedData.allData) return
@@ -173,29 +173,65 @@ export default function HoriznPage() {
     // 组合最终文本
     const finalText = `${title}\n\n${nameList}`
 
-    // 复制到剪贴板
-    navigator.clipboard.writeText(finalText).then(() => {
-      toast.success(`已复制 ${selectedPlayers.length} 位玩家的名单`, {
-        duration: 2500,
-        position: 'top-center',
-        style: {
-          background: '#10b981',
-          color: '#fff',
-          fontSize: isMobile ? '12px' : '14px',
-          padding: isMobile ? '6px 12px' : '8px 16px',
-          fontWeight: '500',
-        },
-      })
-    }).catch(err => {
-      console.error('复制失败:', err)
-      toast.error('复制失败，请重试或检查浏览器权限', {
-        duration: 2500,
-        position: 'top-center',
-        style: {
-          fontSize: isMobile ? '12px' : '14px',
-          padding: isMobile ? '6px 12px' : '8px 16px',
-        },
-      })
+    // 复制到剪贴板（带移动端兼容）
+    const copyToClipboard = async (text) => {
+      // 优先使用现代 Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text)
+          return true
+        } catch (err) {
+          console.warn('Clipboard API 失败，尝试 fallback 方法:', err)
+        }
+      }
+
+      // Fallback：使用传统的 execCommand 方法
+      try {
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+
+        const successful = document.execCommand('copy')
+        textArea.remove()
+
+        if (successful) {
+          return true
+        }
+        throw new Error('execCommand 复制失败')
+      } catch (err) {
+        console.error('Fallback 复制失败:', err)
+        return false
+      }
+    }
+
+    copyToClipboard(finalText).then(success => {
+      if (success) {
+        toast.success(`已复制 ${selectedPlayers.length} 位玩家的名单`, {
+          duration: 2500,
+          position: 'top-center',
+          style: {
+            background: '#10b981',
+            color: '#fff',
+            fontSize: isMobile ? '12px' : '14px',
+            padding: isMobile ? '6px 12px' : '8px 16px',
+            fontWeight: '500',
+          },
+        })
+      } else {
+        toast.error('复制失败，请重试', {
+          duration: 2500,
+          position: 'top-center',
+          style: {
+            fontSize: isMobile ? '12px' : '14px',
+            padding: isMobile ? '6px 12px' : '8px 16px',
+          },
+        })
+      }
     })
   }
 
