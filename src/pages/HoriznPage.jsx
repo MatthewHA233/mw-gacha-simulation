@@ -408,12 +408,12 @@ export default function HoriznPage() {
       {/* 复制名单弹窗 */}
       {showCopyModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="bg-gray-800/95 backdrop-blur-xl rounded-xl border border-gray-700/50 shadow-2xl w-full max-w-md overflow-hidden">
+          <div className={`bg-gray-800/95 backdrop-blur-xl rounded-xl border border-gray-700/50 shadow-2xl w-full max-w-md overflow-hidden ${isMobile ? 'select-none' : ''}`}>
             {/* 顶部装饰条 */}
             <div className="h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
             {/* 标题栏 */}
-            <div className="px-4 sm:px-5 py-3 border-b border-gray-700/50 flex items-center justify-between select-none">
+            <div className="px-4 sm:px-5 py-3 border-b border-gray-700/50 flex items-center justify-between">
               <h3 className="text-sm sm:text-base font-semibold text-white flex items-center gap-1.5">
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -438,7 +438,7 @@ export default function HoriznPage() {
 
             {/* 内容区 */}
             <div className="px-4 sm:px-5 py-4 space-y-3">
-              <div className="select-none">
+              <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide">
                     筛选模式
@@ -678,7 +678,7 @@ export default function HoriznPage() {
                       }
                     </span>
                   </div>
-                  <div className="text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar">
+                  <div className={`text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar ${!isMobile ? 'select-text' : ''}`}>
                     {(() => {
                       const selectedData = getSelectedData()
                       const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
@@ -713,7 +713,7 @@ export default function HoriznPage() {
             </div>
 
             {/* 底部按钮 */}
-            <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2 select-none">
+            <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2">
               <button
                 onClick={() => {
                   setShowCopyModal(false)
