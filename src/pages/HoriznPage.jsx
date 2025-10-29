@@ -3,6 +3,7 @@ import { ShieldCheck } from 'lucide-react'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
 import { CDN_BASE_URL } from '@/utils/constants'
+import { useMilestoneToast } from '@/components/ui/MilestoneToastProvider'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
@@ -15,6 +16,9 @@ export default function HoriznPage() {
   const [thresholdValue, setThresholdValue] = useState('4500') // 默认周活跃度阈值
   const [currentData, setCurrentData] = useState(null)
   const [manualFrameIndex, setManualFrameIndex] = useState(null) // 手动控制的帧索引（用于时间调整）
+
+  // Toast
+  const { showToast } = useMilestoneToast()
 
   // 长按处理
   const pressTimerRef = useRef(null)
@@ -40,9 +44,10 @@ export default function HoriznPage() {
     }
   }, [])
 
-  // 通用长按处理函数
+  // 通用长按处理函数 - 使用 Pointer Events 统一处理触摸和鼠标
   const handlePressStart = useCallback((e, action) => {
-    e.preventDefault() // 阻止默认行为
+    // 清理之前的定时器
+    handlePressEnd()
 
     // 立即执行一次
     action()
@@ -51,9 +56,9 @@ export default function HoriznPage() {
     pressTimerRef.current = setTimeout(() => {
       intervalRef.current = setInterval(() => {
         action()
-      }, 50) // 每 50ms 执行一次，更快
+      }, 50) // 每 50ms 执行一次
     }, 300)
-  }, [])
+  }, [handlePressEnd])
 
   // 组件卸载时清理定时器
   useEffect(() => {
@@ -162,15 +167,28 @@ export default function HoriznPage() {
 
     // 复制到剪贴板
     navigator.clipboard.writeText(finalText).then(() => {
-      alert('名单已复制到剪贴板！')
-      setShowCopyModal(false)
-      setCopyCount('20')
-      setCopyMode('rank')
-      setThresholdValue(getDefaultThreshold())
-      setManualFrameIndex(null) // 恢复自动播放
+      // 使用Toast提示复制成功
+      showToast(
+        {
+          level: 'dense',
+          title: '复制成功',
+          description: `已复制 ${selectedPlayers.length} 位玩家的名单`,
+          icon: '📋'
+        },
+        { duration: 3000 }
+      )
     }).catch(err => {
       console.error('复制失败:', err)
-      alert('复制失败，请重试')
+      // 使用Toast提示复制失败
+      showToast(
+        {
+          level: 'dense',
+          title: '复制失败',
+          description: '请重试或检查浏览器权限',
+          icon: '❌'
+        },
+        { duration: 3000 }
+      )
     })
   }
 
@@ -337,7 +355,7 @@ export default function HoriznPage() {
             <div className="h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
             {/* 标题栏 */}
-            <div className="px-4 sm:px-5 py-3 border-b border-gray-700/50 flex items-center justify-between">
+            <div className="px-4 sm:px-5 py-3 border-b border-gray-700/50 flex items-center justify-between select-none">
               <h3 className="text-sm sm:text-base font-semibold text-white flex items-center gap-1.5">
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -362,7 +380,7 @@ export default function HoriznPage() {
 
             {/* 内容区 */}
             <div className="px-4 sm:px-5 py-4 space-y-3">
-              <div>
+              <div className="select-none">
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide">
                     筛选模式
@@ -413,12 +431,10 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onMouseDown={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.max(5, parseInt(prev || 20) - 5))))}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.max(5, parseInt(prev || 20) - 5))))}
-                            onTouchEnd={handlePressEnd}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            onPointerDown={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.max(5, parseInt(prev || 20) - 5))))}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             −
                           </button>
@@ -433,12 +449,10 @@ export default function HoriznPage() {
                             className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
-                            onMouseDown={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(prev || 20) + 5))))}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(prev || 20) + 5))))}
-                            onTouchEnd={handlePressEnd}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            onPointerDown={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(prev || 20) + 5))))}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             +
                           </button>
@@ -452,7 +466,7 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onMouseDown={(e) => {
+                            onPointerDown={(e) => {
                               if ((currentData?.currentFrameIndex ?? 0) <= 0) return
                               handlePressStart(e, () => {
                                 const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
@@ -460,19 +474,10 @@ export default function HoriznPage() {
                                 setManualFrameIndex(newIndex)
                               })
                             }}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => {
-                              if ((currentData?.currentFrameIndex ?? 0) <= 0) return
-                              handlePressStart(e, () => {
-                                const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
-                                currentFrameRef.current = newIndex
-                                setManualFrameIndex(newIndex)
-                              })
-                            }}
-                            onTouchEnd={handlePressEnd}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
                             disabled={(currentData?.currentFrameIndex ?? 0) <= 0}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             ←
                           </button>
@@ -480,7 +485,7 @@ export default function HoriznPage() {
                             {currentData?.current?.timestamp?.split(' ')[1] || '--:--'}
                           </div>
                           <button
-                            onMouseDown={(e) => {
+                            onPointerDown={(e) => {
                               if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
                               handlePressStart(e, () => {
                                 const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
@@ -489,20 +494,10 @@ export default function HoriznPage() {
                                 setManualFrameIndex(newIndex)
                               })
                             }}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => {
-                              if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
-                              handlePressStart(e, () => {
-                                const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
-                                const newIndex = Math.min(maxIndex, (currentFrameRef.current ?? 0) + 1)
-                                currentFrameRef.current = newIndex
-                                setManualFrameIndex(newIndex)
-                              })
-                            }}
-                            onTouchEnd={handlePressEnd}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
                             disabled={(currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             →
                           </button>
@@ -527,12 +522,10 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onMouseDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(Math.max(0, parseInt(prev || getDefaultThreshold()) - getThresholdStep()))))}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => handlePressStart(e, () => setThresholdValue(prev => String(Math.max(0, parseInt(prev || getDefaultThreshold()) - getThresholdStep()))))}
-                            onTouchEnd={handlePressEnd}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            onPointerDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(Math.max(0, parseInt(prev || getDefaultThreshold()) - getThresholdStep()))))}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             −
                           </button>
@@ -546,12 +539,10 @@ export default function HoriznPage() {
                             className="flex-1 min-w-0 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
-                            onMouseDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(parseInt(prev || getDefaultThreshold()) + getThresholdStep())))}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => handlePressStart(e, () => setThresholdValue(prev => String(parseInt(prev || getDefaultThreshold()) + getThresholdStep())))}
-                            onTouchEnd={handlePressEnd}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            onPointerDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(parseInt(prev || getDefaultThreshold()) + getThresholdStep())))}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             +
                           </button>
@@ -565,7 +556,7 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onMouseDown={(e) => {
+                            onPointerDown={(e) => {
                               if ((currentData?.currentFrameIndex ?? 0) <= 0) return
                               handlePressStart(e, () => {
                                 const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
@@ -573,19 +564,10 @@ export default function HoriznPage() {
                                 setManualFrameIndex(newIndex)
                               })
                             }}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => {
-                              if ((currentData?.currentFrameIndex ?? 0) <= 0) return
-                              handlePressStart(e, () => {
-                                const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
-                                currentFrameRef.current = newIndex
-                                setManualFrameIndex(newIndex)
-                              })
-                            }}
-                            onTouchEnd={handlePressEnd}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
                             disabled={(currentData?.currentFrameIndex ?? 0) <= 0}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             ←
                           </button>
@@ -593,7 +575,7 @@ export default function HoriznPage() {
                             {currentData?.current?.timestamp?.split(' ')[1] || '--:--'}
                           </div>
                           <button
-                            onMouseDown={(e) => {
+                            onPointerDown={(e) => {
                               if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
                               handlePressStart(e, () => {
                                 const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
@@ -602,20 +584,10 @@ export default function HoriznPage() {
                                 setManualFrameIndex(newIndex)
                               })
                             }}
-                            onMouseUp={handlePressEnd}
-                            onMouseLeave={handlePressEnd}
-                            onTouchStart={(e) => {
-                              if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
-                              handlePressStart(e, () => {
-                                const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
-                                const newIndex = Math.min(maxIndex, (currentFrameRef.current ?? 0) + 1)
-                                currentFrameRef.current = newIndex
-                                setManualFrameIndex(newIndex)
-                              })
-                            }}
-                            onTouchEnd={handlePressEnd}
+                            onPointerUp={handlePressEnd}
+                            onPointerLeave={handlePressEnd}
                             disabled={(currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             →
                           </button>
@@ -683,7 +655,7 @@ export default function HoriznPage() {
             </div>
 
             {/* 底部按钮 */}
-            <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2">
+            <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2 select-none">
               <button
                 onClick={() => {
                   setShowCopyModal(false)
