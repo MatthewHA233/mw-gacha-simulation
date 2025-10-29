@@ -131,7 +131,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
 
   // 当 currentFrame 改变时，自动调整视窗以确保当前帧可见
   useEffect(() => {
-    if (!enableViewport || currentFrame === null) return
+    if (!enableViewport || currentFrame === null || isDraggingViewport) return // 拖动时不自动跟随
 
     // 如果当前帧不在可见范围内，调整视窗
     if (currentFrame < viewportStart) {
@@ -141,7 +141,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       // 当前帧在视窗右侧，移动视窗使当前帧位于视窗右侧
       setViewportStart(Math.max(0, currentFrame - viewportWidth + 1))
     }
-  }, [currentFrame, enableViewport, viewportStart, viewportEnd, viewportWidth, timeline.length])
+  }, [currentFrame, enableViewport, viewportStart, viewportEnd, viewportWidth, timeline.length, isDraggingViewport])
 
   // 解析时间戳（支持多种格式）
   const parseTimestamp = (timestamp) => {
@@ -578,12 +578,15 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 const startIndex = viewportStart
                 const containerWidth = e.currentTarget.offsetWidth - 32 // 缓存容器宽度，减去 padding
                 let rafId = null
+                let latestClientX = startX // 保存最新鼠标位置
 
                 const handleMove = (moveEvent) => {
-                  if (rafId) return // 如果已有待处理的帧，跳过
+                  latestClientX = moveEvent.clientX // 始终更新最新位置
+
+                  if (rafId) return // 如果已有待处理的帧，等待下次
 
                   rafId = requestAnimationFrame(() => {
-                    const deltaX = moveEvent.clientX - startX
+                    const deltaX = latestClientX - startX // 使用最新位置
                     const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
                     const newStart = Math.max(0, Math.min(
                       timeline.length - viewportWidth,
@@ -597,6 +600,24 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 const handleEnd = () => {
                   setIsDraggingViewport(false)
                   if (rafId) cancelAnimationFrame(rafId)
+
+                  // 拖动结束后，如果 currentFrame 超出视窗，调整到边界
+                  const deltaX = latestClientX - startX
+                  const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
+                  const finalViewportStart = Math.max(0, Math.min(
+                    timeline.length - viewportWidth,
+                    startIndex - deltaFrames
+                  ))
+                  const finalViewportEnd = Math.min(finalViewportStart + viewportWidth, timeline.length)
+
+                  if (currentFrame !== null) {
+                    if (currentFrame < finalViewportStart) {
+                      setCurrentFrame(finalViewportStart) // 超出左边界，移到左边界
+                    } else if (currentFrame >= finalViewportEnd) {
+                      setCurrentFrame(finalViewportEnd - 1) // 超出右边界，移到右边界
+                    }
+                  }
+
                   document.removeEventListener('mousemove', handleMove)
                   document.removeEventListener('mouseup', handleEnd)
                 }
@@ -611,18 +632,24 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 // 视窗拖动
                 if (!enableViewport) return
 
+                e.preventDefault() // 阻止浏览器默认滚动
+                e.stopPropagation()
                 setIsDraggingViewport(true)
                 const startX = e.touches[0].clientX
                 const startIndex = viewportStart
                 const containerWidth = e.currentTarget.offsetWidth - 32 // 缓存容器宽度，减去 padding
                 let rafId = null
+                let latestClientX = startX // 保存最新触摸位置
 
                 const handleMove = (moveEvent) => {
                   if (!moveEvent.touches || moveEvent.touches.length === 0) return
-                  if (rafId) return // 如果已有待处理的帧，跳过
+                  moveEvent.preventDefault() // 阻止滚动
+                  latestClientX = moveEvent.touches[0].clientX // 始终更新最新位置
+
+                  if (rafId) return // 如果已有待处理的帧，等待下次
 
                   rafId = requestAnimationFrame(() => {
-                    const deltaX = moveEvent.touches[0].clientX - startX
+                    const deltaX = latestClientX - startX // 使用最新位置
                     const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
                     const newStart = Math.max(0, Math.min(
                       timeline.length - viewportWidth,
@@ -636,11 +663,29 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 const handleEnd = () => {
                   setIsDraggingViewport(false)
                   if (rafId) cancelAnimationFrame(rafId)
+
+                  // 拖动结束后，如果 currentFrame 超出视窗，调整到边界
+                  const deltaX = latestClientX - startX
+                  const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
+                  const finalViewportStart = Math.max(0, Math.min(
+                    timeline.length - viewportWidth,
+                    startIndex - deltaFrames
+                  ))
+                  const finalViewportEnd = Math.min(finalViewportStart + viewportWidth, timeline.length)
+
+                  if (currentFrame !== null) {
+                    if (currentFrame < finalViewportStart) {
+                      setCurrentFrame(finalViewportStart) // 超出左边界，移到左边界
+                    } else if (currentFrame >= finalViewportEnd) {
+                      setCurrentFrame(finalViewportEnd - 1) // 超出右边界，移到右边界
+                    }
+                  }
+
                   document.removeEventListener('touchmove', handleMove)
                   document.removeEventListener('touchend', handleEnd)
                 }
 
-                document.addEventListener('touchmove', handleMove, { passive: true })
+                document.addEventListener('touchmove', handleMove, { passive: false }) // 非 passive 才能 preventDefault
                 document.addEventListener('touchend', handleEnd)
               }}
             >
