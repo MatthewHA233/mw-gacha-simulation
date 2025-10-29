@@ -758,9 +758,9 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                                   left: `${startPercent}%`,
                                   width: `${width}%`,
                                   background: idx % 2 === 0
-                                    ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08))'
-                                    : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.10))',
-                                  borderLeft: visibleStart > viewportStart ? '1px solid rgba(139, 92, 246, 0.25)' : 'none'
+                                    ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.15))'
+                                    : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.28), rgba(139, 92, 246, 0.18))',
+                                  borderLeft: visibleStart > viewportStart ? '1px solid rgba(139, 92, 246, 0.45)' : 'none'
                                 }}
                               />
                             )
@@ -778,14 +778,67 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                                   left: `${startPercent}%`,
                                   width: `${width}%`,
                                   background: idx % 2 === 0
-                                    ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08))'
-                                    : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.10))',
-                                  borderLeft: idx > 0 ? '1px solid rgba(139, 92, 246, 0.25)' : 'none'
+                                    ? 'linear-gradient(to bottom, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.15))'
+                                    : 'linear-gradient(to bottom, rgba(139, 92, 246, 0.28), rgba(139, 92, 246, 0.18))',
+                                  borderLeft: idx > 0 ? '1px solid rgba(139, 92, 246, 0.45)' : 'none'
                                 }}
                               />
                             )
                           }
                         })}
+
+                      {/* 时间戳边界光晕 */}
+                      {(() => {
+                        if (enableViewport) {
+                          // 视窗模式：只在视窗包含边界时显示
+                          return (
+                            <>
+                              {viewportStart === 0 && (
+                                <div
+                                  className="absolute top-0 h-full pointer-events-none"
+                                  style={{
+                                    left: '0',
+                                    width: '4px',
+                                    background: 'linear-gradient(to right, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0))'
+                                  }}
+                                />
+                              )}
+                              {viewportEnd >= timeline.length && (
+                                <div
+                                  className="absolute top-0 h-full pointer-events-none"
+                                  style={{
+                                    right: '0',
+                                    width: '4px',
+                                    background: 'linear-gradient(to left, rgba(34, 197, 94, 0.4), rgba(34, 197, 94, 0))'
+                                  }}
+                                />
+                              )}
+                            </>
+                          )
+                        } else {
+                          // 正常模式：始终显示两条边界光晕
+                          return (
+                            <>
+                              <div
+                                className="absolute top-0 h-full pointer-events-none"
+                                style={{
+                                  left: '0',
+                                  width: '4px',
+                                  background: 'linear-gradient(to right, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0))'
+                                }}
+                              />
+                              <div
+                                className="absolute top-0 h-full pointer-events-none"
+                                style={{
+                                  right: '0',
+                                  width: '4px',
+                                  background: 'linear-gradient(to left, rgba(34, 197, 94, 0.4), rgba(34, 197, 94, 0))'
+                                }}
+                              />
+                            </>
+                          )
+                        }
+                      })()}
                     </div>
 
                     {/* 时间标签层 */}
