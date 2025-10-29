@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
 
-export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false }) {
+export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null }) {
   const [timeline, setTimeline] = useState([])
   const [currentFrame, setCurrentFrame] = useState(null) // null 表示未初始化
   const [isPlaying, setIsPlaying] = useState(false)
@@ -82,6 +82,15 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   useEffect(() => {
     localStorage.setItem('horizn_animation_duration', totalDuration.toString())
   }, [totalDuration])
+
+  // 外部控制 currentFrame（用于父组件控制播放位置）
+  useEffect(() => {
+    if (externalFrameIndex !== null && timeline.length > 0) {
+      const validIndex = Math.max(0, Math.min(externalFrameIndex, timeline.length - 1))
+      setCurrentFrame(validIndex)
+      setIsPlaying(false) // 手动控制时暂停播放
+    }
+  }, [externalFrameIndex, timeline.length])
 
   // 解析时间戳（支持多种格式）
   const parseTimestamp = (timestamp) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { ShieldCheck } from 'lucide-react'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
@@ -14,7 +14,53 @@ export default function HoriznPage() {
   const [copyMode, setCopyMode] = useState('rank') // 'rank' 或 'threshold'
   const [thresholdValue, setThresholdValue] = useState('4500') // 默认周活跃度阈值
   const [currentData, setCurrentData] = useState(null)
-  const [selectedTimestampIndex, setSelectedTimestampIndex] = useState(null) // 选择的时间戳索引
+  const [manualFrameIndex, setManualFrameIndex] = useState(null) // 手动控制的帧索引（用于时间调整）
+
+  // 长按处理
+  const pressTimerRef = useRef(null)
+  const intervalRef = useRef(null)
+  const currentFrameRef = useRef(null) // 追踪当前帧索引
+
+  // 同步 currentData 到 ref
+  useEffect(() => {
+    if (currentData?.currentFrameIndex !== undefined) {
+      currentFrameRef.current = currentData.currentFrameIndex
+    }
+  }, [currentData?.currentFrameIndex])
+
+  // 清理定时器
+  const handlePressEnd = useCallback(() => {
+    if (pressTimerRef.current) {
+      clearTimeout(pressTimerRef.current)
+      pressTimerRef.current = null
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }, [])
+
+  // 通用长按处理函数
+  const handlePressStart = useCallback((e, action) => {
+    e.preventDefault() // 阻止默认行为
+
+    // 立即执行一次
+    action()
+
+    // 延迟 300ms 后开始快速重复
+    pressTimerRef.current = setTimeout(() => {
+      intervalRef.current = setInterval(() => {
+        action()
+      }, 50) // 每 50ms 执行一次，更快
+    }, 300)
+  }, [])
+
+  // 组件卸载时清理定时器
+  useEffect(() => {
+    return () => {
+      handlePressEnd()
+    }
+  }, [handlePressEnd])
 
   // 根据当前 tab 获取默认阈值
   const getDefaultThreshold = () => {
@@ -40,16 +86,12 @@ export default function HoriznPage() {
   const handleOpenCopyModal = () => {
     setShowAdminMenu(false)
     setThresholdValue(getDefaultThreshold()) // 打开时设置为当前 tab 的默认阈值
-    setSelectedTimestampIndex(currentData?.currentFrameIndex ?? null) // 初始化为当前帧
     setShowCopyModal(true)
   }
 
-  // 获取选中时间戳的数据
+  // 获取当前显示的数据（直接使用 BarChartRace 的当前帧数据）
   const getSelectedData = () => {
-    if (!currentData || !currentData.timeline || selectedTimestampIndex === null) {
-      return currentData?.current
-    }
-    return currentData.timeline[selectedTimestampIndex]
+    return currentData?.current
   }
 
   // 切换 tab 时更新阈值默认值
@@ -125,7 +167,7 @@ export default function HoriznPage() {
       setCopyCount('20')
       setCopyMode('rank')
       setThresholdValue(getDefaultThreshold())
-      setSelectedTimestampIndex(null)
+      setManualFrameIndex(null) // 恢复自动播放
     }).catch(err => {
       console.error('复制失败:', err)
       alert('复制失败，请重试')
@@ -283,6 +325,7 @@ export default function HoriznPage() {
           onStatusUpdate={setStatusInfo}
           onDataUpdate={setCurrentData}
           showValues={isAdmin}
+          externalFrameIndex={manualFrameIndex}
         />
       </div>
 
@@ -307,7 +350,7 @@ export default function HoriznPage() {
                   setCopyCount('20')
                   setCopyMode('rank')
                   setThresholdValue(getDefaultThreshold())
-                  setSelectedTimestampIndex(null)
+                  setManualFrameIndex(null) // 恢复自动播放
                 }}
                 className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-1 transition-all"
               >
@@ -370,8 +413,12 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={() => setCopyCount(String(Math.max(5, parseInt(copyCount || 20) - 5)))}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.max(5, parseInt(prev || 20) - 5))))}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.max(5, parseInt(prev || 20) - 5))))}
+                            onTouchEnd={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             −
                           </button>
@@ -386,8 +433,12 @@ export default function HoriznPage() {
                             className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
-                            onClick={() => setCopyCount(String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(copyCount || 20) + 5)))}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(prev || 20) + 5))))}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => handlePressStart(e, () => setCopyCount(prev => String(Math.min(getSelectedData()?.allData?.length || 100, parseInt(prev || 20) + 5))))}
+                            onTouchEnd={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             +
                           </button>
@@ -401,19 +452,57 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={() => setSelectedTimestampIndex(Math.max(0, selectedTimestampIndex - 1))}
-                            disabled={selectedTimestampIndex <= 0}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) <= 0) return
+                              handlePressStart(e, () => {
+                                const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) <= 0) return
+                              handlePressStart(e, () => {
+                                const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onTouchEnd={handlePressEnd}
+                            disabled={(currentData?.currentFrameIndex ?? 0) <= 0}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             ←
                           </button>
-                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 flex items-center justify-center truncate">
-                            {currentData?.allTimestamps?.[selectedTimestampIndex]?.split(' ')[1] || '--:--'}
+                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 flex items-center justify-center truncate select-none">
+                            {currentData?.current?.timestamp?.split(' ')[1] || '--:--'}
                           </div>
                           <button
-                            onClick={() => setSelectedTimestampIndex(Math.min((currentData?.allTimestamps?.length || 1) - 1, selectedTimestampIndex + 1))}
-                            disabled={selectedTimestampIndex >= (currentData?.allTimestamps?.length || 1) - 1}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
+                              handlePressStart(e, () => {
+                                const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
+                                const newIndex = Math.min(maxIndex, (currentFrameRef.current ?? 0) + 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
+                              handlePressStart(e, () => {
+                                const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
+                                const newIndex = Math.min(maxIndex, (currentFrameRef.current ?? 0) + 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onTouchEnd={handlePressEnd}
+                            disabled={(currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             →
                           </button>
@@ -422,7 +511,7 @@ export default function HoriznPage() {
                     </div>
                     <p className="mt-1.5 text-xs text-gray-500 text-center">
                       共 <span className="text-blue-400 font-medium">{getSelectedData()?.allData?.length || 0}</span> 人 ·
-                      时间戳 <span className="text-blue-400 font-medium">{(selectedTimestampIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
+                      时间戳 <span className="text-blue-400 font-medium">{(currentData?.currentFrameIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
                     </p>
                   </>
                 )}
@@ -438,8 +527,12 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={() => setThresholdValue(String(Math.max(0, parseInt(thresholdValue || getDefaultThreshold()) - getThresholdStep())))}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(Math.max(0, parseInt(prev || getDefaultThreshold()) - getThresholdStep()))))}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => handlePressStart(e, () => setThresholdValue(prev => String(Math.max(0, parseInt(prev || getDefaultThreshold()) - getThresholdStep()))))}
+                            onTouchEnd={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             −
                           </button>
@@ -453,8 +546,12 @@ export default function HoriznPage() {
                             className="flex-1 min-w-0 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
-                            onClick={() => setThresholdValue(String(parseInt(thresholdValue || getDefaultThreshold()) + getThresholdStep()))}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(parseInt(prev || getDefaultThreshold()) + getThresholdStep())))}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => handlePressStart(e, () => setThresholdValue(prev => String(parseInt(prev || getDefaultThreshold()) + getThresholdStep())))}
+                            onTouchEnd={handlePressEnd}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             +
                           </button>
@@ -468,19 +565,57 @@ export default function HoriznPage() {
                         </label>
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={() => setSelectedTimestampIndex(Math.max(0, selectedTimestampIndex - 1))}
-                            disabled={selectedTimestampIndex <= 0}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) <= 0) return
+                              handlePressStart(e, () => {
+                                const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) <= 0) return
+                              handlePressStart(e, () => {
+                                const newIndex = Math.max(0, (currentFrameRef.current ?? 0) - 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onTouchEnd={handlePressEnd}
+                            disabled={(currentData?.currentFrameIndex ?? 0) <= 0}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             ←
                           </button>
-                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 flex items-center justify-center truncate">
-                            {currentData?.allTimestamps?.[selectedTimestampIndex]?.split(' ')[1] || '--:--'}
+                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 flex items-center justify-center truncate select-none">
+                            {currentData?.current?.timestamp?.split(' ')[1] || '--:--'}
                           </div>
                           <button
-                            onClick={() => setSelectedTimestampIndex(Math.min((currentData?.allTimestamps?.length || 1) - 1, selectedTimestampIndex + 1))}
-                            disabled={selectedTimestampIndex >= (currentData?.allTimestamps?.length || 1) - 1}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm"
+                            onMouseDown={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
+                              handlePressStart(e, () => {
+                                const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
+                                const newIndex = Math.min(maxIndex, (currentFrameRef.current ?? 0) + 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onMouseUp={handlePressEnd}
+                            onMouseLeave={handlePressEnd}
+                            onTouchStart={(e) => {
+                              if ((currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1) return
+                              handlePressStart(e, () => {
+                                const maxIndex = (currentData?.allTimestamps?.length || 1) - 1
+                                const newIndex = Math.min(maxIndex, (currentFrameRef.current ?? 0) + 1)
+                                currentFrameRef.current = newIndex
+                                setManualFrameIndex(newIndex)
+                              })
+                            }}
+                            onTouchEnd={handlePressEnd}
+                            disabled={(currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none"
                           >
                             →
                           </button>
@@ -493,7 +628,7 @@ export default function HoriznPage() {
                           符合条件：<span className="text-blue-400 font-medium">
                             {getSelectedData().allData.filter(p => p.value >= (parseInt(thresholdValue) || 0)).length}
                           </span> 人 ·
-                          时间戳 <span className="text-blue-400 font-medium">{(selectedTimestampIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
+                          时间戳 <span className="text-blue-400 font-medium">{(currentData?.currentFrameIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
                         </>
                       )}
                     </p>
@@ -555,7 +690,7 @@ export default function HoriznPage() {
                   setCopyCount('20')
                   setCopyMode('rank')
                   setThresholdValue(getDefaultThreshold())
-                  setSelectedTimestampIndex(null)
+                  setManualFrameIndex(null) // 恢复自动播放
                 }}
                 className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
               >
