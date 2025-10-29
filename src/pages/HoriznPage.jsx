@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import { useParams, Navigate } from 'react-router-dom'
-import { ShieldCheck } from 'lucide-react'
+import { useParams, Navigate, useNavigate } from 'react-router-dom'
+import { ShieldCheck, Calendar } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
-import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
+import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath, getAllHoriznMonths } from '@/services/cdnService'
 import { CDN_BASE_URL } from '@/utils/constants'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
   const { yearMonth } = useParams()
+  const navigate = useNavigate()
 
   // 验证 yearMonth 格式（YYYYMM）
   if (!yearMonth || !/^\d{6}$/.test(yearMonth)) {
@@ -17,6 +18,8 @@ export default function HoriznPage() {
   const [activeTab, setActiveTab] = useState('weekly')
   const [statusInfo, setStatusInfo] = useState(null)
   const [showAdminMenu, setShowAdminMenu] = useState(false)
+  const [showMonthMenu, setShowMonthMenu] = useState(false)
+  const [availableMonths, setAvailableMonths] = useState([])
   const [showCopyModal, setShowCopyModal] = useState(false)
   const [copyCount, setCopyCount] = useState('20')
   const [copyMode, setCopyMode] = useState('rank') // 'rank' 或 'threshold'
@@ -100,6 +103,21 @@ export default function HoriznPage() {
     sessionStorage.removeItem('horizn_admin_auth')
     setShowAdminMenu(false)
     window.location.reload()
+  }
+
+  // 跳转到指定月份
+  const handleMonthSelect = (selectedYearMonth) => {
+    setShowMonthMenu(false)
+    if (selectedYearMonth !== yearMonth) {
+      navigate(`/horizn/${selectedYearMonth}`)
+    }
+  }
+
+  // 格式化年月显示（YYYYMM -> YYYY年MM月）
+  const formatYearMonth = (ym) => {
+    const year = ym.substring(0, 4)
+    const month = ym.substring(4, 6)
+    return `${year}年${month}月`
   }
 
   // 打开复制名单弹窗
@@ -250,6 +268,19 @@ export default function HoriznPage() {
     }
   }, [])
 
+  // 加载可用的游戏月列表
+  useEffect(() => {
+    const fetchMonths = async () => {
+      try {
+        const months = await getAllHoriznMonths()
+        setAvailableMonths(months)
+      } catch (error) {
+        console.error('Failed to load available months:', error)
+      }
+    }
+    fetchMonths()
+  }, [])
+
   // 切换标签时重置状态信息（避免显示旧标签页的状态）
   useEffect(() => {
     setStatusInfo(null)
@@ -310,8 +341,61 @@ export default function HoriznPage() {
               </div>
             </div>
 
-            {/* 右侧：管理员标识 + 状态信息 */}
+            {/* 右侧：月份选择器 + 管理员标识 + 状态信息 */}
             <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-[10px] sm:text-xs text-gray-400 pr-1 sm:pr-2">
+              {/* 月份选择器 */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowMonthMenu(!showMonthMenu)}
+                  className="flex items-center gap-1 px-2 py-1 bg-purple-600/20 text-purple-400 border border-purple-500/30 rounded text-[10px] font-medium hover:bg-purple-600/30 transition-colors cursor-pointer"
+                >
+                  <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                  <span className="hidden sm:inline">{formatYearMonth(yearMonth)}</span>
+                </button>
+
+                {/* 月份下拉菜单 */}
+                {showMonthMenu && (
+                  <>
+                    {/* 点击外部关闭 */}
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowMonthMenu(false)}
+                    />
+                    {/* 菜单内容 */}
+                    <div className="absolute right-0 top-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden z-20 min-w-[140px] max-h-[300px]">
+                      <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                        {availableMonths.length === 0 ? (
+                          <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                            加载中...
+                          </div>
+                        ) : (
+                          availableMonths.map((month) => (
+                            <button
+                              key={month.yearMonth}
+                              onClick={() => handleMonthSelect(month.yearMonth)}
+                              className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-700 transition-colors flex items-center justify-between gap-2 ${
+                                month.yearMonth === yearMonth
+                                  ? 'text-purple-400 bg-gray-700/50'
+                                  : 'text-gray-300'
+                              }`}
+                            >
+                              <span>{formatYearMonth(month.yearMonth)}</span>
+                              {month.yearMonth === yearMonth && (
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {availableMonths.length > 0 && <span className="hidden sm:inline text-gray-600">|</span>}
+
               {/* 管理员标识（可点击） */}
               {isAdmin && (
                 <>

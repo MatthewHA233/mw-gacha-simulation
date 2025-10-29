@@ -510,7 +510,7 @@ export function buildHoriznSeasonCsvPath(yearMonth) {
  * @returns {Promise<Object>} 索引数据，包含所有游戏月的起止日期
  */
 export async function loadHoriznIndex() {
-  const url = buildCdnUrl('horizn/index.json')
+  const url = `${CDN_BASE_URL}/horizn/index.json`
   const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`Failed to load horizn index: ${response.status}`)
@@ -525,10 +525,10 @@ export async function loadHoriznIndex() {
 export async function getLatestHoriznMonth() {
   try {
     const index = await loadHoriznIndex()
-    // index 结构： { months: [{ yearMonth: "202510", startDate: "...", endDate: "..." }, ...] }
-    // 按 yearMonth 降序排序，取第一个
-    const sortedMonths = [...(index.months || [])].sort((a, b) => b.yearMonth.localeCompare(a.yearMonth))
-    return sortedMonths[0]?.yearMonth || null
+    // index 结构： { last_updated: "...", seasons: { "202510": {...}, "202509": {...} } }
+    // 获取所有 yearMonth，按降序排序，取第一个
+    const yearMonths = Object.keys(index.seasons || {}).sort((a, b) => b.localeCompare(a))
+    return yearMonths[0] || null
   } catch (error) {
     console.error('Failed to get latest horizn month:', error)
     // 失败时返回当前月份作为 fallback
@@ -536,5 +536,25 @@ export async function getLatestHoriznMonth() {
     const year = now.getFullYear()
     const month = String(now.getMonth() + 1).padStart(2, '0')
     return `${year}${month}`
+  }
+}
+
+/**
+ * 获取所有可用游戏月列表（按时间降序）
+ * @returns {Promise<Array>} 游戏月列表，格式：[{ yearMonth: "202510", startDate: "20251027", endDate: "20251029" }, ...]
+ */
+export async function getAllHoriznMonths() {
+  try {
+    const index = await loadHoriznIndex()
+    // 转换为数组格式并降序排序
+    const months = Object.entries(index.seasons || {}).map(([yearMonth, data]) => ({
+      yearMonth,
+      startDate: data.start_date,
+      endDate: data.end_date
+    }))
+    return months.sort((a, b) => b.yearMonth.localeCompare(a.yearMonth))
+  } catch (error) {
+    console.error('Failed to get all horizn months:', error)
+    return []
   }
 }
