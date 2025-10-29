@@ -156,7 +156,7 @@ export default function HoriznPage() {
       // 按阈值模式
       const threshold = parseInt(thresholdValue) || 0
       selectedPlayers = selectedData.allData.filter(player => player.value >= threshold)
-      title = `${formattedTime} HORIZN地平线${tabName}活跃度≥${threshold}（共${selectedPlayers.length}人）`
+      title = `${formattedTime} HORIZN地平线${tabName}≥${threshold}（共${selectedPlayers.length}人）`
     }
 
     // 构建名单
@@ -694,7 +694,7 @@ export default function HoriznPage() {
                       } else {
                         const threshold = parseInt(thresholdValue) || 0
                         selectedPlayers = selectedData.allData.filter(p => p.value >= threshold)
-                        title = `${formattedTime} HORIZN地平线${tabName}活跃度≥${threshold}（共${selectedPlayers.length}人）`
+                        title = `${formattedTime} HORIZN地平线${tabName}≥${threshold}（共${selectedPlayers.length}人）`
                       }
 
                       const nameList = selectedPlayers.map((p, i) => {
