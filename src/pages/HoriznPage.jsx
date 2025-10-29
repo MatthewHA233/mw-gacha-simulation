@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { ShieldCheck } from 'lucide-react'
+import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
 import { CDN_BASE_URL } from '@/utils/constants'
-import { useMilestoneToast } from '@/components/ui/MilestoneToastProvider'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
@@ -16,14 +16,22 @@ export default function HoriznPage() {
   const [thresholdValue, setThresholdValue] = useState('4500') // 默认周活跃度阈值
   const [currentData, setCurrentData] = useState(null)
   const [manualFrameIndex, setManualFrameIndex] = useState(null) // 手动控制的帧索引（用于时间调整）
-
-  // Toast
-  const { showToast } = useMilestoneToast()
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
 
   // 长按处理
   const pressTimerRef = useRef(null)
   const intervalRef = useRef(null)
   const currentFrameRef = useRef(null) // 追踪当前帧索引
+
+  // 响应式监听
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // 同步 currentData 到 ref
   useEffect(() => {
@@ -167,28 +175,27 @@ export default function HoriznPage() {
 
     // 复制到剪贴板
     navigator.clipboard.writeText(finalText).then(() => {
-      // 使用Toast提示复制成功
-      showToast(
-        {
-          level: 'dense',
-          title: '复制成功',
-          description: `已复制 ${selectedPlayers.length} 位玩家的名单`,
-          icon: '📋'
+      toast.success(`已复制 ${selectedPlayers.length} 位玩家的名单`, {
+        duration: 2500,
+        position: 'top-center',
+        style: {
+          background: '#10b981',
+          color: '#fff',
+          fontSize: isMobile ? '12px' : '14px',
+          padding: isMobile ? '6px 12px' : '8px 16px',
+          fontWeight: '500',
         },
-        { duration: 3000 }
-      )
+      })
     }).catch(err => {
       console.error('复制失败:', err)
-      // 使用Toast提示复制失败
-      showToast(
-        {
-          level: 'dense',
-          title: '复制失败',
-          description: '请重试或检查浏览器权限',
-          icon: '❌'
+      toast.error('复制失败，请重试或检查浏览器权限', {
+        duration: 2500,
+        position: 'top-center',
+        style: {
+          fontSize: isMobile ? '12px' : '14px',
+          padding: isMobile ? '6px 12px' : '8px 16px',
         },
-        { duration: 3000 }
-      )
+      })
     })
   }
 
@@ -215,6 +222,21 @@ export default function HoriznPage() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-b from-gray-900 to-black">
+      {/* Toast 通知 */}
+      <Toaster
+        position="top-center"
+        containerStyle={{
+          zIndex: 10000,
+        }}
+        toastOptions={{
+          style: {
+            marginTop: isMobile ? '20px' : '60px',
+            padding: isMobile ? '8px 14px' : '10px 18px',
+            fontSize: isMobile ? '13px' : '15px',
+            minHeight: 'auto',
+          },
+        }}
+      />
       {/* 标签页导航 + 状态栏 */}
       <div className="flex-shrink-0 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
