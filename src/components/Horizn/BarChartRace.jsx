@@ -25,6 +25,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const timerRef = useRef(null)
   const animationRef = useRef(null)
   const startTimeRef = useRef(null)
+  const prevFrameRef = useRef(currentFrame) // 追踪上一帧
 
   // 加载 CSV 数据
   useEffect(() => {
@@ -95,6 +96,11 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     const newDuration = saved ? parseFloat(saved) : 5
     setTotalDuration(newDuration)
   }, [storageKey])
+
+  // 更新上一帧引用
+  useEffect(() => {
+    prevFrameRef.current = currentFrame
+  }, [currentFrame])
 
   // 外部控制 currentFrame（用于父组件控制播放位置）
   useEffect(() => {
@@ -374,6 +380,14 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const maxValue = Math.max(...currentData.data.map(d => d.value))
   const displayData = currentData.data.slice(0, maxVisibleItems) // 根据屏幕高度动态显示
 
+  // 检测是否是大幅度跳跃（如从末尾回到开头）
+  const prevFrame = prevFrameRef.current
+  const frameDiff = Math.abs(currentFrame - prevFrame)
+  const isLargeJump = frameDiff > timeline.length / 2 // 如果跳跃超过一半帧数，认为是大跳跃
+
+  // 根据是否大跳跃决定动画时长
+  const transitionDuration = isLargeJump ? 0 : 0.3
+
   return (
     <div className="py-8">
       <div className="max-w-7xl mx-auto px-6">
@@ -392,7 +406,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: transitionDuration }}
                       className="flex items-center gap-2 sm:gap-3"
                     >
                       {/* 名次 */}
@@ -413,7 +427,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${percentage}%` }}
-                          transition={{ duration: 0.3 }}
+                          transition={{ duration: transitionDuration }}
                           className="h-full rounded"
                           style={{ backgroundColor: colorMap[item.name] || '#666' }}
                         />
