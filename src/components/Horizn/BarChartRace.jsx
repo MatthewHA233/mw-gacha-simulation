@@ -577,19 +577,26 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 const startX = e.clientX
                 const startIndex = viewportStart
                 const containerWidth = e.currentTarget.offsetWidth - 32 // 缓存容器宽度，减去 padding
+                let rafId = null
 
                 const handleMove = (moveEvent) => {
-                  const deltaX = moveEvent.clientX - startX
-                  const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
-                  const newStart = Math.max(0, Math.min(
-                    timeline.length - viewportWidth,
-                    startIndex - deltaFrames
-                  ))
-                  setViewportStart(newStart)
+                  if (rafId) return // 如果已有待处理的帧，跳过
+
+                  rafId = requestAnimationFrame(() => {
+                    const deltaX = moveEvent.clientX - startX
+                    const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
+                    const newStart = Math.max(0, Math.min(
+                      timeline.length - viewportWidth,
+                      startIndex - deltaFrames
+                    ))
+                    setViewportStart(newStart)
+                    rafId = null
+                  })
                 }
 
                 const handleEnd = () => {
                   setIsDraggingViewport(false)
+                  if (rafId) cancelAnimationFrame(rafId)
                   document.removeEventListener('mousemove', handleMove)
                   document.removeEventListener('mouseup', handleEnd)
                 }
@@ -608,20 +615,27 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                 const startX = e.touches[0].clientX
                 const startIndex = viewportStart
                 const containerWidth = e.currentTarget.offsetWidth - 32 // 缓存容器宽度，减去 padding
+                let rafId = null
 
                 const handleMove = (moveEvent) => {
                   if (!moveEvent.touches || moveEvent.touches.length === 0) return
-                  const deltaX = moveEvent.touches[0].clientX - startX
-                  const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
-                  const newStart = Math.max(0, Math.min(
-                    timeline.length - viewportWidth,
-                    startIndex - deltaFrames
-                  ))
-                  setViewportStart(newStart)
+                  if (rafId) return // 如果已有待处理的帧，跳过
+
+                  rafId = requestAnimationFrame(() => {
+                    const deltaX = moveEvent.touches[0].clientX - startX
+                    const deltaFrames = Math.round((deltaX / containerWidth) * (viewportEnd - viewportStart))
+                    const newStart = Math.max(0, Math.min(
+                      timeline.length - viewportWidth,
+                      startIndex - deltaFrames
+                    ))
+                    setViewportStart(newStart)
+                    rafId = null
+                  })
                 }
 
                 const handleEnd = () => {
                   setIsDraggingViewport(false)
+                  if (rafId) cancelAnimationFrame(rafId)
                   document.removeEventListener('touchmove', handleMove)
                   document.removeEventListener('touchend', handleEnd)
                 }
