@@ -4,6 +4,10 @@ import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
 
 export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null }) {
+  // 根据 csvPath 判断类型（weekly 或 season）
+  const dataType = csvPath.includes('weekly') ? 'weekly' : 'season'
+  const storageKey = `horizn_animation_duration_${dataType}`
+
   const [timeline, setTimeline] = useState([])
   const [currentFrame, setCurrentFrame] = useState(null) // null 表示未初始化
   const [isPlaying, setIsPlaying] = useState(false)
@@ -11,7 +15,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [error, setError] = useState(null)
   const [colorMap, setColorMap] = useState({})
   const [totalDuration, setTotalDuration] = useState(() => {
-    const saved = localStorage.getItem('horizn_animation_duration')
+    const saved = localStorage.getItem(storageKey)
     return saved ? parseFloat(saved) : 5 // 默认5秒
   })
   const [lastUpdateTime, setLastUpdateTime] = useState(null) // 最近一次数据时间戳
@@ -19,6 +23,8 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [maxVisibleItems, setMaxVisibleItems] = useState(20) // 最大可见条目数
   const intervalRef = useRef(null)
   const timerRef = useRef(null)
+  const animationRef = useRef(null)
+  const startTimeRef = useRef(null)
 
   // 加载 CSV 数据
   useEffect(() => {
@@ -78,10 +84,17 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     loadData()
   }, [csvPath])
 
-  // 保存总时长到 localStorage
+  // 保存总时长到 localStorage（分类型保存）
   useEffect(() => {
-    localStorage.setItem('horizn_animation_duration', totalDuration.toString())
-  }, [totalDuration])
+    localStorage.setItem(storageKey, totalDuration.toString())
+  }, [totalDuration, storageKey])
+
+  // 当 csvPath 改变时，加载对应的时长设置
+  useEffect(() => {
+    const saved = localStorage.getItem(storageKey)
+    const newDuration = saved ? parseFloat(saved) : 5
+    setTotalDuration(newDuration)
+  }, [storageKey])
 
   // 外部控制 currentFrame（用于父组件控制播放位置）
   useEffect(() => {
@@ -268,27 +281,47 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     return () => window.removeEventListener('resize', calculateMaxItems)
   }, [])
 
-  // 播放控制 - 根据总时长动态计算帧间隔
+  // 播放控制 - 使用 requestAnimationFrame 实现精确时间控制
   useEffect(() => {
     if (isPlaying && timeline.length > 0) {
-      const frameInterval = (totalDuration * 1000) / timeline.length
+      // 记录开始时间和开始帧
+      startTimeRef.current = performance.now()
+      const startFrame = currentFrame
+      const totalFrames = timeline.length - 1 // 最大帧索引
 
-      intervalRef.current = setInterval(() => {
-        setCurrentFrame(prev => {
-          if (prev >= timeline.length - 1) {
-            setIsPlaying(false)
-            return prev
-          }
-          return prev + 1
-        })
-      }, frameInterval)
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTimeRef.current
+        const progress = Math.min(elapsed / (totalDuration * 1000), 1)
+
+        // 根据时间进度计算当前应该显示的帧（从 startFrame 播放到 totalFrames）
+        const targetFrame = Math.min(
+          Math.floor(startFrame + progress * (totalFrames - startFrame)),
+          totalFrames
+        )
+
+        if (progress >= 1) {
+          // 播放完成，确保停在最后一帧
+          setCurrentFrame(totalFrames)
+          setIsPlaying(false)
+          return
+        }
+
+        setCurrentFrame(targetFrame)
+        animationRef.current = requestAnimationFrame(animate)
+      }
+
+      animationRef.current = requestAnimationFrame(animate)
     } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
       }
     }
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
     }
   }, [isPlaying, timeline.length, totalDuration])
 
@@ -334,7 +367,10 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     )
   }
 
-  const currentData = timeline[currentFrame]
+  const currentData = timeline[currentFrame] || timeline[timeline.length - 1]
+  if (!currentData) {
+    return <div>No data available</div>
+  }
   const maxValue = Math.max(...currentData.data.map(d => d.value))
   const displayData = currentData.data.slice(0, maxVisibleItems) // 根据屏幕高度动态显示
 
@@ -623,7 +659,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
               </button>
               <span className="text-[10px] sm:text-xs text-gray-400 font-mono w-6 sm:w-7 lg:w-8 text-center">{totalDuration}s</span>
               <button
-                onClick={() => setTotalDuration(Math.min(120, totalDuration + 5))}
+                onClick={() => setTotalDuration(totalDuration + 5)}
                 className="w-5 h-5 flex items-center justify-center hover:bg-gray-800 rounded transition-colors"
               >
                 <span className="text-gray-400 text-[10px] sm:text-xs">+</span>
