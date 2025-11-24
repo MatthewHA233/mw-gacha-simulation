@@ -118,11 +118,17 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   // 获取周一早上8点的时间（作为周的起始点）
   const getWeekStart = (date) => {
     const d = new Date(date)
-    const day = d.getDay()
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1) // 调整到周一
-    d.setDate(diff)
-    d.setHours(8, 0, 0, 0)
-    return d
+
+    // 先减去8小时，这样8:00之前的时间会被算到前一天
+    const adjusted = new Date(d.getTime() - 8 * 60 * 60 * 1000)
+
+    const day = adjusted.getDay()
+    const diff = adjusted.getDate() - day + (day === 0 ? -6 : 1) // 调整到周一
+    adjusted.setDate(diff)
+    adjusted.setHours(0, 0, 0, 0)
+
+    // 加回8小时得到周一8:00
+    return new Date(adjusted.getTime() + 8 * 60 * 60 * 1000)
   }
 
   // 加载 CSV 数据
