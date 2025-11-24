@@ -594,7 +594,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                             newWeeks === 3 ? 'text-yellow-400 bg-yellow-400/20' :
                             'text-gray-400 bg-gray-400/20'
                           }`}>
-                            N{newWeeks}
+                            {newWeeks === 1 ? 'N' : `N${newWeeks - 1}`}
                           </span>
                         )}
                       </div>
