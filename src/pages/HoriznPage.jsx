@@ -28,6 +28,8 @@ export default function HoriznPage() {
   const [currentData, setCurrentData] = useState(null)
   const [manualFrameIndex, setManualFrameIndex] = useState(null) // 手动控制的帧索引（用于时间调整）
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
+  const [copyShowValues, setCopyShowValues] = useState(true) // 复制名单时是否显示活跃度数值
+  const [copyShowNewMark, setCopyShowNewMark] = useState(true) // 复制名单时是否显示新来标记
 
   // 长按处理
   const pressTimerRef = useRef(null)
@@ -197,14 +199,21 @@ export default function HoriznPage() {
     }
 
     // 构建名单
+    const newMemberMap = currentData?.newMemberMap || {}
     const nameList = selectedPlayers.map((player, index) => {
-      if (copyMode === 'threshold') {
-        // 按阈值模式显示活跃度
-        return `${index + 1}. ${player.name} (${player.value})`
-      } else {
-        // 按名次模式不显示活跃度
-        return `${index + 1}. ${player.name}`
+      let line = `${index + 1}. ${player.name}`
+
+      // 添加新来标记
+      if (copyShowNewMark && newMemberMap[player.name]) {
+        line += ` [N${newMemberMap[player.name]}]`
       }
+
+      // 添加活跃度数值
+      if (copyShowValues) {
+        line += ` (${player.value})`
+      }
+
+      return line
     }).join('\n')
 
     // 组合最终文本
@@ -547,16 +556,38 @@ export default function HoriznPage() {
                   <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide">
                     筛选模式
                   </label>
-                  {/* 仅当不是最新帧时显示警告 */}
-                  {currentData && !currentData.isLatest && (
-                    <span className="text-xs text-yellow-400/80 flex items-center gap-1">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      {formatTimestampShort(currentData.current.timestamp)}
-                    </span>
-                  )}
+                  {/* 显示选项勾选框 */}
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-1 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={copyShowValues}
+                        onChange={(e) => setCopyShowValues(e.target.checked)}
+                        className="w-3 h-3 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0"
+                      />
+                      <span className="text-[10px] text-gray-400">数值</span>
+                    </label>
+                    <label className="flex items-center gap-1 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={copyShowNewMark}
+                        onChange={(e) => setCopyShowNewMark(e.target.checked)}
+                        className="w-3 h-3 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0"
+                      />
+                      <span className="text-[10px] text-gray-400">新来</span>
+                    </label>
+                  </div>
                 </div>
+
+                {/* 仅当不是最新帧时显示警告 */}
+                {currentData && !currentData.isLatest && (
+                  <div className="mb-2 text-xs text-yellow-400/80 flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    {formatTimestampShort(currentData.current.timestamp)}
+                  </div>
+                )}
 
                 {/* 模式切换按钮 */}
                 <div className="flex gap-2 mb-3">
@@ -845,12 +876,21 @@ export default function HoriznPage() {
                         }
                       }
 
+                      const newMemberMap = currentData?.newMemberMap || {}
                       const nameList = selectedPlayers.map((p, i) => {
-                        if (copyMode === 'threshold') {
-                          return `${i + 1}. ${p.name} (${p.value})`
-                        } else {
-                          return `${i + 1}. ${p.name}`
+                        let line = `${i + 1}. ${p.name}`
+
+                        // 添加新来标记
+                        if (copyShowNewMark && newMemberMap[p.name]) {
+                          line += ` [N${newMemberMap[p.name]}]`
                         }
+
+                        // 添加活跃度数值
+                        if (copyShowValues) {
+                          line += ` (${p.value})`
+                        }
+
+                        return line
                       }).join('\n')
 
                       return `${title}\n\n${nameList}`

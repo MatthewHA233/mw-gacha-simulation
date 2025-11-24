@@ -368,10 +368,11 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
         isLatest: currentFrame === timeline.length - 1,
         allTimestamps: timeline.map(t => t.timestamp),
         currentFrameIndex: currentFrame,
-        timeline: timeline
+        timeline: timeline,
+        newMemberMap: newMemberMap
       })
     }
-  }, [currentFrame, timeline, onDataUpdate])
+  }, [currentFrame, timeline, onDataUpdate, newMemberMap])
 
   // 向父组件传递状态信息
   useEffect(() => {
