@@ -1,55 +1,55 @@
 {
-  "id": "ag97",
+  "id": "ag98",
   "gacha_type": "筹码类",
   "metadata": {
     "name": "暗影交易",
     "nameEn": "Deal with the Shadow",
-    "formattedDate": "2025年10月"
+    "formattedDate": "2025年11月"
   },
   "items": [
     {
-      "name": "[意]FREMM-EVO",
+      "name": "[法]夏尔·戴高乐(R91)",
       "probability": 0.08,
       "limit": 1,
-      "id": "FREMMEVO",
+      "id": "R91CharlesDeGaulle",
       "type": "战舰",
       "rarity": "epic",
-      "nameEn": "IT FREMM-EVO"
+      "nameEn": "FS Charles de Gaulle (R91)"
     },
     {
-      "name": "[美]衣阿华(BB-61)",
+      "name": "[意]维托里奥·维内托(C 550)",
       "probability": 0.09,
       "limit": 1,
-      "id": "Iowa",
+      "id": "VittorioVeneto",
       "type": "战舰",
-      "rarity": "legendary",
-      "nameEn": "USS Iowa (BB-61)"
+      "rarity": "epic",
+      "nameEn": "IT Vittorio Veneto (C 550)"
     },
     {
-      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "name": "RG-30霰弹(127 mm)",
       "probability": 0.24,
       "limit": 2,
-      "id": "Mark45Astor",
-      "type": "鱼雷",
+      "id": "RG30Buckshot",
+      "type": "主炮",
       "rarity": "legendary",
-      "nameEn": "Mark-45 ASTOR (483mm)"
+      "nameEn": "RG-30 Buckshot (127 mm)"
     },
     {
       "name": "筹码",
-      "probability": 4.06,
+      "probability": 4.0,
       "limit": 0,
       "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     },
     {
-      "name": "[德]萨克森(F124型)",
+      "name": "[法]阿基坦(D650)",
       "probability": 0.14,
       "limit": 1,
-      "id": "F124",
+      "id": "Aquitaine",
       "type": "战舰",
       "rarity": "epic",
-      "nameEn": "FGS F124"
+      "nameEn": "FS Aquitaine (D650)"
     },
     {
       "name": "15 黄金",
@@ -60,22 +60,21 @@
       "rarity": "common"
     },
     {
-      "name": "龟船",
+      "name": "Incoming!",
       "probability": 0.5,
-      "limit": 1,
-      "id": "Flag_TurtleShip",
-      "type": "旗帜",
-      "rarity": "legendary",
-      "nameEn": "Geobukseon"
+      "limit": 2,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
     },
     {
-      "name": "RBU-10000 (300 mm)",
-      "probability": 1.53,
+      "name": "蜂群-2\"阿特拉斯\"",
+      "probability": 1.59,
       "limit": 1,
-      "id": "RBU10000",
+      "id": "Swarmer2Atlas",
       "type": "火箭炮",
       "rarity": "epic",
-      "nameEn": "RBU-10000 (300 mm)"
+      "nameEn": "Swarmer-2 Atlas"
     },
     {
       "name": "6 高级导弹诱饵",
@@ -86,21 +85,21 @@
       "rarity": "common"
     },
     {
-      "name": "10 艺术硬币",
+      "name": "兑换券",
       "probability": 8.0,
       "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
+      "id": "",
+      "type": "其它",
       "rarity": "common"
     },
     {
-      "name": "Mark-71 (203 mm)",
+      "name": "ET40 (324 mm)",
       "probability": 0.52,
       "limit": 2,
-      "id": "Mark71",
-      "type": "主炮",
-      "rarity": "legendary",
-      "nameEn": "Mark-71 (203 mm)"
+      "id": "ET40",
+      "type": "鱼雷",
+      "rarity": "epic",
+      "nameEn": "ET40 (324 mm)"
     },
     {
       "name": "4 艺术硬币",
@@ -111,13 +110,13 @@
       "rarity": "common"
     },
     {
-      "name": "ASN4G",
+      "name": "东风-100",
       "probability": 0.35,
       "limit": 2,
-      "id": "ASN4G",
+      "id": "DF100",
       "type": "导弹",
       "rarity": "legendary",
-      "nameEn": "ASN4G"
+      "nameEn": "DF-100"
     },
     {
       "name": "2 高级鱼雷诱饵",

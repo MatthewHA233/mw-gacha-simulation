@@ -1,10 +1,10 @@
 {
-  "id": "be97",
+  "id": "be98",
   "gacha_type": "机密货物类",
   "metadata": {
-    "name": "诅咒之船",
-    "formattedDate": "2025年10月",
-    "nameEn": "Cursed Crew"
+    "name": "舰队时代",
+    "formattedDate": "2025年11月",
+    "nameEn": "Age of Fleets"
   },
   "cargos": [
     {
@@ -14,20 +14,20 @@
       },
       "items": [
         {
-          "name": "纳西尔",
+          "name": "[泛空间]冲击风暴-1",
           "probability": 0.25,
           "limit": 1,
-          "id": "Nasir",
-          "type": "导弹",
+          "id": "RAMSTORM1",
+          "type": "无人自爆艇",
           "rarity": "epic",
-          "nameEn": "Nasir"
+          "nameEn": "Pan Spatial RAMSTORM 1"
         },
         {
-          "name": "10 艺术硬币",
+          "name": "Grumpy Eye",
           "probability": 2.0,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
+          "limit": 4,
+          "id": "",
+          "type": "其它",
           "rarity": "common"
         },
         {
@@ -39,13 +39,13 @@
           "rarity": "common"
         },
         {
-          "name": "米-8TV\"河马\"-E",
+          "name": "[印度斯坦航空]AMCA",
           "probability": 0.5,
           "limit": 1,
-          "id": "MI8TV",
-          "type": "直升机",
+          "id": "HALAMCA",
+          "type": "攻击机",
           "rarity": "epic",
-          "nameEn": "Mi-8TV Hip"
+          "nameEn": "HAL AMCA"
         },
         {
           "name": "授权密钥",
@@ -72,13 +72,13 @@
           "rarity": "common"
         },
         {
-          "name": "RapidFire LMM",
+          "name": "加百利V",
           "probability": 0.75,
           "limit": 2,
-          "id": "RapidFireLMM",
-          "type": "自卫炮",
-          "rarity": "legendary",
-          "nameEn": "RapidFire LMM"
+          "id": "GabrielV",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Gabriel V"
         },
         {
           "name": "20 无人机电池",
@@ -105,13 +105,13 @@
       },
       "items": [
         {
-          "name": "[法]福尔宾",
+          "name": "[英]32型",
           "probability": 0.05,
           "limit": 1,
-          "id": "Forbin",
+          "id": "Type32",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "FS Forbin"
+          "nameEn": "HMS Type 32"
         },
         {
           "name": "授权密钥",
@@ -122,13 +122,13 @@
           "rarity": "common"
         },
         {
-          "name": "弓箭手(155 mm)",
-          "probability": 0.35,
+          "name": "北极星-4",
+          "probability": 0.3,
           "limit": 2,
-          "id": "Archer",
-          "type": "主炮",
+          "id": "Pukguksong4SLBM",
+          "type": "导弹",
           "rarity": "legendary",
-          "nameEn": "Archer (155 mm)"
+          "nameEn": "Pukguksong-4"
         },
         {
           "name": "25 黄金",
@@ -139,13 +139,13 @@
           "rarity": "common"
         },
         {
-          "name": "[中]093AG型",
+          "name": "[中]天津",
           "probability": 0.1,
           "limit": 1,
-          "id": "Type093AG",
+          "id": "Tianjin",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "CN Type 093AG"
+          "nameEn": "CN Tianjin"
         },
         {
           "name": "5 高级修理包",
@@ -156,30 +156,30 @@
           "rarity": "common"
         },
         {
-          "name": "TRG-300\"虎\"(300 mm)",
+          "name": "SUT 264 (533 mm)",
           "probability": 0.4,
           "limit": 2,
-          "id": "TRG300Tiger",
-          "type": "火箭炮",
+          "id": "SUT264",
+          "type": "鱼雷",
           "rarity": "epic",
-          "nameEn": "TRG-300 Tiger (300 mm)"
+          "nameEn": "SUT 264 (533 mm)"
         },
         {
           "name": "5 艺术硬币",
-          "probability": 2.8,
+          "probability": 28.0,
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "SH-16 (155 mm)",
-          "probability": 0.3,
+          "name": "ASN4G",
+          "probability": 0.35,
           "limit": 3,
-          "id": "SH16",
-          "type": "主炮",
-          "rarity": "epic",
-          "nameEn": "SH-16 (155 mm)"
+          "id": "ASN4G",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "ASN4G"
         },
         {
           "name": "200 Token",

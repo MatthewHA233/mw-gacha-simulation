@@ -1,11 +1,25 @@
 {
   "activities": [
     {
-      "id": "la97",
+      "id": "la98",
       "gacha_type": "旗舰宝箱类",
-      "name": "暗海宝藏",
-      "nameEn": "Dark Seas Bounty",
-      "formattedDate": "2025年10月"
+      "name": "海上盛宴",
+      "formattedDate": "2025年11月",
+      "nameEn": "Crew Feast"
+    },
+    {
+      "id": "be98",
+      "gacha_type": "机密货物类",
+      "name": "舰队时代",
+      "formattedDate": "2025年11月",
+      "nameEn": "Age of Fleets"
+    },
+    {
+      "id": "ag98",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "formattedDate": "2025年11月",
+      "nameEn": "Deal with the Shadow"
     },
     {
       "id": "be97",
@@ -20,6 +34,13 @@
       "name": "暗影交易",
       "nameEn": "Deal with the Shadow",
       "formattedDate": "2025年10月"
+    },
+    {
+      "id": "la97",
+      "gacha_type": "旗舰宝箱类",
+      "name": "暗海宝藏",
+      "formattedDate": "2025年10月",
+      "nameEn": "Dark Seas Bounty"
     },
     {
       "id": "ag96",

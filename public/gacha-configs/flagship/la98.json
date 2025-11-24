@@ -1,10 +1,10 @@
 {
-  "id": "la97",
+  "id": "la98",
   "gacha_type": "旗舰宝箱类",
   "metadata": {
-    "name": "暗海宝藏",
-    "formattedDate": "2025年10月",
-    "nameEn": "Dark Seas Bounty"
+    "name": "海上盛宴",
+    "formattedDate": "2025年11月",
+    "nameEn": "Crew Feast"
   },
   "lootboxes": [
     {
@@ -14,31 +14,31 @@
       },
       "items": [
         {
-          "name": "[韩]联合火力攻击舰(JSS)",
+          "name": "[中]赤霄",
           "probability": 0.15,
           "limit": 1,
-          "id": "JSS",
+          "id": "ChiXiao",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "ROKS JSS"
+          "nameEn": "CN ChiXiao"
         },
         {
-          "name": "幻影IVP",
+          "name": "无畏X",
           "probability": 0.4,
           "limit": 2,
-          "id": "MirageIVP",
-          "type": "轰炸机",
+          "id": "DefiantX",
+          "type": "直升机",
           "rarity": "epic",
-          "nameEn": "Mirage IVP"
+          "nameEn": "Defiant X"
         },
         {
-          "name": "HVGP (Block I)",
+          "name": "A-220M (57 mm)",
           "probability": 0.5,
           "limit": 3,
-          "id": "HVGPBlock1",
-          "type": "导弹",
+          "id": "A220M",
+          "type": "主炮",
           "rarity": "epic",
-          "nameEn": "HVGP (Block I)"
+          "nameEn": "A-220M (57mm)"
         },
         {
           "name": "6 旗舰钥匙",
@@ -49,13 +49,13 @@
           "rarity": "common"
         },
         {
-          "name": "杰克之灯",
+          "name": "一叶知秋",
           "probability": 1.5,
           "limit": 1,
-          "id": "Camo_la97",
+          "id": "Camo_la98",
           "type": "涂装",
           "rarity": "epic",
-          "nameEn": "Jack's Lantern"
+          "nameEn": "Leaf Fall"
         },
         {
           "name": "3 旗舰钥匙",
@@ -82,22 +82,22 @@
           "rarity": "common"
         },
         {
-          "name": "南瓜头杰克",
+          "name": "乔治·罗斯",
           "probability": 5.0,
           "limit": 1,
-          "id": "AvatarPortrait_lb97Male",
+          "id": "AvatarPortrait_la98Male",
           "type": "头像",
           "rarity": "epic",
-          "nameEn": "Pumpkinhead Jack"
+          "nameEn": "George Rose"
         },
         {
-          "name": "血腥玛丽",
+          "name": "洛雷塔·豪厄尔",
           "probability": 5.0,
           "limit": 1,
-          "id": "AvatarPortrait_lb97Female",
+          "id": "AvatarPortrait_la98Female",
           "type": "头像",
           "rarity": "epic",
-          "nameEn": "Bloody Mary"
+          "nameEn": "Loretta Howell"
         },
         {
           "name": "300 000 美金",
@@ -172,103 +172,103 @@
       },
       "items": [
         {
-          "name": "[日]大鲸(SS-513)",
+          "name": "[泛空间]打击时刻",
           "probability": 0.09,
           "limit": 1,
-          "id": "Taigei",
-          "type": "战舰",
+          "id": "Strikeswitch",
+          "type": "攻击机",
           "rarity": "legendary",
-          "nameEn": "JS Taigei (SS-513)"
+          "nameEn": "Pan Spatial Strikeswitch"
         },
         {
-          "name": "[泛空间]阿尔戈纳斯",
+          "name": "[土]TF-2000",
           "probability": 0.1,
           "limit": 1,
-          "id": "Argonas",
+          "id": "TF2000",
           "type": "战舰",
-          "rarity": "legendary",
-          "nameEn": "Pan Spatial Argonas"
+          "rarity": "epic",
+          "nameEn": "TF-2000"
         },
         {
-          "name": "[日]宙斯盾武藏",
+          "name": "双髻鲨",
           "probability": 0.1,
           "limit": 1,
-          "id": "MusashiAegis",
-          "type": "战舰",
+          "id": "Hammerhead",
+          "type": "直升机",
           "rarity": "legendary",
-          "nameEn": "JS Musashi Aegis"
+          "nameEn": "Hammerhead"
         },
         {
-          "name": "[法]PANG",
+          "name": "[中]利刃",
           "probability": 0.19,
           "limit": 1,
-          "id": "PANG",
+          "id": "Liren",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "FS PANG"
+          "nameEn": "CN Liren"
         },
         {
-          "name": "[英]圣骑士(D200)",
+          "name": "[韩]龟船II",
           "probability": 0.19,
           "limit": 1,
-          "id": "Paladin",
+          "id": "GeobukseonII",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "HMS Paladin (D200)"
+          "nameEn": "ROKS Geobukseon II"
         },
         {
-          "name": "[泛空间]提顿",
-          "probability": 0.25,
+          "name": "[泛空间]杀戮时刻",
+          "probability": 0.2,
           "limit": 1,
-          "id": "Teton",
-          "type": "战舰",
+          "id": "KillSwitch",
+          "type": "攻击机",
           "rarity": "legendary",
-          "nameEn": "Pan Spatial Teton"
+          "nameEn": "Pan Spatial Killswitch"
         },
         {
-          "name": "[法]蓝鲨",
-          "probability": 0.25,
+          "name": "[中]华清(BBE-01)",
+          "probability": 0.3,
           "limit": 1,
-          "id": "BlueShark",
+          "id": "Huaqing",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "FS Blue Shark"
+          "nameEn": "CN Huaqing (BBE-01)"
         },
         {
-          "name": "[韩]KDDX-S",
+          "name": "[德]施佩伯爵海军上将",
           "probability": 0.45,
           "limit": 1,
-          "id": "KDDXS",
+          "id": "AdmiralGrafSpee",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "ROKS KDDX-S"
+          "nameEn": "FGS Admiral Graf Spee"
         },
         {
-          "name": "[法]SMX-25",
+          "name": "[英]格拉斯哥(26型)",
           "probability": 1.5,
           "limit": 1,
-          "id": "SMX25",
+          "id": "Type26",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "FS SMX-25"
+          "nameEn": "HMS Glasgow (Type 26)"
         },
         {
-          "name": "[德]下萨克森(F126型)",
+          "name": "[中]达州(052DM型)",
           "probability": 2.0,
           "limit": 1,
-          "id": "F126",
+          "id": "Type052DM",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "FGS F126"
+          "nameEn": "CN Type 052DM Dazhou"
         },
         {
-          "name": "[韩]正祖大王",
+          "name": "[俄]台风",
           "probability": 2.2,
           "limit": 1,
-          "id": "KDXIIIBatchII",
+          "id": "Typhoon",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "ROKS Jeongjo the Great"
+          "nameEn": "RF Typhoon"
         },
         {
           "name": "130 艺术硬币",
@@ -279,13 +279,13 @@
           "rarity": "common"
         },
         {
-          "name": "杰克之灯",
+          "name": "一叶知秋",
           "probability": 3.5,
           "limit": 1,
-          "id": "Camo_la97",
+          "id": "Camo_la98",
           "type": "涂装",
           "rarity": "epic",
-          "nameEn": "Jack's Lantern"
+          "nameEn": "Leaf Fall"
         },
         {
           "name": "400 黄金",
@@ -296,18 +296,18 @@
           "rarity": "common"
         },
         {
+          "name": "3 兑换券",
+          "probability": 5.5,
+          "limit": 0,
+          "id": "",
+          "type": "其它",
+          "rarity": "common"
+        },
+        {
           "name": "40 升级芯片",
           "probability": 6.5,
           "limit": 0,
           "id": "Upgrades",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "75 艺术硬币",
-          "probability": 6.5,
-          "limit": 0,
-          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         },
@@ -324,14 +324,6 @@
           "probability": 7.0,
           "limit": 0,
           "id": "ElectronicWarfare",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "15 引擎过载",
-          "probability": 7.0,
-          "limit": 0,
-          "id": "EngineBoost",
           "type": "战斗增益",
           "rarity": "common"
         },
@@ -364,6 +356,14 @@
           "probability": 8.0,
           "limit": 0,
           "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "15 引擎过载",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "EngineBoost",
           "type": "战斗增益",
           "rarity": "common"
         },
