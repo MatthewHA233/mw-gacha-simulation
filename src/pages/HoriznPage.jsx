@@ -4,7 +4,8 @@ import { ShieldCheck, Calendar } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath, getAllHoriznMonths } from '@/services/cdnService'
-import { CDN_BASE_URL } from '@/utils/constants'
+import { CDN_BASE_URL, OSS_BASE_URL } from '@/utils/constants'
+import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage() {
@@ -30,6 +31,14 @@ export default function HoriznPage() {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
   const [copyShowValues, setCopyShowValues] = useState(true) // 复制名单时是否显示活跃度数值
   const [copyShowNewMark, setCopyShowNewMark] = useState(true) // 复制名单时是否显示新来标记
+  const [copyDataType, setCopyDataType] = useState('weekly') // 复制名单时使用的数据类型
+
+  // 预加载的数据缓存
+  const [preloadedData, setPreloadedData] = useState({
+    weekly: null, // { timeline, colorMap }
+    season: null
+  })
+  const [dataLoading, setDataLoading] = useState(true)
 
   // 长按处理
   const pressTimerRef = useRef(null)
@@ -132,12 +141,27 @@ export default function HoriznPage() {
   const handleOpenCopyModal = () => {
     setShowAdminMenu(false)
     setThresholdCompare('gte') // 重置为大于等于
-    setThresholdValue(getDefaultThreshold('gte')) // 打开时设置为当前 tab 的默认阈值
+    setCopyDataType(activeTab) // 初始化为当前 tab
+    setThresholdValue(activeTab === 'weekly' ? '4500' : '50000') // 打开时设置为对应类型的默认阈值
     setShowCopyModal(true)
   }
 
-  // 获取当前显示的数据（直接使用 BarChartRace 的当前帧数据）
+  // 获取复制名单使用的数据（支持切换周活跃度/赛季活跃度）
   const getSelectedData = () => {
+    // 如果当前数据类型与复制数据类型相同，直接使用 currentData
+    if (copyDataType === activeTab && currentData?.current) {
+      return currentData.current
+    }
+
+    // 否则使用预加载数据中对应类型的数据
+    const targetData = preloadedData[copyDataType]
+    if (targetData && targetData.timeline) {
+      // 使用相同的帧索引
+      const frameIndex = currentData?.currentFrameIndex ?? (targetData.timeline.length - 1)
+      const validIndex = Math.max(0, Math.min(frameIndex, targetData.timeline.length - 1))
+      return targetData.timeline[validIndex]
+    }
+
     return currentData?.current
   }
 
@@ -178,7 +202,7 @@ export default function HoriznPage() {
 
     let selectedPlayers = []
     let title = ''
-    const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
+    const tabName = copyDataType === 'weekly' ? '周活跃度' : '赛季活跃度'
     const formattedTime = formatTimestamp(selectedData.timestamp)
 
     if (copyMode === 'rank') {
@@ -302,6 +326,74 @@ export default function HoriznPage() {
     }
     fetchMonths()
   }, [])
+
+  // 预加载周活跃度和赛季活跃度数据
+  useEffect(() => {
+    const loadAllData = async () => {
+      setDataLoading(true)
+
+      const weeklyPath = buildHoriznWeeklyCsvPath(yearMonth)
+      const seasonPath = buildHoriznSeasonCsvPath(yearMonth)
+
+      try {
+        // 并行加载两种数据
+        const [weeklyResult, seasonResult] = await Promise.all([
+          (async () => {
+            const url = OSS_BASE_URL
+              ? `${OSS_BASE_URL}/${weeklyPath}?t=${Date.now()}`
+              : `/${weeklyPath}`
+            const response = await fetch(url)
+            if (!response.ok) throw new Error(`Failed to load weekly CSV`)
+            const csvText = await response.text()
+            const timeline = parseBarChartRaceCSV(csvText)
+
+            // 生成颜色映射
+            const allNames = new Set()
+            timeline.forEach(frame => {
+              frame.data.forEach(item => allNames.add(item.name))
+            })
+            const colorMap = generateColorMap(Array.from(allNames))
+
+            return { timeline, colorMap, csvPath: weeklyPath }
+          })(),
+          (async () => {
+            const url = OSS_BASE_URL
+              ? `${OSS_BASE_URL}/${seasonPath}?t=${Date.now()}`
+              : `/${seasonPath}`
+            const response = await fetch(url)
+            if (!response.ok) throw new Error(`Failed to load season CSV`)
+            const csvText = await response.text()
+            const timeline = parseBarChartRaceCSV(csvText)
+
+            // 生成颜色映射
+            const allNames = new Set()
+            timeline.forEach(frame => {
+              frame.data.forEach(item => allNames.add(item.name))
+            })
+            const colorMap = generateColorMap(Array.from(allNames))
+
+            return { timeline, colorMap, csvPath: seasonPath }
+          })()
+        ])
+
+        setPreloadedData({
+          weekly: weeklyResult,
+          season: seasonResult
+        })
+
+        console.log('[HoriznPage] Preloaded data:', {
+          weekly: weeklyResult.timeline.length,
+          season: seasonResult.timeline.length
+        })
+      } catch (error) {
+        console.error('[HoriznPage] Failed to preload data:', error)
+      } finally {
+        setDataLoading(false)
+      }
+    }
+
+    loadAllData()
+  }, [yearMonth])
 
   // 切换标签时重置状态信息（避免显示旧标签页的状态）
   useEffect(() => {
@@ -515,6 +607,8 @@ export default function HoriznPage() {
           onDataUpdate={setCurrentData}
           showValues={isAdmin}
           externalFrameIndex={manualFrameIndex}
+          preloadedData={preloadedData[activeTab]}
+          otherTypeData={preloadedData[activeTab === 'weekly' ? 'season' : 'weekly']}
         />
       </div>
 
@@ -527,12 +621,45 @@ export default function HoriznPage() {
 
             {/* 标题栏 */}
             <div className="px-4 sm:px-5 py-3 border-b border-gray-700/50 flex items-center justify-between">
-              <h3 className="text-sm sm:text-base font-semibold text-white flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                <span>复制名单</span>
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-semibold text-white flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <span>复制名单</span>
+                </h3>
+                {/* 数据类型切换 */}
+                <div className="flex gap-0.5 bg-gray-900/50 rounded-md p-0.5">
+                  <button
+                    onClick={() => {
+                      setCopyDataType('weekly')
+                      setActiveTab('weekly')
+                      setThresholdValue(thresholdCompare === 'lte' ? '2500' : '4500')
+                    }}
+                    className={`px-2 py-0.5 text-[10px] font-medium rounded transition-all ${
+                      copyDataType === 'weekly'
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    周
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCopyDataType('season')
+                      setActiveTab('season')
+                      setThresholdValue(thresholdCompare === 'lte' ? '7000' : '50000')
+                    }}
+                    className={`px-2 py-0.5 text-[10px] font-medium rounded transition-all ${
+                      copyDataType === 'season'
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    赛季
+                  </button>
+                </div>
+              </div>
               <button
                 onClick={() => {
                   setShowCopyModal(false)
@@ -541,6 +668,7 @@ export default function HoriznPage() {
                   setThresholdCompare('gte')
                   setThresholdValue(getDefaultThreshold('gte'))
                   setManualFrameIndex(null) // 恢复自动播放
+                  setCopyDataType(activeTab) // 重置为当前 tab
                 }}
                 className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-1 transition-all"
               >
@@ -856,7 +984,7 @@ export default function HoriznPage() {
                   <div className={`text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar ${!isMobile ? 'select-text' : ''}`}>
                     {(() => {
                       const selectedData = getSelectedData()
-                      const tabName = activeTab === 'weekly' ? '周活跃度' : '赛季活跃度'
+                      const tabName = copyDataType === 'weekly' ? '周活跃度' : '赛季活跃度'
                       const formattedTime = formatTimestamp(selectedData.timestamp)
 
                       let selectedPlayers = []
@@ -912,6 +1040,7 @@ export default function HoriznPage() {
                   setThresholdCompare('gte')
                   setThresholdValue(getDefaultThreshold('gte'))
                   setManualFrameIndex(null) // 恢复自动播放
+                  setCopyDataType(activeTab) // 重置为当前 tab
                 }}
                 className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
               >
@@ -920,7 +1049,7 @@ export default function HoriznPage() {
               <button
                 onClick={handleCopyList}
                 disabled={
-                  !currentData ||
+                  (!currentData && !preloadedData[copyDataType]) ||
                   (copyMode === 'rank' && (!copyCount || parseInt(copyCount) <= 0)) ||
                   (copyMode === 'threshold' && thresholdValue === '')
                 }

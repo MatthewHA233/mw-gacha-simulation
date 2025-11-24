@@ -4,7 +4,7 @@ import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
 import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
 
-export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null }) {
+export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null, otherTypeData = null }) {
   // 根据 csvPath 判断类型（weekly 或 season）
   const dataType = csvPath.includes('weekly') ? 'weekly' : 'season'
   const storageKey = `horizn_animation_duration_${dataType}`
@@ -131,9 +131,42 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     return new Date(adjusted.getTime() + 8 * 60 * 60 * 1000)
   }
 
-  // 加载 CSV 数据
+  // 加载 CSV 数据（优先使用预加载的数据）
   useEffect(() => {
     const loadData = async () => {
+      // 如果有预加载的数据，直接使用
+      if (preloadedData && preloadedData.timeline) {
+        console.log('[BarChartRace] Using preloaded data, frames:', preloadedData.timeline.length)
+
+        setTimeline(preloadedData.timeline)
+        setColorMap(preloadedData.colorMap)
+        setCurrentFrame(preloadedData.timeline.length - 1)
+
+        // 记录最新数据的时间戳
+        if (preloadedData.timeline.length > 0) {
+          const lastFrame = preloadedData.timeline[preloadedData.timeline.length - 1]
+          const parsedTime = parseTimestamp(lastFrame.timestamp)
+
+          if (parsedTime && !isNaN(parsedTime.getTime())) {
+            setLastUpdateTime(parsedTime)
+          }
+        }
+
+        // 使用预加载的另一种类型数据计算新成员
+        if (otherTypeData && otherTypeData.timeline) {
+          const weeklyData = dataType === 'weekly' ? preloadedData.timeline : otherTypeData.timeline
+          const seasonData = dataType === 'weekly' ? otherTypeData.timeline : preloadedData.timeline
+
+          const newMembers = calculateNewMembers(weeklyData, seasonData)
+          setNewMemberMap(newMembers)
+          console.log('[BarChartRace] New members detected (from preloaded):', Object.keys(newMembers).length)
+        }
+
+        setLoading(false)
+        return
+      }
+
+      // 没有预加载数据，正常加载
       try {
         const url = OSS_BASE_URL
           ? `${OSS_BASE_URL}/${csvPath}?t=${Date.now()}`
@@ -218,7 +251,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       }
     }
     loadData()
-  }, [csvPath, yearMonth, dataType])
+  }, [csvPath, yearMonth, dataType, preloadedData, otherTypeData])
 
   // 保存总时长到 localStorage（分类型保存）
   useEffect(() => {
