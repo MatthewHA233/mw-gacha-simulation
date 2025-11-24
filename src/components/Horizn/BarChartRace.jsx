@@ -648,7 +648,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                                 ? 'opacity-100 visible'
                                 : 'opacity-0 invisible sm:group-hover:opacity-100 sm:group-hover:visible'
                             }`}>
-                              {newWeeks === 1 ? '本星期进联队新成员' : `本星期上${newWeeks - 1}个星期进联队新成员`}
+                              {newWeeks === 1 ? '本星期进联队新成员' : `上${newWeeks - 1}个星期进联队新成员`}
                             </span>
                           </span>
                         )}
