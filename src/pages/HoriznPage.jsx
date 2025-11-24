@@ -24,6 +24,7 @@ export default function HoriznPage() {
   const [copyCount, setCopyCount] = useState('20')
   const [copyMode, setCopyMode] = useState('rank') // 'rank' 或 'threshold'
   const [thresholdValue, setThresholdValue] = useState('4500') // 默认周活跃度阈值
+  const [thresholdCompare, setThresholdCompare] = useState('gte') // 'gte' 大于等于, 'lte' 小于等于
   const [currentData, setCurrentData] = useState(null)
   const [manualFrameIndex, setManualFrameIndex] = useState(null) // 手动控制的帧索引（用于时间调整）
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
@@ -85,8 +86,13 @@ export default function HoriznPage() {
     }
   }, [handlePressEnd])
 
-  // 根据当前 tab 获取默认阈值
-  const getDefaultThreshold = () => {
+  // 根据当前 tab 和比较模式获取默认阈值
+  const getDefaultThreshold = (compareMode = thresholdCompare) => {
+    if (compareMode === 'lte') {
+      // 小于等于模式的默认阈值
+      return activeTab === 'weekly' ? '2500' : '7000'
+    }
+    // 大于等于模式的默认阈值
     return activeTab === 'weekly' ? '4500' : '50000'
   }
 
@@ -123,7 +129,8 @@ export default function HoriznPage() {
   // 打开复制名单弹窗
   const handleOpenCopyModal = () => {
     setShowAdminMenu(false)
-    setThresholdValue(getDefaultThreshold()) // 打开时设置为当前 tab 的默认阈值
+    setThresholdCompare('gte') // 重置为大于等于
+    setThresholdValue(getDefaultThreshold('gte')) // 打开时设置为当前 tab 的默认阈值
     setShowCopyModal(true)
   }
 
@@ -180,8 +187,13 @@ export default function HoriznPage() {
     } else {
       // 按阈值模式
       const threshold = parseInt(thresholdValue) || 0
-      selectedPlayers = selectedData.allData.filter(player => player.value >= threshold)
-      title = `${formattedTime} HORIZN地平线${tabName}≥${threshold}（共${selectedPlayers.length}人）`
+      if (thresholdCompare === 'gte') {
+        selectedPlayers = selectedData.allData.filter(player => player.value >= threshold)
+        title = `${formattedTime} HORIZN地平线${tabName}≥${threshold}（共${selectedPlayers.length}人）`
+      } else {
+        selectedPlayers = selectedData.allData.filter(player => player.value <= threshold)
+        title = `${formattedTime} HORIZN地平线${tabName}≤${threshold}（共${selectedPlayers.length}人）`
+      }
     }
 
     // 构建名单
@@ -516,7 +528,8 @@ export default function HoriznPage() {
                   setShowCopyModal(false)
                   setCopyCount('20')
                   setCopyMode('rank')
-                  setThresholdValue(getDefaultThreshold())
+                  setThresholdCompare('gte')
+                  setThresholdValue(getDefaultThreshold('gte'))
                   setManualFrameIndex(null) // 恢复自动播放
                 }}
                 className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-1 transition-all"
@@ -663,18 +676,53 @@ export default function HoriznPage() {
                 {/* 按阈值模式 */}
                 {copyMode === 'threshold' && (
                   <>
-                    <div className="grid grid-cols-2 gap-2">
-                      {/* 活跃度阈值 */}
+                    <div className="grid grid-cols-[1fr_1.5fr_1.5fr] gap-2">
+                      {/* 比较模式 */}
                       <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1">
+                          条件
+                        </label>
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            onClick={() => {
+                              setThresholdCompare('gte')
+                              setThresholdValue(getDefaultThreshold('gte'))
+                            }}
+                            className={`flex-1 h-7 flex items-center justify-center rounded-l-md border text-xs font-medium transition-all ${
+                              thresholdCompare === 'gte'
+                                ? 'bg-blue-600 border-blue-500 text-white'
+                                : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600'
+                            }`}
+                          >
+                            ≥
+                          </button>
+                          <button
+                            onClick={() => {
+                              setThresholdCompare('lte')
+                              setThresholdValue(getDefaultThreshold('lte'))
+                            }}
+                            className={`flex-1 h-7 flex items-center justify-center rounded-r-md border-t border-b border-r text-xs font-medium transition-all ${
+                              thresholdCompare === 'lte'
+                                ? 'bg-blue-600 border-blue-500 text-white'
+                                : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600'
+                            }`}
+                          >
+                            ≤
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 活跃度阈值 */}
+                      <div className="overflow-hidden">
                         <label htmlFor="thresholdValue" className="block text-xs font-medium text-gray-400 mb-1">
                           阈值
                         </label>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-0.5">
                           <button
                             onPointerDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(Math.max(0, parseInt(prev || getDefaultThreshold()) - getThresholdStep()))))}
                             onPointerUp={handlePressEnd}
                             onPointerLeave={handlePressEnd}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
+                            className="w-6 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             −
                           </button>
@@ -685,13 +733,13 @@ export default function HoriznPage() {
                             step={getThresholdStep()}
                             value={thresholdValue}
                             onChange={(e) => setThresholdValue(e.target.value)}
-                            className="flex-1 min-w-0 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="flex-1 min-w-0 h-7 px-1 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                           <button
                             onPointerDown={(e) => handlePressStart(e, () => setThresholdValue(prev => String(parseInt(prev || getDefaultThreshold()) + getThresholdStep())))}
                             onPointerUp={handlePressEnd}
                             onPointerLeave={handlePressEnd}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
+                            className="w-6 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             +
                           </button>
@@ -699,11 +747,11 @@ export default function HoriznPage() {
                       </div>
 
                       {/* 选择时间 */}
-                      <div>
+                      <div className="overflow-hidden">
                         <label className="block text-xs font-medium text-gray-400 mb-1">
                           时间
                         </label>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-0.5">
                           <button
                             onPointerDown={(e) => {
                               if ((currentData?.currentFrameIndex ?? 0) <= 0) return
@@ -716,11 +764,11 @@ export default function HoriznPage() {
                             onPointerUp={handlePressEnd}
                             onPointerLeave={handlePressEnd}
                             disabled={(currentData?.currentFrameIndex ?? 0) <= 0}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
+                            className="w-6 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             ←
                           </button>
-                          <div className="flex-1 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 flex items-center justify-center truncate select-none">
+                          <div className="flex-1 min-w-0 h-7 px-1 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 flex items-center justify-center truncate select-none">
                             {currentData?.current?.timestamp?.split(' ')[1] || '--:--'}
                           </div>
                           <button
@@ -736,7 +784,7 @@ export default function HoriznPage() {
                             onPointerUp={handlePressEnd}
                             onPointerLeave={handlePressEnd}
                             disabled={(currentData?.currentFrameIndex ?? 0) >= (currentData?.allTimestamps?.length || 1) - 1}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
+                            className="w-6 h-7 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed border border-gray-600 rounded-md transition-colors text-white font-medium text-sm select-none touch-none"
                           >
                             →
                           </button>
@@ -747,7 +795,11 @@ export default function HoriznPage() {
                       {getSelectedData() && (
                         <>
                           符合条件：<span className="text-blue-400 font-medium">
-                            {getSelectedData().allData.filter(p => p.value >= (parseInt(thresholdValue) || 0)).length}
+                            {getSelectedData().allData.filter(p =>
+                              thresholdCompare === 'gte'
+                                ? p.value >= (parseInt(thresholdValue) || 0)
+                                : p.value <= (parseInt(thresholdValue) || 0)
+                            ).length}
                           </span> 人 ·
                           时间戳 <span className="text-blue-400 font-medium">{(currentData?.currentFrameIndex ?? 0) + 1}/{currentData?.allTimestamps?.length || 0}</span>
                         </>
@@ -765,7 +817,7 @@ export default function HoriznPage() {
                     <span className="text-xs text-gray-500 font-mono">
                       {copyMode === 'rank'
                         ? `前 ${parseInt(copyCount) || 20} 名`
-                        : `≥${parseInt(thresholdValue) || 0}`
+                        : `${thresholdCompare === 'gte' ? '≥' : '≤'}${parseInt(thresholdValue) || 0}`
                       }
                     </span>
                   </div>
@@ -784,8 +836,13 @@ export default function HoriznPage() {
                         title = `${formattedTime} HORIZN地平线${tabName}前${count}名`
                       } else {
                         const threshold = parseInt(thresholdValue) || 0
-                        selectedPlayers = selectedData.allData.filter(p => p.value >= threshold)
-                        title = `${formattedTime} HORIZN地平线${tabName}≥${threshold}（共${selectedPlayers.length}人）`
+                        if (thresholdCompare === 'gte') {
+                          selectedPlayers = selectedData.allData.filter(p => p.value >= threshold)
+                          title = `${formattedTime} HORIZN地平线${tabName}≥${threshold}（共${selectedPlayers.length}人）`
+                        } else {
+                          selectedPlayers = selectedData.allData.filter(p => p.value <= threshold)
+                          title = `${formattedTime} HORIZN地平线${tabName}≤${threshold}（共${selectedPlayers.length}人）`
+                        }
                       }
 
                       const nameList = selectedPlayers.map((p, i) => {
@@ -810,7 +867,8 @@ export default function HoriznPage() {
                   setShowCopyModal(false)
                   setCopyCount('20')
                   setCopyMode('rank')
-                  setThresholdValue(getDefaultThreshold())
+                  setThresholdCompare('gte')
+                  setThresholdValue(getDefaultThreshold('gte'))
                   setManualFrameIndex(null) // 恢复自动播放
                 }}
                 className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
