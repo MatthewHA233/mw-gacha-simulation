@@ -641,7 +641,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                               setActiveTooltip(activeTooltip === item.name ? null : item.name)
                             }}
                           >
-                            {newWeeks === 1 ? 'N' : `N${newWeeks - 1}`}
+                            {newWeeks === 1 ? 'New' : `N-${newWeeks - 1}`}
                             {/* 悬浮提示 - 桌面端 hover，移动端点击 */}
                             <span className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-1 bg-white text-black text-[10px] font-bold rounded shadow-lg whitespace-nowrap transition-all duration-200 z-50 ${
                               activeTooltip === item.name

@@ -230,7 +230,7 @@ export default function HoriznPage() {
       // 添加新来标记
       if (copyShowNewMark && newMemberMap[player.name]) {
         const weeks = newMemberMap[player.name]
-        line += weeks === 1 ? ' [N]' : ` [N${weeks - 1}]`
+        line += weeks === 1 ? ' [New]' : ` [N-${weeks - 1}]`
       }
 
       // 添加活跃度数值
@@ -1024,7 +1024,7 @@ export default function HoriznPage() {
                                 weeks === 4 ? 'text-green-700/60' :
                                 'text-green-800/50'
                               }`}>
-                                {weeks === 1 ? '[N]' : `[N${weeks - 1}]`}
+                                {weeks === 1 ? '[New]' : `[N-${weeks - 1}]`}
                               </span>
                             )}
                             {copyShowValues && <span> ({p.value})</span>}
