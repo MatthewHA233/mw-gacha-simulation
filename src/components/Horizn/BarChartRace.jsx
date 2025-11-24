@@ -23,6 +23,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [timeElapsed, setTimeElapsed] = useState(0) // 距离上次更新的秒数
   const [maxVisibleItems, setMaxVisibleItems] = useState(20) // 最大可见条目数
   const [newMemberMap, setNewMemberMap] = useState({}) // 新成员映射：{ playerName: weeksAgo }
+  const [activeTooltip, setActiveTooltip] = useState(null) // 当前显示的提示框（用于移动端点击）
 
   // 视窗相关状态（用于超过400帧时的横向滚动）
   const [viewportStart, setViewportStart] = useState(0) // 视窗起始帧索引
@@ -591,7 +592,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const transitionDuration = isLargeJump ? 0 : 0.3
 
   return (
-    <div className="py-8">
+    <div className="py-8" onClick={() => setActiveTooltip(null)}>
       <div className="max-w-7xl mx-auto px-6">
         {/* 图表区域 */}
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
@@ -626,14 +627,29 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                           {item.name}
                         </div>
                         {/* 新成员角标 */}
-                        {newWeeks && newWeeks <= 4 && (
-                          <span className={`text-[8px] sm:text-[9px] font-bold px-0.5 rounded flex-shrink-0 ${
-                            newWeeks === 1 ? 'text-green-400 bg-green-400/20' :
-                            newWeeks === 2 ? 'text-blue-400 bg-blue-400/20' :
-                            newWeeks === 3 ? 'text-yellow-400 bg-yellow-400/20' :
-                            'text-gray-400 bg-gray-400/20'
-                          }`}>
+                        {newWeeks && newWeeks <= 5 && (
+                          <span
+                            className={`text-[8px] sm:text-[9px] font-bold px-0.5 rounded flex-shrink-0 cursor-help relative group ${
+                              newWeeks === 1 ? 'text-green-400 bg-green-400/20' :
+                              newWeeks === 2 ? 'text-green-500/80 bg-green-500/15' :
+                              newWeeks === 3 ? 'text-green-600/70 bg-green-600/10' :
+                              newWeeks === 4 ? 'text-green-700/60 bg-green-700/10' :
+                              'text-green-800/50 bg-green-800/10'
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setActiveTooltip(activeTooltip === item.name ? null : item.name)
+                            }}
+                          >
                             {newWeeks === 1 ? 'N' : `N${newWeeks - 1}`}
+                            {/* 悬浮提示 - 桌面端 hover，移动端点击 */}
+                            <span className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-1 bg-white text-black text-[10px] font-bold rounded shadow-lg whitespace-nowrap transition-all duration-200 z-50 ${
+                              activeTooltip === item.name
+                                ? 'opacity-100 visible'
+                                : 'opacity-0 invisible sm:group-hover:opacity-100 sm:group-hover:visible'
+                            }`}>
+                              {newWeeks === 1 ? '本星期进联队新成员' : `本星期上${newWeeks - 1}个星期进联队新成员`}
+                            </span>
                           </span>
                         )}
                       </div>

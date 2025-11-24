@@ -1006,24 +1006,38 @@ export default function HoriznPage() {
                       }
 
                       const newMemberMap = currentData?.newMemberMap || {}
-                      const nameList = selectedPlayers.map((p, i) => {
-                        let line = `${i + 1}. ${p.name}`
 
-                        // 添加新来标记
-                        if (copyShowNewMark && newMemberMap[p.name]) {
-                          const weeks = newMemberMap[p.name]
-                          line += weeks === 1 ? ' [N]' : ` [N${weeks - 1}]`
-                        }
+                      // 生成带颜色的 JSX
+                      const titleElement = <div className="mb-2 text-gray-200">{title}</div>
+                      const listElements = selectedPlayers.map((p, i) => {
+                        const weeks = newMemberMap[p.name]
+                        const showMark = copyShowNewMark && weeks
 
-                        // 添加活跃度数值
-                        if (copyShowValues) {
-                          line += ` (${p.value})`
-                        }
+                        return (
+                          <div key={i}>
+                            {i + 1}. {p.name}
+                            {showMark && (
+                              <span className={`ml-1 ${
+                                weeks === 1 ? 'text-green-400' :
+                                weeks === 2 ? 'text-green-500/80' :
+                                weeks === 3 ? 'text-green-600/70' :
+                                weeks === 4 ? 'text-green-700/60' :
+                                'text-green-800/50'
+                              }`}>
+                                {weeks === 1 ? '[N]' : `[N${weeks - 1}]`}
+                              </span>
+                            )}
+                            {copyShowValues && <span> ({p.value})</span>}
+                          </div>
+                        )
+                      })
 
-                        return line
-                      }).join('\n')
-
-                      return `${title}\n\n${nameList}`
+                      return (
+                        <>
+                          {titleElement}
+                          {listElements}
+                        </>
+                      )
                     })()}
                   </div>
                 </div>
