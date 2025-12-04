@@ -9,6 +9,13 @@ const STORAGE_KEY_PREFIX = 'mw_gacha_state_'
 const VERSION_KEY = 'mw_gacha_app_version'
 
 /**
+ * 检查是否在浏览器环境中
+ */
+function isBrowser() {
+  return typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+}
+
+/**
  * 获取活动的存储键
  */
 function getStorageKey(activityId) {
@@ -98,6 +105,7 @@ export function getDefaultGameState(gachaType = '筹码类') {
  * @returns {Object|null} 活动状态，如果不存在返回null
  */
 export function loadGameState(activityId) {
+  if (!isBrowser()) return null
   try {
     const key = getStorageKey(activityId)
     const data = localStorage.getItem(key)
@@ -117,6 +125,7 @@ export function loadGameState(activityId) {
  * @param {Object} gameState - 游戏状态
  */
 export function saveGameState(activityId, gameState) {
+  if (!isBrowser()) return
   try {
     const key = getStorageKey(activityId)
     localStorage.setItem(key, JSON.stringify(gameState))
@@ -130,6 +139,7 @@ export function saveGameState(activityId, gameState) {
  * @param {string} activityId - 活动ID
  */
 export function clearGameState(activityId) {
+  if (!isBrowser()) return
   try {
     const key = getStorageKey(activityId)
     localStorage.removeItem(key)
@@ -142,6 +152,7 @@ export function clearGameState(activityId) {
  * 清除所有活动状态
  */
 export function clearAllGameStates() {
+  if (!isBrowser()) return
   try {
     const keys = Object.keys(localStorage)
     keys.forEach(key => {
@@ -158,6 +169,7 @@ export function clearAllGameStates() {
  * 获取当前存储的应用版本号
  */
 export function getStoredVersion() {
+  if (!isBrowser()) return null
   try {
     return localStorage.getItem(VERSION_KEY)
   } catch (error) {
@@ -170,6 +182,7 @@ export function getStoredVersion() {
  * 保存应用版本号
  */
 export function saveVersion(version) {
+  if (!isBrowser()) return
   try {
     localStorage.setItem(VERSION_KEY, version)
   } catch (error) {
@@ -184,6 +197,7 @@ export function saveVersion(version) {
  * @returns {Object|null} 如果执行了重置，返回 { wasReset: true, newVersion: string, oldVersion: string }，否则返回 null
  */
 export function checkAndResetIfNeeded() {
+  if (!isBrowser()) return null
   try {
     const storedVersion = getStoredVersion()
     const currentVersion = getAppVersion()

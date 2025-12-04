@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import { loadActivityConfig } from '../services/cdnService'
 import { STORAGE_KEYS } from '../utils/constants'
@@ -24,7 +26,7 @@ export function useGachaData(type, activityId) {
 
         // 从 localStorage 加载游戏状态，或初始化新状态
         const storageKey = `${STORAGE_KEYS.GACHA_STATE}${activityId}`
-        const savedState = localStorage.getItem(storageKey)
+        const savedState = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null
 
         if (savedState) {
           setGameState(JSON.parse(savedState))
@@ -65,6 +67,7 @@ export function useGachaData(type, activityId) {
 
   // 保存游戏状态到 localStorage
   useEffect(() => {
+    if (typeof window === 'undefined') return
     if (gameState && activityId) {
       const storageKey = `${STORAGE_KEYS.GACHA_STATE}${activityId}`
       localStorage.setItem(storageKey, JSON.stringify(gameState))

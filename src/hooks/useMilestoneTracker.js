@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useRef, useState } from 'react'
 import { useMilestoneToast } from '../components/ui/MilestoneToastProvider'
 import { getMilestoneByAmount, MILESTONES } from '../data/milestoneConfig'
@@ -9,15 +11,21 @@ import { getMilestoneByAmount, MILESTONES } from '../data/milestoneConfig'
  */
 export function useMilestoneTracker(totalRmb, storageKey) {
   const { showToast, closeAll } = useMilestoneToast()
-  const [triggeredMilestones, setTriggeredMilestones] = useState(() => {
-    // 从localStorage加载已触发的里程碑
+  const [triggeredMilestones, setTriggeredMilestones] = useState(new Set())
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // 客户端挂载后从 localStorage 加载已触发的里程碑
+  useEffect(() => {
     try {
       const saved = localStorage.getItem(`${storageKey}_milestones`)
-      return saved ? new Set(JSON.parse(saved)) : new Set()
+      if (saved) {
+        setTriggeredMilestones(new Set(JSON.parse(saved)))
+      }
     } catch {
-      return new Set()
+      // ignore
     }
-  })
+    setIsHydrated(true)
+  }, [storageKey])
 
   const prevRmbRef = useRef(totalRmb)
   const toastQueueRef = useRef([])
@@ -44,6 +52,7 @@ export function useMilestoneTracker(totalRmb, storageKey) {
 
   // 持久化已触发的里程碑
   useEffect(() => {
+    if (typeof window === 'undefined' || !isHydrated) return
     try {
       localStorage.setItem(
         `${storageKey}_milestones`,
@@ -52,7 +61,7 @@ export function useMilestoneTracker(totalRmb, storageKey) {
     } catch (error) {
       console.error('Failed to save triggered milestones:', error)
     }
-  }, [triggeredMilestones, storageKey])
+  }, [triggeredMilestones, storageKey, isHydrated])
 
   // 处理Toast队列，每3秒弹出一个
   const processToastQueue = async () => {
@@ -204,10 +213,12 @@ export function useMilestoneTracker(totalRmb, storageKey) {
     processingMilestonesRef.current.clear()  // 清空正在处理的集合
     prevRmbRef.current = 0  // 重置累计消费记录
     isProcessingRef.current = false  // 重置队列处理状态
-    try {
-      localStorage.removeItem(`${storageKey}_milestones`)
-    } catch (error) {
-      console.error('Failed to reset milestones:', error)
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(`${storageKey}_milestones`)
+      } catch (error) {
+        console.error('Failed to reset milestones:', error)
+      }
     }
   }
 

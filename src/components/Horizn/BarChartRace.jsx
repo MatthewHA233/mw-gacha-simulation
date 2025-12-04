@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
@@ -15,10 +17,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [colorMap, setColorMap] = useState({})
-  const [totalDuration, setTotalDuration] = useState(() => {
-    const saved = localStorage.getItem(storageKey)
-    return saved ? parseFloat(saved) : 5 // 默认5秒
-  })
+  const [totalDuration, setTotalDuration] = useState(5) // 默认5秒，客户端挂载后从 localStorage 读取
   const [lastUpdateTime, setLastUpdateTime] = useState(null) // 最近一次数据时间戳
   const [timeElapsed, setTimeElapsed] = useState(0) // 距离上次更新的秒数
   const [maxVisibleItems, setMaxVisibleItems] = useState(20) // 最大可见条目数
@@ -254,17 +253,20 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     loadData()
   }, [csvPath, yearMonth, dataType, preloadedData, otherTypeData])
 
+  // 客户端挂载后从 localStorage 读取时长设置
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      setTotalDuration(parseFloat(saved))
+    }
+  }, [storageKey])
+
   // 保存总时长到 localStorage（分类型保存）
   useEffect(() => {
+    if (typeof window === 'undefined') return
     localStorage.setItem(storageKey, totalDuration.toString())
   }, [totalDuration, storageKey])
-
-  // 当 csvPath 改变时，加载对应的时长设置
-  useEffect(() => {
-    const saved = localStorage.getItem(storageKey)
-    const newDuration = saved ? parseFloat(saved) : 5
-    setTotalDuration(newDuration)
-  }, [storageKey])
 
   // 更新上一帧引用
   useEffect(() => {
