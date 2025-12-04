@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
@@ -50,6 +52,9 @@ export function FlagshipGacha({
 
   // 待执行的抽奖参数
   const pendingDrawRef = useRef(null)
+
+  // 防止 performDraw 重复执行的锁
+  const isPerformingDrawRef = useRef(false)
 
   // 停止动画标志
   const stopAnimationRef = useRef(false)
@@ -590,7 +595,14 @@ export function FlagshipGacha({
   }
 
   // 执行抽奖逻辑
-  const performDraw = (count, drawType) => {
+  const performDraw = (count, drawType, expectedTotalDraws) => {
+    // 防止重复执行（Strict Mode 可能导致双重调用）
+    if (isPerformingDrawRef.current) {
+      console.log(`[FlagshipGacha] performDraw 已在执行中，跳过重复调用`)
+      return
+    }
+    isPerformingDrawRef.current = true
+
     const suffix = getFieldSuffix()
     const itemsKey = suffix ? `items${suffix}` : 'items'
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
@@ -600,13 +612,41 @@ export function FlagshipGacha({
     const historyKey = suffix ? `history${suffix}` : 'history'
     const epicLegendaryHistoryKey = suffix ? `epicLegendaryHistory${suffix}` : 'epicLegendaryHistory'
 
-    console.log(`[FlagshipGacha] performDraw called: count=${count}, drawType=${drawType}, suffix=${suffix}`)
+    console.log(`[FlagshipGacha] performDraw called: count=${count}, drawType=${drawType}, expectedTotalDraws=${expectedTotalDraws}, suffix=${suffix}`)
     console.log(`[FlagshipGacha] gameState[${itemsKey}].length=${gameState[itemsKey]?.length}`)
 
     if (!gameState[itemsKey] || gameState[itemsKey].length === 0) {
       console.error(`[FlagshipGacha] 物品列表为空，无法抽奖 (${itemsKey})`)
+      isPerformingDrawRef.current = false
       return
     }
+
+    // 在 setGameState 之前保存预抽取结果（避免 Strict Mode 双重调用问题）
+    const savedPendingRewards = [...pendingRewardsRef.current]
+    pendingRewardsRef.current = []  // 立即清空，防止重复使用
+
+    // 使用传入的 expectedTotalDraws 计算抽数编号（避免 setGameState 异步问题）
+    const totalDrawsForCalc = expectedTotalDraws
+
+    // 为预抽取结果添加抽数编号
+    const resultsForModal = savedPendingRewards.map((result, index) => {
+      if (result.rarity === 'epic' || result.rarity === 'legendary') {
+        return { ...result, drawNumber: totalDrawsForCalc - count + index + 1 }
+      }
+      return result
+    })
+
+    // 计算剩余限定物品数量（基于预抽取后的状态）
+    let tempItemsForCheck = [...gameState[itemsKey]]
+    savedPendingRewards.forEach(result => {
+      tempItemsForCheck = tempItemsForCheck.map(item => {
+        if (item.name === result.name && item.rarity === result.rarity) {
+          return { ...item, obtained: item.obtained + 1 }
+        }
+        return item
+      })
+    })
+    const remainingLimited = getRemainingLimitedEpicLegendary(tempItemsForCheck)
 
     setGameState(prev => {
       const results = []
@@ -618,9 +658,9 @@ export function FlagshipGacha({
       let rareCount = prev[rareCountKey]
 
       for (let i = 0; i < count; i++) {
-        // 如果已经有预抽取的结果，使用它（仅限第一个）
-        const result = (i === 0 && pendingRewardsRef.current.length > 0)
-          ? pendingRewardsRef.current[0]
+        // 如果已经有预抽取的结果，使用它
+        const result = (savedPendingRewards.length > i)
+          ? savedPendingRewards[i]
           : drawLottery(tempItems)
         results.push(result)
 
@@ -678,55 +718,6 @@ export function FlagshipGacha({
         }
       })
 
-      // 停止滚动动画并清空待用结果
-      setIsScrolling(false)
-      pendingRewardsRef.current = []
-
-      // 显示结果弹窗
-      if (drawType === 'single') {
-        if (results[0].rarity === 'epic' || results[0].rarity === 'legendary') {
-          playSound('Reward_Daily_02_UI.Reward_Daily_02_UI.wav')
-        } else {
-          playSound('UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav')
-        }
-
-        console.log('[FlagshipGacha] 显示单抽结果弹窗')
-        setResultModal({
-          show: true,
-          items: resultsWithDrawNum,
-          displayedItems: resultsWithDrawNum,
-          isMulti: false,
-          drawType: 'single',
-          isGenerating: false,
-          isPaused: false,
-          isComplete: true,
-          processedIndex: 1,
-          canSkip: false
-        })
-      } else {
-        console.log('[FlagshipGacha] 显示多抽结果弹窗')
-        // 检查当前奖池中剩余未抽满的限定史诗/传说物品数量
-        const remainingLimited = getRemainingLimitedEpicLegendary(tempItems)
-        const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingLimited <= 1
-
-        setResultModal({
-          show: true,
-          items: resultsWithDrawNum,
-          displayedItems: [],
-          isMulti: true,
-          drawType,
-          isGenerating: true,
-          isPaused: false,
-          isComplete: false,
-          processedIndex: 0,
-          canSkip
-        })
-
-        setTimeout(() => {
-          progressivelyShowItems(resultsWithDrawNum, drawType)
-        }, 100)
-      }
-
       return {
         ...prev,
         currency: prev.currency + premiumKeyTotal,           // 旗舰钥匙返回
@@ -739,6 +730,55 @@ export function FlagshipGacha({
         [epicLegendaryHistoryKey]: updatedEpicLegendaryHistory
       }
     })
+
+    // 停止滚动动画
+    setIsScrolling(false)
+
+    // 显示结果弹窗（使用预抽取的结果，同步执行，不依赖 setGameState 回调）
+    if (drawType === 'single') {
+      if (resultsForModal[0].rarity === 'epic' || resultsForModal[0].rarity === 'legendary') {
+        playSound('Reward_Daily_02_UI.Reward_Daily_02_UI.wav')
+      } else {
+        playSound('UpgradeFailed_01_UI.UpgradeFailed_01_UI.wav')
+      }
+
+      console.log('[FlagshipGacha] 显示单抽结果弹窗')
+      setResultModal({
+        show: true,
+        items: resultsForModal,
+        displayedItems: resultsForModal,
+        isMulti: false,
+        drawType: 'single',
+        isGenerating: false,
+        isPaused: false,
+        isComplete: true,
+        processedIndex: 1,
+        canSkip: false
+      })
+    } else {
+      console.log('[FlagshipGacha] 显示多抽结果弹窗')
+      const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingLimited <= 1
+
+      setResultModal({
+        show: true,
+        items: resultsForModal,
+        displayedItems: [],
+        isMulti: true,
+        drawType,
+        isGenerating: true,
+        isPaused: false,
+        isComplete: false,
+        processedIndex: 0,
+        canSkip
+      })
+
+      setTimeout(() => {
+        progressivelyShowItems(resultsForModal, drawType)
+      }, 100)
+    }
+
+    // 释放执行锁
+    isPerformingDrawRef.current = false
   }
 
   // 抽卡函数
@@ -790,8 +830,9 @@ export function FlagshipGacha({
     if (lootboxAnimationRef.current) {
       setIsAnimating(true)
 
-      // 设置待执行的抽奖参数
-      pendingDrawRef.current = { count: 1, drawType: 'single' }
+      // 设置待执行的抽奖参数，携带预期的 totalDraws 值
+      const expectedTotalDraws = gameState[totalDrawsKey] + 1
+      pendingDrawRef.current = { count: 1, drawType: 'single', expectedTotalDraws }
 
       // 启动滚动条动画
       setIsScrolling(true)
@@ -838,10 +879,19 @@ export function FlagshipGacha({
     console.log('抽奖 x10')
 
     // 先执行抽奖获取所有结果（用于滚动条）
-    const currentItems = getCurrentItems()
+    // 需要模拟每次抽奖后更新物品状态，确保限量物品正确处理
+    let tempItems = [...getCurrentItems()]
     const results = []
     for (let i = 0; i < 10; i++) {
-      results.push(drawLottery(currentItems))
+      const result = drawLottery(tempItems)
+      results.push(result)
+      // 更新临时物品状态
+      tempItems = tempItems.map(item => {
+        if (item.name === result.name && item.rarity === result.rarity) {
+          return { ...item, obtained: item.obtained + 1 }
+        }
+        return item
+      })
     }
     pendingRewardsRef.current = results
 
@@ -861,8 +911,9 @@ export function FlagshipGacha({
     if (lootboxAnimationRef.current) {
       setIsAnimating(true)
 
-      // 设置待执行的抽奖参数
-      pendingDrawRef.current = { count: 10, drawType: 'multi10' }
+      // 设置待执行的抽奖参数，携带预期的 totalDraws 值
+      const expectedTotalDraws = gameState[totalDrawsKey] + 10
+      pendingDrawRef.current = { count: 10, drawType: 'multi10', expectedTotalDraws }
 
       // 启动滚动条动画
       setIsScrolling(true)
@@ -908,10 +959,19 @@ export function FlagshipGacha({
     console.log('抽奖 x100')
 
     // 先执行抽奖获取所有结果（用于滚动条）
-    const currentItems = getCurrentItems()
+    // 需要模拟每次抽奖后更新物品状态，确保限量物品正确处理
+    let tempItems = [...getCurrentItems()]
     const results = []
     for (let i = 0; i < 100; i++) {
-      results.push(drawLottery(currentItems))
+      const result = drawLottery(tempItems)
+      results.push(result)
+      // 更新临时物品状态
+      tempItems = tempItems.map(item => {
+        if (item.name === result.name && item.rarity === result.rarity) {
+          return { ...item, obtained: item.obtained + 1 }
+        }
+        return item
+      })
     }
     pendingRewardsRef.current = results
 
@@ -931,8 +991,9 @@ export function FlagshipGacha({
     if (lootboxAnimationRef.current) {
       setIsAnimating(true)
 
-      // 设置待执行的抽奖参数
-      pendingDrawRef.current = { count: 100, drawType: 'multi100' }
+      // 设置待执行的抽奖参数，携带预期的 totalDraws 值
+      const expectedTotalDraws = gameState[totalDrawsKey] + 100
+      pendingDrawRef.current = { count: 100, drawType: 'multi100', expectedTotalDraws }
 
       // 启动滚动条动画
       setIsScrolling(true)
@@ -978,10 +1039,19 @@ export function FlagshipGacha({
     console.log('抽奖 x500')
 
     // 先执行抽奖获取所有结果（用于滚动条）
-    const currentItems = getCurrentItems()
+    // 需要模拟每次抽奖后更新物品状态，确保限量物品正确处理
+    let tempItems = [...getCurrentItems()]
     const results = []
     for (let i = 0; i < 500; i++) {
-      results.push(drawLottery(currentItems))
+      const result = drawLottery(tempItems)
+      results.push(result)
+      // 更新临时物品状态
+      tempItems = tempItems.map(item => {
+        if (item.name === result.name && item.rarity === result.rarity) {
+          return { ...item, obtained: item.obtained + 1 }
+        }
+        return item
+      })
     }
     pendingRewardsRef.current = results
 
@@ -1001,8 +1071,9 @@ export function FlagshipGacha({
     if (lootboxAnimationRef.current) {
       setIsAnimating(true)
 
-      // 设置待执行的抽奖参数
-      pendingDrawRef.current = { count: 500, drawType: 'multi500' }
+      // 设置待执行的抽奖参数，携带预期的 totalDraws 值
+      const expectedTotalDraws = gameState[totalDrawsKey] + 500
+      pendingDrawRef.current = { count: 500, drawType: 'multi500', expectedTotalDraws }
 
       // 启动滚动条动画
       setIsScrolling(true)
@@ -1027,8 +1098,8 @@ export function FlagshipGacha({
   const handleRewardStage = () => {
     console.log('[FlagshipGacha] 进入奖励阶段，显示抽奖结果')
     if (pendingDrawRef.current) {
-      const { count, drawType } = pendingDrawRef.current
-      performDraw(count, drawType)
+      const { count, drawType, expectedTotalDraws } = pendingDrawRef.current
+      performDraw(count, drawType, expectedTotalDraws)
       pendingDrawRef.current = null
     }
   }
@@ -1119,18 +1190,20 @@ export function FlagshipGacha({
     clearAllGameStates()
 
     // 清除所有活动的里程碑记录
-    try {
-      const keysToRemove = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key && key.endsWith('_milestones')) {
-          keysToRemove.push(key)
+    if (typeof window !== 'undefined') {
+      try {
+        const keysToRemove = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key && key.endsWith('_milestones')) {
+            keysToRemove.push(key)
+          }
         }
+        keysToRemove.forEach(key => localStorage.removeItem(key))
+        console.log(`[里程碑] 已清除 ${keysToRemove.length} 个活动的里程碑记录`)
+      } catch (error) {
+        console.error('Failed to clear milestone data:', error)
       }
-      keysToRemove.forEach(key => localStorage.removeItem(key))
-      console.log(`[里程碑] 已清除 ${keysToRemove.length} 个活动的里程碑记录`)
-    } catch (error) {
-      console.error('Failed to clear milestone data:', error)
     }
 
     // 重置当前活动的里程碑（清空内存状态）

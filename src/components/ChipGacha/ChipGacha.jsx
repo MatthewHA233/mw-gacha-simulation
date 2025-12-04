@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
@@ -250,18 +252,20 @@ export function ChipGacha({
     clearAllGameStates()
 
     // 清除所有活动的里程碑记录
-    try {
-      const keysToRemove = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key && key.endsWith('_milestones')) {
-          keysToRemove.push(key)
+    if (typeof window !== 'undefined') {
+      try {
+        const keysToRemove = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key && key.endsWith('_milestones')) {
+            keysToRemove.push(key)
+          }
         }
+        keysToRemove.forEach(key => localStorage.removeItem(key))
+        console.log(`[里程碑] 已清除 ${keysToRemove.length} 个活动的里程碑记录`)
+      } catch (error) {
+        console.error('Failed to clear milestone data:', error)
       }
-      keysToRemove.forEach(key => localStorage.removeItem(key))
-      console.log(`[里程碑] 已清除 ${keysToRemove.length} 个活动的里程碑记录`)
-    } catch (error) {
-      console.error('Failed to clear milestone data:', error)
     }
 
     // 重置当前活动的里程碑（清空内存状态）
