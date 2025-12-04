@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import { SquareItem } from '../SquareItem'
 import { buildInfoBackgroundUrl } from '../../services/cdnService'

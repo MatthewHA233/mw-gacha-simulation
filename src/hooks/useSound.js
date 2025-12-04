@@ -1,3 +1,5 @@
+'use client'
+
 import { CDN_BASE_URL } from '../utils/constants'
 
 /**

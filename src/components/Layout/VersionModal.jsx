@@ -1,3 +1,5 @@
+'use client'
+
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Github, Mail, Info, ChevronDown } from 'lucide-react'
 import { useState, useEffect } from 'react'

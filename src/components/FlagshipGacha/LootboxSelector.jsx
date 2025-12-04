@@ -1,3 +1,5 @@
+'use client'
+
 import { buildLootboxTicketUrl } from '../../services/cdnService'
 
 /**

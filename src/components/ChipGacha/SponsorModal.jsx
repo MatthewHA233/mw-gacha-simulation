@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'

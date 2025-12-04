@@ -1,3 +1,5 @@
+'use client'
+
 import { HexItem } from './HexItem';
 
 export const HexGrid = ({ items, onItemClick, highlightedItemName }) => {

@@ -1,3 +1,5 @@
+'use client'
+
 import { HexGrid } from '../HexGrid'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'

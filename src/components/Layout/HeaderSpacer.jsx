@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * Header 占位组件
  * 用于为绝对定位的 Header 预留空间

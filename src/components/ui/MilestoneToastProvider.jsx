@@ -1,3 +1,5 @@
+'use client'
+
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { MilestoneToast } from './MilestoneToast'
 

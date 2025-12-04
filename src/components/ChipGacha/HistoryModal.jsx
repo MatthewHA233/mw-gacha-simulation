@@ -1,3 +1,5 @@
+'use client'
+
 import { getRarityText, getRarityClass, getRarityBgClass } from '../../utils/rarityHelpers'
 import { useSound } from '../../hooks/useSound'
 
