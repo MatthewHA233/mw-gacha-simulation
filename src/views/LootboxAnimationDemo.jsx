@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CDN_BASE_URL } from '../utils/constants'

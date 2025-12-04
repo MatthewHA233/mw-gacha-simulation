@@ -1,5 +1,6 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast'
 import { Sidebar } from '../components/Layout/Sidebar'
 import { Header } from '../components/Layout/Header'
@@ -11,9 +12,8 @@ import { FlagshipGacha } from '../components/FlagshipGacha/FlagshipGacha'
  * 抽卡页面容器
  * 整合侧边栏、顶部栏和抽卡组件
  */
-export function GachaPage() {
-  const { type, activityId } = useParams()
-  const navigate = useNavigate()
+export function GachaPage({ type, activityId }) {
+  // type 和 activityId 现在通过 props 传入（来自 App Router 的 params）
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sponsorModal, setSponsorModal] = useState(false)
   const [versionModalOpen, setVersionModalOpen] = useState(false)

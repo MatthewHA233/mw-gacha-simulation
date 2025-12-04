@@ -1,5 +1,7 @@
+'use client'
+
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import { useParams, Navigate, useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { ShieldCheck, Calendar } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
@@ -8,13 +10,13 @@ import { CDN_BASE_URL, OSS_BASE_URL } from '@/utils/constants'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import '@/components/Layout/Sidebar.css'
 
-export default function HoriznPage() {
-  const { yearMonth } = useParams()
-  const navigate = useNavigate()
+export default function HoriznPage({ yearMonth }) {
+  const router = useRouter()
 
   // 验证 yearMonth 格式（YYYYMM）
   if (!yearMonth || !/^\d{6}$/.test(yearMonth)) {
-    return <Navigate to="/horizn" replace />
+    router.replace('/horizn')
+    return null
   }
   const [activeTab, setActiveTab] = useState('weekly')
   const [statusInfo, setStatusInfo] = useState(null)
@@ -126,7 +128,7 @@ export default function HoriznPage() {
   const handleMonthSelect = (selectedYearMonth) => {
     setShowMonthMenu(false)
     if (selectedYearMonth !== yearMonth) {
-      navigate(`/horizn/${selectedYearMonth}`)
+      router.push(`/horizn/${selectedYearMonth}`)
     }
   }
 

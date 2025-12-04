@@ -1,5 +1,7 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { ShieldCheck, Lock, ArrowLeft, LogIn } from 'lucide-react'
 import { CDN_BASE_URL } from '@/utils/constants'
 
@@ -7,10 +9,13 @@ export default function HoriznAdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const navigate = useNavigate()
+  const router = useRouter()
 
   // 管理员密码（可以从环境变量读取）
-  const ADMIN_PASSWORD = import.meta.env.VITE_HORIZN_ADMIN_PASSWORD || 'admin123'
+  // 兼容 Vite 和 Next.js
+  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_HORIZN_ADMIN_PASSWORD
+    || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_HORIZN_ADMIN_PASSWORD)
+    || 'admin123'
 
   useEffect(() => {
     document.title = 'HORIZN 管理员登录'
@@ -23,7 +28,7 @@ export default function HoriznAdminLogin() {
   useEffect(() => {
     const isAuthenticated = sessionStorage.getItem('horizn_admin_auth') === 'true'
     if (isAuthenticated) {
-      navigate('/horizn')
+      router.push('/horizn')
     }
   }, [navigate])
 
@@ -38,7 +43,7 @@ export default function HoriznAdminLogin() {
         // 设置管理员权限标记（使用 sessionStorage，关闭浏览器后失效）
         sessionStorage.setItem('horizn_admin_auth', 'true')
         // 重定向到 HORIZN 主页
-        navigate('/horizn')
+        router.push('/horizn')
       } else {
         setError('密码错误，请重试')
         setPassword('')

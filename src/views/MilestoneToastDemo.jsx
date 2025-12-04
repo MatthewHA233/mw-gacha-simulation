@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { useMilestoneToast } from '@/components/ui/MilestoneToastProvider'
 import { MILESTONES } from '@/data/milestoneConfig'
