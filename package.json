@@ -1,13 +1,14 @@
 {
   "name": "lottery-app",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "dev:vite": "vite --host",
+    "build:vite": "vite build"
   },
   "dependencies": {
     "@react-three/drei": "^9.88.16",
@@ -18,19 +19,21 @@
     "framer-motion": "^12.23.22",
     "lucide-react": "^0.545.0",
     "motion": "^12.23.22",
+    "next": "^14.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.9.3",
     "tailwind-merge": "^3.3.1",
     "three": "^0.159.0"
   },
   "devDependencies": {
+    "@types/node": "^20",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.38",
