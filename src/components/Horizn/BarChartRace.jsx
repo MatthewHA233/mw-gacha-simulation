@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
-import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath } from '@/services/cdnService'
 
-export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null, otherTypeData = null }) {
+export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null }) {
   // 根据 csvPath 判断类型（weekly 或 season）
   const dataType = csvPath.includes('weekly') ? 'weekly' : 'season'
   const storageKey = `horizn_animation_duration_${dataType}`
@@ -46,73 +45,48 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   // 从 csvPath 提取 yearMonth
   const yearMonth = csvPath.match(/(\d{6})/)?.[1] || ''
 
-  // 计算新成员信息
-  const calculateNewMembers = (weeklyTimeline, seasonTimeline) => {
-    if (!weeklyTimeline.length || !seasonTimeline.length) return {}
+  // 计算新成员信息（基于 joinDate 字段）
+  const calculateNewMembers = (timeline) => {
+    if (!timeline.length) return {}
 
-    // 找出每周的最后一个时间戳索引
-    // 周边界：周一早上8点（UTC+8）
-    const weekEndIndices = []
-    let currentWeekStart = null
-
-    for (let i = 0; i < weeklyTimeline.length; i++) {
-      const timestamp = weeklyTimeline[i].timestamp
-      const date = parseTimestamp(timestamp)
-      if (!date) continue
-
-      // 计算这个时间戳属于哪一周（以周一8点为起点）
-      const weekStart = getWeekStart(date)
-
-      if (currentWeekStart === null) {
-        currentWeekStart = weekStart.getTime()
-      } else if (weekStart.getTime() !== currentWeekStart) {
-        // 新的一周开始，记录上一周的最后一个索引
-        weekEndIndices.push(i - 1)
-        currentWeekStart = weekStart.getTime()
-      }
-    }
-    // 添加最后一周的最后一个索引
-    weekEndIndices.push(weeklyTimeline.length - 1)
-
-    console.log('[BarChartRace] Week end indices:', weekEndIndices)
-
-    // 从最新的周往前数，检查新成员
     const newMembers = {}
     const now = new Date()
     const nowWeekStart = getWeekStart(now)
 
-    for (let weekIdx = weekEndIndices.length - 1; weekIdx >= 0 && weekIdx >= weekEndIndices.length - 4; weekIdx--) {
-      const frameIdx = weekEndIndices[weekIdx]
-      const weeklyFrame = weeklyTimeline[frameIdx]
-      const seasonFrame = seasonTimeline[frameIdx]
+    // 从最后一帧获取所有玩家信息
+    const lastFrame = timeline[timeline.length - 1]
+    if (!lastFrame || !lastFrame.allData) return {}
 
-      if (!weeklyFrame || !seasonFrame) continue
+    for (const player of lastFrame.allData) {
+      // 检查 playerInfo 中的 joinDate
+      const joinDate = player.playerInfo?.joinDate
+      if (!joinDate) continue
 
-      // 计算这是几周前（1-4）
-      const frameDate = parseTimestamp(weeklyFrame.timestamp)
-      if (!frameDate) continue
+      // 解析 joinDate（格式：YYYYMMDD，如 20251203）
+      const joinDateObj = parseJoinDate(joinDate)
+      if (!joinDateObj) continue
 
-      const frameWeekStart = getWeekStart(frameDate)
-      const weeksAgo = Math.floor((nowWeekStart.getTime() - frameWeekStart.getTime()) / (7 * 24 * 60 * 60 * 1000))
+      // 计算加入时间距离现在多少周
+      const joinWeekStart = getWeekStart(joinDateObj)
+      const weeksAgo = Math.floor((nowWeekStart.getTime() - joinWeekStart.getTime()) / (7 * 24 * 60 * 60 * 1000))
 
-      if (weeksAgo < 0 || weeksAgo > 4) continue
-
-      // 检查每个玩家
-      for (const weeklyPlayer of weeklyFrame.allData) {
-        const seasonPlayer = seasonFrame.allData.find(p => p.name === weeklyPlayer.name)
-
-        if (seasonPlayer &&
-            weeklyPlayer.value > 0 &&
-            weeklyPlayer.value === seasonPlayer.value &&
-            !newMembers[weeklyPlayer.name]) {
-          // 周活跃度 = 赛季活跃度 且不为0，说明是这周新来的
-          newMembers[weeklyPlayer.name] = weeksAgo === 0 ? 1 : weeksAgo + 1
-          console.log(`[BarChartRace] New member: ${weeklyPlayer.name}, weeks ago: ${newMembers[weeklyPlayer.name]}`)
-        }
+      // 只标记最近 4 周内加入的成员
+      if (weeksAgo >= 0 && weeksAgo <= 4) {
+        newMembers[player.name] = weeksAgo === 0 ? 1 : weeksAgo + 1
+        console.log(`[BarChartRace] New member: ${player.name}, joined: ${joinDate}, weeks: ${newMembers[player.name]}`)
       }
     }
 
     return newMembers
+  }
+
+  // 解析 joinDate 格式（YYYYMMDD -> Date）
+  const parseJoinDate = (dateStr) => {
+    if (!dateStr || dateStr.length !== 8) return null
+    const year = parseInt(dateStr.substring(0, 4))
+    const month = parseInt(dateStr.substring(4, 6)) - 1 // 月份从0开始
+    const day = parseInt(dateStr.substring(6, 8))
+    return new Date(year, month, day)
   }
 
   // 获取周一早上8点的时间（作为周的起始点）
@@ -152,15 +126,10 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
           }
         }
 
-        // 使用预加载的另一种类型数据计算新成员
-        if (otherTypeData && otherTypeData.timeline) {
-          const weeklyData = dataType === 'weekly' ? preloadedData.timeline : otherTypeData.timeline
-          const seasonData = dataType === 'weekly' ? otherTypeData.timeline : preloadedData.timeline
-
-          const newMembers = calculateNewMembers(weeklyData, seasonData)
-          setNewMemberMap(newMembers)
-          console.log('[BarChartRace] New members detected (from preloaded):', Object.keys(newMembers).length)
-        }
+        // 使用当前 timeline 的 playerInfo.joinDate 计算新成员
+        const newMembers = calculateNewMembers(preloadedData.timeline)
+        setNewMemberMap(newMembers)
+        console.log('[BarChartRace] New members detected (from preloaded):', Object.keys(newMembers).length)
 
         setLoading(false)
         return
@@ -213,36 +182,10 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
           }
         }
 
-        // 加载另一种类型的 CSV 来计算新成员
-        if (yearMonth) {
-          try {
-            const otherCsvPath = dataType === 'weekly'
-              ? buildHoriznSeasonCsvPath(yearMonth)
-              : buildHoriznWeeklyCsvPath(yearMonth)
-
-            const otherUrl = OSS_BASE_URL
-              ? `${OSS_BASE_URL}/${otherCsvPath}?t=${Date.now()}`
-              : `/${otherCsvPath}`
-
-            console.log('[BarChartRace] Loading other CSV for new member detection:', otherUrl)
-
-            const otherResponse = await fetch(otherUrl)
-            if (otherResponse.ok) {
-              const otherCsvText = await otherResponse.text()
-              const otherTimelineData = parseBarChartRaceCSV(otherCsvText)
-
-              // 计算新成员
-              const weeklyData = dataType === 'weekly' ? timelineData : otherTimelineData
-              const seasonData = dataType === 'weekly' ? otherTimelineData : timelineData
-
-              const newMembers = calculateNewMembers(weeklyData, seasonData)
-              setNewMemberMap(newMembers)
-              console.log('[BarChartRace] New members detected:', Object.keys(newMembers).length)
-            }
-          } catch (err) {
-            console.warn('[BarChartRace] Failed to load other CSV for new member detection:', err)
-          }
-        }
+        // 使用当前 timeline 的 playerInfo.joinDate 计算新成员
+        const newMembers = calculateNewMembers(timelineData)
+        setNewMemberMap(newMembers)
+        console.log('[BarChartRace] New members detected:', Object.keys(newMembers).length)
       } catch (err) {
         console.error('[BarChartRace] Error loading CSV:', err)
         setError(err.message)
@@ -251,7 +194,7 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       }
     }
     loadData()
-  }, [csvPath, yearMonth, dataType, preloadedData, otherTypeData])
+  }, [csvPath, yearMonth, dataType, preloadedData])
 
   // 客户端挂载后从 localStorage 读取时长设置
   useEffect(() => {

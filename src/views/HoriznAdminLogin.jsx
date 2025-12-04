@@ -30,7 +30,7 @@ export default function HoriznAdminLogin() {
     if (isAuthenticated) {
       router.push('/horizn')
     }
-  }, [navigate])
+  }, [router])
 
   const handleLogin = (e) => {
     e.preventDefault()

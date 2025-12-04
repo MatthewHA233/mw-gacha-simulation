@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import { ShieldCheck, Calendar } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
-import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath, getAllHoriznMonths } from '@/services/cdnService'
+import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath, getAllHoriznMonths, loadHoriznGameIdMapping } from '@/services/cdnService'
 import { CDN_BASE_URL, OSS_BASE_URL } from '@/utils/constants'
-import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
+import { parseBarChartRaceCSV, parseGameIdMappingCSV, applyNameMapping, generateColorMap } from '@/utils/csvParser'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage({ yearMonth }) {
@@ -329,7 +329,7 @@ export default function HoriznPage({ yearMonth }) {
     fetchMonths()
   }, [])
 
-  // 预加载周活跃度和赛季活跃度数据
+  // 预加载周活跃度和赛季活跃度数据 + 玩家ID映射表
   useEffect(() => {
     const loadAllData = async () => {
       setDataLoading(true)
@@ -338,54 +338,56 @@ export default function HoriznPage({ yearMonth }) {
       const seasonPath = buildHoriznSeasonCsvPath(yearMonth)
 
       try {
-        // 并行加载两种数据
-        const [weeklyResult, seasonResult] = await Promise.all([
+        // 并行加载：映射表 + 周活跃度 + 赛季活跃度
+        const [mappingCsvText, weeklyResult, seasonResult] = await Promise.all([
+          // 加载玩家ID映射表
+          loadHoriznGameIdMapping(),
+          // 加载周活跃度
           (async () => {
             const url = OSS_BASE_URL
               ? `${OSS_BASE_URL}/${weeklyPath}?t=${Date.now()}`
               : `/${weeklyPath}`
             const response = await fetch(url)
             if (!response.ok) throw new Error(`Failed to load weekly CSV`)
-            const csvText = await response.text()
-            const timeline = parseBarChartRaceCSV(csvText)
-
-            // 生成颜色映射
-            const allNames = new Set()
-            timeline.forEach(frame => {
-              frame.data.forEach(item => allNames.add(item.name))
-            })
-            const colorMap = generateColorMap(Array.from(allNames))
-
-            return { timeline, colorMap, csvPath: weeklyPath }
+            return await response.text()
           })(),
+          // 加载赛季活跃度
           (async () => {
             const url = OSS_BASE_URL
               ? `${OSS_BASE_URL}/${seasonPath}?t=${Date.now()}`
               : `/${seasonPath}`
             const response = await fetch(url)
             if (!response.ok) throw new Error(`Failed to load season CSV`)
-            const csvText = await response.text()
-            const timeline = parseBarChartRaceCSV(csvText)
-
-            // 生成颜色映射
-            const allNames = new Set()
-            timeline.forEach(frame => {
-              frame.data.forEach(item => allNames.add(item.name))
-            })
-            const colorMap = generateColorMap(Array.from(allNames))
-
-            return { timeline, colorMap, csvPath: seasonPath }
+            return await response.text()
           })()
         ])
 
+        // 解析映射表
+        const idMapping = parseGameIdMappingCSV(mappingCsvText)
+        console.log('[HoriznPage] Loaded ID mapping:', Object.keys(idMapping).length, 'players')
+
+        // 解析周活跃度并应用映射
+        const weeklyTimeline = parseBarChartRaceCSV(weeklyResult)
+        const weeklyWithNames = applyNameMapping(weeklyTimeline, idMapping)
+        const weeklyNames = new Set()
+        weeklyWithNames.forEach(frame => frame.data.forEach(item => weeklyNames.add(item.name)))
+        const weeklyColorMap = generateColorMap(Array.from(weeklyNames))
+
+        // 解析赛季活跃度并应用映射
+        const seasonTimeline = parseBarChartRaceCSV(seasonResult)
+        const seasonWithNames = applyNameMapping(seasonTimeline, idMapping)
+        const seasonNames = new Set()
+        seasonWithNames.forEach(frame => frame.data.forEach(item => seasonNames.add(item.name)))
+        const seasonColorMap = generateColorMap(Array.from(seasonNames))
+
         setPreloadedData({
-          weekly: weeklyResult,
-          season: seasonResult
+          weekly: { timeline: weeklyWithNames, colorMap: weeklyColorMap, csvPath: weeklyPath, idMapping },
+          season: { timeline: seasonWithNames, colorMap: seasonColorMap, csvPath: seasonPath, idMapping }
         })
 
         console.log('[HoriznPage] Preloaded data:', {
-          weekly: weeklyResult.timeline.length,
-          season: seasonResult.timeline.length
+          weekly: weeklyWithNames.length,
+          season: seasonWithNames.length
         })
       } catch (error) {
         console.error('[HoriznPage] Failed to preload data:', error)
@@ -610,7 +612,6 @@ export default function HoriznPage({ yearMonth }) {
           showValues={isAdmin}
           externalFrameIndex={manualFrameIndex}
           preloadedData={preloadedData[activeTab]}
-          otherTypeData={preloadedData[activeTab === 'weekly' ? 'season' : 'weekly']}
         />
       </div>
 

@@ -488,21 +488,85 @@ function formatYearMonth(date) {
 }
 
 /**
- * 构建 HORIZN 周活跃度 CSV 路径（新格式）
- * @param {string} yearMonth - 游戏月编号，格式：YYYYMM（如：202510）
+ * 构建 HORIZN 周活跃度 CSV 路径
+ * @param {string} yearMonth - 游戏月编号，格式：YYYYMM（如：202512）
  * @returns {string} 周活跃度 CSV 路径
  */
 export function buildHoriznWeeklyCsvPath(yearMonth) {
-  return `horizn/${yearMonth}/weekly_${yearMonth}.csv`
+  return `horizn/data/weekly_${yearMonth}.csv`
 }
 
 /**
- * 构建 HORIZN 赛季活跃度 CSV 路径（新格式）
- * @param {string} yearMonth - 游戏月编号，格式：YYYYMM（如：202510）
+ * 构建 HORIZN 赛季活跃度 CSV 路径
+ * @param {string} yearMonth - 游戏月编号，格式：YYYYMM（如：202512）
  * @returns {string} 赛季活跃度 CSV 路径
  */
 export function buildHoriznSeasonCsvPath(yearMonth) {
-  return `horizn/${yearMonth}/season_${yearMonth}.csv`
+  return `horizn/data/season_${yearMonth}.csv`
+}
+
+/**
+ * 加载 HORIZN 玩家 ID 映射表
+ * @returns {Promise<string>} CSV 文本内容
+ */
+export async function loadHoriznGameIdMapping() {
+  const cacheKey = 'horizn-game-id-mapping'
+
+  if (configCache.has(cacheKey)) {
+    return configCache.get(cacheKey)
+  }
+
+  try {
+    const url = OSS_BASE_URL
+      ? `${OSS_BASE_URL}/horizn/game_id_mapping.csv?t=${Date.now()}`
+      : `/horizn/game_id_mapping.csv`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to load game_id_mapping: ${response.status}`)
+    }
+    const csvText = await response.text()
+    configCache.set(cacheKey, csvText)
+    return csvText
+  } catch (error) {
+    console.error('Error loading game_id_mapping:', error)
+    throw error
+  }
+}
+
+/**
+ * 加载 HORIZN 活跃度 CSV 数据
+ * @param {string} type - 数据类型 ('weekly' | 'season')
+ * @param {string} yearMonth - 游戏月编号
+ * @returns {Promise<string>} CSV 文本内容
+ */
+export async function loadHoriznCsvData(type, yearMonth) {
+  const cacheKey = `horizn-${type}-${yearMonth}`
+
+  if (configCache.has(cacheKey)) {
+    return configCache.get(cacheKey)
+  }
+
+  try {
+    const path = type === 'weekly'
+      ? buildHoriznWeeklyCsvPath(yearMonth)
+      : buildHoriznSeasonCsvPath(yearMonth)
+
+    const url = OSS_BASE_URL
+      ? `${OSS_BASE_URL}/${path}?t=${Date.now()}`
+      : `/${path}`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to load horizn ${type} CSV: ${response.status}`)
+    }
+    const csvText = await response.text()
+    configCache.set(cacheKey, csvText)
+    return csvText
+  } catch (error) {
+    console.error(`Error loading horizn ${type} CSV:`, error)
+    throw error
+  }
 }
 
 /**

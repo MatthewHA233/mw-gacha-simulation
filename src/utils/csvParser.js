@@ -1,10 +1,27 @@
 /**
  * 解析 Bar Chart Race CSV 数据
+ *
  * CSV 格式：
- * Name,时间1,时间2,时间3,...
- * 玩家1,值1,值2,值3,...
- * 玩家2,值1,值2,值3,...
+ * player_id,时间1,时间2,时间3,...
+ * ID1,值|是否在线,值|是否在线,...
+ * ID2,值|是否在线,值|是否在线,...
  */
+
+/**
+ * 解析单个数据单元格
+ * 格式: "2218|False" -> { value: 2218, isOnline: false }
+ */
+function parseDataCell(cellValue) {
+  if (!cellValue || cellValue.trim() === '') {
+    return { value: 0, isOnline: false }
+  }
+
+  const trimmed = cellValue.trim()
+  const [valueStr, onlineStr] = trimmed.split('|')
+  const value = parseFloat(valueStr) || 0
+  const isOnline = onlineStr?.toLowerCase() === 'true'
+  return { value, isOnline }
+}
 
 export function parseBarChartRaceCSV(csvText) {
   const lines = csvText.trim().split('\n')
@@ -16,7 +33,7 @@ export function parseBarChartRaceCSV(csvText) {
   const firstLine = lines[0].replace(/^\uFEFF/, '')
   const headers = firstLine.split(',')
 
-  // 第一列是 Name，后续列是时间戳
+  // 第一列是 player_id，后续列是时间戳
   const timestamps = headers.slice(1)
 
   // 解析数据行
@@ -25,10 +42,10 @@ export function parseBarChartRaceCSV(csvText) {
     const values = lines[i].split(',')
     if (values.length < 2) continue
 
-    const name = values[0].trim()
-    const data = values.slice(1).map(v => parseFloat(v) || 0)
+    const playerId = values[0].trim()
+    const data = values.slice(1).map(v => parseDataCell(v))
 
-    players.push({ name, data })
+    players.push({ playerId, data })
   }
 
   // 转换为时间序列格式
@@ -36,25 +53,119 @@ export function parseBarChartRaceCSV(csvText) {
     // 所有玩家数据（包括0值）
     const allData = players
       .map(player => ({
-        name: player.name,
-        value: player.data[index] || 0
+        playerId: player.playerId,
+        name: player.playerId, // 初始使用 playerId，后续会被映射表替换
+        value: player.data[index]?.value || 0,
+        isOnline: player.data[index]?.isOnline || false
       }))
-      .sort((a, b) => b.value - a.value) // 按值降序排序
+      .sort((a, b) => b.value - a.value)
 
-    // 过滤后的数据（仅用于图表显示，排除0值）
+    // 过滤后的数据（排除0值）
     const displayData = allData.filter(item => item.value > 0)
 
     const total = allData.reduce((sum, item) => sum + item.value, 0)
+    const onlineCount = allData.filter(item => item.isOnline === true).length
 
     return {
       timestamp: timestamp.trim(),
-      data: displayData,      // 图表显示用（过滤0值）
-      allData: allData,       // 完整数据（包含0值，用于统计总人数）
-      total
+      data: displayData,
+      allData: allData,
+      total,
+      onlineCount
     }
   })
 
   return timeline
+}
+
+/**
+ * 解析 game_id_mapping.csv 文件
+ * 返回映射对象：{ player_id: { name, joinDate, leaveDate } }
+ */
+export function parseGameIdMappingCSV(csvText) {
+  const lines = csvText.trim().split('\n')
+  if (lines.length < 2) {
+    throw new Error('Invalid game_id_mapping CSV format')
+  }
+
+  // 移除 BOM
+  const firstLine = lines[0].replace(/^\uFEFF/, '')
+  const headers = firstLine.split(',')
+
+  // 找到列索引
+  const colIndex = {
+    playerId: headers.indexOf('player_id'),
+    nameVariants: headers.indexOf('name_variants'),
+    joinDate: headers.indexOf('join_date'),
+    leaveDate: headers.indexOf('leave_date')
+  }
+
+  const mapping = {}
+
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCSVLine(lines[i])
+    if (values.length < 3) continue
+
+    const playerId = values[colIndex.playerId]?.trim()
+    if (!playerId) continue
+
+    // name_variants 存储全部变体，显示时取第一个
+    const nameVariants = values[colIndex.nameVariants]?.trim() || playerId
+    const firstName = nameVariants.split('|')[0].trim() || playerId
+
+    mapping[playerId] = {
+      name: firstName,
+      nameVariants: nameVariants,
+      joinDate: values[colIndex.joinDate]?.trim() || null,
+      leaveDate: values[colIndex.leaveDate]?.trim() || null
+    }
+  }
+
+  return mapping
+}
+
+/**
+ * 解析 CSV 行（处理引号内的逗号）
+ */
+function parseCSVLine(line) {
+  const result = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+
+    if (char === '"') {
+      inQuotes = !inQuotes
+    } else if (char === ',' && !inQuotes) {
+      result.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+
+  result.push(current)
+  return result
+}
+
+/**
+ * 将时间线数据中的 playerId 替换为显示名称
+ */
+export function applyNameMapping(timeline, mapping) {
+  return timeline.map(frame => ({
+    ...frame,
+    data: frame.data.map(item => ({
+      ...item,
+      name: mapping[item.playerId]?.name || item.playerId,
+      playerInfo: mapping[item.playerId] || null
+    })),
+    allData: frame.allData.map(item => ({
+      ...item,
+      name: mapping[item.playerId]?.name || item.playerId,
+      playerInfo: mapping[item.playerId] || null
+    }))
+  }))
 }
 
 /**
