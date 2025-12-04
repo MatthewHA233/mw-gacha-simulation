@@ -1,9 +1,11 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { buildCurrencyIconUrl, loadActivityIndex } from '../../services/cdnService'
 import { useEffect, useState } from 'react'
 import { useSound } from '../../hooks/useSound'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -25,7 +27,7 @@ export function Header({
   isModalOpen = false
 }) {
   const { playButtonClick } = useSound()
-  const navigate = useNavigate()
+  const router = useRouter()
   const [firstActivityId, setFirstActivityId] = useState(null)
 
   // 加载第一个活动ID
@@ -178,7 +180,7 @@ export function Header({
             <motion.button
               onClick={() => {
                 playButtonClick();
-                navigate('/gacha/flagship/la96');
+                router.push('/gacha/flagship/la96');
               }}
               className="p-[2px] relative"
               whileHover={{ scale: 1.05 }}

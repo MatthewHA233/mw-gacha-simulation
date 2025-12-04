@@ -1,5 +1,7 @@
+'use client'
+
 import { motion } from 'framer-motion'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useRouter, usePathname } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import { useActivityList } from '../../hooks/useActivityList'
 import { buildWidgetUrl, getGachaTypePath } from '../../services/cdnService'
@@ -17,12 +19,20 @@ export function Sidebar({
   onVersionModalChange = () => {}
 }) {
   const { activities, loading, error } = useActivityList()
-  const navigate = useNavigate()
-  const { activityId: currentActivityId } = useParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // 从路径中提取当前活动 ID
+  const currentActivityId = pathname?.split('/').pop() || ''
   const { playButtonClick } = useSound()
 
-  // 音乐播放器状态 - 从本地存储读取初始状态
-  const [isPlaying, setIsPlaying] = useState(() => {
+  // 音乐播放器状态 - 初始为 false，客户端挂载后从 localStorage 读取
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  // 客户端挂载后从 localStorage 读取状态
+  useEffect(() => {
+    setIsMounted(true)
     const saved = localStorage.getItem('sidebar_music_playing')
     const pausedAt = localStorage.getItem('sidebar_music_paused_at')
 
@@ -36,12 +46,13 @@ export function Sidebar({
       if (now - pausedTime > oneDayInMs) {
         localStorage.setItem('sidebar_music_playing', 'true')
         localStorage.removeItem('sidebar_music_paused_at')
-        return true
+        setIsPlaying(true)
+        return
       }
     }
 
-    return saved === 'true'
-  })
+    setIsPlaying(saved === 'true')
+  }, [])
   const audioRef = useRef(null)
   const audioContextRef = useRef(null)
   const analyserRef = useRef(null)
@@ -220,7 +231,7 @@ export function Sidebar({
   const handleActivityClick = (activity) => {
     playButtonClick()
     const typePath = getGachaTypePath(activity.gacha_type)
-    navigate(`/gacha/${typePath}/${activity.id}`)
+    router.push(`/gacha/${typePath}/${activity.id}`)
     onClose()
   }
 

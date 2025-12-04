@@ -1,5 +1,7 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { loadActivityIndex, getGachaTypePath } from '../services/cdnService'
 
 /**
@@ -7,7 +9,7 @@ import { loadActivityIndex, getGachaTypePath } from '../services/cdnService'
  * 从 index.json 读取第一个活动，自动重定向到对应页面
  */
 export function HomeRedirect() {
-  const [redirectPath, setRedirectPath] = useState(null)
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -21,23 +23,23 @@ export function HomeRedirect() {
           const path = `/gacha/${typePath}/${firstActivity.id}`
 
           console.log(`[HomeRedirect] Redirecting to latest activity: ${firstActivity.name} (${firstActivity.id})`)
-          setRedirectPath(path)
+          router.replace(path)
         } else {
           // 兜底：如果没有活动，重定向到一个默认路径
           console.error('[HomeRedirect] No activities found in index.json')
-          setRedirectPath('/gacha/chip/ag97')
+          router.replace('/gacha/chip/ag97')
         }
       } catch (error) {
         console.error('[HomeRedirect] Failed to load activity index:', error)
         // 错误兜底：重定向到一个默认路径
-        setRedirectPath('/gacha/chip/ag97')
+        router.replace('/gacha/chip/ag97')
       } finally {
         setLoading(false)
       }
     }
 
     loadLatestActivity()
-  }, [])
+  }, [router])
 
   if (loading) {
     // 加载中：显示一个简单的加载界面
@@ -48,5 +50,5 @@ export function HomeRedirect() {
     )
   }
 
-  return <Navigate to={redirectPath} replace />
+  return null
 }

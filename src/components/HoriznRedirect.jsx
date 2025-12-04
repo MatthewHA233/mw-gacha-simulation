@@ -1,5 +1,7 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { getLatestHoriznMonth } from '@/services/cdnService'
 
 /**
@@ -7,28 +9,28 @@ import { getLatestHoriznMonth } from '@/services/cdnService'
  * 自动获取最新游戏月并重定向到对应路由
  */
 export function HoriznRedirect() {
-  const [latestMonth, setLatestMonth] = useState(null)
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchLatest = async () => {
       try {
         const yearMonth = await getLatestHoriznMonth()
-        setLatestMonth(yearMonth)
+        router.replace(`/horizn/${yearMonth}`)
       } catch (error) {
         console.error('Failed to get latest horizn month:', error)
         // Fallback to current month
         const now = new Date()
         const year = now.getFullYear()
         const month = String(now.getMonth() + 1).padStart(2, '0')
-        setLatestMonth(`${year}${month}`)
+        router.replace(`/horizn/${year}${month}`)
       } finally {
         setLoading(false)
       }
     }
 
     fetchLatest()
-  }, [])
+  }, [router])
 
   if (loading) {
     return (
@@ -41,10 +43,5 @@ export function HoriznRedirect() {
     )
   }
 
-  if (latestMonth) {
-    return <Navigate to={`/horizn/${latestMonth}`} replace />
-  }
-
-  // 如果获取失败，重定向到主页
-  return <Navigate to="/" replace />
+  return null
 }
