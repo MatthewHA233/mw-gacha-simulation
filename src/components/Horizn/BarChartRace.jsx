@@ -563,16 +563,33 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                         {index + 1}
                       </div>
 
-                      {/* 玩家名称 + 新成员角标 */}
+                      {/* 玩家名称 + 状态角标 */}
                       <div className="w-20 sm:w-28 md:w-36 lg:w-44 flex items-center justify-end gap-0.5 flex-shrink-0">
                         <div
-                          className="text-white text-xs sm:text-sm truncate text-right"
+                          className={`text-xs sm:text-sm truncate text-right ${
+                            item.leaveStatus === 'left_this_month'
+                              ? 'text-gray-500 line-through'
+                              : 'text-white'
+                          }`}
                           style={item.name.includes('地平线') ? { direction: 'rtl', unicodeBidi: 'embed' } : {}}
                         >
                           {item.name}
                         </div>
+                        {/* 离队标注 */}
+                        {item.leaveStatus === 'left_this_month' && (
+                          <span className="text-[8px] sm:text-[9px] font-bold px-0.5 rounded flex-shrink-0 text-red-400 bg-red-400/20 cursor-help relative group">
+                            离队
+                            {/* 悬浮提示 */}
+                            <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-1 bg-white text-black text-[10px] font-bold rounded shadow-lg whitespace-nowrap opacity-0 invisible sm:group-hover:opacity-100 sm:group-hover:visible transition-all duration-200 z-50">
+                              {item.playerInfo?.leaveDate && (() => {
+                                const d = item.playerInfo.leaveDate
+                                return `${d.substring(4, 6)}月${d.substring(6, 8)}日离队`
+                              })()}
+                            </span>
+                          </span>
+                        )}
                         {/* 新成员角标 */}
-                        {newWeeks && newWeeks <= 5 && (
+                        {!item.leaveStatus && newWeeks && newWeeks <= 5 && (
                           <span
                             className={`text-[8px] sm:text-[9px] font-bold px-0.5 rounded flex-shrink-0 cursor-help relative group ${
                               newWeeks === 1 ? 'text-green-400 bg-green-400/20' :
@@ -593,7 +610,15 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
                                 ? 'opacity-100 visible'
                                 : 'opacity-0 invisible sm:group-hover:opacity-100 sm:group-hover:visible'
                             }`}>
-                              {newWeeks === 1 ? '本星期进联队新成员' : `上${newWeeks - 1}个星期进联队新成员`}
+                              <div>{newWeeks === 1 ? '本星期进联队新成员' : `上${newWeeks - 1}个星期进联队新成员`}</div>
+                              {item.playerInfo?.joinDate && (
+                                <div className="text-gray-600 font-normal">
+                                  {(() => {
+                                    const d = item.playerInfo.joinDate
+                                    return `${d.substring(4, 6)}月${d.substring(6, 8)}日入队`
+                                  })()}
+                                </div>
+                              )}
                             </span>
                           </span>
                         )}

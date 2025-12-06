@@ -109,9 +109,9 @@ export function parseGameIdMappingCSV(csvText) {
     const playerId = values[colIndex.playerId]?.trim()
     if (!playerId) continue
 
-    // name_variants 存储全部变体，显示时取第一个
+    // name_variants 存储全部变体，显示时取第一个，并清理 [[]] 符号
     const nameVariants = values[colIndex.nameVariants]?.trim() || playerId
-    const firstName = nameVariants.split('|')[0].trim() || playerId
+    const firstName = cleanName(nameVariants.split('|')[0].trim()) || playerId
 
     mapping[playerId] = {
       name: firstName,
@@ -122,6 +122,14 @@ export function parseGameIdMappingCSV(csvText) {
   }
 
   return mapping
+}
+
+/**
+ * 清理名字中的 [[]] 符号
+ */
+function cleanName(name) {
+  if (!name) return name
+  return name.replace(/\[\[|\]\]/g, '')
 }
 
 /**
@@ -150,22 +158,75 @@ function parseCSVLine(line) {
 }
 
 /**
- * 将时间线数据中的 playerId 替换为显示名称
+ * 解析日期字符串 YYYYMMDD -> Date
  */
-export function applyNameMapping(timeline, mapping) {
-  return timeline.map(frame => ({
-    ...frame,
-    data: frame.data.map(item => ({
+function parseDateStr(dateStr) {
+  if (!dateStr || dateStr.length !== 8) return null
+  const year = parseInt(dateStr.substring(0, 4))
+  const month = parseInt(dateStr.substring(4, 6)) - 1
+  const day = parseInt(dateStr.substring(6, 8))
+  return new Date(year, month, day)
+}
+
+/**
+ * 将时间线数据中的 playerId 替换为显示名称
+ * @param {Array} timeline - 时间线数据
+ * @param {Object} mapping - player_id 到 playerInfo 的映射
+ * @param {string} [yearMonth] - 可选，当前页面的年月（YYYYMM），用于判断离队时间
+ */
+export function applyNameMapping(timeline, mapping, yearMonth) {
+  // 如果提供了 yearMonth，解析当前月份的起始和结束日期
+  let monthStart = null
+  let monthEnd = null
+  if (yearMonth && yearMonth.length === 6) {
+    const year = parseInt(yearMonth.substring(0, 4))
+    const month = parseInt(yearMonth.substring(4, 6)) - 1
+    monthStart = new Date(year, month, 1)
+    monthEnd = new Date(year, month + 1, 0, 23, 59, 59)
+  }
+
+  const processItem = (item) => {
+    const playerInfo = mapping[item.playerId] || null
+    let leaveStatus = null
+
+    // 只有提供了 yearMonth 才计算离队状态
+    if (monthStart && playerInfo?.leaveDate) {
+      const leaveDate = parseDateStr(playerInfo.leaveDate)
+      if (leaveDate) {
+        if (leaveDate < monthStart) {
+          leaveStatus = 'left_before'
+        } else if (leaveDate <= monthEnd) {
+          leaveStatus = 'left_this_month'
+        }
+      }
+    }
+
+    return {
       ...item,
-      name: mapping[item.playerId]?.name || item.playerId,
-      playerInfo: mapping[item.playerId] || null
-    })),
-    allData: frame.allData.map(item => ({
-      ...item,
-      name: mapping[item.playerId]?.name || item.playerId,
-      playerInfo: mapping[item.playerId] || null
-    }))
-  }))
+      name: playerInfo?.name || item.playerId,
+      playerInfo,
+      leaveStatus
+    }
+  }
+
+  return timeline.map(frame => {
+    const processedData = frame.data.map(processItem)
+    const processedAllData = frame.allData.map(processItem)
+
+    // 如果提供了 yearMonth，过滤掉本月之前离队的成员
+    const filteredData = monthStart
+      ? processedData.filter(item => item.leaveStatus !== 'left_before')
+      : processedData
+    const filteredAllData = monthStart
+      ? processedAllData.filter(item => item.leaveStatus !== 'left_before')
+      : processedAllData
+
+    return {
+      ...frame,
+      data: filteredData,
+      allData: filteredAllData
+    }
+  })
 }
 
 /**

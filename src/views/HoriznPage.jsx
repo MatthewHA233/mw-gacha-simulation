@@ -35,6 +35,16 @@ export default function HoriznPage({ yearMonth }) {
   const [copyShowNewMark, setCopyShowNewMark] = useState(true) // 复制名单时是否显示新来标记
   const [copyDataType, setCopyDataType] = useState('weekly') // 复制名单时使用的数据类型
 
+  // 追踪考核名单相关状态
+  const [showCheckModal, setShowCheckModal] = useState(false)
+  const [checkConfig, setCheckConfig] = useState({
+    weeklyThreshold: 2500,    // 周活跃度要求
+    dailyThreshold: 500,      // 日均活跃度要求
+    excludeMembers: []        // 排除考核人员（管理层等）
+  })
+  const [checkExcludeSearch, setCheckExcludeSearch] = useState('') // 排除人员搜索框
+  const [checkSelectedFrame, setCheckSelectedFrame] = useState(null) // 选中的时间帧索引
+
   // 预加载的数据缓存
   const [preloadedData, setPreloadedData] = useState({
     weekly: null, // { timeline, colorMap }
@@ -55,6 +65,20 @@ export default function HoriznPage({ yearMonth }) {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // 从 localStorage 加载考核配置
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const saved = localStorage.getItem('horizn_check_config')
+    if (saved) {
+      try {
+        const config = JSON.parse(saved)
+        setCheckConfig(config)
+      } catch (e) {
+        console.error('Failed to parse check config:', e)
+      }
+    }
   }, [])
 
   // 同步 currentData 到 ref
@@ -146,6 +170,305 @@ export default function HoriznPage({ yearMonth }) {
     setCopyDataType(activeTab) // 初始化为当前 tab
     setThresholdValue(activeTab === 'weekly' ? '4500' : '50000') // 打开时设置为对应类型的默认阈值
     setShowCopyModal(true)
+  }
+
+  // 获取周日中午12点后最近的时间戳索引列表
+  const getSundayNoonFrames = useMemo(() => {
+    const timeline = preloadedData.weekly?.timeline
+    if (!timeline || timeline.length === 0) return []
+
+    const sundayFrames = []
+    const now = new Date()
+    const currentYear = now.getFullYear()
+
+    for (let i = 0; i < timeline.length; i++) {
+      const frame = timeline[i]
+      const timestamp = frame.timestamp // 格式: "12-01 14:36" 或类似
+
+      // 解析时间戳
+      const match = timestamp.match(/(\d{2})-(\d{2}) (\d{2}):(\d{2})/)
+      if (!match) continue
+
+      const [, month, day, hour, minute] = match
+      const date = new Date(currentYear, parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute))
+
+      // 检查是否是周日（0 = 周日）且在12:00之后
+      if (date.getDay() === 0 && (parseInt(hour) > 12 || (parseInt(hour) === 12 && parseInt(minute) >= 0))) {
+        sundayFrames.push({
+          index: i,
+          timestamp: frame.timestamp,
+          date: date,
+          label: `${month}月${day}日 ${hour}:${minute}`
+        })
+      }
+    }
+
+    // 添加"现在"选项（最新帧）
+    const lastFrame = timeline[timeline.length - 1]
+    sundayFrames.push({
+      index: timeline.length - 1,
+      timestamp: lastFrame.timestamp,
+      date: now,
+      label: '现在',
+      isNow: true
+    })
+
+    return sundayFrames
+  }, [preloadedData.weekly?.timeline])
+
+  // 打开追踪考核名单弹窗
+  const handleOpenCheckModal = () => {
+    setShowAdminMenu(false)
+    // 默认选择最新帧（"现在"）
+    const sundayFrames = getSundayNoonFrames
+    if (sundayFrames.length > 0) {
+      setCheckSelectedFrame(sundayFrames[sundayFrames.length - 1].index)
+    }
+    setShowCheckModal(true)
+  }
+
+  // 保存考核配置到 localStorage
+  const saveCheckConfig = (newConfig) => {
+    setCheckConfig(newConfig)
+    localStorage.setItem('horizn_check_config', JSON.stringify(newConfig))
+    toast.success('配置已保存')
+  }
+
+  // 获取所有玩家列表（用于排除人员搜索）
+  const allPlayersList = useMemo(() => {
+    const idMapping = preloadedData.weekly?.idMapping
+    if (!idMapping) return []
+
+    return Object.entries(idMapping).map(([playerId, info]) => {
+      // nameVariants 是字符串，用 | 分隔
+      const variantsStr = info.nameVariants || info.name || playerId
+      const variantsArr = variantsStr.split('|').map(s => s.trim()).filter(Boolean)
+      return {
+        playerId,
+        name: info.name,
+        nameVariants: variantsArr,
+        leaveDate: info.leaveDate
+      }
+    })
+  }, [preloadedData.weekly?.idMapping])
+
+  // 防抖搜索关键词
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(checkExcludeSearch)
+    }, 200)
+    return () => clearTimeout(timer)
+  }, [checkExcludeSearch])
+
+  // 搜索排除人员的结果
+  const excludeSearchResults = useMemo(() => {
+    if (!debouncedSearch.trim()) return []
+
+    const query = debouncedSearch.trim().toLowerCase()
+    const excludeSet = new Set(checkConfig.excludeMembers.map(id => id.toLowerCase()))
+
+    return allPlayersList
+      .filter(p => {
+        // 已经在排除名单中的不显示
+        if (excludeSet.has(p.playerId.toLowerCase())) return false
+        // 搜索 playerId 或所有名字变体
+        if (p.playerId.toLowerCase().includes(query)) return true
+        if (p.nameVariants.some(n => n.toLowerCase().includes(query))) return true
+        return false
+      })
+      .slice(0, 8) // 最多显示8个结果
+  }, [debouncedSearch, allPlayersList, checkConfig.excludeMembers])
+
+  // 添加排除人员
+  const addExcludeMember = (playerId) => {
+    if (checkConfig.excludeMembers.includes(playerId)) return
+    const newConfig = {
+      ...checkConfig,
+      excludeMembers: [...checkConfig.excludeMembers, playerId]
+    }
+    setCheckConfig(newConfig)
+    localStorage.setItem('horizn_check_config', JSON.stringify(newConfig))
+    setCheckExcludeSearch('')
+  }
+
+  // 移除排除人员
+  const removeExcludeMember = (playerId) => {
+    const newConfig = {
+      ...checkConfig,
+      excludeMembers: checkConfig.excludeMembers.filter(id => id !== playerId)
+    }
+    setCheckConfig(newConfig)
+    localStorage.setItem('horizn_check_config', JSON.stringify(newConfig))
+  }
+
+  // 解析日期字符串 YYYYMMDD -> Date
+  const parseDateStr = (dateStr) => {
+    if (!dateStr || dateStr.length !== 8) return null
+    const year = parseInt(dateStr.substring(0, 4))
+    const month = parseInt(dateStr.substring(4, 6)) - 1
+    const day = parseInt(dateStr.substring(6, 8))
+    return new Date(year, month, day)
+  }
+
+  // 计算入队天数
+  // 有入队日期：入队当天不算，从第二天开始算
+  // 例：12月1日入队，12月7日考核 → 算 12/2, 12/3, 12/4, 12/5, 12/6, 12/7 = 6天
+  // 没有入队日期：使用本月1号，1号当天算
+  // 例：用1号兜底，12月7日考核 → 算 12/1, 12/2, 12/3, 12/4, 12/5, 12/6, 12/7 = 7天
+  const calculateDaysInTeam = (joinDateStr, checkDate) => {
+    const joinDate = parseDateStr(joinDateStr)
+    const hasJoinDate = !!joinDate
+
+    // 归一化到日期（去掉时分秒）
+    const checkDay = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate())
+
+    let joinDay
+    if (hasJoinDate) {
+      joinDay = new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate())
+    } else {
+      // 没有入队日期时，使用当前页面的月份1号
+      const year = parseInt(yearMonth.substring(0, 4))
+      const month = parseInt(yearMonth.substring(4, 6)) - 1
+      joinDay = new Date(year, month, 1)
+    }
+
+    // 天数差
+    const diffTime = checkDay.getTime() - joinDay.getTime()
+    let diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
+
+    // 有入队日期时入队当天不算，没有入队日期时1号当天算（+1）
+    if (!hasJoinDate) {
+      diffDays += 1
+    }
+
+    return Math.max(0, diffDays)
+  }
+
+  // 获取考核不达标名单
+  const getCheckFailList = useMemo(() => {
+    const timeline = preloadedData.weekly?.timeline
+    if (!timeline || checkSelectedFrame === null) return []
+
+    const frameIndex = Math.min(checkSelectedFrame, timeline.length - 1)
+    const frame = timeline[frameIndex]
+    if (!frame || !frame.allData) return []
+
+    // 解析考核时间点的日期（用于计算日均）
+    const currentYear = new Date().getFullYear()
+    const timestampMatch = frame.timestamp.match(/(\d{2})-(\d{2}) (\d{2}):(\d{2})/)
+    let checkDate = new Date()
+    if (timestampMatch) {
+      const [, month, day] = timestampMatch
+      checkDate = new Date(currentYear, parseInt(month) - 1, parseInt(day))
+    }
+
+    // 计算本周周末（周日）的日期（用于计算差多少）
+    const checkDay = checkDate.getDay() // 0=周日, 1=周一, ..., 6=周六
+    const daysUntilSunday = checkDay === 0 ? 0 : 7 - checkDay
+    const sundayDate = new Date(checkDate)
+    sundayDate.setDate(checkDate.getDate() + daysUntilSunday)
+
+    const { weeklyThreshold, dailyThreshold, excludeMembers } = checkConfig
+    // 排除名单使用 player_id（大小写不敏感）
+    const excludeSet = new Set(excludeMembers.map(id => id.trim().toLowerCase()))
+
+    const failList = []
+
+    for (const p of frame.allData) {
+      const playerId = p.playerId || p.name
+      const playerInfo = p.playerInfo
+
+      // 1. 检查是否在手动排除名单中
+      if (excludeSet.has(playerId.trim().toLowerCase())) continue
+
+      // 2. 检查是否已退队（有 leaveDate）
+      if (playerInfo?.leaveDate) continue
+
+      // 3. 检查周活跃度是否达标
+      if (p.value >= weeklyThreshold) continue
+
+      // 4. 计算日均活跃度（按当前考核时间点，用于显示）
+      const joinDateStr = playerInfo?.joinDate
+      const daysInTeam = calculateDaysInTeam(joinDateStr, checkDate)
+      const dailyAvg = daysInTeam > 0 ? p.value / daysInTeam : 0
+
+      // 5. 计算到周日还差多少
+      const daysUntilSundayFromJoin = calculateDaysInTeam(joinDateStr, sundayDate)
+      const weeklyTarget = weeklyThreshold
+      const dailyTarget = daysUntilSundayFromJoin > 0 ? dailyThreshold * daysUntilSundayFromJoin : 0
+      const minTarget = Math.min(weeklyTarget, dailyTarget)
+      const gap = Math.round(minTarget) - p.value
+
+      // 6. 差值 <= 0 表示按日均算已达标，不加入名单
+      if (gap <= 0) continue
+
+      // 判断是否是新队员（入队30天内，包括当天入队 daysInTeam=0）
+      const joinDate = parseDateStr(joinDateStr)
+      const isNewMember = joinDate && daysInTeam <= 30
+      const joinDateLabel = joinDate
+        ? `${joinDate.getMonth() + 1}月${joinDate.getDate()}日入队`
+        : null
+
+      failList.push({
+        ...p,
+        daysInTeam,
+        dailyAvg: Math.round(dailyAvg * 10) / 10,
+        isNewMember,
+        joinDateLabel,
+        gap
+      })
+    }
+
+    // 按活跃度升序排序
+    return failList.sort((a, b) => a.value - b.value)
+  }, [preloadedData.weekly?.timeline, checkSelectedFrame, checkConfig])
+
+  // 复制考核不达标名单
+  const handleCopyCheckList = () => {
+    const failList = getCheckFailList
+    if (failList.length === 0) {
+      toast.error('没有不达标成员')
+      return
+    }
+
+    const timeline = preloadedData.weekly?.timeline
+    const frameIndex = Math.min(checkSelectedFrame, timeline.length - 1)
+    const frame = timeline[frameIndex]
+
+    const title = `HORIZN地平线 周活跃度考核不达标名单`
+    const criteria = `考核标准：周活跃度<${checkConfig.weeklyThreshold} 且 日均活跃度<${checkConfig.dailyThreshold}`
+    const time = `时间：${frame.timestamp}`
+    const list = failList.map((p, i) => {
+      let line = `${i + 1}. ${p.name}`
+      if (p.isNewMember && p.joinDateLabel) {
+        line += ` [${p.joinDateLabel}]`
+      }
+      line += ` (周${p.value}, 日均${p.dailyAvg}, 差${p.gap})`
+      return line
+    }).join('\n')
+    const text = `${title}\n${criteria}\n${time}\n\n${list}`
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(() => toast.success(`已复制 ${failList.length} 人`))
+        .catch(() => toast.error('复制失败'))
+    } else {
+      // 移动端兼容
+      const textarea = document.createElement('textarea')
+      textarea.value = text
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.select()
+      try {
+        document.execCommand('copy')
+        toast.success(`已复制 ${failList.length} 人`)
+      } catch {
+        toast.error('复制失败')
+      }
+      document.body.removeChild(textarea)
+    }
   }
 
   // 获取复制名单使用的数据（支持切换周活跃度/赛季活跃度）
@@ -366,16 +689,16 @@ export default function HoriznPage({ yearMonth }) {
         const idMapping = parseGameIdMappingCSV(mappingCsvText)
         console.log('[HoriznPage] Loaded ID mapping:', Object.keys(idMapping).length, 'players')
 
-        // 解析周活跃度并应用映射
+        // 解析周活跃度并应用映射（传入 yearMonth 以过滤离队成员）
         const weeklyTimeline = parseBarChartRaceCSV(weeklyResult)
-        const weeklyWithNames = applyNameMapping(weeklyTimeline, idMapping)
+        const weeklyWithNames = applyNameMapping(weeklyTimeline, idMapping, yearMonth)
         const weeklyNames = new Set()
         weeklyWithNames.forEach(frame => frame.data.forEach(item => weeklyNames.add(item.name)))
         const weeklyColorMap = generateColorMap(Array.from(weeklyNames))
 
         // 解析赛季活跃度并应用映射
         const seasonTimeline = parseBarChartRaceCSV(seasonResult)
-        const seasonWithNames = applyNameMapping(seasonTimeline, idMapping)
+        const seasonWithNames = applyNameMapping(seasonTimeline, idMapping, yearMonth)
         const seasonNames = new Set()
         seasonWithNames.forEach(frame => frame.data.forEach(item => seasonNames.add(item.name)))
         const seasonColorMap = generateColorMap(Array.from(seasonNames))
@@ -543,7 +866,16 @@ export default function HoriznPage({ yearMonth }) {
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
-                            <span>复制名单</span>
+                            <span>复制排名名单</span>
+                          </button>
+                          <button
+                            onClick={handleOpenCheckModal}
+                            className="w-full px-3 py-1.5 text-left text-xs text-yellow-400 hover:bg-gray-700 transition-colors flex items-center gap-2"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                            <span>追踪考核名单</span>
                           </button>
                           <div className="border-t border-gray-700"></div>
                           <button
@@ -629,7 +961,7 @@ export default function HoriznPage({ yearMonth }) {
                   <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
-                  <span>复制名单</span>
+                  <span>复制排名名单</span>
                 </h3>
                 {/* 数据类型切换 */}
                 <div className="flex gap-0.5 bg-gray-900/50 rounded-md p-0.5">
@@ -1076,6 +1408,229 @@ export default function HoriznPage({ yearMonth }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
                 <span>复制</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 追踪考核名单弹窗 */}
+      {showCheckModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className={`bg-gray-800/95 backdrop-blur-xl rounded-xl border border-gray-700/50 shadow-2xl w-full max-w-md overflow-hidden ${isMobile ? 'select-none' : ''}`}>
+            {/* 顶部装饰条 */}
+            <div className="h-0.5 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500"></div>
+
+            {/* 标题栏 */}
+            <div className="px-4 sm:px-5 py-3 border-b border-gray-700/50 flex items-center justify-between">
+              <h3 className="text-sm sm:text-base font-semibold text-white flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                <span>追踪考核名单</span>
+              </h3>
+              <button
+                onClick={() => setShowCheckModal(false)}
+                className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-1 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* 内容区 */}
+            <div className="px-4 sm:px-5 py-4 space-y-3">
+              {/* 配置区 */}
+              <div className="space-y-3">
+                {/* 活跃度要求 - 双列 */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* 周活跃度要求 */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">
+                      周活跃度要求
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setCheckConfig(prev => ({ ...prev, weeklyThreshold: Math.max(0, prev.weeklyThreshold - 100) }))}
+                        className="w-7 h-7 flex-shrink-0 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base leading-none"
+                      >
+                        −
+                      </button>
+                      <input
+                        type="number"
+                        min="0"
+                        step="100"
+                        value={checkConfig.weeklyThreshold}
+                        onChange={(e) => setCheckConfig(prev => ({ ...prev, weeklyThreshold: parseInt(e.target.value) || 0 }))}
+                        className="flex-1 min-w-0 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <button
+                        onClick={() => setCheckConfig(prev => ({ ...prev, weeklyThreshold: prev.weeklyThreshold + 100 }))}
+                        className="w-7 h-7 flex-shrink-0 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base leading-none"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 日均活跃度要求 */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">
+                      日均活跃度要求
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setCheckConfig(prev => ({ ...prev, dailyThreshold: Math.max(0, prev.dailyThreshold - 50) }))}
+                        className="w-7 h-7 flex-shrink-0 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base leading-none"
+                      >
+                        −
+                      </button>
+                      <input
+                        type="number"
+                        min="0"
+                        step="50"
+                        value={checkConfig.dailyThreshold}
+                        onChange={(e) => setCheckConfig(prev => ({ ...prev, dailyThreshold: parseInt(e.target.value) || 0 }))}
+                        className="flex-1 min-w-0 h-7 px-2 bg-gray-700/50 text-white text-center text-xs font-semibold rounded-md border border-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <button
+                        onClick={() => setCheckConfig(prev => ({ ...prev, dailyThreshold: prev.dailyThreshold + 50 }))}
+                        className="w-7 h-7 flex-shrink-0 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600 border border-gray-600 rounded-lg transition-colors text-white font-medium text-base leading-none"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[10px] text-gray-500 -mt-1">
+                  判定逻辑：周活跃度不达标 → 再看日均活跃度 → 都不达标才计入名单
+                </p>
+
+                {/* 考核时间点 + 排除考核人员 - 同一行 */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* 考核时间点 */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">
+                      考核时间点
+                    </label>
+                    <select
+                      value={checkSelectedFrame ?? ''}
+                      onChange={(e) => setCheckSelectedFrame(parseInt(e.target.value))}
+                      className="w-full h-8 px-2 bg-gray-700/50 text-white text-xs rounded-md border border-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 focus:outline-none"
+                    >
+                      {getSundayNoonFrames.map((frame, idx) => (
+                        <option key={idx} value={frame.index}>
+                          {frame.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 排除考核人员 - 搜索框 */}
+                  <div className="relative">
+                    <label className="block text-xs font-medium text-gray-400 mb-1">
+                      排除考核人员
+                    </label>
+                    <input
+                      type="text"
+                      value={checkExcludeSearch}
+                      onChange={(e) => setCheckExcludeSearch(e.target.value)}
+                      placeholder="搜索名字或ID..."
+                      className="w-full h-8 px-3 bg-gray-700/50 text-white text-xs rounded-md border border-gray-600 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 focus:outline-none"
+                    />
+                    {/* 搜索结果下拉 */}
+                    {excludeSearchResults.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-10 max-h-40 overflow-y-auto">
+                        {excludeSearchResults.map(p => (
+                          <button
+                            key={p.playerId}
+                            onClick={() => addExcludeMember(p.playerId)}
+                            className="w-full px-3 py-1.5 text-left text-xs hover:bg-gray-700 transition-colors flex items-center justify-between"
+                          >
+                            <span className="text-white">{p.name}</span>
+                            <span className="text-gray-500 text-[10px]">{p.playerId}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 已选择的排除人员 - 标签 */}
+                {checkConfig.excludeMembers.length > 0 && (
+                  <div className="flex flex-wrap gap-1 -mt-1">
+                    {checkConfig.excludeMembers.map(playerId => {
+                      const playerInfo = preloadedData.weekly?.idMapping?.[playerId]
+                      const displayName = playerInfo?.name || playerId
+                      return (
+                        <span
+                          key={playerId}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-700 text-white text-[10px] rounded-full"
+                        >
+                          {displayName}
+                          <button
+                            onClick={() => removeExcludeMember(playerId)}
+                            className="text-gray-400 hover:text-red-400 transition-colors"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* 预览 */}
+              <div className="bg-gray-900/50 rounded-lg p-2.5 border border-gray-700/50">
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">不达标名单预览</p>
+                  <span className="text-xs text-yellow-400 font-mono">
+                    周&lt;{checkConfig.weeklyThreshold} 且 日均&lt;{checkConfig.dailyThreshold} · {getCheckFailList.length}人
+                  </span>
+                </div>
+                <div className={`text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar ${!isMobile ? 'select-text' : ''}`}>
+                  {getCheckFailList.length === 0 ? (
+                    <div className="text-gray-500 text-center py-4">没有不达标成员</div>
+                  ) : (
+                    getCheckFailList.map((p, i) => (
+                      <div key={i} className="flex justify-between items-center gap-2">
+                        <span className="flex items-center gap-1 min-w-0">
+                          <span className="flex-shrink-0">{i + 1}.</span>
+                          <span className="truncate">{p.name}</span>
+                          {p.isNewMember && p.joinDateLabel && (
+                            <span className="text-green-400 text-[10px] flex-shrink-0">({p.joinDateLabel})</span>
+                          )}
+                        </span>
+                        <span className="flex-shrink-0 text-[10px]">
+                          <span className="text-red-400">周{p.value} 日均{p.dailyAvg}</span>
+                          <span className="text-yellow-400 ml-1">差{p.gap}</span>
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 底部按钮 */}
+            <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2">
+              <button
+                onClick={() => setShowCheckModal(false)}
+                className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                关闭
+              </button>
+              <button
+                onClick={handleCopyCheckList}
+                disabled={getCheckFailList.length === 0}
+                className="flex-1 px-3 py-2 bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-700 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all flex items-center justify-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>复制名单</span>
               </button>
             </div>
           </div>
