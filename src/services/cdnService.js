@@ -493,7 +493,7 @@ function formatYearMonth(date) {
  * @returns {string} 周活跃度 CSV 路径
  */
 export function buildHoriznWeeklyCsvPath(yearMonth) {
-  return `horizn/data/weekly_${yearMonth}.csv`
+  return `horizn/${yearMonth}/weekly_${yearMonth}.csv`
 }
 
 /**
@@ -502,7 +502,7 @@ export function buildHoriznWeeklyCsvPath(yearMonth) {
  * @returns {string} 赛季活跃度 CSV 路径
  */
 export function buildHoriznSeasonCsvPath(yearMonth) {
-  return `horizn/data/season_${yearMonth}.csv`
+  return `horizn/${yearMonth}/season_${yearMonth}.csv`
 }
 
 /**
