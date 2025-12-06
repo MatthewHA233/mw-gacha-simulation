@@ -44,6 +44,7 @@ export default function HoriznPage({ yearMonth }) {
   })
   const [checkExcludeSearch, setCheckExcludeSearch] = useState('') // 排除人员搜索框
   const [checkSelectedFrame, setCheckSelectedFrame] = useState(null) // 选中的时间帧索引
+  const checkListRef = useRef(null) // 追踪考核名单截图区域
 
   // 预加载的数据缓存
   const [preloadedData, setPreloadedData] = useState({
@@ -468,6 +469,133 @@ export default function HoriznPage({ yearMonth }) {
         toast.error('复制失败')
       }
       document.body.removeChild(textarea)
+    }
+  }
+
+  // 生成考核名单截图（使用 Canvas API 手动绘制）
+  const handleGenerateCheckListImage = async () => {
+    const failList = getCheckFailList
+    if (failList.length === 0) {
+      toast.error('没有不达标成员')
+      return
+    }
+
+    try {
+      const timeline = preloadedData.weekly?.timeline
+      const frameIndex = Math.min(checkSelectedFrame, timeline.length - 1)
+      const frame = timeline[frameIndex]
+
+      // 配置
+      const scale = 2
+      const padding = 24 * scale
+      const lineHeight = 28 * scale
+      const titleFontSize = 16 * scale
+      const subtitleFontSize = 12 * scale
+      const listFontSize = 13 * scale
+      const smallFontSize = 11 * scale
+      const width = 400 * scale
+
+      // 计算高度
+      const headerHeight = 80 * scale
+      const listHeight = failList.length * lineHeight
+      const height = headerHeight + listHeight + padding * 2
+
+      // 创建 canvas
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+
+      // 背景
+      ctx.fillStyle = '#111827'
+      ctx.fillRect(0, 0, width, height)
+
+      // 边框
+      ctx.strokeStyle = '#374151'
+      ctx.lineWidth = 2 * scale
+      ctx.roundRect(4 * scale, 4 * scale, width - 8 * scale, height - 8 * scale, 8 * scale)
+      ctx.stroke()
+
+      let y = padding
+
+      // 标题
+      ctx.fillStyle = '#ffffff'
+      ctx.font = `bold ${titleFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+      ctx.textAlign = 'center'
+      ctx.fillText('HORIZN地平线 周活跃度考核', width / 2, y + titleFontSize)
+      y += titleFontSize + 8 * scale
+
+      // 副标题
+      ctx.fillStyle = '#9ca3af'
+      ctx.font = `${subtitleFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+      ctx.fillText(`${frame.timestamp} · 周<${checkConfig.weeklyThreshold} 日均<${checkConfig.dailyThreshold}`, width / 2, y + subtitleFontSize)
+      y += subtitleFontSize + 16 * scale
+
+      // 分隔线
+      ctx.strokeStyle = '#374151'
+      ctx.lineWidth = 1 * scale
+      ctx.beginPath()
+      ctx.moveTo(padding, y)
+      ctx.lineTo(width - padding, y)
+      ctx.stroke()
+      y += 12 * scale
+
+      // 列表标题
+      ctx.textAlign = 'left'
+      ctx.fillStyle = '#9ca3af'
+      ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+      ctx.fillText('不达标名单', padding, y + smallFontSize)
+      ctx.textAlign = 'right'
+      ctx.fillStyle = '#facc15'
+      ctx.fillText(`${failList.length}人`, width - padding, y + smallFontSize)
+      y += smallFontSize + 12 * scale
+
+      // 列表
+      ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+      failList.forEach((p, i) => {
+        const rowY = y + i * lineHeight
+
+        // 序号和名字
+        ctx.textAlign = 'left'
+        ctx.fillStyle = '#d1d5db'
+        let nameText = `${i + 1}. ${p.name}`
+        ctx.fillText(nameText, padding, rowY + listFontSize)
+
+        // 入队日期（如果有）
+        if (p.isNewMember && p.joinDateLabel) {
+          const nameWidth = ctx.measureText(nameText).width
+          ctx.fillStyle = '#4ade80'
+          ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+          ctx.fillText(`(${p.joinDateLabel})`, padding + nameWidth + 6 * scale, rowY + listFontSize)
+          ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+        }
+
+        // 右侧数据
+        ctx.textAlign = 'right'
+        const rightText = `周${p.value} 日均${p.dailyAvg}`
+        const gapText = ` 差${p.gap}`
+
+        ctx.fillStyle = '#facc15'
+        ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+        ctx.fillText(gapText, width - padding, rowY + listFontSize)
+
+        const gapWidth = ctx.measureText(gapText).width
+        ctx.fillStyle = '#f87171'
+        ctx.fillText(rightText, width - padding - gapWidth, rowY + listFontSize)
+
+        ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+      })
+
+      // 下载
+      const link = document.createElement('a')
+      link.download = `考核名单_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+
+      toast.success('截图已生成')
+    } catch (error) {
+      console.error('生成截图失败:', error)
+      toast.error('生成截图失败')
     }
   }
 
@@ -1582,28 +1710,35 @@ export default function HoriznPage({ yearMonth }) {
                 )}
               </div>
 
-              {/* 预览 */}
-              <div className="bg-gray-900/50 rounded-lg p-2.5 border border-gray-700/50">
+              {/* 预览（截图区域） */}
+              <div ref={checkListRef} className="bg-gray-900/50 rounded-lg p-2.5 border border-gray-700/50">
+                {/* 截图时显示的标题 */}
+                <div className="text-center mb-2">
+                  <p className="text-sm font-bold text-white">HORIZN地平线 周活跃度考核</p>
+                  <p className="text-[10px] text-gray-400">
+                    {preloadedData.weekly?.timeline?.[checkSelectedFrame]?.timestamp} · 周&lt;{checkConfig.weeklyThreshold} 日均&lt;{checkConfig.dailyThreshold}
+                  </p>
+                </div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">不达标名单预览</p>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">不达标名单</p>
                   <span className="text-xs text-yellow-400 font-mono">
-                    周&lt;{checkConfig.weeklyThreshold} 且 日均&lt;{checkConfig.dailyThreshold} · {getCheckFailList.length}人
+                    {getCheckFailList.length}人
                   </span>
                 </div>
-                <div className={`text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar ${!isMobile ? 'select-text' : ''}`}>
+                <div className={`text-xs text-gray-300 whitespace-pre-wrap max-h-40 sm:max-h-52 overflow-y-auto custom-scrollbar ${!isMobile ? 'select-text' : ''}`}>
                   {getCheckFailList.length === 0 ? (
                     <div className="text-gray-500 text-center py-4">没有不达标成员</div>
                   ) : (
                     getCheckFailList.map((p, i) => (
                       <div key={i} className="flex justify-between items-center gap-2">
                         <span className="flex items-center gap-1 min-w-0">
-                          <span className="flex-shrink-0">{i + 1}.</span>
+                          <span className="flex-shrink-0 font-mono">{i + 1}.</span>
                           <span className="truncate">{p.name}</span>
                           {p.isNewMember && p.joinDateLabel && (
                             <span className="text-green-400 text-[10px] flex-shrink-0">({p.joinDateLabel})</span>
                           )}
                         </span>
-                        <span className="flex-shrink-0 text-[10px]">
+                        <span className="flex-shrink-0 text-[10px] font-mono">
                           <span className="text-red-400">周{p.value} 日均{p.dailyAvg}</span>
                           <span className="text-yellow-400 ml-1">差{p.gap}</span>
                         </span>
@@ -1618,19 +1753,29 @@ export default function HoriznPage({ yearMonth }) {
             <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2">
               <button
                 onClick={() => setShowCheckModal(false)}
-                className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
+                className="px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 关闭
               </button>
               <button
                 onClick={handleCopyCheckList}
                 disabled={getCheckFailList.length === 0}
-                className="flex-1 px-3 py-2 bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-700 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 disabled:bg-gray-700/30 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                <span>复制名单</span>
+                <span>复制</span>
+              </button>
+              <button
+                onClick={handleGenerateCheckListImage}
+                disabled={getCheckFailList.length === 0}
+                className="flex-1 px-3 py-2 bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-700 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all flex items-center justify-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>生成截图</span>
               </button>
             </div>
           </div>
