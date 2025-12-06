@@ -42,9 +42,11 @@ export default function HoriznPage({ yearMonth }) {
     dailyThreshold: 500,      // 日均活跃度要求
     excludeMembers: []        // 排除考核人员（管理层等）
   })
+  const [checkConfigLoaded, setCheckConfigLoaded] = useState(false) // 配置是否已加载
   const [checkExcludeSearch, setCheckExcludeSearch] = useState('') // 排除人员搜索框
   const [checkSelectedFrame, setCheckSelectedFrame] = useState(null) // 选中的时间帧索引
   const checkListRef = useRef(null) // 追踪考核名单截图区域
+  const saveConfigTimeoutRef = useRef(null) // 保存配置防抖
 
   // 预加载的数据缓存
   const [preloadedData, setPreloadedData] = useState({
@@ -68,19 +70,60 @@ export default function HoriznPage({ yearMonth }) {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // 从 localStorage 加载考核配置
+  // 从 API 加载考核配置
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const saved = localStorage.getItem('horizn_check_config')
-    if (saved) {
+    const loadConfig = async () => {
       try {
-        const config = JSON.parse(saved)
-        setCheckConfig(config)
+        const res = await fetch('/api/horizn/config')
+        if (res.ok) {
+          const config = await res.json()
+          setCheckConfig(config)
+        }
       } catch (e) {
-        console.error('Failed to parse check config:', e)
+        console.error('Failed to load check config:', e)
+        // 失败时尝试从 localStorage 加载
+        const saved = localStorage.getItem('horizn_check_config')
+        if (saved) {
+          try {
+            setCheckConfig(JSON.parse(saved))
+          } catch {}
+        }
+      } finally {
+        setCheckConfigLoaded(true)
       }
     }
+    loadConfig()
   }, [])
+
+  // 配置变化时保存到 API（防抖 1 秒）
+  useEffect(() => {
+    if (!checkConfigLoaded) return // 未加载完成前不保存
+
+    // 同时保存到 localStorage 作为备份
+    localStorage.setItem('horizn_check_config', JSON.stringify(checkConfig))
+
+    // 防抖保存到 API
+    if (saveConfigTimeoutRef.current) {
+      clearTimeout(saveConfigTimeoutRef.current)
+    }
+    saveConfigTimeoutRef.current = setTimeout(async () => {
+      try {
+        await fetch('/api/horizn/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(checkConfig)
+        })
+      } catch (e) {
+        console.error('Failed to save check config:', e)
+      }
+    }, 1000)
+
+    return () => {
+      if (saveConfigTimeoutRef.current) {
+        clearTimeout(saveConfigTimeoutRef.current)
+      }
+    }
+  }, [checkConfig, checkConfigLoaded])
 
   // 同步 currentData 到 ref
   useEffect(() => {
