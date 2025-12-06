@@ -20,6 +20,7 @@ export default function HoriznPage({ yearMonth }) {
   }
   const [activeTab, setActiveTab] = useState('weekly')
   const [statusInfo, setStatusInfo] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(false) // 管理员权限状态
   const [showAdminMenu, setShowAdminMenu] = useState(false)
   const [showMonthMenu, setShowMonthMenu] = useState(false)
   const [availableMonths, setAvailableMonths] = useState([])
@@ -30,7 +31,7 @@ export default function HoriznPage({ yearMonth }) {
   const [thresholdCompare, setThresholdCompare] = useState('gte') // 'gte' 大于等于, 'lte' 小于等于
   const [currentData, setCurrentData] = useState(null)
   const [manualFrameIndex, setManualFrameIndex] = useState(null) // 手动控制的帧索引（用于时间调整）
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(false)
   const [copyShowValues, setCopyShowValues] = useState(true) // 复制名单时是否显示活跃度数值
   const [copyShowNewMark, setCopyShowNewMark] = useState(true) // 复制名单时是否显示新来标记
   const [copyDataType, setCopyDataType] = useState('weekly') // 复制名单时使用的数据类型
@@ -182,14 +183,16 @@ export default function HoriznPage({ yearMonth }) {
     return activeTab === 'weekly' ? 100 : 1000
   }
 
-  // 检查是否有管理员权限
-  const isAdmin = sessionStorage.getItem('horizn_admin_auth') === 'true'
+  // 检查是否有管理员权限（客户端初始化）
+  useEffect(() => {
+    setIsAdmin(sessionStorage.getItem('horizn_admin_auth') === 'true')
+  }, [])
 
   // 退出管理员
   const handleLogout = () => {
     sessionStorage.removeItem('horizn_admin_auth')
+    setIsAdmin(false)
     setShowAdminMenu(false)
-    window.location.reload()
   }
 
   // 跳转到指定月份
@@ -593,31 +596,66 @@ export default function HoriznPage({ yearMonth }) {
       ctx.fillText(`${failList.length}人`, width - padding, y + smallFontSize)
       y += smallFontSize + 12 * scale
 
+      // 辅助函数：截断文本以适应最大宽度
+      const truncateText = (ctx, text, maxWidth) => {
+        if (ctx.measureText(text).width <= maxWidth) return text
+        let truncated = text
+        while (truncated.length > 0 && ctx.measureText(truncated + '...').width > maxWidth) {
+          truncated = truncated.slice(0, -1)
+        }
+        return truncated + '...'
+      }
+
       // 列表
       ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
       failList.forEach((p, i) => {
         const rowY = y + i * lineHeight
 
-        // 序号和名字
+        // 先计算右侧数据宽度
+        ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+        const rightText = `周${p.value} 日均${p.dailyAvg}`
+        const gapText = ` 差${p.gap}`
+        const rightWidth = ctx.measureText(rightText).width + ctx.measureText(gapText).width + 10 * scale
+
+        // 计算左侧可用宽度
+        const leftMaxWidth = width - padding * 2 - rightWidth - 10 * scale
+
+        // 序号和名字（截断）
+        ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
         ctx.textAlign = 'left'
         ctx.fillStyle = '#d1d5db'
-        let nameText = `${i + 1}. ${p.name}`
+        const indexText = `${i + 1}. `
+        const indexWidth = ctx.measureText(indexText).width
+
+        // 计算入队日期占用的宽度（简化格式：12.3入）
+        let joinDateWidth = 0
+        let joinDateShort = ''
+        if (p.isNewMember && p.playerInfo?.joinDate) {
+          const jd = p.playerInfo.joinDate
+          const month = parseInt(jd.substring(4, 6))
+          const day = parseInt(jd.substring(6, 8))
+          joinDateShort = ` ${month}.${day}入`
+          ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+          joinDateWidth = ctx.measureText(joinDateShort).width
+          ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
+        }
+
+        const nameMaxWidth = leftMaxWidth - indexWidth - joinDateWidth
+        const truncatedName = truncateText(ctx, p.name, nameMaxWidth)
+        const nameText = indexText + truncatedName
         ctx.fillText(nameText, padding, rowY + listFontSize)
 
         // 入队日期（如果有）
-        if (p.isNewMember && p.joinDateLabel) {
+        if (joinDateShort) {
           const nameWidth = ctx.measureText(nameText).width
           ctx.fillStyle = '#4ade80'
           ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
-          ctx.fillText(`(${p.joinDateLabel})`, padding + nameWidth + 6 * scale, rowY + listFontSize)
+          ctx.fillText(joinDateShort, padding + nameWidth, rowY + listFontSize)
           ctx.font = `${listFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
         }
 
         // 右侧数据
         ctx.textAlign = 'right'
-        const rightText = `周${p.value} 日均${p.dailyAvg}`
-        const gapText = ` 差${p.gap}`
-
         ctx.fillStyle = '#facc15'
         ctx.font = `${smallFontSize}px "Microsoft YaHei", "PingFang SC", sans-serif`
         ctx.fillText(gapText, width - padding, rowY + listFontSize)
