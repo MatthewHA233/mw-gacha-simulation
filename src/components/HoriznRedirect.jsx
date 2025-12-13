@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getLatestHoriznMonth } from '@/services/cdnService'
+import { getLatestHoriznMonth } from '@/services/horiznSupabase'
 
 /**
  * Horizn 重定向组件

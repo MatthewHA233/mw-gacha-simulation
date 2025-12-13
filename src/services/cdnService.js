@@ -100,13 +100,19 @@ export async function loadVersionHistory() {
   }
 
   try {
-    // 配置文件：优先从 OSS 直连加载，fallback 到本地
+    // 配置文件：优先从 OSS 直连加载，fallback 到本地；404 时返回空结构而不抛错
     const url = OSS_BASE_URL
       ? `${OSS_BASE_URL}/gacha-configs/version-history.json?t=${Date.now()}`
       : `/gacha-configs/version-history.json?t=${Date.now()}`
 
     const response = await fetch(url)
     if (!response.ok) {
+      if (response.status === 404) {
+        console.warn('version-history.json not found, returning empty history')
+        const empty = { currentVersion: null, history: [] }
+        configCache.set(cacheKey, empty)
+        return empty
+      }
       throw new Error(`Failed to load version history: ${response.status}`)
     }
     const data = await response.json()

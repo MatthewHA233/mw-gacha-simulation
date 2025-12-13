@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation'
 import { ShieldCheck, Calendar } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
-import { buildHoriznWeeklyCsvPath, buildHoriznSeasonCsvPath, getAllHoriznMonths, loadHoriznGameIdMapping } from '@/services/cdnService'
-import { CDN_BASE_URL, OSS_BASE_URL } from '@/utils/constants'
-import { parseBarChartRaceCSV, parseGameIdMappingCSV, applyNameMapping, generateColorMap } from '@/utils/csvParser'
+import { CDN_BASE_URL } from '@/utils/constants'
+import { getHoriznAvailableMonths, getHoriznMonthlyBase, buildHoriznTimelineFromBase } from '@/services/horiznSupabase'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage({ yearMonth }) {
@@ -54,7 +53,7 @@ export default function HoriznPage({ yearMonth }) {
     weekly: null, // { timeline, colorMap }
     season: null
   })
-  const [dataLoading, setDataLoading] = useState(true)
+  const [monthlyBase, setMonthlyBase] = useState(null)
 
   // 长按处理
   const pressTimerRef = useRef(null)
@@ -848,88 +847,97 @@ export default function HoriznPage({ yearMonth }) {
     }
   }, [])
 
-  // 加载可用的游戏月列表
+  // 仅在打开月份菜单时加载可用月份列表，避免与主数据请求抢占网络
   useEffect(() => {
+    if (!showMonthMenu) return
+    if (availableMonths.length > 0) return
+
     const fetchMonths = async () => {
       try {
-        const months = await getAllHoriznMonths()
+        const months = await getHoriznAvailableMonths()
         setAvailableMonths(months)
       } catch (error) {
         console.error('Failed to load available months:', error)
       }
     }
-    fetchMonths()
-  }, [])
 
-  // 预加载周活跃度和赛季活跃度数据 + 玩家ID映射表
+    fetchMonths()
+  }, [showMonthMenu, availableMonths.length])
+
+  // 预加载：先取 Supabase 月度基础数据 + 周活时间线（赛季时间线延后计算，提升首屏速度）
   useEffect(() => {
     const loadAllData = async () => {
-      setDataLoading(true)
-
-      const weeklyPath = buildHoriznWeeklyCsvPath(yearMonth)
-      const seasonPath = buildHoriznSeasonCsvPath(yearMonth)
-
       try {
-        // 并行加载：映射表 + 周活跃度 + 赛季活跃度
-        const [mappingCsvText, weeklyResult, seasonResult] = await Promise.all([
-          // 加载玩家ID映射表
-          loadHoriznGameIdMapping(),
-          // 加载周活跃度
-          (async () => {
-            const url = OSS_BASE_URL
-              ? `${OSS_BASE_URL}/${weeklyPath}?t=${Date.now()}`
-              : `/${weeklyPath}`
-            const response = await fetch(url)
-            if (!response.ok) throw new Error(`Failed to load weekly CSV`)
-            return await response.text()
-          })(),
-          // 加载赛季活跃度
-          (async () => {
-            const url = OSS_BASE_URL
-              ? `${OSS_BASE_URL}/${seasonPath}?t=${Date.now()}`
-              : `/${seasonPath}`
-            const response = await fetch(url)
-            if (!response.ok) throw new Error(`Failed to load season CSV`)
-            return await response.text()
-          })()
-        ])
+        setPreloadedData({ weekly: null, season: null })
+        setMonthlyBase(null)
 
-        // 解析映射表
-        const idMapping = parseGameIdMappingCSV(mappingCsvText)
-        console.log('[HoriznPage] Loaded ID mapping:', Object.keys(idMapping).length, 'players')
+        const base = await getHoriznMonthlyBase(yearMonth)
+        const weeklyTimeline = buildHoriznTimelineFromBase(base, 'weekly_activity')
+        const weekly = { timeline: weeklyTimeline, colorMap: base.colorMap, idMapping: base.idMapping }
 
-        // 解析周活跃度并应用映射（传入 yearMonth 以过滤离队成员）
-        const weeklyTimeline = parseBarChartRaceCSV(weeklyResult)
-        const weeklyWithNames = applyNameMapping(weeklyTimeline, idMapping, yearMonth)
-        const weeklyNames = new Set()
-        weeklyWithNames.forEach(frame => frame.data.forEach(item => weeklyNames.add(item.name)))
-        const weeklyColorMap = generateColorMap(Array.from(weeklyNames))
-
-        // 解析赛季活跃度并应用映射
-        const seasonTimeline = parseBarChartRaceCSV(seasonResult)
-        const seasonWithNames = applyNameMapping(seasonTimeline, idMapping, yearMonth)
-        const seasonNames = new Set()
-        seasonWithNames.forEach(frame => frame.data.forEach(item => seasonNames.add(item.name)))
-        const seasonColorMap = generateColorMap(Array.from(seasonNames))
-
-        setPreloadedData({
-          weekly: { timeline: weeklyWithNames, colorMap: weeklyColorMap, csvPath: weeklyPath, idMapping },
-          season: { timeline: seasonWithNames, colorMap: seasonColorMap, csvPath: seasonPath, idMapping }
-        })
-
-        console.log('[HoriznPage] Preloaded data:', {
-          weekly: weeklyWithNames.length,
-          season: seasonWithNames.length
-        })
+        setMonthlyBase(base)
+        setPreloadedData({ weekly, season: null })
+        console.log('[HoriznPage] Preloaded weekly timeline:', weeklyTimeline.length)
       } catch (error) {
-        console.error('[HoriznPage] Failed to preload data:', error)
-      } finally {
-        setDataLoading(false)
+        console.error('[HoriznPage] Failed to load Supabase data:', error)
+        setPreloadedData({
+          weekly: { timeline: [], colorMap: {}, idMapping: {} },
+          season: { timeline: [], colorMap: {}, idMapping: {} }
+        })
+        setMonthlyBase(null)
+        toast.error('加载数据失败，请稍后重试')
       }
     }
 
     loadAllData()
   }, [yearMonth])
+
+  // 空闲时预计算赛季时间线，避免切换标签时卡顿（不阻塞首屏）
+  useEffect(() => {
+    if (!monthlyBase) return
+    if (preloadedData.season) return
+
+    const schedule = typeof window !== 'undefined' && window.requestIdleCallback
+      ? window.requestIdleCallback
+      : (cb) => setTimeout(cb, 0)
+
+    const cancel = typeof window !== 'undefined' && window.cancelIdleCallback
+      ? window.cancelIdleCallback
+      : (id) => clearTimeout(id)
+
+    const taskId = schedule(() => {
+      try {
+        const seasonTimeline = buildHoriznTimelineFromBase(monthlyBase, 'season_activity')
+        setPreloadedData(prev => ({
+          ...prev,
+          season: { timeline: seasonTimeline, colorMap: monthlyBase.colorMap, idMapping: monthlyBase.idMapping }
+        }))
+        console.log('[HoriznPage] Precomputed season timeline:', seasonTimeline.length)
+      } catch (e) {
+        console.warn('[HoriznPage] Failed to precompute season timeline:', e)
+      }
+    })
+
+    return () => cancel(taskId)
+  }, [monthlyBase, preloadedData.season])
+
+  // 当用户确实需要赛季数据（切换标签/选择复制类型）时，若仍未准备好则立即计算一次
+  useEffect(() => {
+    const needsSeason = activeTab === 'season' || copyDataType === 'season'
+    if (!needsSeason) return
+    if (!monthlyBase) return
+    if (preloadedData.season) return
+
+    try {
+      const seasonTimeline = buildHoriznTimelineFromBase(monthlyBase, 'season_activity')
+      setPreloadedData(prev => ({
+        ...prev,
+        season: { timeline: seasonTimeline, colorMap: monthlyBase.colorMap, idMapping: monthlyBase.idMapping }
+      }))
+    } catch (e) {
+      console.warn('[HoriznPage] Failed to build season timeline on-demand:', e)
+    }
+  }, [activeTab, copyDataType, monthlyBase, preloadedData.season])
 
   // 切换标签时重置状态信息（避免显示旧标签页的状态）
   useEffect(() => {
@@ -938,8 +946,8 @@ export default function HoriznPage({ yearMonth }) {
 
   // 动态构建 CSV 路径（useMemo 缓存，避免切换标签时重新创建导致组件重新挂载）
   const tabs = useMemo(() => [
-    { id: 'weekly', name: '周活跃度', csvPath: buildHoriznWeeklyCsvPath(yearMonth) },
-    { id: 'season', name: '赛季活跃度', csvPath: buildHoriznSeasonCsvPath(yearMonth) }
+    { id: 'weekly', name: '周活跃度', csvPath: `supabase-weekly-${yearMonth}` },
+    { id: 'season', name: '赛季活跃度', csvPath: `supabase-season-${yearMonth}` }
   ], [yearMonth])
 
   const currentTab = tabs.find(tab => tab.id === activeTab)

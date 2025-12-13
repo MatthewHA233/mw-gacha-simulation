@@ -108,13 +108,19 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   // 加载 CSV 数据（优先使用预加载的数据）
   useEffect(() => {
     const loadData = async () => {
-      // 如果有预加载的数据，直接使用
+      setLoading(true)
+      setError(null)
+
+      // 等待父级预加载完成（Supabase 场景）
+      if (csvPath.startsWith('supabase-') && !preloadedData) return
+
+      // 如果有预加载的数据，直接使用；若是 supabase 标签即使为空也不回源 OSS
       if (preloadedData && preloadedData.timeline) {
         console.log('[BarChartRace] Using preloaded data, frames:', preloadedData.timeline.length)
 
         setTimeline(preloadedData.timeline)
         setColorMap(preloadedData.colorMap)
-        setCurrentFrame(preloadedData.timeline.length - 1)
+        setCurrentFrame(Math.max(0, preloadedData.timeline.length - 1))
 
         // 记录最新数据的时间戳
         if (preloadedData.timeline.length > 0) {
@@ -132,7 +138,8 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
         console.log('[BarChartRace] New members detected (from preloaded):', Object.keys(newMembers).length)
 
         setLoading(false)
-        return
+        if (csvPath.startsWith('supabase-')) return
+        if (preloadedData.timeline.length > 0) return
       }
 
       // 没有预加载数据，正常加载
