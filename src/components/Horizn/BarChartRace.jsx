@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
 
-export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null }) {
+export default function BarChartRace({ csvPath, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null }) {
   // 根据 csvPath 判断类型（weekly 或 season）
   const dataType = csvPath.includes('weekly') ? 'weekly' : 'season'
   const storageKey = `horizn_animation_duration_${dataType}`
@@ -17,8 +17,6 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [error, setError] = useState(null)
   const [colorMap, setColorMap] = useState({})
   const [totalDuration, setTotalDuration] = useState(5) // 默认5秒，客户端挂载后从 localStorage 读取
-  const [lastUpdateTime, setLastUpdateTime] = useState(null) // 最近一次数据时间戳
-  const [timeElapsed, setTimeElapsed] = useState(0) // 距离上次更新的秒数
   const [maxVisibleItems, setMaxVisibleItems] = useState(20) // 最大可见条目数
   const [newMemberMap, setNewMemberMap] = useState({}) // 新成员映射：{ playerName: weeksAgo }
   const [activeTooltip, setActiveTooltip] = useState(null) // 当前显示的提示框（用于移动端点击）
@@ -29,7 +27,6 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
   const [isDraggingViewport, setIsDraggingViewport] = useState(false) // 是否正在拖动视窗
 
   const intervalRef = useRef(null)
-  const timerRef = useRef(null)
   const animationRef = useRef(null)
   const startTimeRef = useRef(null)
   const startFrameRef = useRef(0)
@@ -122,16 +119,6 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
         setColorMap(preloadedData.colorMap)
         setCurrentFrame(Math.max(0, preloadedData.timeline.length - 1))
 
-        // 记录最新数据的时间戳
-        if (preloadedData.timeline.length > 0) {
-          const lastFrame = preloadedData.timeline[preloadedData.timeline.length - 1]
-          const parsedTime = parseTimestamp(lastFrame.timestamp)
-
-          if (parsedTime && !isNaN(parsedTime.getTime())) {
-            setLastUpdateTime(parsedTime)
-          }
-        }
-
         // 使用当前 timeline 的 playerInfo.joinDate 计算新成员
         const newMembers = calculateNewMembers(preloadedData.timeline)
         setNewMemberMap(newMembers)
@@ -172,22 +159,6 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
         setColorMap(colors)
         // 初始化时跳转到最后一帧（最新数据）
         setCurrentFrame(timelineData.length - 1)
-
-        // 记录最新数据的时间戳
-        if (timelineData.length > 0) {
-          const lastFrame = timelineData[timelineData.length - 1]
-          console.log('[BarChartRace] Last timestamp:', lastFrame.timestamp)
-
-          // 解析时间戳（支持多种格式）
-          const parsedTime = parseTimestamp(lastFrame.timestamp)
-          console.log('[BarChartRace] Parsed time:', parsedTime)
-
-          if (parsedTime && !isNaN(parsedTime.getTime())) {
-            setLastUpdateTime(parsedTime)
-          } else {
-            console.warn('[BarChartRace] Invalid timestamp format:', lastFrame.timestamp)
-          }
-        }
 
         // 使用当前 timeline 的 playerInfo.joinDate 计算新成员
         const newMembers = calculateNewMembers(timelineData)
@@ -250,107 +221,6 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
     }
   }, [currentFrame, enableViewport, viewportStart, viewportEnd, viewportWidth, timeline.length, isDraggingViewport])
 
-  // 解析时间戳（支持多种格式）
-  const parseTimestamp = (timestamp) => {
-    // 尝试直接解析
-    let date = new Date(timestamp)
-    if (!isNaN(date.getTime())) {
-      return date
-    }
-
-    // 尝试替换空格为 T（ISO 8601 格式）
-    date = new Date(timestamp.replace(' ', 'T'))
-    if (!isNaN(date.getTime())) {
-      return date
-    }
-
-    // 手动解析 "YYYY-MM-DD HH:MM:SS" 格式
-    let match = timestamp.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/)
-    if (match) {
-      const [, year, month, day, hour, minute, second] = match
-      return new Date(year, month - 1, day, hour, minute, second)
-    }
-
-    // 解析中文格式 "10月28日 16:02"
-    match = timestamp.match(/(\d{1,2})月(\d{1,2})日\s+(\d{1,2}):(\d{2})/)
-    if (match) {
-      const [, month, day, hour, minute] = match
-      const now = new Date()
-      const year = now.getFullYear()
-      return new Date(year, month - 1, day, hour, minute, 0)
-    }
-
-    return null
-  }
-
-  // 判断当前是白天还是夜间模式
-  const isNightMode = () => {
-    const hour = new Date().getHours()
-    // 夜间模式：1:00-8:00
-    return hour >= 1 && hour < 8
-  }
-
-  // 获取更新间隔和首次检查点（分钟）
-  const getUpdateConfig = () => {
-    const nightMode = isNightMode()
-    return {
-      interval: nightMode ? 60 : 10,        // 更新间隔：夜间60分钟，白天10分钟
-      firstCheck: nightMode ? 62 : 12       // 首次检查点：夜间62分钟，白天12分钟
-    }
-  }
-
-  // 计算下一个检查点的剩余秒数
-  const getSecondsToNextCheckpoint = (elapsed) => {
-    const { interval, firstCheck } = getUpdateConfig()
-    const elapsedMinutes = elapsed / 60
-
-    if (elapsedMinutes < firstCheck) {
-      // 还没到第一个检查点
-      return (firstCheck * 60) - elapsed
-    }
-
-    // 计算距离第一个检查点过了多少时间
-    const timeSinceFirstCheck = elapsedMinutes - firstCheck
-    const remainder = timeSinceFirstCheck % interval
-
-    // 距离下一个检查点的时间
-    const minutesToNext = remainder === 0 ? interval : (interval - remainder)
-    return Math.ceil(minutesToNext * 60)
-  }
-
-  // 自动更新检查
-  useEffect(() => {
-    if (!lastUpdateTime) return
-
-    // 每秒更新一次计时器
-    timerRef.current = setInterval(() => {
-      const now = new Date()
-      const elapsed = Math.floor((now - lastUpdateTime) / 1000)
-      setTimeElapsed(elapsed)
-
-      // 检查是否到达刷新检查点
-      const { interval, firstCheck } = getUpdateConfig()
-      const elapsedMinutes = elapsed / 60
-
-      // 只在刚到达检查点的那几秒触发（允许3秒误差）
-      if (elapsedMinutes >= firstCheck) {
-        const timeSinceFirstCheck = elapsedMinutes - firstCheck
-        const remainder = timeSinceFirstCheck % interval
-        const secondsRemainder = remainder * 60
-
-        // 如果remainder接近0（或接近interval），说明刚好到达一个检查点
-        if (secondsRemainder <= 3) {
-          console.log('[BarChartRace] Auto-refresh at checkpoint:', Math.floor(elapsedMinutes), 'minutes')
-          window.location.reload()
-        }
-      }
-    }, 1000)
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-  }, [lastUpdateTime])
-
   // 向父组件传递当前数据和最新时间戳
   useEffect(() => {
     if (onDataUpdate && timeline.length > 0 && currentFrame !== null) {
@@ -365,34 +235,6 @@ export default function BarChartRace({ csvPath, onStatusUpdate, onDataUpdate, sh
       })
     }
   }, [currentFrame, timeline, onDataUpdate, newMemberMap])
-
-  // 向父组件传递状态信息
-  useEffect(() => {
-    // 确保数据完全加载后才更新状态
-    if (!lastUpdateTime || !onStatusUpdate || timeElapsed === 0) return
-
-    const formatTimeElapsed = (seconds) => {
-      const minutes = Math.floor(seconds / 60)
-      const secs = seconds % 60
-      if (minutes > 0) {
-        return `${minutes}分${secs}秒前`
-      }
-      return `${secs}秒前`
-    }
-
-    // 计算到下一个检查点的剩余时间
-    const remainingSeconds = getSecondsToNextCheckpoint(timeElapsed)
-    const remainingMinutes = Math.floor(remainingSeconds / 60)
-    const remainingSecs = remainingSeconds % 60
-
-    onStatusUpdate({
-      timeElapsed,
-      timeElapsedText: formatTimeElapsed(timeElapsed),
-      isNightMode: isNightMode(),
-      remainingSeconds,
-      remainingText: `${remainingMinutes}:${remainingSecs.toString().padStart(2, '0')}`
-    })
-  }, [timeElapsed, lastUpdateTime, onStatusUpdate])
 
   // 根据视窗高度计算最大可见条目数
   useEffect(() => {
