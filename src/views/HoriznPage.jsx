@@ -8,7 +8,7 @@ import BarChartRace from '@/components/Horizn/BarChartRace'
 import CopyRankModal from '@/components/Horizn/CopyRankModal'
 import CheckListModal from '@/components/Horizn/CheckListModal'
 import { CDN_BASE_URL } from '@/utils/constants'
-import { getHoriznAvailableMonths, getHoriznMonthlyBase, buildHoriznTimelineFromBase } from '@/services/horiznSupabase'
+import { getHoriznAvailableMonths, getHoriznMonthlyBaseSmart, buildHoriznTimelineFromBase } from '@/services/horiznSupabase'
 import '@/components/Layout/Sidebar.css'
 
 export default function HoriznPage({ yearMonth }) {
@@ -120,7 +120,7 @@ export default function HoriznPage({ yearMonth }) {
         setPreloadedData({ weekly: null, season: null })
         setMonthlyBase(null)
 
-        const base = await getHoriznMonthlyBase(yearMonth)
+        const base = await getHoriznMonthlyBaseSmart(yearMonth)
         const weeklyTimeline = buildHoriznTimelineFromBase(base, 'weekly_activity')
         const weekly = { timeline: weeklyTimeline, colorMap: base.colorMap, idMapping: base.idMapping }
 

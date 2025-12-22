@@ -293,3 +293,298 @@ export async function getLatestHoriznMonth() {
   const months = await getHoriznAvailableMonths()
   return months?.[0]?.yearMonth || null
 }
+
+// ============================================
+// 新版：从缓存表读取（毫秒级响应）
+// ============================================
+
+/**
+ * 从缓存表获取月度数据（直接查表，不走 RPC）
+ */
+export async function getHoriznMonthlyBaseCached(yearMonth) {
+  const cacheKey = `cached:${yearMonth}`
+  if (monthlyBaseCache.has(cacheKey)) {
+    const cached = monthlyBaseCache.get(cacheKey)
+    return typeof cached?.then === 'function' ? await cached : cached
+  }
+
+  const supabase = assertSupabase()
+
+  const promise = (async () => {
+    console.log('[horiznSupabase] Fetching from cache table (direct query):', yearMonth)
+    const startTime = Date.now()
+
+    // 并行查询：缓存表 + 成员映射
+    const [cacheResult, membersResult] = await Promise.all([
+      supabase
+        .from('horizn_timeline_cache')
+        .select('date, timeline, frame_count')
+        .eq('year_month', yearMonth)
+        .order('date'),
+      getMembersIdMapping()
+    ])
+
+    if (cacheResult.error) {
+      console.error('[horiznSupabase] Cache query error:', cacheResult.error)
+      throw cacheResult.error
+    }
+
+    const elapsed = Date.now() - startTime
+    console.log(`[horiznSupabase] Cache fetch took ${elapsed}ms`)
+
+    const days = cacheResult.data || []
+    const idMapping = membersResult || {}
+
+    // 合并所有天的 timeline，转换成 sessions 格式
+    // 格式: {ts: "HH:MM", d: [{p: playerId, w: weekly, s: season}, ...]}
+    const sessions = []
+    const allNames = new Set()
+
+    // 从 idMapping 收集所有名字
+    Object.values(idMapping).forEach(info => {
+      if (info?.name) allNames.add(info.name)
+    })
+
+    days.forEach(day => {
+      const dateStr = day.date // "2025-12-22"
+      const timeline = day.timeline || []
+      timeline.forEach(frame => {
+        const entries = (frame.d || []).map(p => ({
+          player_id: p.p,
+          weekly_activity: p.w || 0,
+          season_activity: p.s || 0
+        }))
+        sessions.push({
+          session_time: `${dateStr} ${frame.ts}:00`,
+          entries
+        })
+      })
+    })
+
+    // 月份边界
+    const start = parseDateStr(`${yearMonth}01`) || new Date()
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0, 23, 59, 59)
+
+    const totalFrames = days.reduce((sum, d) => sum + (d.frame_count || 0), 0)
+
+    return {
+      yearMonth,
+      sessions,
+      idMapping,
+      colorMap: generateColorMap(Array.from(allNames).filter(Boolean)),
+      monthStart: start,
+      monthEnd: end,
+      _fromCache: true,
+      _totalFrames: totalFrames
+    }
+  })()
+
+  monthlyBaseCache.set(cacheKey, promise)
+  try {
+    const resolved = await promise
+    monthlyBaseCache.set(cacheKey, resolved)
+    return resolved
+  } catch (e) {
+    monthlyBaseCache.delete(cacheKey)
+    throw e
+  }
+}
+
+/**
+ * 从 Next.js API 获取数据（服务端缓存）
+ */
+export async function getHoriznMonthlyBaseFromAPI(yearMonth) {
+  const cacheKey = `api:${yearMonth}`
+  if (monthlyBaseCache.has(cacheKey)) {
+    const cached = monthlyBaseCache.get(cacheKey)
+    return typeof cached?.then === 'function' ? await cached : cached
+  }
+
+  const promise = (async () => {
+    console.log('[horiznSupabase] Fetching from API (server cached):', yearMonth)
+    const startTime = Date.now()
+
+    const res = await fetch(`/api/horizn/timeline?yearMonth=${yearMonth}`)
+    if (!res.ok) {
+      const err = await res.json()
+      throw new Error(err.error || 'API request failed')
+    }
+
+    const data = await res.json()
+    const elapsed = Date.now() - startTime
+    console.log(`[horiznSupabase] API fetch took ${elapsed}ms`)
+
+    const { days, idMapping, totalFrames } = data
+
+    // 转换成 sessions 格式
+    const sessions = []
+    const allNames = new Set()
+
+    Object.values(idMapping || {}).forEach(info => {
+      if (info?.name) allNames.add(info.name)
+    })
+
+    ;(days || []).forEach(day => {
+      const dateStr = day.date
+      const timeline = day.timeline || []
+      timeline.forEach(frame => {
+        const entries = (frame.d || []).map(p => ({
+          player_id: p.p,
+          weekly_activity: p.w || 0,
+          season_activity: p.s || 0
+        }))
+        sessions.push({
+          session_time: `${dateStr} ${frame.ts}:00`,
+          entries
+        })
+      })
+    })
+
+    const start = parseDateStr(`${yearMonth}01`) || new Date()
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0, 23, 59, 59)
+
+    return {
+      yearMonth,
+      sessions,
+      idMapping: idMapping || {},
+      colorMap: generateColorMap(Array.from(allNames).filter(Boolean)),
+      monthStart: start,
+      monthEnd: end,
+      _fromCache: true,
+      _fromAPI: true,
+      _totalFrames: totalFrames || 0
+    }
+  })()
+
+  monthlyBaseCache.set(cacheKey, promise)
+  try {
+    const resolved = await promise
+    monthlyBaseCache.set(cacheKey, resolved)
+    return resolved
+  } catch (e) {
+    monthlyBaseCache.delete(cacheKey)
+    throw e
+  }
+}
+
+const OSS_HORIZN_BASE = 'https://lingflow.oss-cn-heyuan.aliyuncs.com/mw-gacha-simulation/horizn'
+
+/**
+ * 从 OSS 获取预缓存数据（最快）
+ */
+export async function getHoriznMonthlyBaseFromOSS(yearMonth) {
+  const cacheKey = `oss:${yearMonth}`
+  if (monthlyBaseCache.has(cacheKey)) {
+    const cached = monthlyBaseCache.get(cacheKey)
+    return typeof cached?.then === 'function' ? await cached : cached
+  }
+
+  const promise = (async () => {
+    console.log('[horiznSupabase] Fetching from OSS:', yearMonth)
+    const startTime = Date.now()
+
+    // 并行获取 idMapping 和每天的 timeline
+    const idMappingPromise = fetch(`${OSS_HORIZN_BASE}/id-mapping.json?t=${Date.now()}`)
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('id-mapping not found')))
+
+    // 获取可用日期
+    const availableMonthsRes = await fetch(`${OSS_HORIZN_BASE}/available-months.json?t=${Date.now()}`)
+    if (!availableMonthsRes.ok) throw new Error('available-months not found')
+    const availableMonths = await availableMonthsRes.json()
+
+    if (!availableMonths.months?.includes(yearMonth)) {
+      throw new Error(`Month ${yearMonth} not available in OSS`)
+    }
+
+    // 获取该月所有天的数据（从1号到31号尝试）
+    const dayPromises = []
+    for (let d = 1; d <= 31; d++) {
+      const dayStr = String(d).padStart(2, '0')
+      dayPromises.push(
+        fetch(`${OSS_HORIZN_BASE}/timeline/${yearMonth}/${dayStr}.json`)
+          .then(r => r.ok ? r.json() : null)
+          .catch(() => null)
+      )
+    }
+
+    const [idMappingData, ...daysData] = await Promise.all([idMappingPromise, ...dayPromises])
+    const days = daysData.filter(Boolean).sort((a, b) => a.date.localeCompare(b.date))
+
+    const elapsed = Date.now() - startTime
+    console.log(`[horiznSupabase] OSS fetch took ${elapsed}ms, ${days.length} days`)
+
+    const idMapping = idMappingData?.data || {}
+
+    // 转换成 sessions 格式
+    const sessions = []
+    const allNames = new Set()
+
+    Object.values(idMapping).forEach(info => {
+      if (info?.name) allNames.add(info.name)
+    })
+
+    days.forEach(day => {
+      const dateStr = day.date
+      const timeline = day.timeline || []
+      timeline.forEach(frame => {
+        const entries = (frame.d || []).map(p => ({
+          player_id: p.p,
+          weekly_activity: p.w || 0,
+          season_activity: p.s || 0
+        }))
+        sessions.push({
+          session_time: `${dateStr} ${frame.ts}:00`,
+          entries
+        })
+      })
+    })
+
+    const start = parseDateStr(`${yearMonth}01`) || new Date()
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0, 23, 59, 59)
+    const totalFrames = days.reduce((sum, d) => sum + (d.frameCount || 0), 0)
+
+    return {
+      yearMonth,
+      sessions,
+      idMapping,
+      colorMap: generateColorMap(Array.from(allNames).filter(Boolean)),
+      monthStart: start,
+      monthEnd: end,
+      _fromCache: true,
+      _fromOSS: true,
+      _totalFrames: totalFrames
+    }
+  })()
+
+  monthlyBaseCache.set(cacheKey, promise)
+  try {
+    const resolved = await promise
+    monthlyBaseCache.set(cacheKey, resolved)
+    return resolved
+  } catch (e) {
+    monthlyBaseCache.delete(cacheKey)
+    throw e
+  }
+}
+
+/**
+ * 智能获取月度数据：OSS（预缓存）→ 直接查表 → 原始 RPC
+ */
+export async function getHoriznMonthlyBaseSmart(yearMonth, maxSessions = DEFAULT_MAX_SESSIONS) {
+  // 1. 优先从 OSS 获取（预缓存，最快）
+  try {
+    return await getHoriznMonthlyBaseFromOSS(yearMonth)
+  } catch (e) {
+    console.warn('[horiznSupabase] OSS failed, fallback to direct query:', e.message)
+  }
+
+  // 2. 回退到直接查表
+  try {
+    return await getHoriznMonthlyBaseCached(yearMonth)
+  } catch (e) {
+    console.warn('[horiznSupabase] Direct query failed, fallback to original RPC:', e.message)
+  }
+
+  // 3. 最后回退到原始 RPC
+  return await getHoriznMonthlyBase(yearMonth, maxSessions)
+}
