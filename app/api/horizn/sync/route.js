@@ -61,11 +61,11 @@ async function uploadToOSS(client, path, data) {
 }
 
 export async function POST(request) {
-  // 验证 Cron 密钥（防止未授权调用）
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    // 开发环境允许无密钥调用
-    if (process.env.NODE_ENV === 'production') {
+  // 可选的 API 密钥验证（由 Python 采集脚本调用）
+  const syncSecret = process.env.HORIZN_SYNC_SECRET
+  if (syncSecret) {
+    const authHeader = request.headers.get('authorization')
+    if (authHeader !== `Bearer ${syncSecret}`) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
   }
