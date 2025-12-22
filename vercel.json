@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/horizn/sync",
-      "schedule": "0 2 * * *"
-    }
-  ]
-}
