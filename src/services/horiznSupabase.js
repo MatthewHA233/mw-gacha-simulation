@@ -483,31 +483,36 @@ export async function getHoriznMonthlyBaseFromOSS(yearMonth) {
     console.log('[horiznSupabase] Fetching from OSS:', yearMonth)
     const startTime = Date.now()
 
-    // 并行获取 idMapping 和每天的 timeline
-    const idMappingPromise = fetch(`${OSS_HORIZN_BASE}/id-mapping.json?t=${Date.now()}`)
-      .then(r => r.ok ? r.json() : Promise.reject(new Error('id-mapping not found')))
+    // 并行获取 idMapping 和可用月份信息
+    const [idMappingRes, availableMonthsRes] = await Promise.all([
+      fetch(`${OSS_HORIZN_BASE}/id-mapping.json?t=${Date.now()}`),
+      fetch(`${OSS_HORIZN_BASE}/available-months.json?t=${Date.now()}`)
+    ])
 
-    // 获取可用日期
-    const availableMonthsRes = await fetch(`${OSS_HORIZN_BASE}/available-months.json?t=${Date.now()}`)
+    if (!idMappingRes.ok) throw new Error('id-mapping not found')
     if (!availableMonthsRes.ok) throw new Error('available-months not found')
-    const availableMonths = await availableMonthsRes.json()
 
-    if (!availableMonths.months?.includes(yearMonth)) {
+    const [idMappingData, availableMonths] = await Promise.all([
+      idMappingRes.json(),
+      availableMonthsRes.json()
+    ])
+
+    // 新格式: { months: { "202512": ["04", "05", ...], ... } }
+    const availableDays = availableMonths.months?.[yearMonth]
+    if (!availableDays || availableDays.length === 0) {
       throw new Error(`Month ${yearMonth} not available in OSS`)
     }
 
-    // 获取该月所有天的数据（从1号到31号尝试）
-    const dayPromises = []
-    for (let d = 1; d <= 31; d++) {
-      const dayStr = String(d).padStart(2, '0')
-      dayPromises.push(
-        fetch(`${OSS_HORIZN_BASE}/timeline/${yearMonth}/${dayStr}.json`)
-          .then(r => r.ok ? r.json() : null)
-          .catch(() => null)
-      )
-    }
+    console.log(`[horiznSupabase] OSS has ${availableDays.length} days for ${yearMonth}:`, availableDays.join(', '))
 
-    const [idMappingData, ...daysData] = await Promise.all([idMappingPromise, ...dayPromises])
+    // 只请求有数据的日期
+    const dayPromises = availableDays.map(dayStr =>
+      fetch(`${OSS_HORIZN_BASE}/timeline/${yearMonth}/${dayStr}.json`)
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null)
+    )
+
+    const daysData = await Promise.all(dayPromises)
     const days = daysData.filter(Boolean).sort((a, b) => a.date.localeCompare(b.date))
 
     const elapsed = Date.now() - startTime

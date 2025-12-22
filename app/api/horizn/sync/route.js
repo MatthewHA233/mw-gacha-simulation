@@ -150,19 +150,29 @@ export async function POST(request) {
       }
     }
 
-    // 4. 更新可用月份列表
-    const monthsSet = new Set()
+    // 4. 更新可用月份列表（包含每月具体日期）
+    const monthsMap = {}
     for (const day of cacheData || []) {
-      const yearMonth = day.date.slice(0, 7).replace('-', '')
-      monthsSet.add(yearMonth)
+      const yearMonth = day.date.slice(0, 7).replace('-', '') // "202512"
+      const dayNum = day.date.slice(8, 10) // "22"
+      if (!monthsMap[yearMonth]) {
+        monthsMap[yearMonth] = []
+      }
+      monthsMap[yearMonth].push(dayNum)
     }
-    const availableMonths = Array.from(monthsSet).sort().reverse()
+    // 对每个月的日期排序
+    for (const ym of Object.keys(monthsMap)) {
+      monthsMap[ym].sort()
+    }
 
     await uploadToOSS(ossClient, `${OSS_PREFIX}/available-months.json`, {
       updatedAt: new Date().toISOString(),
-      months: availableMonths
+      months: monthsMap
     })
-    logs.push(`Updated available-months.json: ${availableMonths.join(', ')}`)
+    const monthSummary = Object.entries(monthsMap)
+      .map(([ym, days]) => `${ym}(${days.length}天)`)
+      .join(', ')
+    logs.push(`Updated available-months.json: ${monthSummary}`)
 
     const elapsed = Date.now() - startTime
     return NextResponse.json({
