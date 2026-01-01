@@ -7,6 +7,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import CopyRankModal from '@/components/Horizn/CopyRankModal'
 import CheckListModal from '@/components/Horizn/CheckListModal'
+import KickReviewModal from '@/components/Horizn/KickReviewModal'
 import { CDN_BASE_URL } from '@/utils/constants'
 import { getHoriznAvailableMonths, getHoriznMonthlyBaseSmart, buildHoriznTimelineFromBase } from '@/services/horiznSupabase'
 import '@/components/Layout/Sidebar.css'
@@ -31,6 +32,9 @@ export default function HoriznPage({ yearMonth }) {
 
   // 追踪考核名单相关状态
   const [showCheckModal, setShowCheckModal] = useState(false)
+
+  // 踢出人员审核清单相关状态
+  const [showKickReviewModal, setShowKickReviewModal] = useState(false)
 
   // 预加载的数据缓存
   const [preloadedData, setPreloadedData] = useState({
@@ -86,6 +90,12 @@ export default function HoriznPage({ yearMonth }) {
   const handleOpenCheckModal = () => {
     setShowAdminMenu(false)
     setShowCheckModal(true)
+  }
+
+  // 打开踢出人员审核清单弹窗
+  const handleOpenKickReviewModal = () => {
+    setShowAdminMenu(false)
+    setShowKickReviewModal(true)
   }
 
   // 设置页面标题
@@ -338,6 +348,15 @@ export default function HoriznPage({ yearMonth }) {
                             </svg>
                             <span>追踪考核名单</span>
                           </button>
+                          <button
+                            onClick={handleOpenKickReviewModal}
+                            className="w-full px-3 py-1.5 text-left text-xs text-red-400 hover:bg-gray-700 transition-colors flex items-center gap-2"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span>踢出审核回归</span>
+                          </button>
                           <div className="border-t border-gray-700"></div>
                           <button
                             onClick={handleLogout}
@@ -394,6 +413,13 @@ export default function HoriznPage({ yearMonth }) {
         isMobile={isMobile}
         yearMonth={yearMonth}
         preloadedData={preloadedData}
+      />
+
+      {/* 踢出人员审核清单弹窗 */}
+      <KickReviewModal
+        show={showKickReviewModal}
+        onClose={() => setShowKickReviewModal(false)}
+        isMobile={isMobile}
       />
     </div>
   )

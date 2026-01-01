@@ -593,3 +593,99 @@ export async function getHoriznMonthlyBaseSmart(yearMonth, maxSessions = DEFAULT
   // 3. 最后回退到原始 RPC
   return await getHoriznMonthlyBase(yearMonth, maxSessions)
 }
+
+/**
+ * 获取被踢出的成员列表（用于审核回队资格）
+ * @returns {Promise<Array>} 被踢出的成员列表
+ */
+export async function getKickedMembers() {
+  const supabase = assertSupabase()
+
+  // 查询所有被标记为 is_kicked 的离队事件
+  const { data: kickedEvents, error } = await supabase
+    .from('horizn_membership_events')
+    .select(`
+      id,
+      player_id,
+      event_time,
+      is_kicked,
+      member:horizn_members!horizn_membership_events_member_id_fkey (
+        player_id,
+        member_number
+      )
+    `)
+    .eq('event_type', 'leave')
+    .eq('is_kicked', true)
+    .order('event_time', { ascending: false })
+
+  if (error) {
+    console.error('[horiznSupabase] Failed to load kicked members:', error)
+    throw error
+  }
+
+  if (!kickedEvents || kickedEvents.length === 0) {
+    return []
+  }
+
+  // 获取所有被踢出成员的 player_id 列表
+  const playerIds = [...new Set(kickedEvents.map(e => e.player_id))]
+
+  // 查询这些成员的所有 join 事件，用于判断是否已归队
+  const { data: joinEvents, error: joinError } = await supabase
+    .from('horizn_membership_events')
+    .select('player_id, event_time')
+    .eq('event_type', 'join')
+    .in('player_id', playerIds)
+    .order('event_time', { ascending: false })
+
+  if (joinError) {
+    console.warn('[horiznSupabase] Failed to load join events:', joinError)
+  }
+
+  // 构建 player_id -> 最新 join 时间 的映射
+  const latestJoinMap = new Map()
+  for (const je of (joinEvents || [])) {
+    if (!latestJoinMap.has(je.player_id)) {
+      latestJoinMap.set(je.player_id, new Date(je.event_time))
+    }
+  }
+
+  // 获取成员 ID 映射以获取名字
+  const idMapping = await getMembersIdMapping()
+
+  // 转换数据格式
+  return kickedEvents.map(event => {
+    const kickedAt = new Date(event.event_time)
+    const rejoinAllowedAt = new Date(kickedAt.getTime() + 30 * 24 * 60 * 60 * 1000) // 踢出后30天
+    const now = new Date()
+    const canRejoin = now >= rejoinAllowedAt
+
+    // 检查是否已归队（有踢出后的 join 事件）
+    const latestJoin = latestJoinMap.get(event.player_id)
+    const hasRejoined = latestJoin && latestJoin > kickedAt
+
+    // 计算提前归队天数（如果在30天冷却期结束前归队）
+    let earlyRejoinDays = 0
+    if (hasRejoined && latestJoin < rejoinAllowedAt) {
+      earlyRejoinDays = Math.ceil((rejoinAllowedAt.getTime() - latestJoin.getTime()) / (1000 * 60 * 60 * 24))
+    }
+
+    // 从 idMapping 获取名字
+    const memberInfo = idMapping[event.player_id]
+    const memberName = memberInfo?.name || event.player_id
+
+    return {
+      id: event.id,
+      playerId: event.player_id,
+      memberName,
+      memberNumber: event.member?.member_number || '',
+      kickedAt: kickedAt.toISOString(),
+      rejoinAllowedAt: rejoinAllowedAt.toISOString(),
+      canRejoin,
+      daysUntilRejoin: canRejoin ? 0 : Math.ceil((rejoinAllowedAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+      hasRejoined,
+      rejoinedAt: hasRejoined ? latestJoin.toISOString() : null,
+      earlyRejoinDays
+    }
+  })
+}
