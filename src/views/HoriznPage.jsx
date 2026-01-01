@@ -8,6 +8,7 @@ import BarChartRace from '@/components/Horizn/BarChartRace'
 import CopyRankModal from '@/components/Horizn/CopyRankModal'
 import CheckListModal from '@/components/Horizn/CheckListModal'
 import KickReviewModal from '@/components/Horizn/KickReviewModal'
+import MemberEventsModal from '@/components/Horizn/MemberEventsModal'
 import { CDN_BASE_URL } from '@/utils/constants'
 import { getHoriznAvailableMonths, getHoriznMonthlyBaseSmart, buildHoriznTimelineFromBase } from '@/services/horiznSupabase'
 import '@/components/Layout/Sidebar.css'
@@ -35,6 +36,9 @@ export default function HoriznPage({ yearMonth }) {
 
   // 踢出人员审核清单相关状态
   const [showKickReviewModal, setShowKickReviewModal] = useState(false)
+
+  // 成员入离队细目相关状态
+  const [showMemberEventsModal, setShowMemberEventsModal] = useState(false)
 
   // 预加载的数据缓存
   const [preloadedData, setPreloadedData] = useState({
@@ -96,6 +100,12 @@ export default function HoriznPage({ yearMonth }) {
   const handleOpenKickReviewModal = () => {
     setShowAdminMenu(false)
     setShowKickReviewModal(true)
+  }
+
+  // 打开成员入离队细目弹窗
+  const handleOpenMemberEventsModal = () => {
+    setShowAdminMenu(false)
+    setShowMemberEventsModal(true)
   }
 
   // 设置页面标题
@@ -357,6 +367,15 @@ export default function HoriznPage({ yearMonth }) {
                             </svg>
                             <span>踢出审核回归</span>
                           </button>
+                          <button
+                            onClick={handleOpenMemberEventsModal}
+                            className="w-full px-3 py-1.5 text-left text-xs text-cyan-400 hover:bg-gray-700 transition-colors flex items-center gap-2"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>入离队细目</span>
+                          </button>
                           <div className="border-t border-gray-700"></div>
                           <button
                             onClick={handleLogout}
@@ -420,6 +439,14 @@ export default function HoriznPage({ yearMonth }) {
         show={showKickReviewModal}
         onClose={() => setShowKickReviewModal(false)}
         isMobile={isMobile}
+      />
+
+      {/* 成员入离队细目弹窗 */}
+      <MemberEventsModal
+        show={showMemberEventsModal}
+        onClose={() => setShowMemberEventsModal(false)}
+        isMobile={isMobile}
+        isAdmin={isAdmin}
       />
     </div>
   )

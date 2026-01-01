@@ -689,3 +689,78 @@ export async function getKickedMembers() {
     }
   })
 }
+
+/**
+ * 获取指定月份的成员入离队事件
+ * @param {number} year - 年份
+ * @param {number} month - 月份 (1-12)
+ * @returns {Promise<Array>} 入离队事件列表
+ */
+export async function getMonthlyMembershipEvents(year, month) {
+  const supabase = assertSupabase()
+
+  // 构建月份范围
+  const startDate = new Date(year, month - 1, 1)
+  const endDate = new Date(year, month, 0, 23, 59, 59, 999)
+
+  const { data, error } = await supabase
+    .from('horizn_membership_events')
+    .select(`
+      id,
+      player_id,
+      event_type,
+      event_time,
+      is_kicked,
+      member:horizn_members!horizn_membership_events_member_id_fkey (
+        player_id,
+        member_number
+      )
+    `)
+    .gte('event_time', startDate.toISOString())
+    .lte('event_time', endDate.toISOString())
+    .order('event_time', { ascending: false })
+
+  if (error) {
+    console.error('[horiznSupabase] Failed to load membership events:', error)
+    throw error
+  }
+
+  // 获取成员 ID 映射以获取名字
+  const idMapping = await getMembersIdMapping()
+
+  // 转换数据格式
+  return (data || []).map(event => {
+    const memberInfo = idMapping[event.player_id]
+    return {
+      id: event.id,
+      playerId: event.player_id,
+      memberName: memberInfo?.name || event.player_id,
+      memberNumber: event.member?.member_number || '',
+      eventType: event.event_type, // 'join' | 'leave'
+      eventTime: event.event_time,
+      isKicked: event.is_kicked || false
+    }
+  })
+}
+
+/**
+ * 标记/取消标记离队事件为被踢出
+ * @param {string} eventId - 事件 ID
+ * @param {boolean} isKicked - 是否被踢出
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function markEventKicked(eventId, isKicked) {
+  const supabase = assertSupabase()
+
+  const { error } = await supabase
+    .from('horizn_membership_events')
+    .update({ is_kicked: isKicked })
+    .eq('id', eventId)
+
+  if (error) {
+    console.error('[horiznSupabase] Failed to mark event kicked:', error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}
