@@ -62,7 +62,7 @@ export default function KickReviewModal({
   // 格式化日期（紧凑）
   const formatDate = (isoDate) => {
     const date = new Date(isoDate)
-    return `${date.getMonth() + 1}/${date.getDate()}`
+    return `${date.getMonth() + 1}.${date.getDate()}`
   }
 
   // 复制 playerId
@@ -83,8 +83,10 @@ export default function KickReviewModal({
 
     const title = '【HORIZN】踢出审核回归'
     const lines = filteredMembers.map((m, i) => {
+      const rejoinDate = new Date(m.rejoinAllowedAt)
+      const rejoinDateStr = `${rejoinDate.getMonth() + 1}.${rejoinDate.getDate()}`
       let status = m.hasRejoined ? `提前${m.earlyRejoinDays}天归队` : (m.canRejoin ? '可回队' : `还需${m.daysUntilRejoin}天`)
-      return `${i + 1}. ${m.memberName} | ${m.playerId} | ${status}`
+      return `${i + 1}. ${m.memberName} | ${m.playerId} | 可归:${rejoinDateStr} | ${status}`
     })
 
     const text = `${title}\n${lines.join('\n')}`
