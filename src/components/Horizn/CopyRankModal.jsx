@@ -19,6 +19,7 @@ export default function CopyRankModal({
   const [copyDataType, setCopyDataType] = useState(activeTab)
   const [copyShowValues, setCopyShowValues] = useState(true)
   const [copyShowNewMark, setCopyShowNewMark] = useState(true)
+  const [copyShowId, setCopyShowId] = useState(true)
   const [copyCount, setCopyCount] = useState('20')
   const [copyMode, setCopyMode] = useState('rank')
   const [thresholdCompare, setThresholdCompare] = useState('gte')
@@ -146,6 +147,9 @@ export default function CopyRankModal({
     const newMemberMap = currentData?.newMemberMap || {}
     const lines = selectedPlayers.map((p, i) => {
       let line = `${i + 1}. ${p.name}`
+      if (copyShowId && p.playerId) {
+        line += ` (${p.playerId})`
+      }
       const weeks = newMemberMap[p.name]
       if (copyShowNewMark && weeks) {
         line += weeks === 1 ? ' [New]' : ` [N-${weeks - 1}]`
@@ -279,6 +283,15 @@ export default function CopyRankModal({
                     className="w-3 h-3 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0"
                   />
                   <span className="text-[10px] text-gray-400">新来</span>
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={copyShowId}
+                    onChange={(e) => setCopyShowId(e.target.checked)}
+                    className="w-3 h-3 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0"
+                  />
+                  <span className="text-[10px] text-gray-400">ID</span>
                 </label>
               </div>
             </div>
@@ -590,6 +603,9 @@ export default function CopyRankModal({
                     return (
                       <div key={i}>
                         {i + 1}. {p.name}
+                        {copyShowId && p.playerId && (
+                          <span className="text-gray-500"> ({p.playerId})</span>
+                        )}
                         {showMark && (
                           <span className={`ml-1 ${
                             weeks === 1 ? 'text-green-400' :
