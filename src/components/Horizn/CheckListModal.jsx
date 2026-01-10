@@ -854,6 +854,7 @@ export default function CheckListModal({
                     </svg>
                     <span className="text-gray-300 font-medium">
                       {checkTab === 0 ? '当前时间戳' : '考核时间点'}：
+                      <span className="text-white">{currentFrameLabel || '-'}</span>
                       {(() => {
                         // 如果是进行中标签页，检查是否有当前周的已结算标签页
                         if (checkTab === 0) {
@@ -864,14 +865,14 @@ export default function CheckListModal({
                             return (
                               <button
                                 onClick={() => setCheckTab(currentWeekNumber)}
-                                className="text-yellow-400 hover:text-yellow-300 underline cursor-pointer transition-colors"
+                                className="ml-2 text-yellow-400 hover:text-yellow-300 underline cursor-pointer transition-colors"
                               >
-                                已有本周考核时间点，点击跳转
+                                (已有本周考核时间点，点击跳转)
                               </button>
                             )
                           }
                         }
-                        return <span className="text-white">{currentFrameLabel || '-'}</span>
+                        return null
                       })()}
                     </span>
                   </div>
@@ -920,19 +921,37 @@ export default function CheckListModal({
               )}
 
               {/* 统计 */}
-              <div className="flex items-center justify-center gap-4 text-[11px]">
-                <span>
-                  <span className="text-gray-500">总共</span>
-                  <span className="text-blue-400 font-medium ml-1">{categorizedList.fail.length + categorizedList.pass.length}人</span>
-                </span>
-                <span>
-                  <span className="text-gray-500">不达标</span>
-                  <span className="text-red-400 font-medium ml-1">{categorizedList.fail.length}人</span>
-                </span>
-                <span>
-                  <span className="text-gray-500">达标</span>
-                  <span className="text-green-400 font-medium ml-1">{categorizedList.pass.length}人</span>
-                </span>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-center gap-4 text-[11px]">
+                  <div className="relative">
+                    <div className="px-2 rounded border-2 border-blue-400/50 bg-blue-600/10">
+                      <span className="text-gray-500">总共</span>
+                      <span className="text-blue-400 font-medium ml-1">{currentWeekData.length}人</span>
+                      {(() => {
+                        const excludeSet = new Set((rulesConfig.exclude_members || []).map(id => id.toLowerCase()))
+                        const excludedCount = currentWeekData.filter(p => excludeSet.has(p.player_id.toLowerCase())).length
+                        return excludedCount > 0 ? (
+                          <span className="text-gray-500 ml-1">
+                            - <span className="text-yellow-500">{excludedCount}</span>人(白名单)
+                          </span>
+                        ) : null
+                      })()}
+                    </div>
+                    {checkTab !== 0 && (
+                      <div className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-[9px] text-blue-400 whitespace-nowrap">
+                        可能会漏数量，请核对无误，有误差则等待一俩小时
+                      </div>
+                    )}
+                  </div>
+                  <span>
+                    <span className="text-gray-500">不达标</span>
+                    <span className="text-red-400 font-medium ml-1">{categorizedList.fail.length}人</span>
+                  </span>
+                  <span>
+                    <span className="text-gray-500">达标</span>
+                    <span className="text-green-400 font-medium ml-1">{categorizedList.pass.length}人</span>
+                  </span>
+                </div>
               </div>
 
               {/* 不达标名单 */}
