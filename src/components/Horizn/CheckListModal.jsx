@@ -401,6 +401,15 @@ export default function CheckListModal({
     }
   }
 
+  // 复制 Player ID
+  const handleCopyPlayerId = (playerId) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(playerId)
+        .then(() => toast.success('已复制 ID', { duration: 1500 }))
+        .catch(() => toast.error('复制失败'))
+    }
+  }
+
   // 复制名单
   const handleCopyList = () => {
     const { fail } = categorizedList
@@ -434,7 +443,7 @@ export default function CheckListModal({
     text += `【不达标】共${fail.length}人\n`
 
     fail.forEach((p, i) => {
-      let line = `${i + 1}. ${p.member_name}`
+      let line = `${i + 1}. ${p.member_name} (${p.player_id})`
       if (p.joinDay > 1) line += ` ${p.joinMonth}.${p.joinDay}入`
       line += ` 周${p.weekly_activity} 赛季${p.season_activity} 日均${p.season_activity}/${p.daysInTeam}=${p.dailyAvg}`
       // 根据有规则的项显示差值
@@ -449,6 +458,66 @@ export default function CheckListModal({
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text.trim())
         .then(() => toast.success(`已复制 ${fail.length} 人`))
+        .catch(() => toast.error('复制失败'))
+    }
+  }
+
+  // 复制为表格格式（TSV）
+  const handleCopyAsTable = () => {
+    const { fail } = categorizedList
+    if (fail.length === 0) {
+      toast.error('没有不达标成员')
+      return
+    }
+
+    // 筛选适用当前周的达标线
+    const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+    const applicableLines = (rulesConfig.achievementLines || []).filter(
+      line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
+    )
+
+    // 构建 TSV 格式（Tab分隔）
+    const lines = []
+    // 表头
+    const headers = ['排名', '成员名', 'ID', '入队日期', '周活跃', '赛季活跃', '天数', '日均']
+
+    // 根据达标线条件决定是否显示差值列
+    const hasWeeklyCond = applicableLines.some(line => line.condition?.weekly !== undefined)
+    const hasDailyCond = applicableLines.some(line => line.condition?.daily !== undefined)
+    const hasSeasonCond = applicableLines.some(line => line.condition?.season !== undefined)
+
+    if (hasWeeklyCond) headers.push('周差值')
+    if (hasSeasonCond) headers.push('赛季差值')
+    if (hasDailyCond) headers.push('日均差值')
+
+    lines.push(headers.join('\t'))
+
+    // 数据行
+    fail.forEach((p, i) => {
+      const joinDate = p.joinDay > 1 ? `${p.joinMonth}月${p.joinDay}日` : ''
+      const row = [
+        i + 1,
+        p.member_name,
+        p.player_id,
+        joinDate,
+        p.weekly_activity,
+        p.season_activity,
+        p.daysInTeam,
+        p.dailyAvg
+      ]
+
+      if (hasWeeklyCond) row.push(p.weeklyGap !== null ? p.weeklyGap : '')
+      if (hasSeasonCond) row.push(p.seasonGap !== null ? p.seasonGap : '')
+      if (hasDailyCond) row.push(p.dailyGap !== null ? p.dailyGap : '')
+
+      lines.push(row.join('\t'))
+    })
+
+    const tsvContent = lines.join('\n')
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tsvContent)
+        .then(() => toast.success(`已复制 ${fail.length} 人（表格格式）`, { duration: 2000 }))
         .catch(() => toast.error('复制失败'))
     }
   }
@@ -838,6 +907,21 @@ export default function CheckListModal({
                               {p.joinDay > 1 && (
                                 <span className="text-[9px] text-green-400/70">{p.joinMonth}.{p.joinDay}入</span>
                               )}
+                              {/* 复制 ID 按钮 */}
+                              <div className="flex items-center gap-0.5 flex-shrink-0">
+                                <button
+                                  onClick={() => handleCopyPlayerId(p.player_id)}
+                                  className="p-0.5 text-gray-500 hover:text-blue-400 hover:bg-blue-500/20 rounded transition-all"
+                                  title="复制 ID"
+                                >
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  </svg>
+                                </button>
+                                <span className="text-[10px] text-gray-500 font-mono">
+                                  {p.player_id}
+                                </span>
+                              </div>
                             </div>
                             <div className="flex items-center gap-1 text-[10px] font-mono flex-shrink-0">
                               <span className={hasWeeklyCond ? (weeklyMet ? 'text-green-400' : 'text-red-400') : 'text-gray-500'}>
@@ -910,6 +994,21 @@ export default function CheckListModal({
                               {p.joinDay > 1 && (
                                 <span className="text-[9px] text-green-400/70">{p.joinMonth}.{p.joinDay}入</span>
                               )}
+                              {/* 复制 ID 按钮 */}
+                              <div className="flex items-center gap-0.5 flex-shrink-0">
+                                <button
+                                  onClick={() => handleCopyPlayerId(p.player_id)}
+                                  className="p-0.5 text-gray-500 hover:text-blue-400 hover:bg-blue-500/20 rounded transition-all"
+                                  title="复制 ID"
+                                >
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  </svg>
+                                </button>
+                                <span className="text-[10px] text-gray-500 font-mono">
+                                  {p.player_id}
+                                </span>
+                              </div>
                             </div>
                             <div className="flex items-center gap-1 text-[10px] font-mono flex-shrink-0">
                               <span className={hasWeeklyCond ? (weeklyMet ? 'text-green-400' : 'text-red-400') : 'text-gray-500'}>
@@ -964,6 +1063,16 @@ export default function CheckListModal({
               催促消息
             </button>
           )}
+          <button
+            onClick={handleCopyAsTable}
+            disabled={categorizedList.fail.length === 0}
+            className="px-3 py-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded shadow-md transition-all flex items-center justify-center gap-1"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>表格</span>
+          </button>
           <button
             onClick={handleCopyList}
             disabled={categorizedList.fail.length === 0}

@@ -356,7 +356,7 @@ export default function HoriznPage({ yearMonth }) {
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                             </svg>
-                            <span>追踪考核名单</span>
+                            <span>活跃度达标核查</span>
                           </button>
                           <button
                             onClick={handleOpenKickReviewModal}
@@ -425,13 +425,12 @@ export default function HoriznPage({ yearMonth }) {
         setManualFrameIndex={setManualFrameIndex}
       />
 
-      {/* 追踪考核名单弹窗 */}
+      {/* 活跃度达标核查弹窗 */}
       <CheckListModal
         show={showCheckModal}
         onClose={() => setShowCheckModal(false)}
         isMobile={isMobile}
         yearMonth={yearMonth}
-        preloadedData={preloadedData}
       />
 
       {/* 踢出人员审核清单弹窗 */}
