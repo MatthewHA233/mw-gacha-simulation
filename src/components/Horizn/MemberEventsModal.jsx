@@ -113,6 +113,54 @@ export default function MemberEventsModal({
     }
   }
 
+  // 复制 QQ 号
+  const handleCopyQQ = (qqId) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(String(qqId))
+        .then(() => toast.success('已复制 QQ 号', { duration: 1500 }))
+        .catch(() => toast.error('复制失败'))
+    }
+  }
+
+  // 复制为表格格式（TSV）
+  const handleCopyAsTable = () => {
+    if (groupedEvents.length === 0) {
+      toast.error('没有数据可复制')
+      return
+    }
+
+    // 构建 TSV 格式（Tab分隔）
+    const lines = []
+    // 表头
+    lines.push(['日期', '时间', '类型', '成员名', 'ID', 'QQ号', '编号', '备注'].join('\t'))
+
+    // 数据行
+    groupedEvents.forEach(group => {
+      group.events.forEach(event => {
+        // 将日期格式化为 "x月x日"，避免 Excel 识别为小数
+        const [y, m, d] = group.date.split('-')
+        const date = `${parseInt(m)}月${parseInt(d)}日`
+        const time = formatTime(event.eventTime)
+        const type = event.eventType === 'join' ? '入队' : '离队'
+        const name = event.memberName
+        const id = event.playerId
+        const qq = event.qqId || ''
+        const number = event.memberNumber || ''
+        const remark = (event.eventType === 'leave' && event.isKicked) ? '踢出' : ''
+
+        lines.push([date, time, type, name, id, qq, number, remark].join('\t'))
+      })
+    })
+
+    const tsvContent = lines.join('\n')
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tsvContent)
+        .then(() => toast.success(`已复制 ${groupedEvents.reduce((sum, g) => sum + g.events.length, 0)} 条记录`, { duration: 2000 }))
+        .catch(() => toast.error('复制失败'))
+    }
+  }
+
   // 月份切换
   const handlePrevMonth = () => {
     if (selectedMonth === 1) {
@@ -275,7 +323,7 @@ export default function MemberEventsModal({
                                 <span className="text-xs text-white truncate">
                                   {event.memberName}
                                 </span>
-                                {/* 复制按钮 + ID */}
+                                {/* 复制 ID 按钮 + ID */}
                                 <div className="flex items-center gap-0.5 flex-shrink-0">
                                   <button
                                     onClick={() => handleCopyPlayerId(event.playerId)}
@@ -290,6 +338,23 @@ export default function MemberEventsModal({
                                     {event.playerId}
                                   </span>
                                 </div>
+                                {/* 复制 QQ 号按钮 + QQ（仅有QQ时显示） */}
+                                {event.qqId && (
+                                  <div className="flex items-center gap-0.5 flex-shrink-0">
+                                    <button
+                                      onClick={() => handleCopyQQ(event.qqId)}
+                                      className="p-0.5 text-gray-500 hover:text-green-400 hover:bg-green-500/20 rounded transition-all"
+                                      title="复制 QQ 号"
+                                    >
+                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                      </svg>
+                                    </button>
+                                    <span className="text-[10px] text-green-400 font-mono">
+                                      QQ
+                                    </span>
+                                  </div>
+                                )}
                               </div>
 
                               {/* 右侧：踢出标记/按钮 */}
@@ -328,10 +393,20 @@ export default function MemberEventsModal({
         </div>
 
         {/* 底部按钮 */}
-        <div className="px-3 py-2 bg-gray-900/30 border-t border-gray-700/50">
+        <div className="px-3 py-2 bg-gray-900/30 border-t border-gray-700/50 flex gap-2">
+          <button
+            onClick={handleCopyAsTable}
+            disabled={groupedEvents.length === 0}
+            className="flex-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded shadow-md transition-all flex items-center justify-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            复制为表格
+          </button>
           <button
             onClick={onClose}
-            className="w-full px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600 text-white text-xs font-medium rounded transition-colors"
+            className="px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600 text-white text-xs font-medium rounded transition-colors"
           >
             关闭
           </button>

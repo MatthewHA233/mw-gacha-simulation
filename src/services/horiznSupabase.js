@@ -728,9 +728,19 @@ export async function getMonthlyMembershipEvents(year, month) {
   // 获取成员 ID 映射以获取名字
   const idMapping = await getMembersIdMapping()
 
+  // 获取 QQ 成员列表
+  const qqMembers = await getQQMembers()
+  const playerIdToQQ = new Map()
+  qqMembers.forEach(qq => {
+    if (qq.member?.player_id) {
+      playerIdToQQ.set(qq.member.player_id, qq.qq_id)
+    }
+  })
+
   // 转换数据格式
   return (data || []).map(event => {
     const memberInfo = idMapping[event.player_id]
+    const qqId = playerIdToQQ.get(event.player_id)
     return {
       id: event.id,
       playerId: event.player_id,
@@ -738,7 +748,8 @@ export async function getMonthlyMembershipEvents(year, month) {
       memberNumber: event.member?.member_number || '',
       eventType: event.event_type, // 'join' | 'leave'
       eventTime: event.event_time,
-      isKicked: event.is_kicked || false
+      isKicked: event.is_kicked || false,
+      qqId: qqId || null
     }
   })
 }
