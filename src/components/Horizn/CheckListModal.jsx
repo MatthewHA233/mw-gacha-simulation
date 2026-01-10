@@ -54,6 +54,9 @@ export default function CheckListModal({
   const [urgeLoading, setUrgeLoading] = useState(false)
   const [urgeSending, setUrgeSending] = useState(false)
 
+  // 复制选项
+  const [copyOnlyFail, setCopyOnlyFail] = useState(true) // 只复制不达标
+
   // 从 yearMonth 初始化月份
   useEffect(() => {
     if (yearMonth && /^\d{6}$/.test(yearMonth)) {
@@ -412,9 +415,9 @@ export default function CheckListModal({
 
   // 复制名单
   const handleCopyList = () => {
-    const { fail } = categorizedList
-    if (fail.length === 0) {
-      toast.error('没有不达标成员')
+    const { fail, pass } = categorizedList
+    if (fail.length === 0 && pass.length === 0) {
+      toast.error('没有成员数据')
       return
     }
 
@@ -440,33 +443,48 @@ export default function CheckListModal({
     let text = `HORIZN地平线 ${selectedMonth}月第${checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab}周活跃度考核\n`
     text += `考核标准：${standardText}\n`
     text += `时间：${currentFrameLabel}\n\n`
-    text += `【不达标】共${fail.length}人\n`
 
-    fail.forEach((p, i) => {
-      let line = `${i + 1}. ${p.member_name} (${p.player_id})`
-      if (p.joinDay > 1) line += ` ${p.joinMonth}.${p.joinDay}入`
-      line += ` 周${p.weekly_activity} 赛季${p.season_activity} 日均${p.season_activity}/${p.daysInTeam}=${p.dailyAvg}`
-      // 根据有规则的项显示差值
-      const gaps = []
-      if (p.weeklyGap !== null) gaps.push(p.weeklyGap)
-      if (p.seasonGap !== null) gaps.push(p.seasonGap)
-      if (p.dailyGap !== null) gaps.push(p.dailyGap)
-      if (gaps.length > 0) line += ` 差${gaps.join('/')}`
-      text += line + '\n'
-    })
+    // 不达标名单
+    if (fail.length > 0) {
+      text += `【不达标】共${fail.length}人\n`
+      fail.forEach((p, i) => {
+        let line = `${i + 1}. ${p.member_name} (${p.player_id})`
+        if (p.joinDay > 1) line += ` ${p.joinMonth}.${p.joinDay}入`
+        line += ` 周${p.weekly_activity} 赛季${p.season_activity} 日均${p.season_activity}/${p.daysInTeam}=${p.dailyAvg}`
+        // 根据有规则的项显示差值
+        const gaps = []
+        if (p.weeklyGap !== null) gaps.push(p.weeklyGap)
+        if (p.seasonGap !== null) gaps.push(p.seasonGap)
+        if (p.dailyGap !== null) gaps.push(p.dailyGap)
+        if (gaps.length > 0) line += ` 差${gaps.join('/')}`
+        text += line + '\n'
+      })
+    }
 
+    // 达标名单（如果未勾选"只复制不达标"）
+    if (!copyOnlyFail && pass.length > 0) {
+      text += `\n【达标】共${pass.length}人\n`
+      pass.forEach((p, i) => {
+        let line = `${i + 1}. ${p.member_name} (${p.player_id})`
+        if (p.joinDay > 1) line += ` ${p.joinMonth}.${p.joinDay}入`
+        line += ` 周${p.weekly_activity} 赛季${p.season_activity} 日均${p.season_activity}/${p.daysInTeam}=${p.dailyAvg}`
+        text += line + '\n'
+      })
+    }
+
+    const totalCopied = copyOnlyFail ? fail.length : fail.length + pass.length
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text.trim())
-        .then(() => toast.success(`已复制 ${fail.length} 人`))
+        .then(() => toast.success(`已复制 ${totalCopied} 人`))
         .catch(() => toast.error('复制失败'))
     }
   }
 
   // 复制为表格格式（TSV）
   const handleCopyAsTable = () => {
-    const { fail } = categorizedList
-    if (fail.length === 0) {
-      toast.error('没有不达标成员')
+    const { fail, pass } = categorizedList
+    if (fail.length === 0 && pass.length === 0) {
+      toast.error('没有成员数据')
       return
     }
 
@@ -479,7 +497,7 @@ export default function CheckListModal({
     // 构建 TSV 格式（Tab分隔）
     const lines = []
     // 表头
-    const headers = ['排名', '成员名', 'ID', '入队日期', '周活跃', '赛季活跃', '天数', '日均']
+    const headers = ['排名', '成员名', 'ID', '入队日期', '周活跃', '赛季活跃', '天数', '日均', '状态']
 
     // 根据达标线条件决定是否显示差值列
     const hasWeeklyCond = applicableLines.some(line => line.condition?.weekly !== undefined)
@@ -492,32 +510,62 @@ export default function CheckListModal({
 
     lines.push(headers.join('\t'))
 
-    // 数据行
-    fail.forEach((p, i) => {
-      const joinDate = p.joinDay > 1 ? `${p.joinMonth}月${p.joinDay}日` : ''
-      const row = [
-        i + 1,
-        p.member_name,
-        p.player_id,
-        joinDate,
-        p.weekly_activity,
-        p.season_activity,
-        p.daysInTeam,
-        p.dailyAvg
-      ]
+    // 数据行 - 不达标
+    let rank = 1
+    if (fail.length > 0) {
+      fail.forEach((p) => {
+        const joinDate = p.joinDay > 1 ? `${p.joinMonth}月${p.joinDay}日` : ''
+        const row = [
+          rank++,
+          p.member_name,
+          p.player_id,
+          joinDate,
+          p.weekly_activity,
+          p.season_activity,
+          p.daysInTeam,
+          p.dailyAvg,
+          '不达标'
+        ]
 
-      if (hasWeeklyCond) row.push(p.weeklyGap !== null ? p.weeklyGap : '')
-      if (hasSeasonCond) row.push(p.seasonGap !== null ? p.seasonGap : '')
-      if (hasDailyCond) row.push(p.dailyGap !== null ? p.dailyGap : '')
+        if (hasWeeklyCond) row.push(p.weeklyGap !== null ? p.weeklyGap : '')
+        if (hasSeasonCond) row.push(p.seasonGap !== null ? p.seasonGap : '')
+        if (hasDailyCond) row.push(p.dailyGap !== null ? p.dailyGap : '')
 
-      lines.push(row.join('\t'))
-    })
+        lines.push(row.join('\t'))
+      })
+    }
+
+    // 数据行 - 达标（如果未勾选"只复制不达标"）
+    if (!copyOnlyFail && pass.length > 0) {
+      pass.forEach((p) => {
+        const joinDate = p.joinDay > 1 ? `${p.joinMonth}月${p.joinDay}日` : ''
+        const row = [
+          rank++,
+          p.member_name,
+          p.player_id,
+          joinDate,
+          p.weekly_activity,
+          p.season_activity,
+          p.daysInTeam,
+          p.dailyAvg,
+          '达标'
+        ]
+
+        // 达标名单没有差值
+        if (hasWeeklyCond) row.push('')
+        if (hasSeasonCond) row.push('')
+        if (hasDailyCond) row.push('')
+
+        lines.push(row.join('\t'))
+      })
+    }
 
     const tsvContent = lines.join('\n')
+    const totalCopied = copyOnlyFail ? fail.length : fail.length + pass.length
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(tsvContent)
-        .then(() => toast.success(`已复制 ${fail.length} 人（表格格式）`, { duration: 2000 }))
+        .then(() => toast.success(`已复制 ${totalCopied} 人（表格格式）`, { duration: 2000 }))
         .catch(() => toast.error('复制失败'))
     }
   }
@@ -734,24 +782,36 @@ export default function CheckListModal({
         </div>
 
         {/* 月份选择器 */}
-        <div className="flex items-center justify-center gap-3 px-3 py-1.5 border-b border-gray-700/50 bg-gray-900/30 flex-shrink-0">
+        <div className="flex items-center justify-between px-3 py-1.5 border-b border-gray-700/50 bg-gray-900/30 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePrevMonth}
+              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <span className="text-sm text-white font-medium min-w-[80px] text-center">
+              {selectedYear}年{selectedMonth}月
+            </span>
+            <button
+              onClick={handleNextMonth}
+              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
           <button
-            onClick={handlePrevMonth}
-            className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
+            onClick={loadData}
+            disabled={loading}
+            className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all disabled:opacity-50"
+            title="刷新数据"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <span className="text-sm text-white font-medium min-w-[80px] text-center">
-            {selectedYear}年{selectedMonth}月
-          </span>
-          <button
-            onClick={handleNextMonth}
-            className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
         </div>
@@ -1034,19 +1094,6 @@ export default function CheckListModal({
 
         {/* 底部按钮 */}
         <div className="px-3 py-2 bg-gray-900/30 border-t border-gray-700/50 flex gap-2 flex-shrink-0">
-          <button
-            onClick={onClose}
-            className="px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600 text-white text-xs font-medium rounded transition-colors"
-          >
-            关闭
-          </button>
-          <button
-            onClick={loadData}
-            disabled={loading}
-            className="px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600 text-white text-xs font-medium rounded transition-colors disabled:opacity-50"
-          >
-            刷新
-          </button>
           {checkTab === 0 && categorizedList.fail.length > 0 && (
             <button
               onClick={handleGenerateUrgeMessage}
@@ -1063,25 +1110,37 @@ export default function CheckListModal({
               催促消息
             </button>
           )}
+
+          {/* 只复制不达标勾选框 */}
+          <label className="flex items-center gap-1.5 px-2 py-1.5 bg-gray-700/30 hover:bg-gray-700/50 rounded transition-colors cursor-pointer ml-auto">
+            <input
+              type="checkbox"
+              checked={copyOnlyFail}
+              onChange={(e) => setCopyOnlyFail(e.target.checked)}
+              className="w-3.5 h-3.5 rounded border-gray-600 bg-gray-700 text-yellow-500 focus:ring-yellow-500/30 focus:ring-offset-0"
+            />
+            <span className="text-xs text-gray-300 whitespace-nowrap">只复制不达标</span>
+          </label>
+
           <button
             onClick={handleCopyAsTable}
-            disabled={categorizedList.fail.length === 0}
-            className="px-3 py-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded shadow-md transition-all flex items-center justify-center gap-1"
+            disabled={categorizedList.fail.length === 0 && categorizedList.pass.length === 0}
+            className="px-4 py-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded shadow-md transition-all flex items-center justify-center gap-1.5"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span>表格</span>
+            <span>复制表格</span>
           </button>
           <button
             onClick={handleCopyList}
-            disabled={categorizedList.fail.length === 0}
-            className="flex-1 px-3 py-1.5 bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-700 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded shadow-md transition-all flex items-center justify-center gap-1"
+            disabled={categorizedList.fail.length === 0 && categorizedList.pass.length === 0}
+            className="px-4 py-1.5 bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-700 hover:to-orange-600 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-xs font-semibold rounded shadow-md transition-all flex items-center justify-center gap-1.5"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
-            复制不达标名单
+            复制文本
           </button>
         </div>
       </div>
