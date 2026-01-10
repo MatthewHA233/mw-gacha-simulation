@@ -937,11 +937,24 @@ export default function CheckListModal({
                         ) : null
                       })()}
                     </div>
-                    {checkTab !== 0 && (
-                      <div className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-[9px] text-blue-400 whitespace-nowrap">
-                        可能会漏数量，请核对无误，有误差则等待一俩小时
-                      </div>
-                    )}
+                    {(() => {
+                      // 只在已结算周且时间戳是当天时显示提示
+                      if (checkTab === 0) return null
+
+                      // 检查时间戳是否是当天
+                      const now = new Date()
+                      const todayStr = `${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+                      const frameDate = currentFrameLabel ? currentFrameLabel.split(' ')[0] : ''
+                      const isToday = frameDate === todayStr
+
+                      if (!isToday) return null
+
+                      return (
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-[9px] text-blue-400 whitespace-nowrap">
+                          可能会漏数量，请核对无误，有误差则等待一俩小时
+                        </div>
+                      )
+                    })()}
                   </div>
                   <span>
                     <span className="text-gray-500">不达标</span>
