@@ -764,3 +764,166 @@ export async function markEventKicked(eventId, isKicked) {
 
   return { success: true }
 }
+
+/**
+ * 获取整月活跃度考核数据（一次性加载所有周）
+ * @param {number} year - 年份
+ * @param {number} month - 月份 (1-12)
+ * @param {number} cutoffHour - 考核截止小时（默认12，即周日中午12点）
+ * @returns {Promise<Array>} 全月考核数据
+ */
+export async function getMonthlyCheckData(year, month, cutoffHour = 12) {
+  const supabase = assertSupabase()
+
+  console.log(`[horiznSupabase] 获取 ${year}年${month}月 全月考核数据 (截止${cutoffHour}点)...`)
+
+  const { data, error } = await supabase.rpc('horizn_get_monthly_check_data', {
+    p_year: year,
+    p_month: month,
+    p_cutoff_hour: cutoffHour
+  })
+
+  if (error) {
+    console.error('[horiznSupabase] 获取全月考核数据失败:', error)
+    throw error
+  }
+
+  console.log(`[horiznSupabase] 获取到 ${(data || []).length} 条全月考核数据`)
+  return data || []
+}
+
+/**
+ * 获取月度规则配置
+ * @param {number} year - 年份
+ * @param {number} month - 月份 (1-12)
+ * @returns {Promise<Object|null>} 规则配置
+ */
+export async function getMonthlyRules(year, month) {
+  const supabase = assertSupabase()
+
+  const { data, error } = await supabase
+    .from('horizn_monthly_rules')
+    .select('rule_config')
+    .eq('year', year)
+    .eq('month', month)
+    .eq('rule_type', 'assessment')
+    .eq('rule_name', 'monthly_rules')
+    .single()
+
+  if (error || !data) {
+    return null
+  }
+
+  return data.rule_config
+}
+
+/**
+ * 保存月度规则配置
+ * @param {number} year - 年份
+ * @param {number} month - 月份 (1-12)
+ * @param {Object} config - 规则配置
+ * @returns {Promise<boolean>} 是否成功
+ */
+export async function saveMonthlyRules(year, month, config) {
+  const supabase = assertSupabase()
+
+  const { error } = await supabase
+    .from('horizn_monthly_rules')
+    .upsert({
+      year,
+      month,
+      rule_type: 'assessment',
+      rule_name: 'monthly_rules',
+      rule_config: config,
+      is_active: true,
+      updated_at: new Date().toISOString()
+    }, {
+      onConflict: 'year,month,rule_type,rule_name'
+    })
+
+  if (error) {
+    console.error('[horiznSupabase] 保存月度规则失败:', error)
+    return false
+  }
+
+  return true
+}
+
+/**
+ * 获取 QQ 群成员列表（关联游戏成员）
+ * @returns {Promise<Array>} QQ 成员列表
+ */
+export async function getQQMembers() {
+  const supabase = assertSupabase()
+
+  const { data, error } = await supabase.rpc('horizn_get_qq_members')
+
+  if (error) {
+    console.error('[horiznSupabase] 获取 QQ 成员列表失败:', error)
+    return []
+  }
+
+  return data || []
+}
+
+/**
+ * 发送群消息（通过 NapCat API）
+ * @param {string} message - 消息内容（支持 CQ 码）
+ * @returns {Promise<{success: boolean, message_id?: number, error?: string}>}
+ */
+export async function sendGroupMessage(message) {
+  const NAPCAT_URL = process.env.NEXT_PUBLIC_NAPCAT_URL
+  const NAPCAT_TOKEN = process.env.NEXT_PUBLIC_NAPCAT_TOKEN
+  const GROUP_ID = process.env.NEXT_PUBLIC_NAPCAT_GROUP_ID
+
+  // 检查配置
+  if (!NAPCAT_URL || !GROUP_ID) {
+    return {
+      success: false,
+      error: 'NapCat 配置不完整，请检查环境变量 NEXT_PUBLIC_NAPCAT_URL 和 NEXT_PUBLIC_NAPCAT_GROUP_ID'
+    }
+  }
+
+  try {
+    const resp = await fetch(`${NAPCAT_URL}/send_group_msg`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${NAPCAT_TOKEN}`
+      },
+      body: JSON.stringify({
+        group_id: Number(GROUP_ID),
+        message: message
+      })
+    })
+
+    const data = await resp.json()
+
+    if (data.status !== 'ok') {
+      let errorMsg = data.message || data.wording || '发送失败'
+
+      // 友好错误提示
+      if (errorMsg.includes('GetUidError') || errorMsg.includes('get_uid')) {
+        errorMsg = '发送失败：无法获取用户UID，请检查 @ 的 QQ 号是否正确，或稍后重试'
+      } else if (errorMsg.includes('timeout')) {
+        errorMsg = '发送超时，请检查 NapCat 服务是否正常运行'
+      } else if (errorMsg.includes('permission')) {
+        errorMsg = '权限不足，请检查机器人是否有发送消息的权限'
+      }
+
+      return { success: false, error: errorMsg }
+    }
+
+    return { success: true, message_id: data.data?.message_id }
+  } catch (err) {
+    let errorMsg = '网络请求失败'
+    if (err instanceof Error) {
+      if (err.message.includes('fetch')) {
+        errorMsg = `无法连接到 NapCat 服务 (${NAPCAT_URL})，请检查服务是否启动`
+      } else {
+        errorMsg = err.message
+      }
+    }
+    return { success: false, error: errorMsg }
+  }
+}
