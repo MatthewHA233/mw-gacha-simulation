@@ -878,63 +878,27 @@ export async function getQQMembers() {
 }
 
 /**
- * 发送群消息（通过 NapCat API）
+ * 发送群消息（通过 Next.js API 代理）
  * @param {string} message - 消息内容（支持 CQ 码）
  * @returns {Promise<{success: boolean, message_id?: number, error?: string}>}
  */
 export async function sendGroupMessage(message) {
-  const NAPCAT_URL = process.env.NEXT_PUBLIC_NAPCAT_URL
-  const NAPCAT_TOKEN = process.env.NEXT_PUBLIC_NAPCAT_TOKEN
-  const GROUP_ID = process.env.NEXT_PUBLIC_NAPCAT_GROUP_ID
-
-  // 检查配置
-  if (!NAPCAT_URL || !GROUP_ID) {
-    return {
-      success: false,
-      error: 'NapCat 配置不完整，请检查环境变量 NEXT_PUBLIC_NAPCAT_URL 和 NEXT_PUBLIC_NAPCAT_GROUP_ID'
-    }
-  }
-
   try {
-    const resp = await fetch(`${NAPCAT_URL}/send_group_msg`, {
+    const resp = await fetch('/api/napcat/send', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NAPCAT_TOKEN}`
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        group_id: Number(GROUP_ID),
-        message: message
-      })
+      body: JSON.stringify({ message })
     })
 
     const data = await resp.json()
-
-    if (data.status !== 'ok') {
-      let errorMsg = data.message || data.wording || '发送失败'
-
-      // 友好错误提示
-      if (errorMsg.includes('GetUidError') || errorMsg.includes('get_uid')) {
-        errorMsg = '发送失败：无法获取用户UID，请检查 @ 的 QQ 号是否正确，或稍后重试'
-      } else if (errorMsg.includes('timeout')) {
-        errorMsg = '发送超时，请检查 NapCat 服务是否正常运行'
-      } else if (errorMsg.includes('permission')) {
-        errorMsg = '权限不足，请检查机器人是否有发送消息的权限'
-      }
-
-      return { success: false, error: errorMsg }
-    }
-
-    return { success: true, message_id: data.data?.message_id }
+    return data
   } catch (err) {
-    let errorMsg = '网络请求失败'
-    if (err instanceof Error) {
-      if (err.message.includes('fetch')) {
-        errorMsg = `无法连接到 NapCat 服务 (${NAPCAT_URL})，请检查服务是否启动`
-      } else {
-        errorMsg = err.message
-      }
+    console.error('[sendGroupMessage] Error:', err)
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : '发送失败'
     }
-    return { success: false, error: errorMsg }
   }
 }

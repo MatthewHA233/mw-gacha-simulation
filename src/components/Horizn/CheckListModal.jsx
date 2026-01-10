@@ -759,7 +759,41 @@ export default function CheckListModal({
             </svg>
             活跃度达标核查
           </h3>
+
+          {/* 月份选择器（居中） */}
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+            <button
+              onClick={handlePrevMonth}
+              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <span className="text-sm text-white font-medium min-w-[80px] text-center">
+              {selectedYear}年{selectedMonth}月
+            </span>
+            <button
+              onClick={handleNextMonth}
+              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
           <div className="flex items-center gap-2">
+            <button
+              onClick={loadData}
+              disabled={loading}
+              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all disabled:opacity-50"
+              title="刷新数据"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
             <button
               onClick={() => setShowRulesModal(true)}
               className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
@@ -779,41 +813,6 @@ export default function CheckListModal({
               </svg>
             </button>
           </div>
-        </div>
-
-        {/* 月份选择器 */}
-        <div className="flex items-center justify-between px-3 py-1.5 border-b border-gray-700/50 bg-gray-900/30 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handlePrevMonth}
-              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <span className="text-sm text-white font-medium min-w-[80px] text-center">
-              {selectedYear}年{selectedMonth}月
-            </span>
-            <button
-              onClick={handleNextMonth}
-              className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-          <button
-            onClick={loadData}
-            disabled={loading}
-            className="p-1 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded transition-all disabled:opacity-50"
-            title="刷新数据"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </button>
         </div>
 
         {/* 周标签 */}
@@ -845,35 +844,72 @@ export default function CheckListModal({
             <div className="text-center py-8 text-gray-500 text-xs">暂无考核数据</div>
           ) : (
             <>
-              {/* 时间点信息 */}
-              <div className="text-[10px] text-gray-500 text-center">
-                考核时间点：{currentFrameLabel || '-'}
-              </div>
+              {/* 考核信息（时间点 + 达标条件并排显示） */}
+              <div className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 border border-blue-500/30 rounded-lg px-3 py-2">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  {/* 考核时间点 / 当前时间戳 */}
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-gray-300 font-medium">
+                      {checkTab === 0 ? '当前时间戳' : '考核时间点'}：
+                      {(() => {
+                        // 如果是进行中标签页，检查是否有当前周的已结算标签页
+                        if (checkTab === 0) {
+                          const currentWeekNumber = Math.ceil(new Date().getDate() / 7)
+                          const settledWeekTab = weekTabs.find(t => t.week !== 0 && t.week === currentWeekNumber)
 
-              {/* 规则说明 */}
-              <div className="text-[10px] text-gray-400 bg-gray-900/50 rounded px-2 py-1 text-center">
-                {(() => {
-                  const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
-                  const applicableLines = (rulesConfig.achievementLines || []).filter(
-                    line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
-                  )
-                  if (applicableLines.length === 0) return '(无适用达标线)'
-                  if (applicableLines.length === 1) {
-                    const line = applicableLines[0]
-                    const conds = []
-                    if (line.condition?.weekly !== undefined) conds.push(`周≥${line.condition.weekly}`)
-                    if (line.condition?.daily !== undefined) conds.push(`日均≥${line.condition.daily}`)
-                    if (line.condition?.season !== undefined) conds.push(`赛季≥${line.condition.season}`)
-                    return `达标条件：${conds.join(' 或 ') || '无条件'}`
-                  }
-                  return `达标条件：${applicableLines.map(line => {
-                    const conds = []
-                    if (line.condition?.weekly !== undefined) conds.push(`周≥${line.condition.weekly}`)
-                    if (line.condition?.daily !== undefined) conds.push(`日均≥${line.condition.daily}`)
-                    if (line.condition?.season !== undefined) conds.push(`赛季≥${line.condition.season}`)
-                    return `${line.name || '线'}(${conds.join('/') || '无'})`
-                  }).join('、')}`
-                })()}
+                          if (settledWeekTab) {
+                            return (
+                              <button
+                                onClick={() => setCheckTab(currentWeekNumber)}
+                                className="text-yellow-400 hover:text-yellow-300 underline cursor-pointer transition-colors"
+                              >
+                                已有本周考核时间点，点击跳转
+                              </button>
+                            )
+                          }
+                        }
+                        return <span className="text-white">{currentFrameLabel || '-'}</span>
+                      })()}
+                    </span>
+                  </div>
+
+                  {/* 达标条件 */}
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5 text-yellow-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-gray-300 font-medium">
+                      达标条件：
+                      <span className="text-yellow-300">
+                        {(() => {
+                          const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+                          const applicableLines = (rulesConfig.achievementLines || []).filter(
+                            line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
+                          )
+                          if (applicableLines.length === 0) return '(无适用达标线)'
+                          if (applicableLines.length === 1) {
+                            const line = applicableLines[0]
+                            const conds = []
+                            if (line.condition?.weekly !== undefined) conds.push(`周≥${line.condition.weekly}`)
+                            if (line.condition?.daily !== undefined) conds.push(`日均≥${line.condition.daily}`)
+                            if (line.condition?.season !== undefined) conds.push(`赛季≥${line.condition.season}`)
+                            return conds.join(' 或 ') || '无条件'
+                          }
+                          return applicableLines.map(line => {
+                            const conds = []
+                            if (line.condition?.weekly !== undefined) conds.push(`周≥${line.condition.weekly}`)
+                            if (line.condition?.daily !== undefined) conds.push(`日均≥${line.condition.daily}`)
+                            if (line.condition?.season !== undefined) conds.push(`赛季≥${line.condition.season}`)
+                            return `${line.name || '线'}(${conds.join('/') || '无'})`
+                          }).join('、')
+                        })()}
+                      </span>
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* 忽略规则提示 */}
