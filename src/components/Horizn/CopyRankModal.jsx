@@ -119,6 +119,14 @@ export default function CopyRankModal({
     return timestamp
   }
 
+  // 格式化入队日期（YYYYMMDD -> M.D入）
+  const formatJoinDate = (joinDate) => {
+    if (!joinDate || joinDate.length !== 8) return null
+    const month = parseInt(joinDate.substring(4, 6))
+    const day = parseInt(joinDate.substring(6, 8))
+    return `${month}.${day}入`
+  }
+
   // 复制名单
   const handleCopyList = () => {
     const selectedData = getSelectedData()
@@ -150,9 +158,13 @@ export default function CopyRankModal({
       if (copyShowId && p.playerId) {
         line += ` (${p.playerId})`
       }
+      // 显示入队日期（如果是新来的成员）
       const weeks = newMemberMap[p.name]
-      if (copyShowNewMark && weeks) {
-        line += weeks === 1 ? ' [New]' : ` [N-${weeks - 1}]`
+      if (copyShowNewMark && weeks && p.playerInfo?.joinDate) {
+        const joinDateStr = formatJoinDate(p.playerInfo.joinDate)
+        if (joinDateStr) {
+          line += ` ${joinDateStr}`
+        }
       }
       if (copyShowValues) {
         line += ` (${p.value})`
@@ -177,6 +189,80 @@ export default function CopyRankModal({
         const successful = document.execCommand('copy')
         if (successful) {
           toast.success(`已复制 ${selectedPlayers.length} 人`)
+        } else {
+          toast.error('复制失败')
+        }
+      } catch {
+        toast.error('复制失败')
+      }
+      document.body.removeChild(textArea)
+    }
+  }
+
+  // 复制为表格格式（TSV）
+  const handleCopyAsTable = () => {
+    const selectedData = getSelectedData()
+    if (!selectedData || !selectedData.allData) return
+
+    let selectedPlayers = []
+    const tabName = copyDataType === 'weekly' ? '周活跃度' : '赛季活跃度'
+
+    if (copyMode === 'rank') {
+      const count = parseInt(copyCount) || 20
+      selectedPlayers = selectedData.allData.slice(0, count)
+    } else {
+      const threshold = parseInt(thresholdValue) || 0
+      if (thresholdCompare === 'gte') {
+        selectedPlayers = selectedData.allData.filter(p => p.value >= threshold)
+      } else {
+        selectedPlayers = selectedData.allData.filter(p => p.value <= threshold)
+      }
+    }
+
+    // 构建 TSV 格式（Tab分隔）
+    const lines = []
+    // 表头
+    const headers = ['排名', '成员名']
+    if (copyShowId) headers.push('ID')
+    if (copyShowNewMark) headers.push('入队日期')
+    if (copyShowValues) headers.push(tabName)
+    lines.push(headers.join('\t'))
+
+    // 数据行
+    const newMemberMap = currentData?.newMemberMap || {}
+    selectedPlayers.forEach((p, i) => {
+      const row = [i + 1, p.name]
+      if (copyShowId) {
+        row.push(p.playerId || '')
+      }
+      if (copyShowNewMark) {
+        const weeks = newMemberMap[p.name]
+        const joinDateStr = (weeks && p.playerInfo?.joinDate) ? formatJoinDate(p.playerInfo.joinDate) : ''
+        row.push(joinDateStr || '')
+      }
+      if (copyShowValues) {
+        row.push(p.value)
+      }
+      lines.push(row.join('\t'))
+    })
+
+    const tsvContent = lines.join('\n')
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tsvContent)
+        .then(() => toast.success(`已复制 ${selectedPlayers.length} 人（表格格式）`, { duration: 2000 }))
+        .catch(() => toast.error('复制失败'))
+    } else {
+      const textArea = document.createElement('textarea')
+      textArea.value = tsvContent
+      textArea.style.cssText = 'position:fixed;top:-9999px;left:-9999px'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        const successful = document.execCommand('copy')
+        if (successful) {
+          toast.success(`已复制 ${selectedPlayers.length} 人（表格格式）`, { duration: 2000 })
         } else {
           toast.error('复制失败')
         }
@@ -598,7 +684,8 @@ export default function CopyRankModal({
                   const titleElement = <div className="mb-2 text-gray-200">{title}</div>
                   const listElements = selectedPlayers.map((p, i) => {
                     const weeks = newMemberMap[p.name]
-                    const showMark = copyShowNewMark && weeks
+                    const showJoinDate = copyShowNewMark && weeks && p.playerInfo?.joinDate
+                    const joinDateStr = showJoinDate ? formatJoinDate(p.playerInfo.joinDate) : null
 
                     return (
                       <div key={i}>
@@ -606,16 +693,8 @@ export default function CopyRankModal({
                         {copyShowId && p.playerId && (
                           <span className="text-gray-500"> ({p.playerId})</span>
                         )}
-                        {showMark && (
-                          <span className={`ml-1 ${
-                            weeks === 1 ? 'text-green-400' :
-                            weeks === 2 ? 'text-green-500/80' :
-                            weeks === 3 ? 'text-green-600/70' :
-                            weeks === 4 ? 'text-green-700/60' :
-                            'text-green-800/50'
-                          }`}>
-                            {weeks === 1 ? '[New]' : `[N-${weeks - 1}]`}
-                          </span>
+                        {joinDateStr && (
+                          <span className="text-green-400 ml-1">{joinDateStr}</span>
                         )}
                         {copyShowValues && <span> ({p.value})</span>}
                       </div>
@@ -638,9 +717,23 @@ export default function CopyRankModal({
         <div className="px-4 sm:px-5 py-3 bg-gray-900/30 border-t border-gray-700/50 flex gap-2">
           <button
             onClick={handleClose}
-            className="flex-1 px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-3 py-2 bg-gray-700/50 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
           >
             取消
+          </button>
+          <button
+            onClick={handleCopyAsTable}
+            disabled={
+              (!currentData && !preloadedData[copyDataType]) ||
+              (copyMode === 'rank' && (!copyCount || parseInt(copyCount) <= 0)) ||
+              (copyMode === 'threshold' && thresholdValue === '')
+            }
+            className="flex-1 px-3 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-md shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all flex items-center justify-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>表格</span>
           </button>
           <button
             onClick={handleCopyList}
