@@ -45,10 +45,12 @@ export async function POST(request) {
       trade_no,
       out_trade_no,
       amount,
-      status,
       pay_time,
       attach
     } = callbackData
+
+    // 支付平台回调本身就代表支付成功（有 pay_time 即成功）
+    const status = pay_time ? 'success' : 'failed'
 
     // 2. 查询订单（优先内存，再查 Supabase）
     let order = getOrder(out_trade_no)
