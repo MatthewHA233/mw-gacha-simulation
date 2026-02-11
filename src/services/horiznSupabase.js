@@ -483,19 +483,15 @@ export async function getHoriznMonthlyBaseFromOSS(yearMonth) {
     console.log('[horiznSupabase] Fetching from OSS:', yearMonth)
     const startTime = Date.now()
 
-    // 并行获取 idMapping 和可用月份信息
-    const [idMappingRes, availableMonthsRes] = await Promise.all([
-      fetch(`${OSS_HORIZN_BASE}/id-mapping.json?t=${Date.now()}`),
+    // 并行获取 idMapping（Supabase）和可用月份信息（OSS）
+    const [membersMapping, availableMonthsRes] = await Promise.all([
+      getMembersIdMapping(),
       fetch(`${OSS_HORIZN_BASE}/available-months.json?t=${Date.now()}`)
     ])
 
-    if (!idMappingRes.ok) throw new Error('id-mapping not found')
     if (!availableMonthsRes.ok) throw new Error('available-months not found')
 
-    const [idMappingData, availableMonths] = await Promise.all([
-      idMappingRes.json(),
-      availableMonthsRes.json()
-    ])
+    const availableMonths = await availableMonthsRes.json()
 
     // 新格式: { months: { "202512": ["04", "05", ...], ... } }
     const availableDays = availableMonths.months?.[yearMonth]
@@ -518,7 +514,7 @@ export async function getHoriznMonthlyBaseFromOSS(yearMonth) {
     const elapsed = Date.now() - startTime
     console.log(`[horiznSupabase] OSS fetch took ${elapsed}ms, ${days.length} days`)
 
-    const idMapping = idMappingData?.data || {}
+    const idMapping = membersMapping || {}
 
     // 转换成 sessions 格式
     const sessions = []
