@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ShieldCheck, Calendar } from 'lucide-react'
+import { ShieldCheck, Calendar, Search, X } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import BarChartRace from '@/components/Horizn/BarChartRace'
 import CopyRankModal from '@/components/Horizn/CopyRankModal'
@@ -40,6 +40,14 @@ export default function HoriznPage({ yearMonth }) {
   // 成员入离队细目相关状态
   const [showMemberEventsModal, setShowMemberEventsModal] = useState(false)
 
+  // 搜索定位玩家
+  const [pinnedPlayerId, setPinnedPlayerId] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false)
+  const [showSearchInput, setShowSearchInput] = useState(false)
+  const searchInputRef = useRef(null)
+  const searchContainerRef = useRef(null)
+
   // 预加载的数据缓存
   const [preloadedData, setPreloadedData] = useState({
     weekly: null, // { timeline, colorMap }
@@ -61,6 +69,73 @@ export default function HoriznPage({ yearMonth }) {
   useEffect(() => {
     setIsAdmin(sessionStorage.getItem('horizn_admin_auth') === 'true')
   }, [])
+
+  // 从 localStorage 读取上次定位的玩家
+  useEffect(() => {
+    const saved = localStorage.getItem('horizn_pinned_player')
+    if (saved) setPinnedPlayerId(saved)
+  }, [])
+
+  // pinnedPlayerId 变更时写入 localStorage
+  useEffect(() => {
+    if (pinnedPlayerId) {
+      localStorage.setItem('horizn_pinned_player', pinnedPlayerId)
+    } else {
+      localStorage.removeItem('horizn_pinned_player')
+    }
+  }, [pinnedPlayerId])
+
+  // 点击外部关闭搜索下拉
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setShowSearchDropdown(false)
+        if (!pinnedPlayerId && !searchQuery) setShowSearchInput(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [pinnedPlayerId, searchQuery])
+
+  // 搜索建议列表（从 idMapping 过滤）
+  const searchSuggestions = useMemo(() => {
+    if (!searchQuery.trim() || !monthlyBase?.idMapping) return []
+    const q = searchQuery.trim().toLowerCase()
+    const results = []
+
+    for (const [pid, info] of Object.entries(monthlyBase.idMapping)) {
+      const name = (info.name || '').toLowerCase()
+      const variants = (info.nameVariants || '').toLowerCase().split('|').filter(Boolean)
+      const pidLower = pid.toLowerCase()
+
+      if (name.includes(q) || pidLower.includes(q) || variants.some(v => v.includes(q))) {
+        results.push({ playerId: pid, name: info.name || pid, nameVariants: info.nameVariants })
+      }
+      if (results.length >= 10) break
+    }
+    return results
+  }, [searchQuery, monthlyBase?.idMapping])
+
+  // 选中玩家
+  const handleSelectPlayer = (playerId) => {
+    setPinnedPlayerId(playerId)
+    setSearchQuery('')
+    setShowSearchDropdown(false)
+    setShowSearchInput(false)
+  }
+
+  // 清除定位
+  const handleClearPin = () => {
+    setPinnedPlayerId(null)
+    setSearchQuery('')
+    setShowSearchInput(false)
+  }
+
+  // 获取已定位玩家的显示名
+  const pinnedPlayerName = useMemo(() => {
+    if (!pinnedPlayerId || !monthlyBase?.idMapping) return null
+    return monthlyBase.idMapping[pinnedPlayerId]?.name || pinnedPlayerId
+  }, [pinnedPlayerId, monthlyBase?.idMapping])
 
   // 退出管理员
   const handleLogout = () => {
@@ -261,6 +336,93 @@ export default function HoriznPage({ yearMonth }) {
                   </button>
                 ))}
               </div>
+
+              {/* 搜索定位玩家 */}
+              <div ref={searchContainerRef} className="relative ml-1 sm:ml-2">
+                {pinnedPlayerId && !showSearchInput ? (
+                  // 已定位状态：显示玩家名 + 清除按钮
+                  <div className="flex items-center gap-1 px-2 py-1 bg-amber-600/20 text-amber-400 border border-amber-500/30 rounded text-[10px] sm:text-xs font-medium">
+                    <Search className="w-3 h-3 flex-shrink-0" />
+                    <span className="max-w-[60px] sm:max-w-[80px] truncate cursor-pointer" onClick={() => { setShowSearchInput(true); setTimeout(() => searchInputRef.current?.focus(), 50) }}>
+                      {pinnedPlayerName}
+                    </span>
+                    <button
+                      onClick={handleClearPin}
+                      className="hover:text-amber-200 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : showSearchInput ? (
+                  // 搜索输入状态
+                  <div className="relative">
+                    <div className="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded px-2 py-1">
+                      <Search className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                      <input
+                        ref={searchInputRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value)
+                          setShowSearchDropdown(true)
+                        }}
+                        onFocus={() => searchQuery && setShowSearchDropdown(true)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Escape') {
+                            setShowSearchInput(false)
+                            setSearchQuery('')
+                            setShowSearchDropdown(false)
+                          }
+                        }}
+                        placeholder="搜索玩家..."
+                        className="bg-transparent text-white text-[10px] sm:text-xs w-20 sm:w-28 outline-none placeholder-gray-500"
+                        autoFocus
+                      />
+                      <button
+                        onClick={() => {
+                          setShowSearchInput(false)
+                          setSearchQuery('')
+                          setShowSearchDropdown(false)
+                        }}
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* 搜索下拉建议 */}
+                    {showSearchDropdown && searchQuery.trim() && (
+                      <div className="absolute left-0 top-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden z-30 w-48 sm:w-56 max-h-[240px] overflow-y-auto custom-scrollbar">
+                        {searchSuggestions.length === 0 ? (
+                          <div className="px-3 py-2 text-xs text-gray-500 text-center">
+                            未找到匹配玩家
+                          </div>
+                        ) : (
+                          searchSuggestions.map((player) => (
+                            <button
+                              key={player.playerId}
+                              onClick={() => handleSelectPlayer(player.playerId)}
+                              className="w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex flex-col"
+                            >
+                              <span className="truncate">{player.name}</span>
+                              <span className="text-[9px] text-gray-500 truncate">{player.playerId}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // 默认状态：搜索按钮
+                  <button
+                    onClick={() => { setShowSearchInput(true); setTimeout(() => searchInputRef.current?.focus(), 50) }}
+                    className="flex items-center gap-1 px-2 py-1 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded transition-colors"
+                    title="搜索定位玩家"
+                  >
+                    <Search className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* 右侧：月份选择器 + 管理员标识 + 状态信息 */}
@@ -406,6 +568,7 @@ export default function HoriznPage({ yearMonth }) {
           showValues={isAdmin}
           externalFrameIndex={manualFrameIndex}
           preloadedData={preloadedData[activeTab]}
+          highlightPlayerId={pinnedPlayerId}
         />
       </div>
 

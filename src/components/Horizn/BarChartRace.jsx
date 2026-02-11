@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { parseBarChartRaceCSV, generateColorMap } from '@/utils/csvParser'
 import { OSS_BASE_URL } from '@/utils/constants'
 
-export default function BarChartRace({ csvPath, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null }) {
+export default function BarChartRace({ csvPath, onDataUpdate, showValues = false, externalFrameIndex = null, preloadedData = null, highlightPlayerId = null }) {
   // 根据 csvPath 判断类型（weekly 或 season）
   const dataType = csvPath.includes('weekly') ? 'weekly' : 'season'
   const storageKey = `horizn_animation_duration_${dataType}`
@@ -374,8 +374,27 @@ export default function BarChartRace({ csvPath, onDataUpdate, showValues = false
   if (!currentData) {
     return <div>No data available</div>
   }
-  const maxValue = Math.max(...currentData.data.map(d => d.value))
-  const displayData = currentData.data.slice(0, maxVisibleItems) // 根据屏幕高度动态显示
+  // 切片逻辑：有 highlightPlayerId 时居中显示该玩家，否则显示 top N
+  let displayData
+  let sliceStartIndex = 0
+
+  if (highlightPlayerId) {
+    const allData = currentData.allData || currentData.data
+    const playerIndex = allData.findIndex(item => item.playerId === highlightPlayerId)
+
+    if (playerIndex !== -1) {
+      const half = Math.floor(maxVisibleItems / 2)
+      const start = Math.max(0, Math.min(playerIndex - half, allData.length - maxVisibleItems))
+      sliceStartIndex = start
+      displayData = allData.slice(start, start + maxVisibleItems)
+    } else {
+      displayData = currentData.data.slice(0, maxVisibleItems)
+    }
+  } else {
+    displayData = currentData.data.slice(0, maxVisibleItems)
+  }
+
+  const maxValue = displayData.length > 0 ? Math.max(...displayData.map(d => d.value)) : 1
 
   // 检测是否是大幅度跳跃（如从末尾回到开头）
   const prevFrame = prevFrameRef.current
@@ -397,6 +416,7 @@ export default function BarChartRace({ csvPath, onDataUpdate, showValues = false
                 {displayData.map((item, index) => {
                   const percentage = (item.value / maxValue) * 100
                   const newWeeks = newMemberMap[item.name]
+                  const isHighlighted = highlightPlayerId && item.playerId === highlightPlayerId
                   return (
                     <motion.div
                       key={item.name}
@@ -405,11 +425,15 @@ export default function BarChartRace({ csvPath, onDataUpdate, showValues = false
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: transitionDuration }}
-                      className="flex items-center gap-2 sm:gap-3"
+                      className={`flex items-center gap-2 sm:gap-3 ${
+                        isHighlighted
+                          ? 'ring-1 ring-amber-400/60 bg-amber-400/10 rounded px-1 -mx-1'
+                          : ''
+                      }`}
                     >
                       {/* 名次 */}
                       <div className="w-6 sm:w-8 text-center text-gray-400 text-xs sm:text-sm font-bold flex-shrink-0">
-                        {index + 1}
+                        {sliceStartIndex + index + 1}
                       </div>
 
                       {/* 玩家名称 + 状态角标 */}
