@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
+import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
 import { loadActivityConfig, buildItemImageUrl } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
@@ -19,6 +20,7 @@ import { InfoModal } from '../ChipGacha/InfoModal'
 import { SponsorModal } from '../ChipGacha/SponsorModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { ResetModal } from '../ui/ResetModal'
+import { MembershipModal } from '../ui/MembershipModal'
 
 /**
  * 旗舰宝箱类抽卡组件
@@ -31,11 +33,13 @@ export function FlagshipGacha({
   onUpdateHeader
 }) {
   const { playSound } = useSound()
+  const { isPremium } = useAuth()
   const [infoModal, setInfoModal] = useState(false)
   const [shopModal, setShopModal] = useState(false)
   const [historyModal, setHistoryModal] = useState(false)
   const [resetModal, setResetModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
+  const [showMembershipModal, setShowMembershipModal] = useState(false)
 
   // 选中的宝箱类型
   const [selectedLootboxType, setSelectedLootboxType] = useState('event_premium')
@@ -1106,6 +1110,13 @@ export function FlagshipGacha({
 
   // 商店相关函数
   const handleBuyPackage = (pkg) => {
+    // 安全检查：非会员由 ShopModal 拦截，此处为兜底
+    if (!isPremium) {
+      setShopModal(false)
+      setShowMembershipModal(true)
+      return
+    }
+
     playSound('Buy_01_UI.Buy_01_UI.wav')
 
     // --- 修改：考虑批量购买数量
@@ -1404,6 +1415,8 @@ export function FlagshipGacha({
         onUpdateQuantity={handleUpdateQuantity} // +++ 新增：传入数量调整函数
         activityConfig={activityConfig}
         mode="flagship"
+        isPremium={isPremium}
+        onOpenMembership={() => setShowMembershipModal(true)}
       />
 
       {/* 历史记录弹窗 */}
@@ -1427,6 +1440,12 @@ export function FlagshipGacha({
       <SponsorModal
         isOpen={sponsorModal}
         onClose={() => onSetSponsorModal(false)}
+      />
+
+      {/* 会员购买弹窗 */}
+      <MembershipModal
+        isOpen={showMembershipModal}
+        onClose={() => setShowMembershipModal(false)}
       />
 
       {/* 重置数据弹窗 */}

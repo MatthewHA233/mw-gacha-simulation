@@ -8,6 +8,36 @@
 import { NextResponse } from 'next/server'
 import { getSupabase } from '@lib/supabase/serverClient'
 
+/**
+ * 串行计算每张通行证的贡献天数。
+ * 通行证按 expire 升序排列后，每张的贡献 = expire - max(前一张expire, now)。
+ * total = 最晚过期时间 - now。
+ */
+function buildAllMemberships(memberships) {
+  const now = new Date()
+  // 按过期时间升序
+  const sorted = [...memberships].sort(
+    (a, b) => new Date(a.membership_expire_at) - new Date(b.membership_expire_at)
+  )
+
+  let cursor = now
+  const list = sorted.map(m => {
+    const expireAt = m.membership_expire_at ? new Date(m.membership_expire_at) : now
+    const start = cursor > now ? cursor : now
+    const contribution = Math.max(0, Math.ceil((expireAt - start) / (1000 * 60 * 60 * 24)))
+    if (expireAt > cursor) cursor = expireAt
+    return {
+      activation_code: m.activation_code,
+      membership_type: m.membership_type,
+      membership_expire_at: m.membership_expire_at,
+      remaining_days: contribution
+    }
+  })
+
+  const total = Math.max(0, Math.ceil((cursor - now) / (1000 * 60 * 60 * 24)))
+  return { all_memberships: list, total_remaining_days: total }
+}
+
 export async function POST(request) {
   try {
     const { activation_code, device_id } = await request.json()
@@ -31,7 +61,7 @@ export async function POST(request) {
     // 查询 membership
     const { data: membership, error } = await supabase
       .from('memberships')
-      .select('activation_code, display_name, is_active, membership_type, membership_start_at, membership_expire_at, password_hash, devices')
+      .select('activation_code, is_active, membership_type, membership_start_at, membership_expire_at, devices, user_id')
       .eq('activation_code', activation_code.toUpperCase().trim())
       .single()
 
@@ -49,9 +79,24 @@ export async function POST(request) {
       })
     }
 
-    const isExpired = membership.membership_expire_at
-      ? new Date(membership.membership_expire_at) < new Date()
-      : true
+    // 收集该用户所有 memberships
+    let allMembershipsData = buildAllMemberships([membership])
+
+    if (membership.user_id) {
+      const { data: userMemberships } = await supabase
+        .from('memberships')
+        .select('activation_code, membership_type, membership_expire_at')
+        .eq('user_id', membership.user_id)
+        .eq('is_active', true)
+        .order('membership_expire_at', { ascending: false })
+
+      if (userMemberships?.length) {
+        allMembershipsData = buildAllMemberships(userMemberships)
+      }
+    }
+
+    // is_expired: 当所有绑定的 memberships 都过期时才 true
+    const isExpired = allMembershipsData.all_memberships.every(m => m.remaining_days === 0)
 
     // 如果提供了 device_id，更新其 last_active_at
     if (device_id && Array.isArray(membership.devices)) {
@@ -71,12 +116,12 @@ export async function POST(request) {
       data: {
         valid: true,
         activation_code: membership.activation_code,
-        display_name: membership.display_name,
+        is_active: membership.is_active,
         membership_type: membership.membership_type,
         membership_start_at: membership.membership_start_at,
         membership_expire_at: membership.membership_expire_at,
         is_expired: isExpired,
-        has_password: !!membership.password_hash
+        ...allMembershipsData
       }
     })
 

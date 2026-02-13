@@ -1,11 +1,14 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { buildCurrencyIconUrl, loadActivityIndex } from '../../services/cdnService'
 import { useEffect, useState } from 'react'
 import { useSound } from '../../hooks/useSound'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '../../hooks/useAuth'
+import { Crown } from 'lucide-react'
+import { MembershipModal } from '../ui/MembershipModal'
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -29,6 +32,53 @@ export function Header({
   const { playButtonClick } = useSound()
   const router = useRouter()
   const [firstActivityId, setFirstActivityId] = useState(null)
+  const { user, isPremium, isMember, membership, logout, isActivated, userAccount, allMemberships, totalRemainingDays, bindPass } = useAuth()
+  const [showMembershipModal, setShowMembershipModal] = useState(false)
+  const [membershipInitialStep, setMembershipInitialStep] = useState('select')
+  const [showAccountMenu, setShowAccountMenu] = useState(false)
+  const [showBindPassInput, setShowBindPassInput] = useState(false)
+  const [bindPassCode, setBindPassCode] = useState('')
+  const [bindPassLoading, setBindPassLoading] = useState(false)
+  const [bindPassError, setBindPassError] = useState('')
+  const [bindPassSuccess, setBindPassSuccess] = useState('')
+
+  const openMembership = (step = 'select') => {
+    setMembershipInitialStep(step)
+    setShowMembershipModal(true)
+  }
+
+  // 手机端 H5 支付回来后自动打开弹窗恢复轮询
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('pending_mobile_payment')
+      if (!raw) return
+      const pending = JSON.parse(raw)
+      if (Date.now() - pending.timestamp > 10 * 60 * 1000) {
+        localStorage.removeItem('pending_mobile_payment')
+        return
+      }
+      setShowMembershipModal(true)
+    } catch {
+      localStorage.removeItem('pending_mobile_payment')
+    }
+  }, [])
+
+  const handleBindPass = async () => {
+    if (!bindPassCode.trim() || bindPassLoading) return
+    setBindPassLoading(true)
+    setBindPassError('')
+    setBindPassSuccess('')
+    try {
+      const result = await bindPass(bindPassCode.trim())
+      setBindPassSuccess(result.message || '绑定成功')
+      setBindPassCode('')
+      setTimeout(() => { setShowBindPassInput(false); setBindPassSuccess('') }, 1500)
+    } catch (err) {
+      setBindPassError(err.message || '绑定失败')
+    } finally {
+      setBindPassLoading(false)
+    }
+  }
 
   // 加载第一个活动ID
   useEffect(() => {
@@ -156,11 +206,10 @@ export function Header({
           {/* 侧边栏切换按钮 */}
           <motion.button
             onClick={isModalOpen ? undefined : () => { playButtonClick(); onToggleSidebar(); }}
-            className={`relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-colors ${
-              isModalOpen
+            className={`relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-colors ${isModalOpen
                 ? 'text-white/30 cursor-not-allowed'
                 : 'text-white/80 hover:text-white'
-            }`}
+              }`}
             whileHover={isModalOpen ? {} : { scale: 1.1 }}
             whileTap={isModalOpen ? {} : { scale: 0.95 }}
           >
@@ -205,8 +254,211 @@ export function Header({
           </div>
         </div>
 
-        {/* 右侧：信息按钮 + 赞助按钮 + 货币显示 */}
-        <div className="flex items-center gap-4">
+        {/* 右侧：会员状态 + 登录/注销 + 信息按钮 + 赞助按钮 + 货币显示 */}
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* 会员状态徽章 + 剩余天数 */}
+          {isActivated && isMember && (
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-1.5"
+            >
+              <div className="flex items-center bg-orange-600/20 border border-orange-500 text-orange-400 p-1 shadow-[0_0_8px_rgba(234,88,12,0.3)] backdrop-blur-sm">
+                <Crown size={14} strokeWidth={2.5} />
+              </div>
+              {totalRemainingDays > 0 && (
+                <span className="text-[10px] text-orange-300/80 font-mono">
+                  剩余 {totalRemainingDays} 天
+                </span>
+              )}
+            </motion.div>
+          )}
+
+          {/* 已过期徽章 */}
+          {isActivated && !isMember && membership?.is_active && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-1 bg-slate-700/50 border border-slate-500 text-slate-300 px-2 py-0.5 text-xs font-bold font-mono tracking-wider"
+            >
+              EXPIRED
+            </motion.div>
+          )}
+
+          {/* 用户区域 */}
+          {isActivated ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-2 relative"
+            >
+              {/* 用户名（点击展开菜单） */}
+              <button
+                onClick={() => { playButtonClick(); setShowAccountMenu(!showAccountMenu) }}
+                className="text-slate-300 hover:text-white font-mono text-xs px-2 py-0.5 border border-slate-700 bg-black/40 hover:border-slate-500 transition-colors cursor-pointer"
+              >
+                {userAccount?.login_id || membership?.activation_code || 'GUEST'}
+              </button>
+
+              {/* 过期续费 */}
+              {!isMember && membership?.is_active && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => { playButtonClick(); openMembership('select') }}
+                  className="bg-orange-600 hover:bg-orange-500 text-white px-2 py-0.5 text-xs font-bold font-mono uppercase transition-all border border-orange-400"
+                >
+                  RENEW
+                </motion.button>
+              )}
+
+              {/* 下拉菜单 */}
+              <AnimatePresence>
+                {showAccountMenu && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowAccountMenu(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      className="absolute top-full right-0 mt-1 z-50 bg-slate-900 border border-slate-700 shadow-xl min-w-[160px] md:min-w-[180px] max-h-[70vh] overflow-y-auto"
+                    >
+                      {/* 账号信息 */}
+                      <div className="px-2 py-1.5 md:px-3 md:py-2 border-b border-slate-800">
+                        <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider">账号</p>
+                        <p className="text-xs md:text-sm text-white font-mono truncate">
+                          {userAccount?.login_id || '未绑定'}
+                        </p>
+                        <p className="text-[10px] md:text-xs text-slate-400 font-mono mt-0.5 truncate">
+                          {membership?.activation_code}
+                        </p>
+                      </div>
+
+                      {/* 通行证列表 */}
+                      {allMemberships.length > 0 && (
+                        <div className="px-2 py-1.5 md:px-3 md:py-2 border-b border-slate-800">
+                          <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider mb-0.5 md:mb-1">通行证</p>
+                          <div className="space-y-1 md:space-y-1.5 max-h-[100px] md:max-h-[150px] overflow-y-auto">
+                            {allMemberships.map((m, i) => {
+                              const isExp = m.remaining_days === 0
+                              return (
+                                <div key={m.activation_code || i} className="flex items-center justify-between gap-1.5 md:gap-2">
+                                  <div className="flex items-center gap-1 md:gap-1.5 min-w-0">
+                                    <span className={`text-[10px] md:text-xs font-mono truncate ${isExp ? 'text-slate-500 line-through' : 'text-slate-200'}`}>
+                                      {m.activation_code ? m.activation_code.slice(0, 4) + '····' + m.activation_code.slice(-4) : '—'}
+                                    </span>
+                                    <span className="text-[9px] md:text-[10px] px-1 py-px bg-slate-800 text-slate-400 shrink-0">
+                                      {m.membership_type === 'yearly' ? '年' : '月'}
+                                    </span>
+                                  </div>
+                                  <span className={`text-[10px] md:text-xs font-mono shrink-0 ${isExp ? 'text-slate-500' : 'text-emerald-400'}`}>
+                                    {isExp ? '已过期' : `${m.remaining_days}天`}
+                                  </span>
+                                </div>
+                              )
+                            })}
+                          </div>
+                          {totalRemainingDays > 0 && allMemberships.length > 1 && (
+                            <div className="mt-1 pt-1 md:mt-1.5 md:pt-1.5 border-t border-slate-800/50 flex justify-between">
+                              <span className="text-[10px] md:text-xs text-slate-400">合计</span>
+                              <span className="text-[10px] md:text-xs text-orange-400 font-mono font-bold">{totalRemainingDays}天</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 绑定新通行证 - 仅当有账号时显示 */}
+                      {userAccount && (
+                        <div className="border-b border-slate-800">
+                          {!showBindPassInput ? (
+                            <button
+                              onClick={() => { setShowBindPassInput(true); setBindPassError(''); setBindPassSuccess('') }}
+                              className="w-full px-2 py-1.5 md:px-3 md:py-2 text-left text-[10px] md:text-xs text-slate-200 hover:bg-slate-800 hover:text-white transition-colors"
+                            >
+                              绑定其它通行证密钥
+                            </button>
+                          ) : (
+                            <div className="px-2 py-1.5 md:px-3 md:py-2 space-y-1.5 md:space-y-2">
+                              <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider">输入其它通行证密钥</p>
+                              <div className="flex gap-1 md:gap-1.5">
+                                <input
+                                  type="text"
+                                  value={bindPassCode}
+                                  onChange={e => { setBindPassCode(e.target.value); setBindPassError(''); setBindPassSuccess('') }}
+                                  placeholder="XXXX-XXXX-XXXX"
+                                  className="flex-1 min-w-0 bg-slate-800 border border-slate-600 text-white text-[10px] md:text-xs font-mono px-1.5 py-1 md:px-2 md:py-1.5 focus:outline-none focus:border-orange-500"
+                                  disabled={bindPassLoading}
+                                  onKeyDown={e => {
+                                    if (e.key === 'Enter' && bindPassCode.trim()) {
+                                      handleBindPass()
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={handleBindPass}
+                                  disabled={bindPassLoading || !bindPassCode.trim()}
+                                  className="shrink-0 px-2 py-1 md:px-2.5 md:py-1.5 text-[10px] md:text-xs font-bold bg-orange-600 hover:bg-orange-500 disabled:bg-slate-700 disabled:text-slate-500 text-white transition-colors"
+                                >
+                                  {bindPassLoading ? '...' : '确认'}
+                                </button>
+                                <button
+                                  onClick={() => { setShowBindPassInput(false); setBindPassCode(''); setBindPassError(''); setBindPassSuccess('') }}
+                                  className="shrink-0 px-1.5 py-1 md:px-2 md:py-1.5 text-[10px] md:text-xs text-slate-300 hover:text-white transition-colors"
+                                >
+                                  取消
+                                </button>
+                              </div>
+                              {bindPassError && (
+                                <p className="text-[10px] md:text-xs text-red-400">{bindPassError}</p>
+                              )}
+                              {bindPassSuccess && (
+                                <p className="text-[10px] md:text-xs text-emerald-400">{bindPassSuccess}</p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 操作 */}
+                      {!userAccount && (
+                        <button
+                          onClick={() => { setShowAccountMenu(false); openMembership('bind') }}
+                          className="w-full px-2 py-1.5 md:px-3 md:py-2 text-left text-[10px] md:text-xs text-slate-200 hover:bg-slate-800 hover:text-white transition-colors"
+                        >
+                          绑定登录账号
+                        </button>
+                      )}
+                      <button
+                        onClick={() => { setShowAccountMenu(false); openMembership('select') }}
+                        className="w-full px-2 py-1.5 md:px-3 md:py-2 text-left text-[10px] md:text-xs text-slate-200 hover:bg-slate-800 hover:text-white transition-colors"
+                      >
+                        购买/续费会员
+                      </button>
+                      <button
+                        onClick={() => { setShowAccountMenu(false); playButtonClick(); logout() }}
+                        className="w-full px-2 py-1.5 md:px-3 md:py-2 text-left text-[10px] md:text-xs text-red-400 hover:bg-slate-800 hover:text-red-300 transition-colors border-t border-slate-800"
+                      >
+                        注销登录
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => { playButtonClick(); openMembership('select') }}
+              className="bg-orange-600/80 hover:bg-orange-500 text-white px-3 py-1 text-xs font-bold hover:shadow-[0_0_10px_rgba(234,88,12,0.5)] transition-all flex items-center gap-1.5 border border-orange-500"
+            >
+              <Crown size={12} />
+              <span className="hidden md:inline font-mono tracking-tight uppercase">Get Access</span>
+              <span className="md:hidden font-mono uppercase">VIP</span>
+            </motion.button>
+          )}
+
           {/* 信息按钮 */}
           <button
             onClick={() => { playButtonClick(); onOpenInfo(); }}
@@ -361,9 +613,9 @@ export function Header({
             {/* 人民币 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-red-500/30">
               <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path d="M531.456 529.408c-18.432 0-34.816-16.384-34.816-33.792v-17.408-16.384V428.032h-95.232c-9.216 0-17.408-3.072-23.552-10.24-7.168-7.168-10.24-17.408-10.24-25.6 1.024-19.456 16.384-34.816 33.792-34.816h94.208v-1.024-29.696h-95.232c-18.432 0-33.792-16.384-33.792-33.792 0-9.216 3.072-18.432 10.24-25.6s14.336-10.24 23.552-10.24h61.44l-1.024-2.048c-12.288-20.48-24.576-41.984-35.84-62.464l-1.024-2.048c-13.312-22.528-27.648-45.056-40.96-67.584-3.072-6.144-13.312-21.504-1.024-35.84 7.168-9.216 18.432-13.312 30.72-13.312 4.096 0 9.216 1.024 12.288 2.048 14.336 6.144 23.552 19.456 28.672 28.672 17.408 30.72 33.792 60.416 51.2 90.112l27.648 49.152 20.48-35.84 17.408-29.696c12.288-22.528 25.6-45.056 38.912-67.584 4.096-9.216 12.288-18.432 20.48-24.576 6.144-4.096 13.312-8.192 20.48-8.192 14.336 0 29.696 9.216 34.816 22.528 3.072 8.192 1.024 18.432-2.048 23.552-17.408 29.696-33.792 59.392-51.2 87.04l-12.288 21.504-17.408 30.72h61.44c18.432 0 32.768 16.384 32.768 34.816 0 20.48-14.336 34.816-32.768 34.816h-94.208v-1.024 28.672-2.048h94.208c17.408 0 30.72 11.264 33.792 27.648 4.096 16.384-6.144 34.816-20.48 41.984-3.072 2.048-8.192 2.048-11.264 2.048h-96.256v20.48c-1.024 17.408 0 30.72 0 44.032 1.024 7.168-2.048 16.384-9.216 21.504-8.192 7.168-19.456 13.312-28.672 13.312z" fill="#d81e06"/>
-                <path d="M789.504 776.192m-32.768 0a32.768 32.768 0 1 0 65.536 0 32.768 32.768 0 1 0-65.536 0Z" fill="#d81e06"/>
-                <path d="M928.768 642.048c-16.384-33.792-51.2-56.32-89.088-56.32-12.288 0-23.552 2.048-33.792 6.144L675.84 640l-1.024-1.024c-11.264-31.744-39.936-55.296-74.752-60.416l-39.936-6.144c-33.792-5.12-66.56-13.312-95.232-25.6-31.744-12.288-63.488-17.408-97.28-17.408-46.08 0-94.208 12.288-135.168 34.816L184.32 592.896v-1.024c-5.12 2.048-103.424 51.2-95.232 160.768 5.12 70.656 29.696 118.784 67.584 135.168 8.192 4.096 18.432 6.144 30.72 6.144 16.384 0 35.84-5.12 58.368-21.504 12.288-3.072 23.552-5.12 34.816-5.12 22.528 0 45.056 5.12 64.512 14.336l8.192 4.096c45.056 21.504 96.256 32.768 147.456 32.768 55.296 0 107.52-13.312 153.6-36.864l78.848-40.96c11.264-5.12 19.456-16.384 19.456-30.72 0-18.432-15.36-33.792-33.792-33.792-6.144 0-12.288 2.048-17.408 5.12l-79.872 39.936C582.656 840.704 542.72 849.92 500.736 849.92c-40.96 0-79.872-9.216-116.736-26.624l-7.168-4.096c-29.696-14.336-62.464-21.504-95.232-21.504-24.576 0-51.2 5.12-77.824 14.336l-21.504 8.192c-8.192-8.192-19.456-31.744-22.528-75.776-3.072-43.008 22.528-70.656 40.96-83.968h1.024l68.608-37.888c29.696-18.432 64.512-27.648 101.376-27.648 25.6 0 50.176 4.096 71.68 13.312 32.768 12.288 69.632 22.528 109.568 28.672l39.936 6.144c13.312 2.048 22.528 13.312 22.528 25.6 0 15.36-11.264 26.624-26.624 26.624l-168.96 6.144c-10.24 0-18.432 4.096-24.576 10.24-7.168 8.192-10.24 16.384-9.216 23.552 0 9.216 3.072 17.408 10.24 24.576 8.192 7.168 16.384 10.24 23.552 10.24l166.912-2.048c34.816 0 67.584-20.48 83.968-51.2v-1.024l159.744-59.392 9.216-1.024c10.24 0 19.456 6.144 25.6 15.36l3.072 12.288c0 10.24-6.144 19.456-15.36 23.552l-4.096 2.048c-10.24 6.144-16.384 16.384-16.384 28.672 0 18.432 14.336 32.768 32.768 32.768 6.144 0 12.288-2.048 17.408-5.12l1.024-1.024c31.744-15.36 53.248-50.176 53.248-84.992 0-11.264-3.072-24.576-8.192-36.864z" fill="#d81e06"/>
+                <path d="M531.456 529.408c-18.432 0-34.816-16.384-34.816-33.792v-17.408-16.384V428.032h-95.232c-9.216 0-17.408-3.072-23.552-10.24-7.168-7.168-10.24-17.408-10.24-25.6 1.024-19.456 16.384-34.816 33.792-34.816h94.208v-1.024-29.696h-95.232c-18.432 0-33.792-16.384-33.792-33.792 0-9.216 3.072-18.432 10.24-25.6s14.336-10.24 23.552-10.24h61.44l-1.024-2.048c-12.288-20.48-24.576-41.984-35.84-62.464l-1.024-2.048c-13.312-22.528-27.648-45.056-40.96-67.584-3.072-6.144-13.312-21.504-1.024-35.84 7.168-9.216 18.432-13.312 30.72-13.312 4.096 0 9.216 1.024 12.288 2.048 14.336 6.144 23.552 19.456 28.672 28.672 17.408 30.72 33.792 60.416 51.2 90.112l27.648 49.152 20.48-35.84 17.408-29.696c12.288-22.528 25.6-45.056 38.912-67.584 4.096-9.216 12.288-18.432 20.48-24.576 6.144-4.096 13.312-8.192 20.48-8.192 14.336 0 29.696 9.216 34.816 22.528 3.072 8.192 1.024 18.432-2.048 23.552-17.408 29.696-33.792 59.392-51.2 87.04l-12.288 21.504-17.408 30.72h61.44c18.432 0 32.768 16.384 32.768 34.816 0 20.48-14.336 34.816-32.768 34.816h-94.208v-1.024 28.672-2.048h94.208c17.408 0 30.72 11.264 33.792 27.648 4.096 16.384-6.144 34.816-20.48 41.984-3.072 2.048-8.192 2.048-11.264 2.048h-96.256v20.48c-1.024 17.408 0 30.72 0 44.032 1.024 7.168-2.048 16.384-9.216 21.504-8.192 7.168-19.456 13.312-28.672 13.312z" fill="#d81e06" />
+                <path d="M789.504 776.192m-32.768 0a32.768 32.768 0 1 0 65.536 0 32.768 32.768 0 1 0-65.536 0Z" fill="#d81e06" />
+                <path d="M928.768 642.048c-16.384-33.792-51.2-56.32-89.088-56.32-12.288 0-23.552 2.048-33.792 6.144L675.84 640l-1.024-1.024c-11.264-31.744-39.936-55.296-74.752-60.416l-39.936-6.144c-33.792-5.12-66.56-13.312-95.232-25.6-31.744-12.288-63.488-17.408-97.28-17.408-46.08 0-94.208 12.288-135.168 34.816L184.32 592.896v-1.024c-5.12 2.048-103.424 51.2-95.232 160.768 5.12 70.656 29.696 118.784 67.584 135.168 8.192 4.096 18.432 6.144 30.72 6.144 16.384 0 35.84-5.12 58.368-21.504 12.288-3.072 23.552-5.12 34.816-5.12 22.528 0 45.056 5.12 64.512 14.336l8.192 4.096c45.056 21.504 96.256 32.768 147.456 32.768 55.296 0 107.52-13.312 153.6-36.864l78.848-40.96c11.264-5.12 19.456-16.384 19.456-30.72 0-18.432-15.36-33.792-33.792-33.792-6.144 0-12.288 2.048-17.408 5.12l-79.872 39.936C582.656 840.704 542.72 849.92 500.736 849.92c-40.96 0-79.872-9.216-116.736-26.624l-7.168-4.096c-29.696-14.336-62.464-21.504-95.232-21.504-24.576 0-51.2 5.12-77.824 14.336l-21.504 8.192c-8.192-8.192-19.456-31.744-22.528-75.776-3.072-43.008 22.528-70.656 40.96-83.968h1.024l68.608-37.888c29.696-18.432 64.512-27.648 101.376-27.648 25.6 0 50.176 4.096 71.68 13.312 32.768 12.288 69.632 22.528 109.568 28.672l39.936 6.144c13.312 2.048 22.528 13.312 22.528 25.6 0 15.36-11.264 26.624-26.624 26.624l-168.96 6.144c-10.24 0-18.432 4.096-24.576 10.24-7.168 8.192-10.24 16.384-9.216 23.552 0 9.216 3.072 17.408 10.24 24.576 8.192 7.168 16.384 10.24 23.552 10.24l166.912-2.048c34.816 0 67.584-20.48 83.968-51.2v-1.024l159.744-59.392 9.216-1.024c10.24 0 19.456 6.144 25.6 15.36l3.072 12.288c0 10.24-6.144 19.456-15.36 23.552l-4.096 2.048c-10.24 6.144-16.384 16.384-16.384 28.672 0 18.432 14.336 32.768 32.768 32.768 6.144 0 12.288-2.048 17.408-5.12l1.024-1.024c31.744-15.36 53.248-50.176 53.248-84.992 0-11.264-3.072-24.576-8.192-36.864z" fill="#d81e06" />
               </svg>
               <span className="text-red-400 font-bold text-xs md:text-sm">{gameState.rmb}</span>
             </div>
@@ -422,6 +674,16 @@ export function Header({
           </div>
         </div>
       </div>
+
+      {/* 会员购买弹窗 */}
+      <MembershipModal
+        isOpen={showMembershipModal}
+        onClose={() => setShowMembershipModal(false)}
+        initialStep={membershipInitialStep}
+        onSuccess={() => {
+          // 不关弹窗，让用户在成功页面复制通行证密钥后手动关闭
+        }}
+      />
     </div>
   )
 }

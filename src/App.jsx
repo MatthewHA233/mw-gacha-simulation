@@ -7,6 +7,7 @@ import MilestoneToastDemo from './pages/MilestoneToastDemo'
 import HoriznPage from './pages/HoriznPage'
 import HoriznAdminLogin from './pages/HoriznAdminLogin'
 import { MilestoneToastProvider } from './components/ui/MilestoneToastProvider'
+import { AuthProvider } from './hooks/useAuth'
 import { HomeRedirect } from './components/HomeRedirect'
 import { HoriznRedirect } from './components/HoriznRedirect'
 import { loadVersionHistory, clearConfigCache } from './services/cdnService'
@@ -82,6 +83,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <AuthProvider>
       <MilestoneToastProvider maxToasts={3} position="top-right">
         <div className="w-full h-screen overflow-hidden bg-black">
           <Analytics />
@@ -99,6 +101,7 @@ function App() {
           </Routes>
         </div>
       </MilestoneToastProvider>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

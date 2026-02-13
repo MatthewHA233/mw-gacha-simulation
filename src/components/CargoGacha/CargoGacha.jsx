@@ -7,6 +7,7 @@ import { loadActivityConfig, buildBackgroundUrl, buildCargoPoolImageUrl, buildIt
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
 import { useSound } from '../../hooks/useSound'
+import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
 import { SquareItem } from '../SquareItem'
 import { ResultModal } from '../ui/ResultModal'
@@ -16,6 +17,7 @@ import { ShopModal } from '../ChipGacha/ShopModal'
 import { SponsorModal } from '../ChipGacha/SponsorModal'
 import { ResetModal } from '../ui/ResetModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
+import { MembershipModal } from '../ui/MembershipModal'
 
 /**
  * 机密货物类抽卡组件
@@ -27,6 +29,7 @@ export function CargoGacha({
   onUpdateHeader
 }) {
   const { playSound } = useSound()
+  const { isPremium } = useAuth()
 
   // 选中的奖池类型
   const [selectedCargoType, setSelectedCargoType] = useState('rm') // 'rm' | 'gameplay'
@@ -173,6 +176,7 @@ export function CargoGacha({
   const [historyModal, setHistoryModal] = useState(false)
   const [resetModal, setResetModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
+  const [showMembershipModal, setShowMembershipModal] = useState(false)
 
   // 抽奖动画状态
   const [isDrawing, setIsDrawing] = useState(false)
@@ -1459,6 +1463,13 @@ export function CargoGacha({
 
   // 商店购买处理
   const handleBuyPackage = (pkg) => {
+    // 安全检查：非会员由 ShopModal 拦截，此处为兜底
+    if (!isPremium) {
+      setShopModal(false)
+      setShowMembershipModal(true)
+      return
+    }
+
     playSound('Buy_01_UI.Buy_01_UI.wav')
 
     setGameState(prev => ({
@@ -1738,6 +1749,8 @@ export function CargoGacha({
         onUpdateQuantity={updateQuantity}
         activityConfig={activityConfig}
         mode="cargo"
+        isPremium={isPremium}
+        onOpenMembership={() => setShowMembershipModal(true)}
       />
 
       {/* 历史记录弹窗 */}
@@ -1760,6 +1773,12 @@ export function CargoGacha({
       <SponsorModal
         isOpen={sponsorModal}
         onClose={() => onSetSponsorModal(false)}
+      />
+
+      {/* 会员购买弹窗 */}
+      <MembershipModal
+        isOpen={showMembershipModal}
+        onClose={() => setShowMembershipModal(false)}
       />
 
       {/* 重置数据弹窗 */}

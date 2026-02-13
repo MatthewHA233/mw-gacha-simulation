@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
+import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
 import { buildShopPackageUrl, buildItemImageUrl, buildBackgroundUrl, loadActivityConfig } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
@@ -16,6 +17,7 @@ import { ShopModal } from './ShopModal'
 import { SponsorModal } from './SponsorModal'
 import { ResetModal } from '../ui/ResetModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
+import { MembershipModal } from '../ui/MembershipModal'
 
 /**
  * 筹码类抽卡主组件
@@ -29,6 +31,7 @@ export function ChipGacha({
   onUpdateHeader
 }) {
   const { playSound } = useSound()
+  const { isPremium } = useAuth()
 
   // 活动配置（包含 metadata 和可能的 image 字段）
   const [activityConfig, setActivityConfig] = useState({
@@ -148,6 +151,7 @@ export function ChipGacha({
   const [historyModal, setHistoryModal] = useState(false)
   const [isDrawing, setIsDrawing] = useState(false)
   const [shopModal, setShopModal] = useState(false)
+  const [showMembershipModal, setShowMembershipModal] = useState(false)
   const [resetModal, setResetModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
   const [highlightedItemName, setHighlightedItemName] = useState(null)
@@ -1217,6 +1221,13 @@ export function ChipGacha({
 
   // ========== 购买充值包 ==========
   const buyPackage = (pkg) => {
+    // 安全检查：非会员由 ShopModal 拦截，此处为兜底
+    if (!isPremium) {
+      setShopModal(false)
+      setShowMembershipModal(true)
+      return
+    }
+
     playSound('Buy_01_UI.Buy_01_UI.wav')
     setGameState(prev => ({
       ...prev,
@@ -1313,12 +1324,20 @@ export function ChipGacha({
         onBuyPackage={buyPackage}
         onUpdateQuantity={updateQuantity}
         activityConfig={activityConfig}
+        isPremium={isPremium}
+        onOpenMembership={() => setShowMembershipModal(true)}
       />
 
       {/* 赞助作者弹窗 */}
       <SponsorModal
         isOpen={sponsorModal}
         onClose={() => onSetSponsorModal(false)}
+      />
+
+      {/* 会员购买弹窗 */}
+      <MembershipModal
+        isOpen={showMembershipModal}
+        onClose={() => setShowMembershipModal(false)}
       />
 
       {/* 重置数据弹窗 */}

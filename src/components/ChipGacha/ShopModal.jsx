@@ -17,7 +17,9 @@ export function ShopModal({
   onBuyPackage,
   onUpdateQuantity,
   activityConfig,
-  mode = 'chip' // 'chip' 或 'flagship' 或 'cargo'
+  mode = 'chip', // 'chip' 或 'flagship' 或 'cargo'
+  isPremium = false,
+  onOpenMembership
 }) {
   if (!isOpen) return null
 
@@ -61,10 +63,10 @@ export function ShopModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center"
+      className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center overflow-auto p-2"
       onClick={onClose}
     >
-      <div className="flex flex-col items-center gap-4 pointer-events-none">
+      <div className="flex flex-col items-center gap-4 pointer-events-none max-h-[90vh] overflow-y-auto">
         {/* 商品展示区域 */}
         <div className="flex gap-6 px-8 scale-[0.6] md:scale-100 pointer-events-auto">
           {shopPackages.map((pkg) => {
@@ -83,7 +85,14 @@ export function ShopModal({
             <div
               key={pkg.id}
               className="relative w-60 bg-gradient-to-b from-slate-800/90 to-slate-900/90 rounded-lg overflow-hidden border border-slate-600/50 hover:border-cyan-400/60 transition-all cursor-pointer group shadow-lg"
-              onClick={() => onBuyPackage(pkg)}
+              onClick={() => {
+                if (!isPremium) {
+                  onClose()
+                  onOpenMembership?.()
+                  return
+                }
+                onBuyPackage(pkg)
+              }}
             >
               {/* 顶部标签 */}
               <div className="bg-gradient-to-r from-slate-700/80 to-slate-600/80 px-3 py-1 text-white text-sm font-bold border-b border-slate-500/30">
@@ -100,7 +109,7 @@ export function ShopModal({
 
               {/* 商品图片与调节 */}
               <div className={`relative ${mode === 'flagship' ? 'h-48 overflow-hidden' : 'p-6 h-48'} flex items-center justify-center`}>
-                
+
                 {/* 左侧 ±1 */}
                 {canAdjustQuantity && (
                   <div
@@ -220,19 +229,21 @@ export function ShopModal({
           })}
         </div>
 
-        {/* 价格参考来源 */}
-        <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto">
-          价格参考来源：
-          <a
-            href="https://m.tb.cn/h.S6Gh2Ta?tk=xN9WfZpATH7"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-cyan-400 hover:text-cyan-300 underline ml-1 transition-colors"
-            onClick={e => e.stopPropagation()}
-          >
-            闲鱼 小璃现代战舰
-          </a>
-        </div>
+        {/* 价格参考来源（仅会员可见） */}
+        {isPremium && (
+          <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto">
+            价格参考来源：
+            <a
+              href="https://m.tb.cn/h.S6Gh2Ta?tk=xN9WfZpATH7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-400 hover:text-cyan-300 underline ml-1 transition-colors"
+              onClick={e => e.stopPropagation()}
+            >
+              闲鱼 小璃现代战舰
+            </a>
+          </div>
+        )}
       </div>
     </motion.div>
   )

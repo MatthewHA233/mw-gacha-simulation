@@ -325,8 +325,29 @@ CDN_BASE_URL/
 │   ├── MW.png                              # 项目图标
 │   └── vite.svg                            # Vite 图标
 │
+├── app/                                    # Next.js App Router
+│   ├── layout.jsx                          # 根布局（AuthProvider、MilestoneToastProvider）
+│   ├── api/
+│   │   ├── auth/
+│   │   │   ├── activate/route.js           # 登录（通行证密钥 或 账号密码）
+│   │   │   ├── verify/route.js             # 会员状态验证（前端定期调用）
+│   │   │   ├── bind-account/route.js       # 绑定/创建登录账号
+│   │   │   └── bind-pass/route.js          # 绑定其它通行证密钥
+│   │   └── payment/
+│   │       ├── create/route.js             # 创建支付订单
+│   │       ├── notify/route.js             # 支付回调
+│   │       └── query/route.js              # 查询订单状态
+│   └── ...
+│
+├── lib/                                    # 服务端工具库
+│   ├── payment/
+│   │   ├── orderStore.js                   # 内存订单存储
+│   │   └── signUtil.js                     # 支付签名
+│   └── supabase/
+│       └── serverClient.js                 # Supabase 服务端客户端
+│
 ├── src/
-│   ├── App.jsx                             # 路由与全局布局
+│   ├── App.jsx                             # 旧 Vite 入口（Next.js 模式下不使用）
 │   ├── main.jsx                            # React 入口
 │   ├── App.css / index.css                 # 全局样式
 │   ├── components/
@@ -336,16 +357,18 @@ CDN_BASE_URL/
 │   │   │   ├── HistoryModal.jsx            # 历史记录弹窗
 │   │   │   ├── InfoModal.jsx               # 规则说明弹窗
 │   │   │   ├── ResultModal.jsx             # 抽卡结果弹窗
-│   │   │   ├── ShopModal.jsx               # 商店弹窗
+│   │   │   ├── ShopModal.jsx               # 商店弹窗（含会员权限检查）
 │   │   │   └── SponsorModal.jsx            # 赞助弹窗
 │   │   │
 │   │   ├── Layout/                         # 布局相关组件
-│   │   │   ├── Header.jsx                  # 顶部标题栏
+│   │   │   ├── Header.jsx                  # 顶部标题栏（会员状态、下拉菜单）
 │   │   │   ├── Sidebar.jsx                 # 活动列表侧边栏
 │   │   │   └── Sidebar.css                 # 侧边栏样式
 │   │   │
 │   │   ├── ui/                             # 通用 UI 组件
 │   │   │   ├── ConfirmModal.jsx
+│   │   │   ├── LoginModal.jsx              # 登录弹窗（双模式）
+│   │   │   ├── MembershipModal.jsx         # 会员购买弹窗
 │   │   │   ├── ResetModal.jsx
 │   │   │   ├── background-beams.jsx        # 背景特效
 │   │   │   ├── hexagon-grid.jsx            # 六边形网格组件
@@ -361,7 +384,10 @@ CDN_BASE_URL/
 │   │
 │   ├── hooks/
 │   │   ├── useActivityList.js              # 活动列表加载
+│   │   ├── useAuth.js                      # 认证状态管理（AuthProvider + useAuth）
 │   │   ├── useGachaData.js                 # 抽卡数据管理
+│   │   ├── useMilestoneTracker.js          # 氪金里程碑追踪
+│   │   ├── usePayment.js                   # 支付流程
 │   │   └── useSound.js                     # 音效播放
 │   │
 │   ├── services/
@@ -379,8 +405,11 @@ CDN_BASE_URL/
 │   └── lib/
 │       └── utils.js                        # 通用工具函数
 │
+├── supabase/
+│   └── patch_user_profile.sql              # 用户表 + memberships 关联 SQL
+│
 ├── index.html
-├── package.json / vite.config.js / tailwind.config.js ...
+├── package.json / next.config.mjs / tailwind.config.js ...
 └── CLAUDE.md 等文档
 ```
 
@@ -751,3 +780,159 @@ const getAllItems = () => {
   - 组件结构规划
   - JSON 配置格式设计
   - UI/UX 设计
+
+---
+
+## 付费会员系统（已实现）
+
+### 核心功能
+
+付费会员系统，解锁商店无限氪金权限。
+- 免费用户：只能使用初始给定的游戏货币（如30个密钥）
+- 付费会员：可在商店无限充值游戏货币
+
+**会员套餐**：
+- 月度会员：¥3.9（30天有效期）
+- 年度会员：¥20（365天有效期）
+- 无需自动续费（一次性购买）
+
+### 认证架构
+
+**认证方式**：激活码（通行证密钥）+ 设备ID，无 JWT Token。
+
+**数据模型**：一个用户账号（`users` 表）可绑定多个通行证密钥（`memberships` 表），多张通行证的时间串行叠加。
+
+**登录模式**：
+1. **通行证密钥登录**：直接用 `MW-XXXXXXXX` 格式的激活码登录
+2. **账号密码登录**：用绑定的 `login_id` + 密码登录，自动选择最佳 membership
+
+**设备管理**：FIFO 策略，每个 membership 最多 3 台设备。
+
+#### 用户流程
+
+```
+用户购买会员套餐 → 支付成功后生成 membership（含激活码）
+  ↓
+用户用通行证密钥登录（POST /api/auth/activate）
+  ↓
+（可选）绑定账号（POST /api/auth/bind-account）→ 创建/关联 users 表
+  ↓
+（可选）绑定其它通行证密钥（POST /api/auth/bind-pass）→ 时间串行叠加
+  ↓
+解锁商店无限充值
+```
+
+### 数据库设计
+
+**users 表**（用户账号，可选绑定）
+```sql
+id UUID PK
+login_id VARCHAR(100) UNIQUE NOT NULL  -- 手机号/邮箱/自定义账号
+password_hash TEXT NOT NULL
+created_at TIMESTAMPTZ
+updated_at TIMESTAMPTZ
+```
+
+**memberships 表**（通行证/会员，核心表）
+```sql
+id UUID PK
+activation_code VARCHAR UNIQUE         -- 通行证密钥（MW-XXXXXXXX）
+is_active BOOLEAN                      -- 是否已支付
+membership_type VARCHAR                -- monthly / yearly
+membership_start_at TIMESTAMPTZ
+membership_expire_at TIMESTAMPTZ       -- 过期时间（数据库为唯一真相源）
+user_id UUID FK → users(id) NULLABLE   -- 绑定账号后填入
+devices JSONB                          -- [{device_id, last_active_at}, ...]
+total_spent_cents INTEGER
+created_at TIMESTAMPTZ
+updated_at TIMESTAMPTZ
+```
+
+**payment_orders 表**（支付订单，Supabase 存储）
+```sql
+id UUID PK
+out_trade_no VARCHAR(64) UNIQUE
+trade_no VARCHAR(64)
+order_type VARCHAR(20)                 -- subscription
+order_metadata JSONB
+amount INTEGER                         -- 金额（分）
+description TEXT
+pay_type VARCHAR(20)                   -- alipay / wechat
+jump_url TEXT
+pay_time TIMESTAMPTZ
+created_at TIMESTAMPTZ
+updated_at TIMESTAMPTZ
+```
+
+### 串行时间叠加机制
+
+多张通行证绑定同一账号时，时间**串行排列**而非并行消耗：
+- 绑定新通行证时，将其 `membership_expire_at` 调整为：`max(当前最晚过期时间, now) + 新通行证剩余天数`
+- 前端展示每张通行证的"贡献天数"（而非各自独立的剩余天数）
+- `total_remaining_days` = 最晚过期时间 - now（不是简单求和）
+
+**算法实现**（三处一致：`activate`、`verify`、`bind-pass`）：
+```javascript
+function buildAllMemberships(memberships) {
+  const now = new Date()
+  const sorted = [...memberships].sort(
+    (a, b) => new Date(a.membership_expire_at) - new Date(b.membership_expire_at)
+  )
+  let cursor = now
+  const list = sorted.map(m => {
+    const expireAt = m.membership_expire_at ? new Date(m.membership_expire_at) : now
+    const start = cursor > now ? cursor : now
+    const contribution = Math.max(0, Math.ceil((expireAt - start) / (1000 * 60 * 60 * 24)))
+    if (expireAt > cursor) cursor = expireAt
+    return { ...m, remaining_days: contribution }
+  })
+  const total = Math.max(0, Math.ceil((cursor - now) / (1000 * 60 * 60 * 24)))
+  return { all_memberships: list, total_remaining_days: total }
+}
+```
+
+### API 接口
+
+| 路由 | 方法 | 说明 |
+|------|------|------|
+| `/api/auth/activate` | POST | 登录（通行证密钥 或 账号密码） |
+| `/api/auth/verify` | POST | 轻量级会员状态验证（前端定期调用） |
+| `/api/auth/bind-account` | POST | 绑定/创建登录账号（login_id + 密码） |
+| `/api/auth/bind-pass` | POST | 绑定其它通行证密钥到已有账号 |
+| `/api/payment/create` | POST | 创建支付订单 |
+| `/api/payment/notify` | POST | 支付回调 |
+| `/api/payment/query` | POST | 查询订单状态 |
+
+### 前端组件
+
+| 文件 | 说明 |
+|------|------|
+| `src/hooks/useAuth.js` | AuthProvider + useAuth() Context，管理全局认证状态 |
+| `src/components/ui/LoginModal.jsx` | 登录弹窗（双 Tab：通行证密钥 / 账号密码） |
+| `src/components/ui/MembershipModal.jsx` | 会员购买弹窗（套餐选择 → 二维码支付 → 自动登录） |
+| `src/components/Layout/Header.jsx` | 会员状态徽章、下拉菜单（通行证列表、绑定账号、绑定其它通行证） |
+
+### 权限控制
+
+商店弹窗（`ShopModal.jsx`）中非会员显示提示条，点击购买弹出会员引导。
+三种抽卡组件（`ChipGacha`、`FlagshipGacha`、`CargoGacha`）的 `buyPackage` 函数检查 `isMember` 状态。
+
+### 前端认证状态（useAuth）
+
+```javascript
+const {
+  isMember,           // 是否有效会员（任意通行证未过期）
+  isActivated,        // 是否已登录（有激活码）
+  membership,         // 当前 membership 数据
+  userAccount,        // { login_id, user_id } 或 null
+  allMemberships,     // 所有绑定的通行证列表（含贡献天数）
+  totalRemainingDays, // 总剩余天数
+  activate,           // 通行证密钥登录
+  loginByAccount,     // 账号密码登录
+  bindAccount,        // 绑定登录账号
+  bindPass,           // 绑定其它通行证密钥
+  deactivate,         // 注销
+  verify,             // 手动刷新验证
+  activateAfterPayment, // 支付后自动登录（带重试）
+} = useAuth()
+```
