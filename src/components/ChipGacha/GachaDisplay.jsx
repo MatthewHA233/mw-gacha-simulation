@@ -16,7 +16,8 @@ export function GachaDisplay({
   onDraw100,
   onDraw500,
   onPlaySound,
-  isDrawing = false
+  isDrawing = false,
+  isPremium = false,
 }) {
   const { playGachaClick } = useSound()
 
@@ -70,29 +71,33 @@ export function GachaDisplay({
             </span>
           </button>
 
-          {/* 抽奖 x100 - 金色主题 */}
-          <button
-            onClick={() => handleButtonClick(onDraw100)}
-            disabled={isDrawing}
-            className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-              抽奖 ×100
-            </span>
-          </button>
+          {/* 抽奖 x100 - 金色主题（会员专属） */}
+          {isPremium && (
+            <button
+              onClick={() => handleButtonClick(onDraw100)}
+              disabled={isDrawing}
+              className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#fde047_0%,#ea580c_50%,#fde047_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+                抽奖 ×100
+              </span>
+            </button>
+          )}
 
-          {/* 抽奖 x500 - 特殊紫色主题 */}
-          <button
-            onClick={() => handleButtonClick(onDraw500)}
-            disabled={isDrawing}
-            className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-              抽奖 ×500
-            </span>
-          </button>
+          {/* 抽奖 x500 - 特殊紫色主题（会员专属） */}
+          {isPremium && (
+            <button
+              onClick={() => handleButtonClick(onDraw500)}
+              disabled={isDrawing}
+              className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
+                抽奖 ×500
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>

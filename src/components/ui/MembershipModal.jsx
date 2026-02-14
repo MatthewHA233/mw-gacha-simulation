@@ -378,11 +378,16 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
                     </div>
                   </div>
 
-                  <div className="bg-slate-800/50 border-l-4 border-[#F59E0B] p-1 md:p-4 mb-1.5 md:mb-8 backdrop-blur-sm">
+                  <div className="bg-slate-800/50 border-l-4 border-[#F59E0B] p-1 md:p-4 mb-1.5 md:mb-8 backdrop-blur-sm space-y-0.5 md:space-y-1.5">
                     <p className="text-white text-[10px] md:text-sm font-bold tracking-wide flex items-center gap-1.5">
-                      <Check size={12} className="text-[#F59E0B] md:hidden" />
-                      <Check size={16} className="text-[#F59E0B] hidden md:block" />
+                      <Check size={12} className="text-[#F59E0B] md:hidden flex-shrink-0" />
+                      <Check size={16} className="text-[#F59E0B] hidden md:block flex-shrink-0" />
                       解锁模拟抽奖人民币无限量通行证
+                    </p>
+                    <p className="text-white text-[10px] md:text-sm font-bold tracking-wide flex items-center gap-1.5">
+                      <Check size={12} className="text-[#F59E0B] md:hidden flex-shrink-0" />
+                      <Check size={16} className="text-[#F59E0B] hidden md:block flex-shrink-0" />
+                      解锁百连抽、五百连抽快捷按钮
                     </p>
                   </div>
 

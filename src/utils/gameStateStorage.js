@@ -29,10 +29,10 @@ function getStorageKey(activityId) {
 export function getDefaultGameState(gachaType = '筹码类') {
   if (gachaType === '旗舰宝箱类') {
     return {
-      currency: 30,
+      currency: 110,
       currencyName: "旗舰钥匙",
       commonCurrency: 0, // 普通宝箱钥匙（初始为0）
-      rmb: -25,
+      rmb: -88,
       singleCost: 10,
       // 旗舰宝箱数据
       totalDraws: 0,

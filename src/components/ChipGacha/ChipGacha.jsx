@@ -1288,6 +1288,7 @@ export function ChipGacha({
         onDraw500={draw500}
         onPlaySound={playSound}
         isDrawing={isDrawing}
+        isPremium={isPremium}
       />
 
       {/* 结果弹窗 */}
