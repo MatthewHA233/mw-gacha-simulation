@@ -455,7 +455,7 @@ export function Header({
             >
               <Crown size={12} />
               <span className="hidden md:inline font-mono tracking-tight uppercase">Get Access</span>
-              <span className="md:hidden font-mono uppercase">VIP</span>
+              <span className="md:hidden font-mono uppercase">Access</span>
             </motion.button>
           )}
 
