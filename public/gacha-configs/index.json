@@ -1,6 +1,27 @@
 {
   "activities": [
     {
+      "id": "la101",
+      "gacha_type": "旗舰宝箱类",
+      "name": "嘉年华狂潮",
+      "formattedDate": "2026年2月",
+      "nameEn": "Fiesta Tide"
+    },
+    {
+      "id": "be101",
+      "gacha_type": "机密货物类",
+      "name": "翡翠风暴",
+      "formattedDate": "2026年2月",
+      "nameEn": "Jade Storm"
+    },
+    {
+      "id": "ag101",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "formattedDate": "2026年2月",
+      "nameEn": "Deal with the Shadow"
+    },
+    {
       "id": "la98",
       "gacha_type": "旗舰宝箱类",
       "name": "海上盛宴",

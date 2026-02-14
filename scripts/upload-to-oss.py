@@ -40,8 +40,9 @@ if not all([ACCESS_KEY_ID, ACCESS_KEY_SECRET, BUCKET_NAME]):
     print("  OSS_PATH_PREFIX=mw-gacha-simulation (可选)")
     sys.exit(1)
 
-# 本地配置文件目录
+# 本地目录
 LOCAL_CONFIG_DIR = Path(__file__).parent.parent / 'public' / 'gacha-configs'
+LOCAL_PUBLIC_DIR = Path(__file__).parent.parent / 'public'
 
 # OSS 上传目标路径前缀
 # 如果设置了 PATH_PREFIX，则上传到: PATH_PREFIX/gacha-configs/

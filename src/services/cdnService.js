@@ -352,6 +352,11 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
     ? activityIdOrConfig
     : activityIdOrConfig?.id
 
+  // 贴花：独立目录 contentseparated_assets_decals（支持 rare/epic/legendary）
+  if (item.type === '贴花') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_decals/${item.id}.png`
+  }
+
   // 史诗/传说物品：根据 type 和 id 动态生成
   if (item.rarity === 'epic' || item.rarity === 'legendary') {
     let folder
