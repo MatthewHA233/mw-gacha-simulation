@@ -35,6 +35,9 @@ export const SquareItem = ({
   const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
 
+  // 超稀有判定（概率 < 0.01%）
+  const isUltraRare = probability != null && probability < 0.01;
+
   // 光晕颜色
   const glowColor = rarity === 'legendary' ? '#a280d2' : rarity === 'epic' ? '#e0932e' : null;
 
@@ -282,6 +285,14 @@ export const SquareItem = ({
         >
           {drawNumber}
         </div>
+      )}
+
+      {/* 超稀有旋转彩虹边框 */}
+      {isUltraRare && !isSoldOut && (
+        <div
+          className="absolute inset-0 pointer-events-none z-50 ultra-rare-glow ultra-rare-square"
+          style={{ padding: `${borderWidth * 2}px` }}
+        />
       )}
 
       {/* 提示框：类型+概率和名称（所有物品） */}

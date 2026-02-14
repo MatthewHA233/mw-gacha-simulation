@@ -224,25 +224,25 @@ export function Header({
             )}
           </motion.button>
 
-          {/* 武库舰抽奖链接 - 只在首页（第一个活动）显示 */}
-          {activityId === firstActivityId && (
+          {/* 股东炮抽奖链接 - 不在 la101 页面时显示 */}
+          {activityId !== 'la101' && (
             <motion.button
               onClick={() => {
                 playButtonClick();
-                router.push('/gacha/flagship/la96');
+                router.push('/gacha/flagship/la101');
               }}
               className="p-[2px] relative"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg" />
+              <div className="absolute inset-0 ultra-rare-glow rounded-lg" />
               <div className="px-2 py-1 md:px-3 md:py-1.5 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent flex items-center gap-1.5 md:gap-2">
                 <img
-                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/units_ships/Monitor.png`}
-                  alt="武库舰"
+                  src="https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_content/textures/sprites/weapons/RG32.png"
+                  alt="股东炮"
                   className="w-7 h-7 md:w-10 md:h-10 object-contain"
                 />
-                <span className="text-xs md:text-sm font-bold">武库舰抽奖！</span>
+                <span className="text-xs md:text-sm font-bold">股东炮抽奖！</span>
               </div>
             </motion.button>
           )}

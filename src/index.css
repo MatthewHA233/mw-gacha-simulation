@@ -13,3 +13,32 @@
     display: none; /* Chrome, Safari and Opera */
   }
 }
+
+/* 超稀有物品炫彩边框（概率 < 0.01%）- 旋转彩虹渐变 */
+@property --rainbow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rainbow-rotate {
+  to { --rainbow-angle: 360deg; }
+}
+
+/* 旋转锥形彩虹渐变底色 */
+.ultra-rare-glow {
+  --rainbow-angle: 0deg;
+  background: conic-gradient(
+    from var(--rainbow-angle),
+    #ff2d2d, #ff7f00, #ffd700, #00e68a, #00bfff, #a855f7, #ff2d2d
+  );
+  animation: rainbow-rotate 3s linear infinite;
+}
+
+/* SquareItem：mask 裁剪仅保留边框区域 */
+.ultra-rare-square {
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}

@@ -33,6 +33,9 @@ export const HexItem = ({
   const { rarity = 'common', limit = 0, obtained = 0, tier, type, name, probability } = item;
   const colors = RARITY_COLORS[rarity];
 
+  // 超稀有判定（概率 < 0.01%）
+  const isUltraRare = probability != null && probability < 0.01;
+
   // 提示框状态（所有物品都支持）
   const [showTooltip, setShowTooltip] = useState(false);
   const timerRef = useRef(null);
@@ -130,6 +133,34 @@ export const HexItem = ({
           stroke={isHighlighted ? '#ffd700' : colors.border}
           strokeWidth={isHighlighted ? "4" : "2"}
         />
+        {/* 超稀有旋转彩虹描边 */}
+        {isUltraRare && !isSoldOut && (
+          <>
+            <defs>
+              <linearGradient id={`ultra-rare-grad-${index}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120">
+                <stop offset="0%">
+                  <animate attributeName="stop-color" values="#ff2d2d;#ff7f00;#ffd700;#00e68a;#00bfff;#a855f7;#ff2d2d" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="33%">
+                  <animate attributeName="stop-color" values="#ffd700;#00e68a;#00bfff;#a855f7;#ff2d2d;#ff7f00;#ffd700" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="67%">
+                  <animate attributeName="stop-color" values="#00bfff;#a855f7;#ff2d2d;#ff7f00;#ffd700;#00e68a;#00bfff" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%">
+                  <animate attributeName="stop-color" values="#a855f7;#ff2d2d;#ff7f00;#ffd700;#00e68a;#00bfff;#a855f7" dur="3s" repeatCount="indefinite" />
+                </stop>
+              </linearGradient>
+            </defs>
+            <polygon
+              points={hexPoints}
+              fill="none"
+              stroke={`url(#ultra-rare-grad-${index})`}
+              strokeWidth="3"
+              style={{ filter: 'drop-shadow(0 0 6px rgba(168,85,247,0.6))' }}
+            />
+          </>
+        )}
       </svg>
 
       {/* 变暗遮罩（抽完时） */}
