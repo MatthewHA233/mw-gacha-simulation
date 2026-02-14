@@ -14,7 +14,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { CDN_BASE_URL } from '@/utils/constants'
 
 export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'select' }) {
-  const [selectedPlan, setSelectedPlan] = useState('test')
+  const [selectedPlan, setSelectedPlan] = useState('monthly')
   const [selectedPayType, setSelectedPayType] = useState('wechat') // 默认微信支付
   const [step, setStep] = useState(initialStep) // 'select' | 'payment' | 'success' | 'login' | 'bind'
   const [paymentData, setPaymentData] = useState(null)
@@ -66,13 +66,6 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
   if (!isOpen) return null
 
   const plans = [
-    {
-      id: 'test',
-      name: '测试',
-      price: 0.1,
-      duration: '1天',
-      badge: '调试用'
-    },
     {
       id: 'monthly',
       name: '月度会员',

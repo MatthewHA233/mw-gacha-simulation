@@ -21,7 +21,6 @@ const APP_SECRET = process.env.PAYMENT_APP_SECRET
 const NOTIFY_URL = process.env.NEXT_PUBLIC_PAYMENT_NOTIFY_URL || 'https://mw.lingflow.cn/api/payment/notify'
 
 const PLANS = {
-  test: { price: 10, duration_days: 1, name: '测试会员' },
   monthly: { price: 390, duration_days: 30, name: '月度会员' },
   yearly: { price: 2000, duration_days: 365, name: '年度会员' }
 }
