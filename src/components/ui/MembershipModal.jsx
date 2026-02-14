@@ -314,13 +314,13 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
 
             {/* 步骤 1: 套餐选择 (黑色主题) */}
             {step === 'select' && (
-              <div className="p-1.5 md:p-8">
-                <div className="mb-1 md:mb-8 border-b border-slate-700 pb-1 md:pb-4 flex items-end justify-between">
+              <div className="p-1.5 md:p-5">
+                <div className="mb-1 md:mb-4 border-b border-slate-700 pb-1 md:pb-2 flex items-end justify-between">
                   <div>
-                    <h2 className="text-xs md:text-2xl font-bold text-white tracking-widest flex items-center gap-3">
+                    <h2 className="text-xs md:text-xl font-bold text-white tracking-widest flex items-center gap-3">
                       <span className="text-[#F59E0B] drop-shadow-md">人民币无限通行证</span>
                     </h2>
-                    <p className="text-slate-400 text-[9px] md:text-xs mt-0 md:mt-1 font-bold tracking-wide">解锁无限抽奖权限 · 畅快连抽</p>
+                    <p className="text-slate-400 text-[9px] md:text-xs mt-0 md:mt-0.5 font-bold tracking-wide">解锁无限抽奖权限 · 畅快连抽</p>
                   </div>
                 </div>
 
@@ -329,12 +329,12 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                 >
-                  <div className="grid grid-cols-3 gap-1 md:gap-3 mb-1.5 md:mb-8">
+                  <div className="grid grid-cols-3 gap-1 md:gap-3 mb-1.5 md:mb-4">
                     {plans.map(plan => (
                       <div
                         key={plan.id}
                         onClick={() => setSelectedPlan(plan.id)}
-                        className={`relative p-1.5 md:p-6 cursor-pointer transition-all border ${selectedPlan === plan.id
+                        className={`relative p-1.5 md:p-4 cursor-pointer transition-all border ${selectedPlan === plan.id
                             ? 'border-[#F59E0B] bg-[#F59E0B]/20 backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.2)]'
                             : 'border-slate-600/50 bg-slate-800/30 hover:border-[#F59E0B]/50 hover:bg-slate-800/50'
                           }`}
@@ -348,16 +348,16 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
                             <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#F59E0B]"></div>
                           </>
                         )}
-                        <div className="flex justify-between items-start mb-0 md:mb-2">
-                          <h3 className="text-[10px] md:text-lg font-bold text-white">{plan.name}</h3>
+                        <div className="flex justify-between items-start mb-0 md:mb-1">
+                          <h3 className="text-[10px] md:text-base font-bold text-white">{plan.name}</h3>
                           {plan.badge && (
                             <span className="bg-[#F59E0B] text-white text-[7px] md:text-[10px] px-1 md:px-2 py-px md:py-0.5 font-bold tracking-wide rounded-sm shadow-sm">
                               {plan.badge}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-baseline gap-0.5 mb-0 md:mb-2">
-                          <span className="text-sm md:text-3xl font-bold text-[#F59E0B] font-mono shadow-[#F59E0B]/20 drop-shadow-sm">¥{plan.price}</span>
+                        <div className="flex items-baseline gap-0.5 mb-0 md:mb-1">
+                          <span className="text-sm md:text-2xl font-bold text-[#F59E0B] font-mono shadow-[#F59E0B]/20 drop-shadow-sm">¥{plan.price}</span>
                           <span className="text-white/80 text-[8px] md:text-sm font-bold">/ {plan.duration}</span>
                         </div>
                         {plan.savings && (
@@ -369,7 +369,7 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
                     ))}
                   </div>
 
-                  <div className="mb-1.5 md:mb-6 flex items-center justify-end gap-1.5 text-slate-400">
+                  <div className="mb-1.5 md:mb-3 flex items-center justify-end gap-1.5 text-slate-400">
                     <span className="text-[10px] md:text-xs font-medium">支付方式</span>
                     <div className="flex items-center gap-1 bg-[#07C160]/10 text-[#07C160] px-1.5 py-0.5 md:px-2 md:py-1 rounded border border-[#07C160]/30 shadow-[0_0_10px_rgba(7,193,96,0.1)]">
                       <WeChatBubbleIcon size={12} className="md:hidden" />
@@ -378,7 +378,7 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
                     </div>
                   </div>
 
-                  <div className="bg-slate-800/50 border-l-4 border-[#F59E0B] p-1 md:p-4 mb-1.5 md:mb-8 backdrop-blur-sm space-y-0.5 md:space-y-1.5">
+                  <div className="bg-slate-800/50 border-l-4 border-[#F59E0B] p-1 md:p-3 mb-1.5 md:mb-4 backdrop-blur-sm space-y-0.5 md:space-y-1">
                     <p className="text-white text-[10px] md:text-sm font-bold tracking-wide flex items-center gap-1.5">
                       <Check size={12} className="text-[#F59E0B] md:hidden flex-shrink-0" />
                       <Check size={16} className="text-[#F59E0B] hidden md:block flex-shrink-0" />
@@ -395,7 +395,7 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
                   <button
                     onClick={handlePurchase}
                     disabled={loading}
-                    className="w-full py-1 md:py-4 bg-[#07C160] hover:bg-[#06ad56] text-white font-bold text-xs md:text-lg rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 md:gap-3 shadow-lg group active:scale-[0.98]"
+                    className="w-full py-1 md:py-3 bg-[#07C160] hover:bg-[#06ad56] text-white font-bold text-xs md:text-base rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 md:gap-3 shadow-lg group active:scale-[0.98]"
                   >
                     {loading ? (
                       <>
@@ -414,7 +414,7 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
 
                   {/* 已购买？登录入口（仅未登录时显示） */}
                   {!isActivated && (
-                    <div className="mt-2 md:mt-5 pt-1.5 md:pt-4 border-t border-slate-700/50 text-center">
+                    <div className="mt-2 md:mt-3 pt-1.5 md:pt-3 border-t border-slate-700/50 text-center">
                       <p className="text-slate-500 text-[10px] md:text-xs mb-1">已购买通行证？</p>
                       <button
                         onClick={() => setStep('login')}
@@ -598,18 +598,18 @@ function LoginStep({ onBack, onSuccess }) {
   }
 
   return (
-    <div className="p-1.5 md:p-8">
+    <div className="p-1.5 md:p-5">
       {/* 标题 */}
-      <div className="mb-1 md:mb-6 border-b border-slate-700 pb-1 md:pb-4">
+      <div className="mb-1 md:mb-4 border-b border-slate-700 pb-1 md:pb-2">
         <h2 className="text-xs md:text-xl font-bold text-white tracking-widest flex items-center gap-2">
           <span className="text-[#F59E0B] font-bold">::</span>
           已有通行证
         </h2>
-        <p className="text-slate-400 text-[9px] md:text-xs mt-0 md:mt-1">输入密钥或使用账号密码登录</p>
+        <p className="text-slate-400 text-[9px] md:text-xs mt-0 md:mt-0.5">输入密钥或使用账号密码登录</p>
       </div>
 
       {/* Tab 切换 */}
-      <div className="flex mb-1.5 md:mb-6 border border-slate-700 rounded-sm overflow-hidden">
+      <div className="flex mb-1.5 md:mb-4 border border-slate-700 rounded-sm overflow-hidden">
         <button
           onClick={() => setTab('code')}
           className={`flex-1 py-1 md:py-2 text-[10px] md:text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-1 ${
@@ -641,10 +641,10 @@ function LoginStep({ onBack, onSuccess }) {
         <motion.div
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          className="space-y-1.5 md:space-y-4"
+          className="space-y-1.5 md:space-y-3"
         >
           <div>
-            <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-2 tracking-wide">通行证密钥</label>
+            <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-1.5 tracking-wide">通行证密钥</label>
             <input
               type="text"
               value={code}
@@ -652,7 +652,7 @@ function LoginStep({ onBack, onSuccess }) {
               onKeyDown={handleKeyPress}
               placeholder="输入 MW-XXXXXXXX"
               disabled={loading}
-              className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-3 border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 font-mono text-xs md:text-lg tracking-widest placeholder:text-slate-700 placeholder:tracking-normal placeholder:font-sans"
+              className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-2.5 border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 font-mono text-xs md:text-base tracking-widest placeholder:text-slate-700 placeholder:tracking-normal placeholder:font-sans"
               autoComplete="off"
               autoFocus
             />
@@ -665,13 +665,13 @@ function LoginStep({ onBack, onSuccess }) {
         <motion.div
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
-          className="space-y-1.5 md:space-y-4"
+          className="space-y-1.5 md:space-y-3"
         >
           <div className="bg-slate-800/50 border border-slate-700/50 px-1.5 py-1 md:px-3 md:py-2 rounded-sm text-slate-400 text-[9px] md:text-xs leading-relaxed">
             账号密码需在购买通行证后绑定注册。如尚未购买，请先返回购买通行证。
           </div>
           <div>
-            <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-2 tracking-wide">登录账号</label>
+            <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-1.5 tracking-wide">登录账号</label>
             <input
               type="text"
               value={loginId}
@@ -679,13 +679,13 @@ function LoginStep({ onBack, onSuccess }) {
               onKeyDown={handleKeyPress}
               placeholder="手机号 / 邮箱 / 自定义账号"
               disabled={loading}
-              className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-3 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 placeholder:text-slate-700"
+              className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-2.5 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 placeholder:text-slate-700"
               autoComplete="off"
               autoFocus
             />
           </div>
           <div>
-            <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-2 tracking-wide">密码</label>
+            <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-1.5 tracking-wide">密码</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -693,7 +693,7 @@ function LoginStep({ onBack, onSuccess }) {
                 onChange={e => setPassword(e.target.value)}
                 onKeyDown={handleKeyPress}
                 disabled={loading}
-                className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-3 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 font-mono pr-10"
+                className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-2.5 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 font-mono pr-10"
               />
               <button
                 type="button"
@@ -711,7 +711,7 @@ function LoginStep({ onBack, onSuccess }) {
       <button
         onClick={tab === 'code' ? handleActivateByCode : handleLoginByAccount}
         disabled={loading}
-        className="w-full mt-2 md:mt-6 py-1 md:py-3 text-xs md:text-base bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold tracking-[0.2em] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full mt-2 md:mt-4 py-1 md:py-2.5 text-xs md:text-base bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold tracking-[0.2em] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -724,7 +724,7 @@ function LoginStep({ onBack, onSuccess }) {
       </button>
 
       {/* 返回购买 */}
-      <div className="mt-1.5 md:mt-5 pt-1 md:pt-4 border-t border-slate-700/50 text-center">
+      <div className="mt-1.5 md:mt-3 pt-1 md:pt-3 border-t border-slate-700/50 text-center">
         <button
           onClick={onBack}
           disabled={loading}
@@ -752,8 +752,8 @@ function BindStep({ onBack, onSuccess }) {
   // 已绑定状态
   if (userAccount?.login_id) {
     return (
-      <div className="p-1.5 md:p-8">
-        <div className="mb-1 md:mb-6 border-b border-slate-700 pb-1 md:pb-4">
+      <div className="p-1.5 md:p-5">
+        <div className="mb-1 md:mb-4 border-b border-slate-700 pb-1 md:pb-2">
           <h2 className="text-xs md:text-xl font-bold text-white tracking-widest flex items-center gap-2">
             <span className="text-[#F59E0B] font-bold">::</span>
             账号绑定
@@ -762,16 +762,16 @@ function BindStep({ onBack, onSuccess }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-2 md:p-6 text-center"
+          className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-2 md:p-4 text-center"
         >
-          <ShieldCheck size={20} className="text-emerald-400 mx-auto mb-1 md:mb-3 md:[&]:w-8 md:[&]:h-8" />
+          <ShieldCheck size={20} className="text-emerald-400 mx-auto mb-1 md:mb-2 md:[&]:w-7 md:[&]:h-7" />
           <p className="text-emerald-400 text-[10px] md:text-base font-bold mb-0.5 md:mb-2">已绑定账号</p>
           <p className="text-slate-300 text-[9px] md:text-sm">
             登录账号：<span className="text-white font-mono">{userAccount.login_id}</span>
           </p>
           <p className="text-slate-500 text-[9px] md:text-xs mt-0.5 md:mt-2">可用此账号 + 密码直接登录，无需记住通行证密钥</p>
         </motion.div>
-        <div className="mt-1.5 md:mt-5 pt-1 md:pt-4 border-t border-slate-700/50 text-center">
+        <div className="mt-1.5 md:mt-3 pt-1 md:pt-3 border-t border-slate-700/50 text-center">
           <button
             onClick={onBack}
             className="text-slate-400 hover:text-white text-[10px] md:text-sm transition-colors inline-flex items-center gap-1"
@@ -787,8 +787,8 @@ function BindStep({ onBack, onSuccess }) {
   // 未登录不能绑定
   if (!membership?.activation_code) {
     return (
-      <div className="p-1.5 md:p-8">
-        <div className="mb-1 md:mb-6 border-b border-slate-700 pb-1 md:pb-4">
+      <div className="p-1.5 md:p-5">
+        <div className="mb-1 md:mb-4 border-b border-slate-700 pb-1 md:pb-2">
           <h2 className="text-xs md:text-xl font-bold text-white tracking-widest flex items-center gap-2">
             <span className="text-[#F59E0B] font-bold">::</span>
             账号绑定
@@ -828,39 +828,39 @@ function BindStep({ onBack, onSuccess }) {
   }
 
   return (
-    <div className="p-1.5 md:p-8">
-      <div className="mb-1 md:mb-6 border-b border-slate-700 pb-1 md:pb-4">
+    <div className="p-1.5 md:p-5">
+      <div className="mb-1 md:mb-4 border-b border-slate-700 pb-1 md:pb-2">
         <h2 className="text-xs md:text-xl font-bold text-white tracking-widest flex items-center gap-2">
           <span className="text-[#F59E0B] font-bold">::</span>
           绑定登录账号
         </h2>
-        <p className="text-slate-400 text-[9px] md:text-xs mt-0 md:mt-1">绑定后可用 账号+密码 登录，无需记住通行证密钥</p>
+        <p className="text-slate-400 text-[9px] md:text-xs mt-0 md:mt-0.5">绑定后可用 账号+密码 登录，无需记住通行证密钥</p>
       </div>
 
-      <div className="bg-slate-800/50 border border-slate-700/50 px-1.5 py-1 md:px-3 md:py-2 mb-1.5 md:mb-4 rounded-sm text-slate-400 text-[9px] md:text-xs">
+      <div className="bg-slate-800/50 border border-slate-700/50 px-1.5 py-1 md:px-3 md:py-2 mb-1.5 md:mb-3 rounded-sm text-slate-400 text-[9px] md:text-xs">
         当前通行证密钥：<span className="text-[#F59E0B] font-mono">{membership.activation_code}</span>
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-1.5 md:space-y-4"
+        className="space-y-1.5 md:space-y-3"
       >
         <div>
-          <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-2 tracking-wide">设置账号</label>
+          <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-1.5 tracking-wide">设置账号</label>
           <input
             type="text"
             value={loginId}
             onChange={e => setLoginId(e.target.value)}
             placeholder="手机号 / 邮箱 / 自定义昵称"
             disabled={loading}
-            className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-3 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 placeholder:text-slate-700"
+            className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-2.5 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 placeholder:text-slate-700"
             autoComplete="off"
             autoFocus
           />
         </div>
         <div>
-          <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-2 tracking-wide">设置密码</label>
+          <label className="block text-[#F59E0B] text-[9px] md:text-xs font-bold mb-0.5 md:mb-1.5 tracking-wide">设置密码</label>
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -868,7 +868,7 @@ function BindStep({ onBack, onSuccess }) {
               onChange={e => setPassword(e.target.value)}
               placeholder="至少 4 位"
               disabled={loading}
-              className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-3 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 font-mono pr-10"
+              className="w-full bg-black/40 text-white px-1.5 py-1 md:px-4 md:py-2.5 text-xs md:text-base border border-slate-700 focus:border-[#F59E0B] focus:outline-none transition-colors disabled:opacity-50 font-mono pr-10"
               onKeyDown={e => e.key === 'Enter' && !loading && handleBind()}
             />
             <button
@@ -885,7 +885,7 @@ function BindStep({ onBack, onSuccess }) {
       <button
         onClick={handleBind}
         disabled={loading || !loginId.trim() || password.length < 4}
-        className="w-full mt-2 md:mt-6 py-1 md:py-3 text-xs md:text-base bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold tracking-[0.2em] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full mt-2 md:mt-4 py-1 md:py-2.5 text-xs md:text-base bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold tracking-[0.2em] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -950,23 +950,23 @@ function SuccessScreen({ paymentData, copied, onCopy }) {
   }
 
   return (
-    <div className="p-1.5 md:p-8 py-2 md:py-8 bg-transparent">
+    <div className="p-1.5 md:p-5 py-2 md:py-5 bg-transparent">
       {/* 顶部成功标识 */}
       <div className="text-center">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', duration: 0.5 }}
-          className="w-7 h-7 md:w-14 md:h-14 mx-auto mb-1 md:mb-4 rounded-full bg-[#F59E0B]/20 border-2 border-[#F59E0B] flex items-center justify-center"
+          className="w-7 h-7 md:w-12 md:h-12 mx-auto mb-1 md:mb-3 rounded-full bg-[#F59E0B]/20 border-2 border-[#F59E0B] flex items-center justify-center"
         >
-          <Check size={16} strokeWidth={3} className="text-[#F59E0B] md:[&]:w-8 md:[&]:h-8" />
+          <Check size={16} strokeWidth={3} className="text-[#F59E0B] md:[&]:w-6 md:[&]:h-6" />
         </motion.div>
-        <h2 className="text-xs md:text-2xl font-bold text-white tracking-widest mb-0 md:mb-1">支付成功</h2>
+        <h2 className="text-xs md:text-xl font-bold text-white tracking-widest mb-0 md:mb-1">支付成功</h2>
         <p className="text-slate-400 text-[9px] md:text-sm">会员已开通，通行证密钥已自动复制到剪贴板</p>
       </div>
 
       {/* 通行证密钥展示 */}
-      <div className="mt-1.5 md:mt-5 bg-slate-800/60 border border-[#F59E0B]/30 p-1.5 md:p-4 rounded-lg w-full max-w-sm mx-auto">
+      <div className="mt-1.5 md:mt-3 bg-slate-800/60 border border-[#F59E0B]/30 p-1.5 md:p-3 rounded-lg w-full max-w-sm mx-auto">
         <p className="text-slate-400 text-[9px] md:text-xs mb-0.5 md:mb-2 font-bold uppercase tracking-widest">通行证密钥</p>
         <div className="flex items-center justify-between bg-black/40 p-1 md:p-3 rounded border border-slate-600/50">
           <code className="text-[#F59E0B] font-mono text-[10px] md:text-lg tracking-widest">
@@ -987,13 +987,13 @@ function SuccessScreen({ paymentData, copied, onCopy }) {
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="mt-1 md:mt-3 text-center text-red-400 text-[10px] md:text-lg font-bold"
+        className="mt-1 md:mt-2 text-center text-red-400 text-[10px] md:text-base font-bold"
       >
         请截图保存通行证密钥！丢失将无法找回
       </motion.p>
 
       {/* 分隔 */}
-      <div className="flex items-center gap-1.5 md:gap-3 mt-1.5 md:mt-5 mb-1 md:mb-4 max-w-sm mx-auto">
+      <div className="flex items-center gap-1.5 md:gap-3 mt-1.5 md:mt-3 mb-1 md:mb-3 max-w-sm mx-auto">
         <div className="flex-1 h-px bg-slate-700" />
         <span className="text-slate-500 text-[9px] md:text-xs">或绑定账号，忘记密钥也能登录</span>
         <div className="flex-1 h-px bg-slate-700" />

@@ -5,14 +5,14 @@ import toast from 'react-hot-toast'
 import { CDN_BASE_URL } from '../../utils/constants'
 
 /**
- * 赞助作者弹窗组件
+ * 加入交流群弹窗组件
  */
 export function SponsorModal({ isOpen, onClose }) {
   if (!isOpen) return null
 
   const handleCopyQQ = () => {
-    navigator.clipboard.writeText('1528919811')
-    toast.success('QQ号已复制', {
+    navigator.clipboard.writeText('1054801058')
+    toast.success('QQ群号已复制', {
       duration: 2000,
       position: 'top-center',
       style: {
@@ -46,7 +46,7 @@ export function SponsorModal({ isOpen, onClose }) {
           }
         }}
         exit={{ opacity: 0, scale: 0.8, y: 50 }}
-        className="relative bg-black rounded-2xl p-4 md:p-6 max-w-xs md:max-w-sm w-full shadow-2xl"
+        className="relative bg-black rounded-2xl p-3 md:p-6 max-w-[16rem] md:max-w-sm w-full shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* 顶部装饰线条 */}
@@ -63,13 +63,14 @@ export function SponsorModal({ isOpen, onClose }) {
         </button>
 
         {/* 内容区 */}
-        <div className="flex flex-col items-center space-y-4 mt-2">
+        <div className="flex flex-col items-center space-y-3 md:space-y-4 mt-1 md:mt-2">
           {/* 标题 */}
           <div className="text-center space-y-1">
-            <h3 className="text-xl md:text-2xl font-bold text-white">赞助作者</h3>
+            <h3 className="text-base md:text-2xl font-bold text-white">加入交流群</h3>
+            <p className="text-xs md:text-sm text-gray-400">作者: CHanGO</p>
             <div className="flex items-center gap-2 justify-center">
               <div className="h-px w-6 bg-gradient-to-r from-transparent to-gray-600" />
-              <p className="text-sm md:text-base text-emerald-400 font-semibold">CHanGO</p>
+              <p className="text-sm md:text-base text-emerald-400 font-semibold">MW抽抽乐小栈</p>
               <div className="h-px w-6 bg-gradient-to-l from-transparent to-gray-600" />
             </div>
           </div>
@@ -77,16 +78,16 @@ export function SponsorModal({ isOpen, onClose }) {
           {/* 收款码 */}
           <div className="relative group">
             <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-500" />
-            <div className="relative bg-white p-3 rounded-xl">
+            <div className="relative bg-black p-2 md:p-3 rounded-xl">
               <img
-                src={`${CDN_BASE_URL}/assets/ui-common/payment-qr.png`}
-                alt="收款码"
-                className="w-40 h-40 md:w-48 md:h-48 object-contain"
+                src={`${CDN_BASE_URL}/assets/ui-common/group-qr.png`}
+                alt="交流群二维码"
+                className="w-32 h-32 md:w-48 md:h-48 object-contain"
               />
             </div>
             {/* 支付说明 */}
             <div className="text-center mt-2">
-              <p className="text-gray-500 text-xs">使用支付宝扫码支付</p>
+              <p className="text-gray-500 text-xs">扫码加入 QQ 交流群</p>
             </div>
           </div>
 
@@ -103,7 +104,7 @@ export function SponsorModal({ isOpen, onClose }) {
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
-              <span className="text-xs md:text-sm">复制 QQ: 1528919811</span>
+              <span className="text-xs md:text-sm">复制 QQ 群号: 1054801058</span>
             </div>
           </button>
         </div>
