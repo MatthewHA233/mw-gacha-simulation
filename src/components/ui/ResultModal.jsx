@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useState, useRef } from 'react'
 import { SquareItem } from '../SquareItem'
 import { CDN_BASE_URL } from '../../utils/constants'
+import { IMG_WEBP } from '../../services/cdnService'
 
 /**
  * 抽奖结果展示弹窗组件
@@ -74,7 +75,7 @@ export function ResultModal({
       transition={{ duration: 0.2 }}
       className="fixed left-0 right-0 bottom-0 top-0 md:top-[60px] z-40"
       style={{
-        backgroundImage: `url(${CDN_BASE_URL}/assets/ui-common/result-bg.png)`,
+        backgroundImage: `url(${CDN_BASE_URL}/assets/ui-common/result-bg.png${IMG_WEBP})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}

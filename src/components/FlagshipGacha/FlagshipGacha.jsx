@@ -6,7 +6,7 @@ import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
-import { loadActivityConfig, buildItemImageUrl } from '../../services/cdnService'
+import { loadActivityConfig, buildItemImageUrl, IMG_WEBP } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
 import { LootboxSelector } from './LootboxSelector'
@@ -107,7 +107,7 @@ export function FlagshipGacha({
       price: 18,
       discount: null,
       quantity: 1,
-      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_small_widget.png`
+      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_small_widget.png${IMG_WEBP}`
     },
     {
       id: 2,
@@ -116,7 +116,7 @@ export function FlagshipGacha({
       price: 88,
       discount: '-5%',
       quantity: 1,
-      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_medium_widget.png`
+      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_medium_widget.png${IMG_WEBP}`
     },
     {
       id: 3,
@@ -125,7 +125,7 @@ export function FlagshipGacha({
       price: 209,
       discount: '-10%',
       quantity: 1,
-      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_big_widget.png`
+      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_big_widget.png${IMG_WEBP}`
     }
   ])
 
@@ -1295,7 +1295,7 @@ export function FlagshipGacha({
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url(${CDN_BASE_URL}/assets/ui-common/sharedassets1_BackgroundBattleResults_Chest_2048x1024.png)`
+          backgroundImage: `url(${CDN_BASE_URL}/assets/ui-common/sharedassets1_BackgroundBattleResults_Chest_2048x1024.png${IMG_WEBP})`
         }}
       />
 

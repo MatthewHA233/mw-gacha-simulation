@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
-import { buildLootboxTicketUrl } from '../../services/cdnService'
+import { buildLootboxTicketUrl, IMG_WEBP } from '../../services/cdnService'
 
 /**
  * 宝箱开启动画组件
@@ -171,7 +171,7 @@ export const LootboxAnimation = forwardRef(({ activityId, lootboxType = 'event_p
             {/* 烟雾特效图层 - 在蒸汽阶段显示 */}
             {showSteam && (
               <img
-                src={`${CDN_BASE_URL}/lootbox/烟雾.png`}
+                src={`${CDN_BASE_URL}/lootbox/烟雾.png${IMG_WEBP}`}
                 alt="Steam Effect"
                 className="absolute pointer-events-none"
                 style={{
@@ -189,7 +189,7 @@ export const LootboxAnimation = forwardRef(({ activityId, lootboxType = 'event_p
             {(stage === 'open' || stage === 'reward') && (
               <>
                 <img
-                  src={`${CDN_BASE_URL}/lootbox/开箱.png`}
+                  src={`${CDN_BASE_URL}/lootbox/开箱.png${IMG_WEBP}`}
                   alt="Open Lootbox"
                   className="absolute pointer-events-none"
                   style={{
@@ -203,7 +203,7 @@ export const LootboxAnimation = forwardRef(({ activityId, lootboxType = 'event_p
                 />
                 {/* 开箱时烟雾图层 - 置于更顶层 */}
                 <img
-                  src={`${CDN_BASE_URL}/lootbox/开箱时烟雾.png`}
+                  src={`${CDN_BASE_URL}/lootbox/开箱时烟雾.png${IMG_WEBP}`}
                   alt="Opening Steam"
                   className="absolute pointer-events-none"
                   style={{

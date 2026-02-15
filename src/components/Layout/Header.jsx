@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
-import { buildCurrencyIconUrl, loadActivityIndex } from '../../services/cdnService'
+import { buildCurrencyIconUrl, loadActivityIndex, IMG_WEBP } from '../../services/cdnService'
 import { useEffect, useState } from 'react'
 import { useSound } from '../../hooks/useSound'
 import { useRouter } from 'next/navigation'
@@ -626,7 +626,7 @@ export function Header({
             {/* 艺术硬币 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
               <img
-                src={`${CDN_BASE_URL}/assets/common-items/Artstorm.png`}
+                src={`${CDN_BASE_URL}/assets/common-items/Artstorm.png${IMG_WEBP}`}
                 alt="艺术硬币"
                 className="w-5 h-5 md:w-6 md:h-6"
               />
@@ -639,7 +639,7 @@ export function Header({
             {isFlagshipGacha && (
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-green-500/30">
                 <img
-                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png`}
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png${IMG_WEBP}`}
                   alt="美金"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />
@@ -652,7 +652,7 @@ export function Header({
             {/* 黄金 */}
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
               <img
-                src={`${CDN_BASE_URL}/assets/common-items/Hard.png`}
+                src={`${CDN_BASE_URL}/assets/common-items/Hard.png${IMG_WEBP}`}
                 alt="黄金"
                 className="w-5 h-5 md:w-6 md:h-6"
               />
@@ -665,7 +665,7 @@ export function Header({
             {isFlagshipGacha && (
               <div className="flex items-center gap-1.5 md:gap-2 bg-black/60 rounded-full px-2 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
                 <img
-                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png`}
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png${IMG_WEBP}`}
                   alt="升级芯片"
                   className="w-5 h-5 md:w-6 md:h-6"
                 />

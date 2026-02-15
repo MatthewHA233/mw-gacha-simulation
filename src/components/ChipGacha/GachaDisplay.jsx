@@ -2,6 +2,7 @@
 
 import { HexGrid } from '../HexGrid'
 import { CDN_BASE_URL } from '../../utils/constants'
+import { IMG_WEBP } from '../../services/cdnService'
 import { useSound } from '../../hooks/useSound'
 
 /**
@@ -31,7 +32,7 @@ export function GachaDisplay({
       {/* 左侧：商人角色 - 绝对定位，中间偏左 */}
       <div className="absolute left-[5%] top-1/2 -translate-y-1/2">
         <img
-          src={`${CDN_BASE_URL}/assets/ui-common/merchant.png`}
+          src={`${CDN_BASE_URL}/assets/ui-common/merchant.png${IMG_WEBP}`}
           alt="商人"
           className="max-h-[65vh] md:h-[900px] md:max-h-none object-contain drop-shadow-2xl"
         />

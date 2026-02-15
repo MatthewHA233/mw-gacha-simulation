@@ -8,6 +8,9 @@ import { CDN_BASE_URL, OSS_BASE_URL } from '../utils/constants'
  * - 静态资源（图片/音频）：从 CDN_BASE_URL 加载（CDN 加速）
  */
 
+// OSS 图片处理：自动转 WebP 格式，节省 CDN 流量（仅 CDN 环境生效）
+export const IMG_WEBP = CDN_BASE_URL ? '?x-oss-process=image/format,webp' : ''
+
 // 缓存已加载的配置，避免重复请求
 const configCache = new Map()
 
@@ -187,16 +190,16 @@ export function buildWidgetUrl(activityIdOrConfig) {
 
   // 旗舰宝箱类使用特殊格式
   if (gachaType === '旗舰宝箱类') {
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_widget.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/lootbox_activity_${activityId}_widget.png${IMG_WEBP}`
   }
 
   // 机密货物类和无人机补给类使用特殊格式
   if (gachaType === '机密货物类' || gachaType === '无人机补给类') {
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_widget.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_widget.png${IMG_WEBP}`
   }
 
   // 筹码类使用默认格式
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png${IMG_WEBP}`
 }
 
 /**
@@ -222,11 +225,11 @@ export function buildBackgroundUrl(activityIdOrConfig) {
 
   // 机密货物类和无人机补给类使用特殊路径
   if (gachaType === '机密货物类' || gachaType === '无人机补给类') {
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_background.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_background.png${IMG_WEBP}`
   }
 
   // 其他类型使用默认路径
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_background.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_background.png${IMG_WEBP}`
 }
 
 /**
@@ -234,7 +237,7 @@ export function buildBackgroundUrl(activityIdOrConfig) {
  * @param {string} activityId - 活动ID
  */
 export function buildInfoBackgroundUrl(activityId) {
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_background.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_background.png${IMG_WEBP}`
 }
 
 /**
@@ -242,7 +245,7 @@ export function buildInfoBackgroundUrl(activityId) {
  * @param {string} activityId - 活动ID
  */
 export function buildResultBackgroundUrl(activityId) {
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_activities/activity_gacha_${activityId}_widget.png${IMG_WEBP}`
 }
 
 /**
@@ -291,12 +294,12 @@ export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
   // 机密货物类专用货币：bigevent_currency_gacha_gameplay（无人机电池）、bigevent_currency_gacha_rm（授权密钥）
   // 格式：bigevent_currency_gacha_gameplay_{id}.png、bigevent_currency_gacha_rm_{id}.png
   if (currencyId === 'bigevent_currency_gacha_gameplay' || currencyId === 'bigevent_currency_gacha_rm') {
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png${IMG_WEBP}`
   }
 
   // 其他货币类型：currency_gachacoins, currency_premium_lootboxkey 等
   // 动态生成：{currencyId}_{activityId}.png
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png${IMG_WEBP}`
 }
 
 /**
@@ -306,7 +309,7 @@ export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
  */
 export function buildShopPackageUrl(activityId, packageId) {
   // 注意：文件名是 _2, _3, _4, _5，所以需要 +1
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_${packageId + 1}_thumbnail.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_${packageId + 1}_thumbnail.png${IMG_WEBP}`
 }
 
 /**
@@ -335,16 +338,16 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
   // 特殊资源：美金和升级芯片（在 currency 目录下，但不需要 activityId 后缀）
   if (item.id === 'Soft') {
     // 美金
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png${IMG_WEBP}`
   }
   if (item.id === 'Upgrades') {
     // 升级芯片
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png${IMG_WEBP}`
   }
 
   // 特殊战斗增益：导弹诱饵（在 common-items 目录下）
   if (item.id === 'MissileDecoy') {
-    return `${CDN_BASE_URL}/assets/common-items/MissileDecoy.png`
+    return `${CDN_BASE_URL}/assets/common-items/MissileDecoy.png${IMG_WEBP}`
   }
 
   // 提取 activityId（用于其他类型的动态路径）
@@ -354,7 +357,7 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
 
   // 贴花：独立目录 contentseparated_assets_decals（支持 rare/epic/legendary）
   if (item.type === '贴花') {
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_decals/${item.id}.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_decals/${item.id}.png${IMG_WEBP}`
   }
 
   // 史诗/传说物品：根据 type 和 id 动态生成
@@ -373,18 +376,18 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
       // 称号特殊：使用稀有度而非id作为文件名
       // 格式：TitleIcon_Legendary.png 或 TitleIcon_Epic.png
       const rarityCapitalized = item.rarity.charAt(0).toUpperCase() + item.rarity.slice(1)
-      return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/titles/TitleIcon_${rarityCapitalized}.png`
+      return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/titles/TitleIcon_${rarityCapitalized}.png${IMG_WEBP}`
     } else {
       // 所有武器类型：武器、火箭炮、导弹、攻击机、自卫炮、主炮等
       folder = 'weapons'
     }
-    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/${folder}/${item.id}.png`
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/${folder}/${item.id}.png${IMG_WEBP}`
   }
 
   // 普通物品（common）：common-items
   // 包括：艺术硬币(Artstorm)、黄金(Hard)、修理包(RepairKit)等
   if (item.rarity === 'common') {
-    return `${CDN_BASE_URL}/assets/common-items/${item.id}.png`
+    return `${CDN_BASE_URL}/assets/common-items/${item.id}.png${IMG_WEBP}`
   }
 
   return null
@@ -429,7 +432,7 @@ export function clearConfigCache(key) {
 export function buildCargoPoolImageUrl(activityId, poolIndex) {
   // 货运无人机奖池：event_{id}_gacha1.png
   // 机密货物奖池：event_{id}_gacha2.png
-  return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_gacha${poolIndex}.png`
+  return `${CDN_BASE_URL}/assets/contentseparated_assets_ui_eventhub/event_${activityId}_gacha${poolIndex}.png${IMG_WEBP}`
 }
 
 /**
@@ -443,15 +446,15 @@ export function buildLootboxTicketUrl(type, activityId = null) {
 
   switch (type) {
     case 'common':
-      return `${basePath}/common_lootbox_ticket.png`
+      return `${basePath}/common_lootbox_ticket.png${IMG_WEBP}`
     case 'ad':
-      return `${basePath}/ad_lootbox_ticket.png`
+      return `${basePath}/ad_lootbox_ticket.png${IMG_WEBP}`
     case 'event_common':
-      return `${basePath}/${activityId}_common_lootbox_ticket.png`
+      return `${basePath}/${activityId}_common_lootbox_ticket.png${IMG_WEBP}`
     case 'event_premium':
-      return `${basePath}/${activityId}_premium_lootbox_ticket.png`
+      return `${basePath}/${activityId}_premium_lootbox_ticket.png${IMG_WEBP}`
     default:
-      return `${basePath}/common_lootbox_ticket.png`
+      return `${basePath}/common_lootbox_ticket.png${IMG_WEBP}`
   }
 }
 
