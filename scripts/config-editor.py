@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
     QSplitter, QScrollArea, QFrame, QTreeWidget, QTreeWidgetItem,
     QCheckBox, QListWidget, QListWidgetItem, QPlainTextEdit
 )
-from PyQt6.QtCore import Qt, QDate, QTimer
+from PyQt6.QtCore import Qt, QDate, QTimer, QFileSystemWatcher
 from PyQt6.QtGui import QFont, QColor
 import oss2
 from dotenv import load_dotenv
@@ -118,7 +118,8 @@ class ConfigEditor(QMainWindow):
         self.commit_checkboxes = {}  # 存储 hash -> checkbox 的映射
         self.all_git_commits = []  # 存储所有 Git 提交
         self.init_ui()
-        self.load_data()
+        self._load_initial_data()
+        self._setup_file_watcher()
 
     def init_ui(self):
         """初始化界面"""
@@ -376,20 +377,64 @@ class ConfigEditor(QMainWindow):
         tab.setLayout(layout)
         return tab
 
-    def load_data(self):
-        """加载配置文件"""
+    def _setup_file_watcher(self):
+        """监听配置文件变化，外部修改时自动重新加载"""
+        self._file_watcher = QFileSystemWatcher(self)
+        for path in [str(VERSION_FILE), str(SITEINFO_FILE)]:
+            if os.path.exists(path):
+                self._file_watcher.addPath(path)
+        self._file_watcher.fileChanged.connect(self._on_file_changed)
+        self._reload_debounce = QTimer(self)
+        self._reload_debounce.setSingleShot(True)
+        self._reload_debounce.setInterval(300)
+        self._reload_debounce.timeout.connect(self._auto_reload)
+
+    def _on_file_changed(self, path):
+        """文件变化回调（防抖 300ms）"""
+        # Windows 上某些编辑器会删除再创建文件，需要重新添加监听
+        QTimer.singleShot(100, lambda: self._re_watch(path))
+        self._reload_debounce.start()
+
+    def _re_watch(self, path):
+        """重新添加文件监听（应对删除-重建式写入）"""
+        if os.path.exists(path) and path not in self._file_watcher.files():
+            self._file_watcher.addPath(path)
+
+    def _auto_reload(self):
+        """文件变化后自动重新加载（静默）"""
         try:
-            # 加载版本历史
+            self._reload_files()
+            self.update_ui()
+            if self.all_git_commits:
+                self._render_timeline()
+        except Exception:
+            pass
+
+    def _reload_files(self):
+        """从磁盘读取配置文件到内存（不更新 UI）"""
+        if VERSION_FILE.exists():
             with open(VERSION_FILE, 'r', encoding='utf-8') as f:
                 self.version_data = json.load(f)
-
-            # 加载站点信息
+        if SITEINFO_FILE.exists():
             with open(SITEINFO_FILE, 'r', encoding='utf-8') as f:
                 self.siteinfo_data = json.load(f)
 
+    def _load_initial_data(self):
+        """启动时静默加载（无弹窗）"""
+        try:
+            self._reload_files()
             self.update_ui()
-            QMessageBox.information(self, '成功', '配置文件加载成功')
+        except Exception as e:
+            QMessageBox.critical(self, '错误', f'加载配置文件失败:\n{e}')
 
+    def load_data(self):
+        """手动重新加载（按钮触发）"""
+        try:
+            self._reload_files()
+            self.update_ui()
+            if self.all_git_commits:
+                self._render_timeline()
+            QMessageBox.information(self, '成功', '配置文件已重新加载')
         except Exception as e:
             QMessageBox.critical(self, '错误', f'加载配置文件失败:\n{e}')
 
@@ -560,88 +605,77 @@ class ConfigEditor(QMainWindow):
             QMessageBox.critical(self, '错误', f'上传失败:\n{e}')
 
     def refresh_timeline(self):
-        """刷新时间线视图"""
+        """刷新时间线（重新获取 Git 提交并渲染）"""
         try:
-            # 显示进度对话框
             progress = QProgressDialog('正在加载时间线...', '取消', 0, 0, self)
             progress.setWindowModality(Qt.WindowModality.WindowModal)
             progress.setMinimumDuration(0)
             progress.setValue(0)
             QApplication.processEvents()
 
-            # 清空现有内容
-            self.clear_timeline()
-
-            # 获取 Git 提交历史
             progress.setLabelText('正在获取 Git 提交...')
             QApplication.processEvents()
-            git_commits = self.get_git_commits()
-            self.all_git_commits = git_commits  # 保存所有提交供编辑使用
+            self.all_git_commits = self.get_git_commits()
 
-            # 获取版本历史数据
-            version_details = self.version_data.get('versionDetails', [])
-
-            # 构建 hash -> version 的映射
-            hash_to_version = {}
-            for version in version_details:
-                for commit in version.get('commits', []):
-                    hash_val = commit.get('hash', '').strip()
-                    if hash_val:
-                        hash_to_version[hash_val] = version
-
-            # 构建已记录的 hash 集合
-            recorded_hashes = set(hash_to_version.keys())
-
-            # 渲染左侧版本卡片
-            progress.setLabelText('正在渲染版本卡片...')
+            progress.setLabelText('正在渲染时间线...')
             QApplication.processEvents()
-            for version in version_details:
-                card = self.create_version_card(version)
-                self.version_cards_layout.addWidget(card)
-                # 存储版本号和卡片的映射
-                version_number = version.get('version', '')
-                if version_number:
-                    self.version_card_map[version_number] = card
-
-            self.version_cards_layout.addStretch()
-
-            # 渲染右侧 Git 时间线
-            progress.setLabelText('正在渲染 Git 时间线...')
-            QApplication.processEvents()
-
-            missing_count = 0
-            for commit in git_commits:
-                is_recorded = commit['hash'] in recorded_hashes
-                version_info = hash_to_version.get(commit['hash'])
-
-                item = self.create_git_commit_item(commit, is_recorded, version_info)
-                self.git_timeline_layout.addWidget(item)
-
-                if not is_recorded:
-                    missing_count += 1
-
-            self.git_timeline_layout.addStretch()
+            self._render_timeline()
 
             progress.close()
-
-            # 更新统计信息
-            total = len(git_commits)
-            recorded = total - missing_count
-
-            if missing_count > 0:
-                stats_text = (
-                    f'📈 总提交 {total} | '
-                    f'已记录 {recorded} | '
-                    f'<span style="color: red; font-weight: bold;">缺失 {missing_count}</span>'
-                )
-                self.git_stats_label.setText(stats_text)
-            else:
-                stats_text = f'📈 总提交 {total} | 已记录 {recorded} | ✅ 无缺失'
-                self.git_stats_label.setText(stats_text)
-
         except Exception as e:
             progress.close()
             QMessageBox.critical(self, '错误', f'刷新时间线失败:\n{e}')
+
+    def _render_timeline(self):
+        """从内存数据渲染时间线（版本卡片 + Git 提交）"""
+        self.clear_timeline()
+
+        version_details = self.version_data.get('versionDetails', [])
+
+        # 构建 hash -> version 映射
+        hash_to_version = {}
+        for version in version_details:
+            for commit in version.get('commits', []):
+                hash_val = commit.get('hash', '').strip()
+                if hash_val:
+                    hash_to_version[hash_val] = version
+
+        recorded_hashes = set(hash_to_version.keys())
+
+        # 渲染左侧版本卡片
+        for version in version_details:
+            card = self.create_version_card(version)
+            self.version_cards_layout.addWidget(card)
+            version_number = version.get('version', '')
+            if version_number:
+                self.version_card_map[version_number] = card
+
+        self.version_cards_layout.addStretch()
+
+        # 渲染右侧 Git 时间线
+        missing_count = 0
+        for commit in self.all_git_commits:
+            is_recorded = commit['hash'] in recorded_hashes
+            version_info = hash_to_version.get(commit['hash'])
+            item = self.create_git_commit_item(commit, is_recorded, version_info)
+            self.git_timeline_layout.addWidget(item)
+            if not is_recorded:
+                missing_count += 1
+
+        self.git_timeline_layout.addStretch()
+
+        # 更新统计
+        total = len(self.all_git_commits)
+        recorded = total - missing_count
+        if missing_count > 0:
+            self.git_stats_label.setText(
+                f'📈 总提交 {total} | 已记录 {recorded} | '
+                f'<span style="color: red; font-weight: bold;">缺失 {missing_count}</span>'
+            )
+        else:
+            self.git_stats_label.setText(
+                f'📈 总提交 {total} | 已记录 {recorded} | ✅ 无缺失'
+            )
 
     def clear_timeline(self):
         """清空时间线"""
