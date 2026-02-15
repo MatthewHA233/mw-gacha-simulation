@@ -360,7 +360,7 @@ export function ChipGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -381,7 +381,7 @@ export function ChipGacha({
 
       currentIndex++
 
-      if ((drawType === 'multi100' || drawType === 'multi500') &&
+      if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') &&
           (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary')) {
         setResultModal(prev => ({
           ...prev,
@@ -444,7 +444,7 @@ export function ChipGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -465,7 +465,7 @@ export function ChipGacha({
 
       index++
 
-      if ((drawType === 'multi100' || drawType === 'multi500') &&
+      if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') &&
           (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary')) {
         setResultModal(prev => ({
           ...prev,
@@ -510,7 +510,7 @@ export function ChipGacha({
         let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
 
         // 如果是大批量抽奖，只保留 epic/legendary 和最近的 common 物品
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -541,7 +541,7 @@ export function ChipGacha({
         let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
 
         // 如果是大批量抽奖，只保留 epic/legendary 和最近的 common 物品
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -1219,6 +1219,157 @@ export function ChipGacha({
     }, 300)
   }
 
+  // ========== 五千连抽 ==========
+  const draw5000 = () => {
+    if (gameState.currency < 5000) {
+      toast.error('筹码不够，请充值', {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#1e293b',
+          color: '#fff',
+          border: '1px solid #0ea5e9',
+        },
+      })
+      setShopModal(true)
+      return
+    }
+
+    setIsDrawing(true)
+    setGameState(prev => ({ ...prev, currency: prev.currency - 5000, totalDraws: prev.totalDraws + 5000 }))
+
+    // 播放随机跳动动画
+    const availableItems = gameState.items.filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemName(null)
+        performDraw5000()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行五千连抽逻辑
+  const performDraw5000 = () => {
+    setTimeout(() => {
+      const results = []
+      let tempGameState = { ...gameState }
+      tempGameState.currency = gameState.currency - 5000
+      tempGameState.totalDraws = gameState.totalDraws + 5000
+
+      for (let i = 0; i < 5000; i++) {
+        const result = drawLottery(tempGameState.items)
+        results.push(result)
+
+        const currencyBonus = extractCurrencyAmount(result)
+
+        tempGameState = {
+          ...tempGameState,
+          currency: tempGameState.currency + currencyBonus,
+          items: tempGameState.items.map(item => {
+            if (item.name === result.name && item.rarity === result.rarity) {
+              return { ...item, obtained: item.obtained + 1 }
+            }
+            return item
+          })
+        }
+
+        if (result.rarity === 'legendary') {
+          tempGameState.legendaryCount = 0
+          tempGameState.epicCount = 0
+          tempGameState.rareCount = 0
+        } else if (result.rarity === 'epic') {
+          tempGameState.epicCount = 0
+          tempGameState.rareCount = 0
+          tempGameState.legendaryCount++
+        } else if (result.rarity === 'rare') {
+          tempGameState.rareCount = 0
+          tempGameState.epicCount++
+          tempGameState.legendaryCount++
+        } else {
+          tempGameState.rareCount++
+          tempGameState.epicCount++
+          tempGameState.legendaryCount++
+        }
+      }
+
+      const resultsWithDrawNum = results.map((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          return { ...result, drawNumber: gameState.totalDraws + index + 1 }
+        }
+        return result
+      })
+
+      let updatedEpicLegendaryHistory = [...gameState.epicLegendaryHistory]
+      resultsWithDrawNum.forEach((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          updatedEpicLegendaryHistory.push({
+            item: result,
+            drawNumber: gameState.totalDraws + index + 1
+          })
+        }
+      })
+
+      setGameState(prev => ({
+        ...tempGameState,
+        history: [...prev.history, ...results],
+        epicLegendaryHistory: updatedEpicLegendaryHistory
+      }))
+
+      const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
+      const canSkip = remainingLimited <= 1
+
+      setResultModal({
+        show: true,
+        items: resultsWithDrawNum,
+        displayedItems: [],
+        isMulti: true,
+        drawType: 'multi5000',
+        isGenerating: true,
+        isPaused: false,
+        isComplete: false,
+        processedIndex: 0,
+        canSkip
+      })
+      setIsDrawing(false)
+
+      setTimeout(() => {
+        progressivelyShowItems(resultsWithDrawNum, 'multi5000')
+      }, 100)
+    }, 300)
+  }
+
   // ========== 购买充值包 ==========
   const buyPackage = (pkg) => {
     // 安全检查：非会员由 ShopModal 拦截，此处为兜底
@@ -1286,9 +1437,11 @@ export function ChipGacha({
         onMultiDraw={multiDraw}
         onDraw100={draw100}
         onDraw500={draw500}
+        onDraw5000={draw5000}
         onPlaySound={playSound}
         isDrawing={isDrawing}
         isPremium={isPremium}
+        totalDraws={gameState.totalDraws}
       />
 
       {/* 结果弹窗 */}

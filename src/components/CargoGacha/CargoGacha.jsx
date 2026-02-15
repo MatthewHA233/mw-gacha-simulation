@@ -18,6 +18,7 @@ import { SponsorModal } from '../ChipGacha/SponsorModal'
 import { ResetModal } from '../ui/ResetModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { MembershipModal } from '../ui/MembershipModal'
+import { MilestonePullButton } from '../ui/MilestonePullButton'
 
 /**
  * 机密货物类抽卡组件
@@ -357,7 +358,7 @@ export function CargoGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -378,7 +379,7 @@ export function CargoGacha({
 
       currentIndex++
 
-      if ((drawType === 'multi100' || drawType === 'multi500') &&
+      if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') &&
           (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary')) {
         setResultModal(prev => ({
           ...prev,
@@ -440,7 +441,7 @@ export function CargoGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -461,7 +462,7 @@ export function CargoGacha({
 
       index++
 
-      if ((drawType === 'multi100' || drawType === 'multi500') &&
+      if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') &&
           (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary')) {
         setResultModal(prev => ({
           ...prev,
@@ -501,7 +502,7 @@ export function CargoGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -529,7 +530,7 @@ export function CargoGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -1323,6 +1324,194 @@ export function CargoGacha({
     }, 300)
   }
 
+  // ========== 五千连抽 ==========
+  const handleDraw5000 = () => {
+    const suffix = selectedCargoType === 'rm' ? '' : '_else'
+    const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
+    const isSpType = activityConfig.gacha_type === '无人机补给类'
+    const currencyName = selectedCargoType === 'rm'
+      ? (isSpType ? '开锁器' : '授权密钥')
+      : (isSpType ? '遥控器' : '无人机电池')
+
+    const draw5000Cost = selectedCargoType === 'rm' ? 5000 : 150000
+
+    if (gameState[currencyKey] < draw5000Cost) {
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#1e293b',
+          color: '#fff',
+          border: '1px solid #0ea5e9',
+        },
+      })
+      if (selectedCargoType === 'rm') {
+        setShopModal(true)
+      }
+      return
+    }
+
+    setIsDrawing(true)
+    setGameState(prev => ({
+      ...prev,
+      [currencyKey]: prev[currencyKey] - draw5000Cost,
+      [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 5000
+    }))
+
+    const itemsKey = suffix ? `items${suffix}` : 'items'
+    const availableItems = gameState[itemsKey].filter(item =>
+      item.limit === 0 || item.obtained < item.limit
+    )
+
+    const shuffle = (array) => {
+      const arr = [...array]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
+
+    let shuffledItems = shuffle(availableItems)
+    let shuffleIndex = 0
+    let currentCount = 0
+    let delay = 50
+    const maxDelay = 300
+    const delayIncrement = 15
+
+    const highlightNext = () => {
+      if (currentCount < 20) {
+        if (shuffleIndex >= shuffledItems.length) {
+          shuffledItems = shuffle(availableItems)
+          shuffleIndex = 0
+        }
+
+        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        shuffleIndex++
+        currentCount++
+        delay += delayIncrement
+        setTimeout(highlightNext, Math.min(delay, maxDelay))
+      } else {
+        setHighlightedItemId(null)
+        performDraw5000()
+      }
+    }
+
+    highlightNext()
+  }
+
+  // 执行五千连抽逻辑
+  const performDraw5000 = () => {
+    const suffix = selectedCargoType === 'rm' ? '' : '_else'
+    const currencyKey = selectedCargoType === 'rm' ? 'currency' : 'commonCurrency'
+    const draw5000Cost = selectedCargoType === 'rm' ? 5000 : 150000
+
+    setTimeout(() => {
+      const itemsKey = suffix ? `items${suffix}` : 'items'
+      const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
+      const legendaryCountKey = suffix ? `legendaryCount${suffix}` : 'legendaryCount'
+      const epicCountKey = suffix ? `epicCount${suffix}` : 'epicCount'
+      const rareCountKey = suffix ? `rareCount${suffix}` : 'rareCount'
+      const historyKey = suffix ? `history${suffix}` : 'history'
+      const epicLegendaryHistoryKey = suffix ? `epicLegendaryHistory${suffix}` : 'epicLegendaryHistory'
+      const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
+
+      const results = []
+      let tempGameState = { ...gameState }
+      tempGameState[currencyKey] = gameState[currencyKey] - draw5000Cost
+      tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 5000
+
+      for (let i = 0; i < 5000; i++) {
+        const result = drawLottery(tempGameState[itemsKey], tempGameState[guaranteeCounterKey])
+        results.push(result)
+
+        const currencyBonus = extractCurrencyAmount(result)
+
+        const prizeItem = tempGameState[itemsKey][0]
+        const isPrizeItem = prizeItem && result.name === prizeItem.name && result.id === prizeItem.id
+
+        tempGameState = {
+          ...tempGameState,
+          [currencyKey]: tempGameState[currencyKey] + currencyBonus,
+          [itemsKey]: tempGameState[itemsKey].map(item => {
+            if (item.name === result.name && item.rarity === result.rarity) {
+              return { ...item, obtained: item.obtained + 1 }
+            }
+            return item
+          })
+        }
+
+        if (isPrizeItem) {
+          tempGameState[guaranteeCounterKey] = 0
+        } else {
+          tempGameState[guaranteeCounterKey] = (tempGameState[guaranteeCounterKey] || 0) + 1
+        }
+
+        if (result.rarity === 'legendary') {
+          tempGameState[legendaryCountKey] = 0
+          tempGameState[epicCountKey] = 0
+          tempGameState[rareCountKey] = 0
+        } else if (result.rarity === 'epic') {
+          tempGameState[epicCountKey] = 0
+          tempGameState[rareCountKey] = 0
+          tempGameState[legendaryCountKey]++
+        } else if (result.rarity === 'rare') {
+          tempGameState[rareCountKey] = 0
+          tempGameState[epicCountKey]++
+          tempGameState[legendaryCountKey]++
+        } else {
+          tempGameState[rareCountKey]++
+          tempGameState[epicCountKey]++
+          tempGameState[legendaryCountKey]++
+        }
+      }
+
+      const resultsWithDrawNum = results.map((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          return { ...result, drawNumber: gameState[totalDrawsKey] + index + 1 }
+        }
+        return result
+      })
+
+      let updatedEpicLegendaryHistory = [...gameState[epicLegendaryHistoryKey]]
+      resultsWithDrawNum.forEach((result, index) => {
+        if (result.rarity === 'epic' || result.rarity === 'legendary') {
+          updatedEpicLegendaryHistory.push({
+            item: result,
+            drawNumber: gameState[totalDrawsKey] + index + 1
+          })
+        }
+      })
+
+      setGameState(prev => ({
+        ...tempGameState,
+        [historyKey]: [...prev[historyKey], ...results],
+        [epicLegendaryHistoryKey]: updatedEpicLegendaryHistory
+      }))
+
+      const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
+      const canSkip = remainingLimited <= 1
+
+      setResultModal({
+        show: true,
+        items: resultsWithDrawNum,
+        displayedItems: [],
+        isMulti: true,
+        drawType: 'multi5000',
+        isGenerating: true,
+        isPaused: false,
+        isComplete: false,
+        processedIndex: 0,
+        canSkip
+      })
+      setIsDrawing(false)
+
+      setTimeout(() => {
+        progressivelyShowItems(resultsWithDrawNum, 'multi5000')
+      }, 100)
+    }, 300)
+  }
+
   // 处理标签切换
   const handleTabSelect = (type) => {
     setSelectedCargoType(type)
@@ -1681,7 +1870,7 @@ export function CargoGacha({
 
       {/* 底部：抽奖按钮区域 */}
       <div className="absolute bottom-16 md:bottom-20 lg:bottom-24 left-0 right-0 flex justify-center items-center z-20">
-        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-8 justify-center scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-y-10 sm:translate-y-0">
+        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-8 justify-center items-end scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-y-10 sm:translate-y-0">
           {/* 抽奖 x1 */}
           <button
             onClick={() => handleButtonClick(handleSingleDraw)}
@@ -1720,18 +1909,15 @@ export function CargoGacha({
             </button>
           )}
 
-          {/* 抽奖 x500 - 特殊紫色主题（会员专属） */}
+          {/* 抽奖 x500/x5000 - 里程碑按钮（会员专属） */}
           {isPremium && (
-            <button
-              onClick={() => handleButtonClick(handleDraw500)}
-              disabled={isDrawing}
-              className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-                抽奖 ×500
-              </span>
-            </button>
+            <MilestonePullButton
+              totalDraws={selectedCargoType === 'rm' ? gameState.totalDraws : (gameState.totalDraws_else || 0)}
+              onDraw500={() => handleButtonClick(handleDraw500)}
+              onDraw5000={() => handleButtonClick(handleDraw5000)}
+              onPlaySound={null}
+              isDisabled={isDrawing}
+            />
           )}
         </div>
       </div>

@@ -21,6 +21,7 @@ import { SponsorModal } from '../ChipGacha/SponsorModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { ResetModal } from '../ui/ResetModal'
 import { MembershipModal } from '../ui/MembershipModal'
+import { MilestonePullButton } from '../ui/MilestonePullButton'
 
 /**
  * 旗舰宝箱类抽卡组件
@@ -386,7 +387,7 @@ export function FlagshipGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -407,7 +408,7 @@ export function FlagshipGacha({
 
       currentIndex++
 
-      if ((drawType === 'multi100' || drawType === 'multi500') &&
+      if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') &&
           (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary')) {
         setResultModal(prev => ({
           ...prev,
@@ -470,7 +471,7 @@ export function FlagshipGacha({
       setResultModal(prev => {
         let newDisplayedItems = [...prev.displayedItems, nextItem]
 
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -491,7 +492,7 @@ export function FlagshipGacha({
 
       index++
 
-      if ((drawType === 'multi100' || drawType === 'multi500') &&
+      if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') &&
           (nextItem.rarity === 'epic' || nextItem.rarity === 'legendary')) {
         setResultModal(prev => ({
           ...prev,
@@ -536,7 +537,7 @@ export function FlagshipGacha({
         let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
 
         // 如果是大批量抽奖，只保留 epic/legendary 和最近的 common 物品
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -567,7 +568,7 @@ export function FlagshipGacha({
         let newDisplayedItems = [...prev.displayedItems, ...itemsToAdd]
 
         // 如果是大批量抽奖，只保留 epic/legendary 和最近的 common 物品
-        if ((drawType === 'multi100' || drawType === 'multi500') && newDisplayedItems.length > 20) {
+        if ((drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && newDisplayedItems.length > 20) {
           const epicLegendary = newDisplayedItems.filter(item =>
             item.rarity === 'epic' || item.rarity === 'legendary'
           )
@@ -761,7 +762,7 @@ export function FlagshipGacha({
       })
     } else {
       console.log('[FlagshipGacha] 显示多抽结果弹窗')
-      const canSkip = (drawType === 'multi100' || drawType === 'multi500') && remainingLimited <= 1
+      const canSkip = (drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && remainingLimited <= 1
 
       setResultModal({
         show: true,
@@ -1093,6 +1094,78 @@ export function FlagshipGacha({
     }
   }
 
+  const handleDraw5000 = async () => {
+    if (isAnimating) return
+
+    const isPremium = selectedLootboxType === 'event_premium'
+    const singleCost = gameState.singleCost
+    const totalCost = singleCost * 5000
+    const currentKeys = isPremium ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = isPremium ? '旗舰钥匙' : '普通钥匙'
+
+    if (currentKeys < totalCost) {
+      toast.error(`${keyName}不够`, {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#1e293b',
+          color: '#fff',
+          border: isPremium ? '1px solid #f59e0b' : '1px solid #9ca3af',
+        },
+      })
+      if (isPremium) {
+        setShopModal(true)
+      }
+      return
+    }
+
+    console.log('抽奖 x5000')
+
+    let tempItems = [...getCurrentItems()]
+    const results = []
+    for (let i = 0; i < 5000; i++) {
+      const result = drawLottery(tempItems)
+      results.push(result)
+      tempItems = tempItems.map(item => {
+        if (item.name === result.name && item.rarity === result.rarity) {
+          return { ...item, obtained: item.obtained + 1 }
+        }
+        return item
+      })
+    }
+    pendingRewardsRef.current = results
+
+    const suffix = getFieldSuffix()
+    const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
+
+    setGameState(prev => ({
+      ...prev,
+      ...(isPremium
+        ? { currency: prev.currency - totalCost }
+        : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
+      ),
+      [totalDrawsKey]: prev[totalDrawsKey] + 5000
+    }))
+
+    if (lootboxAnimationRef.current) {
+      setIsAnimating(true)
+
+      const expectedTotalDraws = gameState[totalDrawsKey] + 5000
+      pendingDrawRef.current = { count: 5000, drawType: 'multi5000', expectedTotalDraws }
+
+      setIsScrolling(true)
+
+      try {
+        await lootboxAnimationRef.current.start()
+        console.log('[FlagshipGacha] 动画完成')
+      } catch (error) {
+        console.error('[FlagshipGacha] 动画执行失败:', error)
+      } finally {
+        setIsAnimating(false)
+      }
+    }
+  }
+
   // 动画完成回调
   const handleAnimationComplete = () => {
     console.log('宝箱动画完成')
@@ -1331,7 +1404,7 @@ export function FlagshipGacha({
         <div className="relative w-full -mt-16 md:mt-12 flex justify-center items-center" style={{ minHeight: '112px' }}>
           {/* 抽奖按钮组 */}
           {!isScrolling && (
-            <div className="flex flex-wrap gap-2 md:gap-8 justify-center">
+            <div className="flex flex-wrap gap-2 md:gap-8 justify-center items-end">
               {/* 抽奖 x1 */}
               <button
                 onClick={() => handleButtonClick(handleSingleDraw)}
@@ -1370,18 +1443,18 @@ export function FlagshipGacha({
                 </button>
               )}
 
-              {/* 抽奖 x500 - 特殊紫色主题（会员专属） */}
+              {/* 抽奖 x500/x5000 - 里程碑按钮（会员专属） */}
               {isPremium && (
-                <button
-                  onClick={() => handleButtonClick(handleDraw500)}
-                  disabled={isAnimating}
-                  className="relative inline-flex h-8 md:h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                  <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-4 md:px-8 py-1 text-xs md:text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-                    抽奖 ×500
-                  </span>
-                </button>
+                <MilestonePullButton
+                  totalDraws={(() => { const s = getFieldSuffix(); return s ? gameState[`totalDraws${s}`] : gameState.totalDraws })()}
+                  onDraw500={() => handleButtonClick(handleDraw500)}
+                  onDraw5000={() => handleButtonClick(handleDraw5000)}
+                  onPlaySound={null}
+                  isDisabled={isAnimating}
+                  heightClass="h-8 md:h-10"
+                  textClass="text-xs md:text-sm"
+                  paddingClass="px-4 md:px-8"
+                />
               )}
             </div>
           )}

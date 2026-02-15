@@ -31,9 +31,9 @@ export function ResultModal({
     const now = Date.now()
     const timeSinceLastClick = now - lastClickTime.current
 
-    // 双击检测：只在 multi100 和 multi500 时启用，且只有剩余史诗/传说物品 ≤ 1 时才允许
+    // 双击检测：只在 multi100、multi500 和 multi5000 时启用，且只有剩余史诗/传说物品 ≤ 1 时才允许
     if (resultModal.canSkip &&
-        (resultModal.drawType === 'multi100' || resultModal.drawType === 'multi500') &&
+        (resultModal.drawType === 'multi100' || resultModal.drawType === 'multi500' || resultModal.drawType === 'multi5000') &&
         resultModal.isGenerating &&
         !resultModal.isPaused &&
         timeSinceLastClick < 300) { // 300ms 内的连续点击视为双击
