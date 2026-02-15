@@ -100,8 +100,9 @@ export function MilestonePullButton({
   const isUpgraded = phase === 'unlocked' || phase === 'animating'
   const isAnimating = phase === 'animating'
 
+  // 未解锁：紫色渐变；已解锁/动画中：与超稀有物品相同的炫彩旋转彩虹渐变
   const gradient = isUpgraded
-    ? 'conic-gradient(from 90deg at 50% 50%, #FF6B6B 0%, #B91C1C 50%, #FF6B6B 100%)'
+    ? 'conic-gradient(from 90deg at 50% 50%, #ff2d2d, #ff7f00, #ffd700, #00e68a, #00bfff, #a855f7, #ff2d2d)'
     : 'conic-gradient(from 90deg at 50% 50%, #E2CBFF 0%, #393BB2 50%, #E2CBFF 100%)'
 
   return (
@@ -120,15 +121,16 @@ export function MilestonePullButton({
             : { duration: 0.3 }
         }
         className={`relative inline-flex ${heightClass} overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 ${
-          isUpgraded ? 'focus:ring-red-400' : 'focus:ring-slate-400'
+          isUpgraded ? 'focus:ring-purple-400' : 'focus:ring-slate-400'
         } focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed`}
+        style={isUpgraded ? { filter: 'drop-shadow(0 0 8px rgba(168,85,247,0.5))' } : undefined}
       >
         {/* Spinning gradient border */}
         <span
           className="absolute inset-[-1000%]"
           style={{
             background: gradient,
-            animation: `spin ${isAnimating ? '0.5s' : '2s'} linear infinite`,
+            animation: `spin ${isAnimating ? '0.5s' : isUpgraded ? '3s' : '2s'} linear infinite`,
           }}
         />
         {/* Inner content */}
