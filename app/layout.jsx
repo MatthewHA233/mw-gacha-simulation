@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { MilestoneToastProvider } from '@/components/ui/MilestoneToastProvider'
 import { AuthProvider } from '@/hooks/useAuth'
 import { VersionInitializer } from '@/components/VersionInitializer'
+import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar'
 import '@/App.css'
 import '@/index.css'
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="zh-CN">
       <body>
         <VersionInitializer />
+        <ServiceWorkerRegistrar />
         <AuthProvider>
           <MilestoneToastProvider maxToasts={3} position="top-right">
             <div className="w-full h-screen overflow-hidden bg-black">
