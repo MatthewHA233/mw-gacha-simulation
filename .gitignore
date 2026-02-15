@@ -35,6 +35,7 @@ public/*
 !public/vite.svg
 !public/MW.png
 !public/horizn.png
+!public/sw.js
 
 # 排除从 version.js 生成的 JSON 配置文件（构建时生成）
 public/gacha-configs/site-info.json
