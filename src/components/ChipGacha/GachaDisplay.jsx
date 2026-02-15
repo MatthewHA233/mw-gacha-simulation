@@ -4,6 +4,7 @@ import { HexGrid } from '../HexGrid'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { IMG_WEBP } from '../../services/cdnService'
 import { useSound } from '../../hooks/useSound'
+import { MilestonePullButton } from '../ui/MilestonePullButton'
 
 /**
  * 抽卡展示区域组件
@@ -16,9 +17,11 @@ export function GachaDisplay({
   onMultiDraw,
   onDraw100,
   onDraw500,
+  onDraw5000,
   onPlaySound,
   isDrawing = false,
   isPremium = false,
+  totalDraws = 0,
 }) {
   const { playGachaClick } = useSound()
 
@@ -47,7 +50,7 @@ export function GachaDisplay({
         />
 
         {/* 抽奖按钮（在六边形下方居中） */}
-        <div className="flex gap-8 justify-center mt-12">
+        <div className="flex gap-8 justify-center mt-12 items-end">
           {/* 抽奖 x1 */}
           <button
             onClick={() => handleButtonClick(onSingleDraw)}
@@ -86,18 +89,15 @@ export function GachaDisplay({
             </button>
           )}
 
-          {/* 抽奖 x500 - 特殊紫色主题（会员专属） */}
+          {/* 抽奖 x500/x5000 - 里程碑按钮（会员专属） */}
           {isPremium && (
-            <button
-              onClick={() => handleButtonClick(onDraw500)}
-              disabled={isDrawing}
-              className="relative inline-flex h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-bold text-white backdrop-blur-3xl hover:bg-slate-900 transition-all">
-                抽奖 ×500
-              </span>
-            </button>
+            <MilestonePullButton
+              totalDraws={totalDraws}
+              onDraw500={() => handleButtonClick(onDraw500)}
+              onDraw5000={() => handleButtonClick(onDraw5000)}
+              onPlaySound={null}
+              isDisabled={isDrawing}
+            />
           )}
         </div>
       </div>
