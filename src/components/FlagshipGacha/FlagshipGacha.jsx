@@ -1535,6 +1535,7 @@ export function FlagshipGacha({
                   onDraw5000={() => handleButtonClick(handleDraw5000)}
                   onPlaySound={null}
                   isDisabled={isAnimating}
+                  resultModalOpen={resultModal.show}
                   heightClass="h-8 md:h-10"
                   textClass="text-xs md:text-sm"
                   paddingClass="px-4 md:px-8"

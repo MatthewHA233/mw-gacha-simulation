@@ -1528,6 +1528,7 @@ export function ChipGacha({
         isDrawing={isDrawing}
         isPremium={isPremium}
         totalDraws={gameState.totalDraws}
+        resultModalOpen={resultModal.show}
       />
 
       {/* 结果弹窗 */}

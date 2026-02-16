@@ -2006,6 +2006,7 @@ export function CargoGacha({
               onDraw5000={() => handleButtonClick(handleDraw5000)}
               onPlaySound={null}
               isDisabled={isDrawing}
+              resultModalOpen={resultModal.show}
             />
           )}
         </div>

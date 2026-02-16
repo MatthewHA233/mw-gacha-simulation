@@ -22,6 +22,7 @@ export function GachaDisplay({
   isDrawing = false,
   isPremium = false,
   totalDraws = 0,
+  resultModalOpen = false,
 }) {
   const { playGachaClick } = useSound()
 
@@ -97,6 +98,7 @@ export function GachaDisplay({
               onDraw5000={() => handleButtonClick(onDraw5000)}
               onPlaySound={null}
               isDisabled={isDrawing}
+              resultModalOpen={resultModalOpen}
             />
           )}
         </div>
