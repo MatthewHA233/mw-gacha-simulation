@@ -238,15 +238,7 @@ export function ShopModal({
         {isPremium && (
           <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto">
             价格参考来源：
-            <a
-              href="https://m.tb.cn/h.S6Gh2Ta?tk=xN9WfZpATH7"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300 underline ml-1 transition-colors"
-              onClick={e => e.stopPropagation()}
-            >
-              闲鱼 小璃现代战舰
-            </a>
+            <span className="text-cyan-400 ml-1">QQ:平头哥 代充 微信:熊猫 代充</span>
           </div>
         )}
       </div>

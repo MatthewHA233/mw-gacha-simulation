@@ -167,9 +167,9 @@ export function ChipGacha({
 
   // 商店套餐状态
   const [shopPackages, setShopPackages] = useState([
-    { id: 1, coins: 22, price: 25, image: '', discount: '-10%' },
-    { id: 2, coins: 60, price: 60, image: '', discount: '-15%' },
-    { id: 3, coins: 135, baseCoins: 135, price: 120, basePrice: 120, image: '', discount: '-25%', quantity: 1 },
+    { id: 1, coins: 22, price: 28, image: '', discount: '-10%' },
+    { id: 2, coins: 60, price: 65, image: '', discount: '-15%' },
+    { id: 3, coins: 135, baseCoins: 135, price: 125, basePrice: 125, image: '', discount: '-25%', quantity: 1 },
   ])
 
   // 根据 activityId 更新商店套餐图片
