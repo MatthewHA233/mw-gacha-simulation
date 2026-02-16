@@ -8,6 +8,7 @@ import { useSound } from '../../hooks/useSound'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { Crown, Copy, Check } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { MembershipModal } from '../ui/MembershipModal'
 
 /**
@@ -293,7 +294,14 @@ export function Header({
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { playButtonClick(); openMembership('select') }}
+                  onClick={() => {
+                    playButtonClick()
+                    if (!userAccount) {
+                      toast('请先绑定账号密码再续费', { icon: '⚠️' })
+                    } else {
+                      openMembership('select')
+                    }
+                  }}
                   className="bg-orange-600 hover:bg-orange-500 text-white px-2 py-0.5 text-xs font-bold font-mono uppercase transition-all border border-orange-400"
                 >
                   RENEW
@@ -447,10 +455,17 @@ export function Header({
                         </button>
                       )}
                       <button
-                        onClick={() => { setShowAccountMenu(false); openMembership('select') }}
+                        onClick={() => {
+                          setShowAccountMenu(false)
+                          if (!userAccount) {
+                            toast('请先绑定账号密码再续费', { icon: '⚠️' })
+                          } else {
+                            openMembership('select')
+                          }
+                        }}
                         className="w-full px-2 py-1.5 md:px-3 md:py-2 text-left text-[10px] md:text-xs text-slate-200 hover:bg-slate-800 hover:text-white transition-colors"
                       >
-                        购买/续费会员
+                        续费通行证
                       </button>
                       <button
                         onClick={() => { setShowAccountMenu(false); playButtonClick(); logout() }}
@@ -700,6 +715,7 @@ export function Header({
         isOpen={showMembershipModal}
         onClose={() => setShowMembershipModal(false)}
         initialStep={membershipInitialStep}
+        isRenewal={isActivated && !!userAccount}
         onSuccess={() => {
           // 不关弹窗，让用户在成功页面复制通行证密钥后手动关闭
         }}
