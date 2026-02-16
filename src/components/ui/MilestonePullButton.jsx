@@ -64,13 +64,28 @@ export function MilestonePullButton({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Detect milestone crossing — only mark as pending, never schedule directly
+  // Detect milestone crossing
   useEffect(() => {
     const prev = prevTotalDrawsRef.current
     prevTotalDrawsRef.current = totalDraws
 
     if (prev < MILESTONE_THRESHOLD && totalDraws >= MILESTONE_THRESHOLD && phase === 'idle') {
-      setPendingAnimation(true)
+      if (resultModalOpen) {
+        // During gameplay — animate after modal closes
+        setPendingAnimation(true)
+      } else {
+        // Page reload / data load — animate immediately
+        beginAnimation()
+      }
+    }
+  }, [totalDraws, phase, resultModalOpen])
+
+  // Revert to 500-draw button when totalDraws drops below threshold (e.g. data reset)
+  useEffect(() => {
+    if (totalDraws < MILESTONE_THRESHOLD && phase === 'unlocked') {
+      setPhase('idle')
+      setDisplayCount(500)
+      setPendingAnimation(false)
     }
   }, [totalDraws, phase])
 
@@ -195,14 +210,14 @@ export function MilestonePullButton({
           } focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed`}
           style={{
             visibility: isAnimPhase ? 'hidden' : 'visible',
-            filter: isUpgraded && !isAnimPhase ? 'drop-shadow(0 0 8px rgba(168,85,247,0.5))' : undefined,
+            filter: isUpgraded && !isAnimPhase ? 'drop-shadow(0 0 14px rgba(168,85,247,0.6))' : undefined,
           }}
         >
           <span
             className="absolute inset-[-1000%]"
             style={{
               background: gradient,
-              animation: `spin ${isUpgraded ? '3s' : '2s'} linear infinite`,
+              animation: `spin ${isUpgraded ? '0.5s' : '2s'} linear infinite`,
             }}
           />
           <span className={btnInner}>
