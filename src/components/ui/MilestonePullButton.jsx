@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
 
-const MILESTONE_THRESHOLD = 5000
+const MILESTONE_THRESHOLD = 2500
 
 // Pre-computed sparkle directions
 const SPARKLES = Array.from({ length: 10 }, (_, i) => ({
@@ -39,9 +39,10 @@ export function MilestonePullButton({
     totalDraws >= MILESTONE_THRESHOLD ? 5000 : 500
   )
   const prevTotalDrawsRef = useRef(totalDraws)
+  const prevResultModalRef = useRef(resultModalOpen)
   const animationFrameRef = useRef(null)
   const startTimeRef = useRef(null)
-  const pendingAnimationRef = useRef(false)
+  const [pendingAnimation, setPendingAnimation] = useState(false)
   const delayTimerRef = useRef(null)
   const countTimerRef = useRef(null)
   const buttonRef = useRef(null)
@@ -63,38 +64,32 @@ export function MilestonePullButton({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Detect milestone crossing — mark pending, don't animate yet
+  // Detect milestone crossing — only mark as pending, never schedule directly
   useEffect(() => {
     const prev = prevTotalDrawsRef.current
     prevTotalDrawsRef.current = totalDraws
 
     if (prev < MILESTONE_THRESHOLD && totalDraws >= MILESTONE_THRESHOLD && phase === 'idle') {
-      pendingAnimationRef.current = true
-      if (!resultModalOpen) {
-        delayTimerRef.current = setTimeout(() => {
-          if (pendingAnimationRef.current) {
-            pendingAnimationRef.current = false
-            beginAnimation()
-          }
-        }, 1000)
-      }
+      setPendingAnimation(true)
     }
   }, [totalDraws, phase])
 
-  // When result modal closes and animation is pending, start after 1s
+  // Schedule animation only when result modal transitions from open → closed
+  // This ensures the animation plays AFTER the user sees and dismisses their draw results
   useEffect(() => {
-    if (!resultModalOpen && pendingAnimationRef.current && phase === 'idle') {
+    const wasOpen = prevResultModalRef.current
+    prevResultModalRef.current = resultModalOpen
+
+    if (wasOpen && !resultModalOpen && pendingAnimation && phase === 'idle') {
       delayTimerRef.current = setTimeout(() => {
-        if (pendingAnimationRef.current) {
-          pendingAnimationRef.current = false
-          beginAnimation()
-        }
+        setPendingAnimation(false)
+        beginAnimation()
       }, 1000)
     }
     return () => {
       if (delayTimerRef.current) clearTimeout(delayTimerRef.current)
     }
-  }, [resultModalOpen, phase])
+  }, [resultModalOpen, pendingAnimation, phase])
 
   const beginAnimation = useCallback(() => {
     if (!buttonRef.current) return

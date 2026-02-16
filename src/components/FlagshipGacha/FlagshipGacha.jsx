@@ -1487,8 +1487,11 @@ export function FlagshipGacha({
         {/* 底部：抽奖按钮/滚动条区域 */}
         <div className="relative w-full -mt-16 md:mt-12 flex justify-center items-center" style={{ minHeight: '112px' }}>
           {/* 抽奖按钮组 */}
-          {!isScrolling && (
-            <div className="flex flex-wrap gap-2 md:gap-8 justify-center items-end">
+          {/* visibility: hidden 而非条件渲染，避免卸载 MilestonePullButton 导致动画状态丢失 */}
+          <div
+            className="flex flex-wrap gap-2 md:gap-8 justify-center items-end"
+            style={{ visibility: isScrolling ? 'hidden' : 'visible' }}
+          >
               {/* 抽奖 x1 */}
               <button
                 onClick={() => handleButtonClick(handleSingleDraw)}
@@ -1542,7 +1545,6 @@ export function FlagshipGacha({
                 />
               )}
             </div>
-          )}
 
           {/* 抽奖结果展示条 - 顶替按钮位置 */}
           <div
