@@ -238,8 +238,8 @@ export function ShopModal({
           })}
         </div>
 
-        {/* 价格参考来源（仅会员可见） */}
-        {isPremium && (
+        {/* 价格参考来源 */}
+        {(
           <div
             className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto cursor-pointer hover:border-amber-500/40 transition-colors"
             onClick={(e) => { e.stopPropagation(); setPriceSourceOpen(true) }}
