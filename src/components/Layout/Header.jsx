@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { useSound } from '../../hooks/useSound'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
-import { Crown } from 'lucide-react'
+import { Crown, Copy, Check } from 'lucide-react'
 import { MembershipModal } from '../ui/MembershipModal'
 
 /**
@@ -41,27 +41,15 @@ export function Header({
   const [bindPassLoading, setBindPassLoading] = useState(false)
   const [bindPassError, setBindPassError] = useState('')
   const [bindPassSuccess, setBindPassSuccess] = useState('')
+  const [codeCopied, setCodeCopied] = useState(false)
 
   const openMembership = (step = 'select') => {
     setMembershipInitialStep(step)
     setShowMembershipModal(true)
   }
 
-  // 手机端 H5 支付回来后自动打开弹窗恢复轮询
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('pending_mobile_payment')
-      if (!raw) return
-      const pending = JSON.parse(raw)
-      if (Date.now() - pending.timestamp > 10 * 60 * 1000) {
-        localStorage.removeItem('pending_mobile_payment')
-        return
-      }
-      setShowMembershipModal(true)
-    } catch {
-      localStorage.removeItem('pending_mobile_payment')
-    }
-  }, [])
+  // 手机端 H5 支付回来后的恢复逻辑已迁移到全局 PendingPaymentWatcher 组件
+  // 该组件通过 Supabase Realtime 监听支付结果，自动弹出成功界面
 
   const handleBindPass = async () => {
     if (!bindPassCode.trim() || bindPassLoading) return
@@ -297,7 +285,7 @@ export function Header({
                 onClick={() => { playButtonClick(); setShowAccountMenu(!showAccountMenu) }}
                 className="text-slate-300 hover:text-white font-mono text-xs px-2 py-0.5 border border-slate-700 bg-black/40 hover:border-slate-500 transition-colors cursor-pointer"
               >
-                {userAccount?.login_id || membership?.activation_code || 'GUEST'}
+                {userAccount?.login_id || '已登录'}
               </button>
 
               {/* 过期续费 */}
@@ -329,9 +317,38 @@ export function Header({
                         <p className="text-xs md:text-sm text-white font-mono truncate">
                           {userAccount?.login_id || '未绑定'}
                         </p>
-                        <p className="text-[10px] md:text-xs text-slate-400 font-mono mt-0.5 truncate">
-                          {membership?.activation_code}
-                        </p>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <p className="text-[10px] md:text-xs text-slate-400 font-mono truncate">
+                            {membership?.activation_code
+                              ? membership.activation_code.slice(0, 4) + '····' + membership.activation_code.slice(-4)
+                              : '—'}
+                          </p>
+                          {membership?.activation_code && (
+                            <button
+                              onClick={async () => {
+                                try {
+                                  if (navigator.clipboard?.writeText) {
+                                    await navigator.clipboard.writeText(membership.activation_code)
+                                  } else {
+                                    const ta = document.createElement('textarea')
+                                    ta.value = membership.activation_code
+                                    ta.style.cssText = 'position:fixed;left:-9999px'
+                                    document.body.appendChild(ta)
+                                    ta.select()
+                                    document.execCommand('copy')
+                                    document.body.removeChild(ta)
+                                  }
+                                  setCodeCopied(true)
+                                  setTimeout(() => setCodeCopied(false), 1500)
+                                } catch {}
+                              }}
+                              className="text-slate-500 hover:text-white transition-colors shrink-0 p-0.5"
+                              title="复制通行证密钥"
+                            >
+                              {codeCopied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                            </button>
+                          )}
+                        </div>
                       </div>
 
                       {/* 通行证列表 */}
