@@ -143,6 +143,11 @@ export function ShopModal({
                     ? 'w-full h-full object-cover object-center'
                     : 'max-h-full object-contain group-hover:scale-110 transition-transform'
                   }
+                  onError={(e) => {
+                    if (pkg.fallbackImage && e.target.src !== pkg.fallbackImage) {
+                      e.target.src = pkg.fallbackImage
+                    }
+                  }}
                 />
 
                 {/* 右侧 ±5 */}

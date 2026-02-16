@@ -100,6 +100,7 @@ export function FlagshipGacha({
   )
 
   // 商店套餐数据（旗舰钥匙）
+  const FALLBACK_ACTIVITY = 'la96'
   const [shopPackages, setShopPackages] = useState([
     {
       id: 1,
@@ -108,7 +109,8 @@ export function FlagshipGacha({
       price: 18,
       discount: null,
       quantity: 1,
-      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_small_widget.png${IMG_WEBP}`
+      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_small_widget.png${IMG_WEBP}`,
+      fallbackImage: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${FALLBACK_ACTIVITY}_limited_2_small_widget.png${IMG_WEBP}`
     },
     {
       id: 2,
@@ -117,7 +119,8 @@ export function FlagshipGacha({
       price: 88,
       discount: '-5%',
       quantity: 1,
-      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_medium_widget.png${IMG_WEBP}`
+      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_medium_widget.png${IMG_WEBP}`,
+      fallbackImage: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${FALLBACK_ACTIVITY}_limited_2_medium_widget.png${IMG_WEBP}`
     },
     {
       id: 3,
@@ -126,7 +129,8 @@ export function FlagshipGacha({
       price: 209,
       discount: '-10%',
       quantity: 1,
-      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_big_widget.png${IMG_WEBP}`
+      image: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${activityId}_limited_2_big_widget.png${IMG_WEBP}`,
+      fallbackImage: `${CDN_BASE_URL}/assets/contentseparated_assets_offers/eventgachaoffer_${FALLBACK_ACTIVITY}_limited_2_big_widget.png${IMG_WEBP}`
     }
   ])
 
