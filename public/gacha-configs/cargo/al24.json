@@ -24,6 +24,14 @@
           "nameEn": "HAL AMCA"
         },
         {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "无畏X",
           "probability": 0.1,
           "limit": 1,
@@ -33,19 +41,10 @@
           "nameEn": "Defiant X"
         },
         {
-          "name": "RBU-10000 (300 mm)",
-          "probability": 1.0,
-          "limit": 2,
-          "id": "RBU10000",
-          "type": "火箭炮",
-          "rarity": "epic",
-          "nameEn": "RBU-10000 (300 mm)"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
+          "name": "15 升级芯片",
+          "probability": 30.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "Upgrades",
           "type": "资源",
           "rarity": "common"
         },
@@ -58,20 +57,29 @@
           "rarity": "common"
         },
         {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
+          "name": "350 代币",
+          "probability": 32.7,
           "limit": 0,
-          "id": "Artstorm",
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "活动通行证积分加成",
-          "probability": 5.0,
+          "name": "授权密钥",
+          "probability": 1.5,
           "limit": 0,
-          "id": "Eventbooster",
-          "type": "战斗增益",
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
           "rarity": "common"
+        },
+        {
+          "name": "RBU-10000 (300 mm)",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "RBU10000",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "RBU-10000 (300 mm)"
         },
         {
           "name": "20 无人机电池",
@@ -82,19 +90,11 @@
           "rarity": "common"
         },
         {
-          "name": "15 升级芯片",
-          "probability": 30.0,
+          "name": "活动通行证积分加成",
+          "probability": 5.0,
           "limit": 0,
-          "id": "Upgrades",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "350 代币",
-          "probability": 32.7,
-          "limit": 0,
-          "id": "Token",
-          "type": "资源",
+          "id": "Eventbooster",
+          "type": "战斗增益",
           "rarity": "common"
         }
       ]
@@ -116,13 +116,12 @@
           "nameEn": "RF Bartini A-2000-7"
         },
         {
-          "name": "阿卡亚(533 mm)",
-          "probability": 0.2,
+          "name": "授权密钥",
+          "probability": 6.67,
           "limit": 0,
-          "id": "Akya",
-          "type": "鱼雷",
-          "rarity": "legendary",
-          "nameEn": "Akya (533mm)"
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
         },
         {
           "name": "ASN4G",
@@ -134,45 +133,11 @@
           "nameEn": "ASN4G"
         },
         {
-          "name": "[罗克特桑]ASW",
-          "probability": 0.3,
-          "limit": 2,
-          "id": "ASWRocket",
-          "type": "火箭炮",
-          "rarity": "epic",
-          "nameEn": "Roketsan ASW"
-        },
-        {
-          "name": "美杜莎",
-          "probability": 4.0,
-          "limit": 1,
-          "id": "Flag_GorgonMedusa",
-          "type": "旗帜",
-          "rarity": "legendary",
-          "nameEn": "Medusa"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 6.67,
+          "name": "5 艺术硬币",
+          "probability": 33.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "Artstorm",
           "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "200 代币",
-          "probability": 10.0,
-          "limit": 135,
-          "id": "Token",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "活动通行证积分加成",
-          "probability": 15.52,
-          "limit": 0,
-          "id": "Eventbooster",
-          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -184,10 +149,45 @@
           "rarity": "common"
         },
         {
-          "name": "5 艺术硬币",
-          "probability": 33.0,
+          "name": "阿卡亚(533 mm)",
+          "probability": 0.2,
           "limit": 0,
-          "id": "Artstorm",
+          "id": "Akya",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Akya (533mm)"
+        },
+        {
+          "name": "美杜莎",
+          "probability": 4.0,
+          "limit": 1,
+          "id": "Flag_GorgonMedusa",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Medusa"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 15.52,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "[罗克特桑]ASW",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "ASWRocket",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "Roketsan ASW"
+        },
+        {
+          "name": "200 代币",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         }

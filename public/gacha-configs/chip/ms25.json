@@ -18,40 +18,12 @@
       "nameEn": "RF Vladivostok (68M-bis-Zif)"
     },
     {
-      "name": "[美]杰克·H·卢卡斯(DDG-125)",
-      "probability": 0.12,
-      "limit": 1,
-      "id": "JackHLucas",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "USS Jack H. Lucas (DDG-125)"
-    },
-    {
-      "name": "[法]SNLE 3G",
-      "probability": 0.16,
-      "limit": 1,
-      "id": "SNLE",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "FS SNLE 3G"
-    },
-    {
-      "name": "国家反舰导弹-ER",
-      "probability": 0.24,
+      "name": "10 艺术硬币",
+      "probability": 8.0,
       "limit": 0,
-      "id": "MANSUPER",
-      "type": "导弹",
-      "rarity": "epic",
-      "nameEn": "MANSUP-ER"
-    },
-    {
-      "name": "91RE1\"响应\"",
-      "probability": 0.35,
-      "limit": 2,
-      "id": "PLRKOtvet",
-      "type": "导弹",
-      "rarity": "epic",
-      "nameEn": "91RE1 Otvet"
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "火龙480",
@@ -63,12 +35,46 @@
       "nameEn": "Fire Dragon 480"
     },
     {
+      "name": "6 高级修理包",
+      "probability": 11.0,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "[法]SNLE 3G",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "SNLE",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS SNLE 3G"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 32.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
       "name": "3 筹码",
       "probability": 1.53,
       "limit": 0,
       "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
+    },
+    {
+      "name": "国家反舰导弹增程型",
+      "probability": 0.24,
+      "limit": 0,
+      "id": "MANSUPER",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "MANSUP-ER"
     },
     {
       "name": "无垠太空",
@@ -80,36 +86,21 @@
       "nameEn": "Infinite Space"
     },
     {
-      "name": "筹码",
-      "probability": 4.0,
-      "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "10 艺术硬币",
-      "probability": 8.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "6 高级修理包",
-      "probability": 11.0,
-      "limit": 0,
-      "id": "PremiumRepairKit",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
       "name": "2 烟幕",
       "probability": 15.0,
       "limit": 0,
       "id": "TankSmokeBombs",
       "type": "战斗增益",
       "rarity": "common"
+    },
+    {
+      "name": "[美]杰克·H·卢卡斯(DDG-125)",
+      "probability": 0.12,
+      "limit": 1,
+      "id": "JackHLucas",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Jack H. Lucas (DDG-125)"
     },
     {
       "name": "4 艺术硬币",
@@ -120,10 +111,19 @@
       "rarity": "common"
     },
     {
-      "name": "15 黄金",
-      "probability": 32.0,
+      "name": "91RE1\"响应\"",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "PLRKOtvet",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "91RE1 Otvet"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
       "limit": 0,
-      "id": "Hard",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

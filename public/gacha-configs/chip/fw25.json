@@ -17,49 +17,12 @@
       "nameEn": "IT FREMM-EVO"
     },
     {
-      "name": "[中]天津",
-      "probability": 0.09,
-      "limit": 1,
-      "id": "Tianjin",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "CN Tianjin"
-    },
-    {
-      "name": "[中]093AG型",
-      "probability": 0.14,
-      "limit": 1,
-      "id": "Type093AG",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "CN Type 093AG"
-    },
-    {
-      "name": "UUM-125\"海长矛\"",
-      "probability": 0.24,
+      "name": "10 艺术硬币",
+      "probability": 8.0,
       "limit": 0,
-      "id": "UUM125SeaLance",
-      "type": "导弹",
-      "rarity": "legendary",
-      "nameEn": "UUM-125 Sea Lance"
-    },
-    {
-      "name": "PSF-01",
-      "probability": 0.35,
-      "limit": 2,
-      "id": "PSF01",
-      "type": "攻击机",
-      "rarity": "epic",
-      "nameEn": "PSF-01"
-    },
-    {
-      "name": "国王轨道炮(180 mm)",
-      "probability": 0.5,
-      "limit": 1,
-      "id": "MRPGKonigEMRG",
-      "type": "主炮",
-      "rarity": "legendary",
-      "nameEn": "EMRG Konig (180 mm)"
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "台风MLS-NLOS",
@@ -71,6 +34,31 @@
       "nameEn": "Typhoon MLS-NLOS"
     },
     {
+      "name": "6 高级修理包",
+      "probability": 12.5,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "[中]093AG型",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Type093AG",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Type 093AG"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
       "name": "救世主",
       "probability": 1.53,
       "limit": 1,
@@ -80,28 +68,22 @@
       "nameEn": "Savior"
     },
     {
-      "name": "筹码",
-      "probability": 4.06,
+      "name": "UUM-125\"海长矛\"",
+      "probability": 0.24,
       "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
+      "id": "UUM125SeaLance",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "UUM-125 Sea Lance"
     },
     {
-      "name": "10 艺术硬币",
-      "probability": 8.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "6 高级修理包",
-      "probability": 12.5,
-      "limit": 0,
-      "id": "PremiumRepairKit",
-      "type": "战斗增益",
-      "rarity": "common"
+      "name": "国王轨道炮(180 mm)",
+      "probability": 0.5,
+      "limit": 1,
+      "id": "MRPGKonigEMRG",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "EMRG Konig (180 mm)"
     },
     {
       "name": "2 烟幕",
@@ -112,6 +94,15 @@
       "rarity": "common"
     },
     {
+      "name": "[中]天津",
+      "probability": 0.09,
+      "limit": 1,
+      "id": "Tianjin",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Tianjin"
+    },
+    {
       "name": "4 艺术硬币",
       "probability": 22.0,
       "limit": 0,
@@ -120,10 +111,19 @@
       "rarity": "common"
     },
     {
-      "name": "15 黄金",
-      "probability": 33.0,
+      "name": "PSF-01",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "PSF01",
+      "type": "攻击机",
+      "rarity": "epic",
+      "nameEn": "PSF-01"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.06,
       "limit": 0,
-      "id": "Hard",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

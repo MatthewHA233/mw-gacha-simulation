@@ -24,6 +24,14 @@
           "nameEn": "Type 1130 AESA (30 mm)"
         },
         {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "URWS (30 mm)",
           "probability": 0.1,
           "limit": 2,
@@ -33,35 +41,10 @@
           "nameEn": "URWS (30 mm)"
         },
         {
-          "name": "JM61-RFS Dual (20 mm)",
-          "probability": 1.0,
-          "limit": 3,
-          "id": "JM61RFSDual",
-          "type": "防空设备",
-          "rarity": "legendary",
-          "nameEn": "JM61-RFS Dual (20 mm)"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
+          "name": "15 升级芯片",
+          "probability": 30.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "1 天高级账户",
-          "probability": 2.15,
-          "limit": 0,
-          "id": "v1_premium_1d",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
-          "limit": 0,
-          "id": "Artstorm",
+          "id": "Upgrades",
           "type": "资源",
           "rarity": "common"
         },
@@ -82,18 +65,35 @@
           "rarity": "common"
         },
         {
-          "name": "15 升级芯片",
-          "probability": 30.0,
+          "name": "授权密钥",
+          "probability": 1.5,
           "limit": 0,
-          "id": "Upgrades",
+          "id": "bigevent_currency_gacha_rm",
           "type": "资源",
           "rarity": "common"
+        },
+        {
+          "name": "JM61-RFS Dual (20 mm)",
+          "probability": 1.0,
+          "limit": 3,
+          "id": "JM61RFSDual",
+          "type": "防空设备",
+          "rarity": "legendary",
+          "nameEn": "JM61-RFS Dual (20 mm)"
         },
         {
           "name": "20 无人机电池",
           "probability": 30.0,
           "limit": 0,
           "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 2.15,
+          "limit": 0,
+          "id": "v1_premium_1d",
           "type": "资源",
           "rarity": "common"
         }
@@ -116,6 +116,14 @@
           "nameEn": "CN Tianjin"
         },
         {
+          "name": "10 艺术硬币",
+          "probability": 23.25,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "阿卡亚(533 mm)",
           "probability": 0.17,
           "limit": 0,
@@ -123,6 +131,39 @@
           "type": "鱼雷",
           "rarity": "legendary",
           "nameEn": "Akya (533mm)"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 50.48,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "200 代币",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 10.52,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "空天母舰",
+          "probability": 4.0,
+          "limit": 1,
+          "id": "Flag_HelicarrierLogo",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Skycarrier"
         },
         {
           "name": "东风-100",
@@ -150,47 +191,6 @@
           "type": "涂装",
           "rarity": "epic",
           "nameEn": "Radiation"
-        },
-        {
-          "name": "空天母舰",
-          "probability": 4.0,
-          "limit": 1,
-          "id": "Flag_HelicarrierLogo",
-          "type": "旗帜",
-          "rarity": "legendary",
-          "nameEn": "Skycarrier"
-        },
-        {
-          "name": "200 代币",
-          "probability": 10.0,
-          "limit": 135,
-          "id": "Token",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "活动通行证积分加成",
-          "probability": 10.52,
-          "limit": 0,
-          "id": "Eventbooster",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "10 艺术硬币",
-          "probability": 23.25,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "5 艺术硬币",
-          "probability": 50.48,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
         }
       ]
     }

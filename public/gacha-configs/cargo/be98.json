@@ -23,61 +23,11 @@
           "nameEn": "Pan Spatial RAMSTORM 1"
         },
         {
-          "name": "[印度斯坦航空]AMCA",
-          "probability": 0.5,
-          "limit": 1,
-          "id": "HALAMCA",
-          "type": "攻击机",
-          "rarity": "epic",
-          "nameEn": "HAL AMCA"
-        },
-        {
-          "name": "加百利V",
-          "probability": 0.75,
-          "limit": 2,
-          "id": "GabrielV",
-          "type": "导弹",
-          "rarity": "epic",
-          "nameEn": "Gabriel V"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "Grumpy Eye",
           "probability": 2.0,
           "limit": 4,
           "id": "",
           "type": "其它",
-          "rarity": "common"
-        },
-        {
-          "name": "20 黄金",
-          "probability": 8.0,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "3 引擎过载",
-          "probability": 15.0,
-          "limit": 0,
-          "id": "EngineBoost",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "20 无人机电池",
-          "probability": 20.0,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_gameplay",
-          "type": "资源",
           "rarity": "common"
         },
         {
@@ -89,11 +39,61 @@
           "rarity": "common"
         },
         {
+          "name": "[印度斯坦航空]AMCA",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "HALAMCA",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "HAL AMCA"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "300 Token",
           "probability": 30.0,
           "limit": 0,
           "id": "",
           "type": "其它",
+          "rarity": "common"
+        },
+        {
+          "name": "3 引擎过载",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "加百利V",
+          "probability": 0.75,
+          "limit": 2,
+          "id": "GabrielV",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Gabriel V"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
           "rarity": "common"
         }
       ]
@@ -114,13 +114,12 @@
           "nameEn": "HMS Type 32"
         },
         {
-          "name": "[中]天津",
-          "probability": 0.1,
-          "limit": 1,
-          "id": "Tianjin",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "CN Tianjin"
+          "name": "授权密钥",
+          "probability": 4.3,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
         },
         {
           "name": "北极星-4",
@@ -132,13 +131,29 @@
           "nameEn": "Pukguksong-4"
         },
         {
-          "name": "ASN4G",
-          "probability": 0.35,
-          "limit": 3,
-          "id": "ASN4G",
-          "type": "导弹",
-          "rarity": "legendary",
-          "nameEn": "ASN4G"
+          "name": "25 黄金",
+          "probability": 29.5,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "[中]天津",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Tianjin",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Tianjin"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 17.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
         },
         {
           "name": "SUT 264 (533 mm)",
@@ -150,30 +165,6 @@
           "nameEn": "SUT 264 (533 mm)"
         },
         {
-          "name": "授权密钥",
-          "probability": 4.3,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "5 高级修理包",
-          "probability": 17.0,
-          "limit": 0,
-          "id": "PremiumRepairKit",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "200 Token",
-          "probability": 20.0,
-          "limit": 180,
-          "id": "",
-          "type": "其它",
-          "rarity": "common"
-        },
-        {
           "name": "5 艺术硬币",
           "probability": 28.0,
           "limit": 0,
@@ -182,11 +173,20 @@
           "rarity": "common"
         },
         {
-          "name": "25 黄金",
-          "probability": 29.5,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
+          "name": "ASN4G",
+          "probability": 0.35,
+          "limit": 3,
+          "id": "ASN4G",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "ASN4G"
+        },
+        {
+          "name": "200 Token",
+          "probability": 20.0,
+          "limit": 180,
+          "id": "",
+          "type": "其它",
           "rarity": "common"
         }
       ]

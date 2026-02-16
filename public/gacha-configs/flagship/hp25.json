@@ -194,9 +194,10 @@
           "name": "[中]十堰",
           "probability": 0.1,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
+          "id": "ShiYan",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN ShiYan"
         },
         {
           "name": "彩虹-4",
@@ -211,9 +212,10 @@
           "name": "[中]承影",
           "probability": 0.11,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
+          "id": "Chengying",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN Chengying"
         },
         {
           "name": "[中]漯河(054B型)",

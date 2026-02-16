@@ -18,49 +18,12 @@
       "nameEn": "IT Vittorio Veneto (C 550)"
     },
     {
-      "name": "[韩]幽灵指挥官",
-      "probability": 0.12,
-      "limit": 1,
-      "id": "GhostCommander",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "ROKS Ghost Commander"
-    },
-    {
-      "name": "[俄]巴尔蒂尼 A-2000-7",
-      "probability": 0.16,
-      "limit": 1,
-      "id": "BartiniA2000",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "RF Bartini A-2000-7"
-    },
-    {
-      "name": "62型鱼雷(533mm)",
-      "probability": 0.24,
+      "name": "10 艺术硬币",
+      "probability": 8.0,
       "limit": 0,
-      "id": "Torped62",
-      "type": "鱼雷",
-      "rarity": "legendary",
-      "nameEn": "Torped 62 (533 mm)"
-    },
-    {
-      "name": "Mark 55/12 (305 mm)",
-      "probability": 0.35,
-      "limit": 2,
-      "id": "Mark5512",
-      "type": "主炮",
-      "rarity": "epic",
-      "nameEn": "Mark 55/12 (305 mm)"
-    },
-    {
-      "name": "RIM-162D",
-      "probability": 0.5,
-      "limit": 1,
-      "id": "RIM162D",
-      "type": "防空设备",
-      "rarity": "epic",
-      "nameEn": "RIM-162D"
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "PAK DA M",
@@ -72,6 +35,31 @@
       "nameEn": "PAK DA M"
     },
     {
+      "name": "6 高级修理包",
+      "probability": 11.5,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "[韩]幽灵指挥官",
+      "probability": 0.12,
+      "limit": 1,
+      "id": "GhostCommander",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS Ghost Commander"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
       "name": "帕特农神庙",
       "probability": 1.53,
       "limit": 0,
@@ -81,28 +69,22 @@
       "nameEn": "Parthenon"
     },
     {
-      "name": "筹码",
-      "probability": 4.0,
+      "name": "62型鱼雷(533mm)",
+      "probability": 0.24,
       "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
+      "id": "Torped62",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Torped 62 (533 mm)"
     },
     {
-      "name": "10 艺术硬币",
-      "probability": 8.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "6 高级修理包",
-      "probability": 11.5,
-      "limit": 0,
-      "id": "PremiumRepairKit",
-      "type": "战斗增益",
-      "rarity": "common"
+      "name": "RIM-162D",
+      "probability": 0.5,
+      "limit": 1,
+      "id": "RIM162D",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "RIM-162D"
     },
     {
       "name": "2 烟幕",
@@ -113,6 +95,15 @@
       "rarity": "common"
     },
     {
+      "name": "[俄]巴尔蒂尼 A-2000-7",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "BartiniA2000",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Bartini A-2000-7"
+    },
+    {
       "name": "4 艺术硬币",
       "probability": 25.0,
       "limit": 0,
@@ -121,10 +112,19 @@
       "rarity": "common"
     },
     {
-      "name": "15 黄金",
-      "probability": 33.0,
+      "name": "Mark 55/12 (305 mm)",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "Mark5512",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "Mark 55/12 (305 mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
       "limit": 0,
-      "id": "Hard",
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

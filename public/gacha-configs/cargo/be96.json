@@ -23,60 +23,10 @@
           "nameEn": "AK-630M2 Kvartet"
         },
         {
-          "name": "MQ-25\"黄貂鱼\"-X",
-          "probability": 0.3,
-          "limit": 1,
-          "id": "MQ25",
-          "type": "无人机",
-          "rarity": "epic",
-          "nameEn": "MQ-25 Stingray-X"
-        },
-        {
-          "name": "HVGP (Block I)",
-          "probability": 0.65,
-          "limit": 1,
-          "id": "HVGPBlock1",
-          "type": "导弹",
-          "rarity": "epic",
-          "nameEn": "HVGP (Block I)"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "10 艺术硬币",
           "probability": 2.5,
           "limit": 0,
           "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "20 黄金",
-          "probability": 8.0,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "3 引擎过载",
-          "probability": 15.0,
-          "limit": 0,
-          "id": "EngineBoost",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "20 无人机电池",
-          "probability": 20.0,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_gameplay",
           "type": "资源",
           "rarity": "common"
         },
@@ -89,10 +39,60 @@
           "rarity": "common"
         },
         {
+          "name": "MQ-25\"黄貂鱼\"-X",
+          "probability": 0.3,
+          "limit": 1,
+          "id": "MQ25",
+          "type": "无人机",
+          "rarity": "epic",
+          "nameEn": "MQ-25 Stingray-X"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "300 代币",
           "probability": 30.0,
           "limit": 0,
           "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "3 引擎过载",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "HVGP (Block I)",
+          "probability": 0.65,
+          "limit": 1,
+          "id": "HVGPBlock1",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "HVGP (Block I)"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "Hard",
           "type": "资源",
           "rarity": "common"
         }
@@ -114,22 +114,12 @@
           "nameEn": "HMS Vanguard (S28)"
         },
         {
-          "name": "[法]夏尔·戴高乐(R91)",
-          "probability": 0.08,
-          "limit": 1,
-          "id": "R91CharlesDeGaulle",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "FS Charles de Gaulle (R91)"
-        },
-        {
-          "name": "S-10\"石榴石\"",
-          "probability": 0.22,
-          "limit": 2,
-          "id": "S10Granat",
-          "type": "导弹",
-          "rarity": "legendary",
-          "nameEn": "S-10 Granat"
+          "name": "授权密钥",
+          "probability": 4.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
         },
         {
           "name": "米-28NM\"浩劫\"-B",
@@ -141,21 +131,21 @@
           "nameEn": "Mi-28NM Havoc"
         },
         {
-          "name": "Mark 42 (127 mm)",
-          "probability": 0.65,
-          "limit": 2,
-          "id": "Mark42",
-          "type": "主炮",
-          "rarity": "epic",
-          "nameEn": "Mark 42 (127 mm)"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 4.5,
+          "name": "25 黄金",
+          "probability": 29.5,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "Hard",
           "type": "资源",
           "rarity": "common"
+        },
+        {
+          "name": "[法]夏尔·戴高乐(R91)",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "R91CharlesDeGaulle",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS Charles de Gaulle (R91)"
         },
         {
           "name": "5 高级修理包",
@@ -166,26 +156,36 @@
           "rarity": "common"
         },
         {
-          "name": "200 代币",
-          "probability": 18.0,
-          "limit": 180,
-          "id": "Token",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "25 黄金",
-          "probability": 29.5,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
+          "name": "S-10\"石榴石\"",
+          "probability": 0.22,
+          "limit": 2,
+          "id": "S10Granat",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "S-10 Granat"
         },
         {
           "name": "5 艺术硬币",
           "probability": 29.5,
           "limit": 0,
           "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "Mark 42 (127 mm)",
+          "probability": 0.65,
+          "limit": 2,
+          "id": "Mark42",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Mark 42 (127 mm)"
+        },
+        {
+          "name": "200 代币",
+          "probability": 18.0,
+          "limit": 180,
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         }

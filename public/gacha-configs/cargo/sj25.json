@@ -24,6 +24,14 @@
           "nameEn": "Gabriel V"
         },
         {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "相控阵1130",
           "probability": 0.1,
           "limit": 1,
@@ -33,19 +41,10 @@
           "nameEn": "Type 1130 AESA (30 mm)"
         },
         {
-          "name": "А-22 (140 mm)",
-          "probability": 1.0,
-          "limit": 2,
-          "id": "A22",
-          "type": "火箭炮",
-          "rarity": "epic",
-          "nameEn": "А-22 (140 mm)"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
+          "name": "15 升级芯片",
+          "probability": 30.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "Upgrades",
           "type": "资源",
           "rarity": "common"
         },
@@ -58,20 +57,29 @@
           "rarity": "common"
         },
         {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
+          "name": "350 代币",
+          "probability": 32.7,
           "limit": 0,
-          "id": "Artstorm",
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "20 黄金",
-          "probability": 5.0,
+          "name": "授权密钥",
+          "probability": 1.5,
           "limit": 0,
-          "id": "Hard",
+          "id": "bigevent_currency_gacha_rm",
           "type": "资源",
           "rarity": "common"
+        },
+        {
+          "name": "А-22 (140 mm)",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "A22",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "А-22 (140 mm)"
         },
         {
           "name": "20 无人机电池",
@@ -82,18 +90,10 @@
           "rarity": "common"
         },
         {
-          "name": "15 升级芯片",
-          "probability": 30.0,
+          "name": "20 黄金",
+          "probability": 5.0,
           "limit": 0,
-          "id": "Upgrades",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "350 代币",
-          "probability": 32.7,
-          "limit": 0,
-          "id": "Token",
+          "id": "Hard",
           "type": "资源",
           "rarity": "common"
         }
@@ -116,13 +116,12 @@
           "nameEn": "USS Fletcher (DD-992)"
         },
         {
-          "name": "HVGP (Block I)",
-          "probability": 0.2,
+          "name": "授权密钥",
+          "probability": 4.67,
           "limit": 0,
-          "id": "HVGPBlock1",
-          "type": "导弹",
-          "rarity": "epic",
-          "nameEn": "HVGP (Block I)"
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
         },
         {
           "name": "RG-30霰弹(127 mm)",
@@ -134,45 +133,11 @@
           "nameEn": "RG-30 Buckshot (127 mm)"
         },
         {
-          "name": "[丹尼尔]35DPG(35 mm)",
-          "probability": 0.3,
-          "limit": 2,
-          "id": "Denel",
-          "type": "自卫炮",
-          "rarity": "epic",
-          "nameEn": "Denel 35DPG (35 mm)"
-        },
-        {
-          "name": "安那其",
-          "probability": 4.0,
-          "limit": 3,
-          "id": "Flag_PrisonersLogo",
-          "type": "旗帜",
-          "rarity": "legendary",
-          "nameEn": "Anarchy"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 4.67,
+          "name": "5 艺术硬币",
+          "probability": 33.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "Artstorm",
           "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "200 代币",
-          "probability": 10.0,
-          "limit": 135,
-          "id": "Token",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "2 电子对抗",
-          "probability": 17.52,
-          "limit": 0,
-          "id": "ElectronicWarfare",
-          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -184,10 +149,45 @@
           "rarity": "common"
         },
         {
-          "name": "5 艺术硬币",
-          "probability": 33.0,
+          "name": "HVGP (Block I)",
+          "probability": 0.2,
           "limit": 0,
-          "id": "Artstorm",
+          "id": "HVGPBlock1",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "HVGP (Block I)"
+        },
+        {
+          "name": "安那其",
+          "probability": 4.0,
+          "limit": 3,
+          "id": "Flag_PrisonersLogo",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Anarchy"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "[丹尼尔]35DPG(35 mm)",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "Denel",
+          "type": "自卫炮",
+          "rarity": "epic",
+          "nameEn": "Denel 35DPG (35 mm)"
+        },
+        {
+          "name": "200 代币",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         }

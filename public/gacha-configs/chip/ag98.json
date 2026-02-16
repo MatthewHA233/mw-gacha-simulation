@@ -26,15 +26,6 @@
       "nameEn": "IT Vittorio Veneto (C 550)"
     },
     {
-      "name": "[法]阿基坦(D650)",
-      "probability": 0.14,
-      "limit": 1,
-      "id": "Aquitaine",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "FS Aquitaine (D650)"
-    },
-    {
       "name": "RG-30霰弹(127 mm)",
       "probability": 0.24,
       "limit": 2,
@@ -44,13 +35,29 @@
       "nameEn": "RG-30 Buckshot (127 mm)"
     },
     {
-      "name": "东风-100",
-      "probability": 0.35,
-      "limit": 2,
-      "id": "DF100",
-      "type": "导弹",
-      "rarity": "legendary",
-      "nameEn": "DF-100"
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[法]阿基坦(D650)",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Aquitaine",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Aquitaine (D650)"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "Incoming!",
@@ -59,15 +66,6 @@
       "id": "",
       "type": "其它",
       "rarity": "common"
-    },
-    {
-      "name": "ET40 (533 mm)",
-      "probability": 0.52,
-      "limit": 2,
-      "id": "ET40",
-      "type": "鱼雷",
-      "rarity": "epic",
-      "nameEn": "ET40 (533 mm)"
     },
     {
       "name": "蜂群-2\"阿特拉斯\"",
@@ -79,11 +77,11 @@
       "nameEn": "Swarmer-2 Atlas"
     },
     {
-      "name": "筹码",
-      "probability": 4.0,
+      "name": "6 高级导弹诱饵",
+      "probability": 12.5,
       "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
+      "id": "PremiumMissileDecoy",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {
@@ -95,20 +93,13 @@
       "rarity": "common"
     },
     {
-      "name": "6 高级导弹诱饵",
-      "probability": 12.5,
-      "limit": 0,
-      "id": "PremiumMissileDecoy",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
-      "name": "2 高级鱼雷诱饵",
-      "probability": 17.0,
-      "limit": 0,
-      "id": "PremiumTorpedoDecoy",
-      "type": "战斗增益",
-      "rarity": "common"
+      "name": "ET40 (324 mm)",
+      "probability": 0.52,
+      "limit": 2,
+      "id": "ET40",
+      "type": "鱼雷",
+      "rarity": "epic",
+      "nameEn": "ET40 (324 mm)"
     },
     {
       "name": "4 艺术硬币",
@@ -119,11 +110,20 @@
       "rarity": "common"
     },
     {
-      "name": "15 黄金",
-      "probability": 33.0,
+      "name": "东风-100",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "DF100",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "DF-100"
+    },
+    {
+      "name": "2 高级鱼雷诱饵",
+      "probability": 17.0,
       "limit": 0,
-      "id": "Hard",
-      "type": "资源",
+      "id": "PremiumTorpedoDecoy",
+      "type": "战斗增益",
       "rarity": "common"
     }
   ]

@@ -26,6 +26,23 @@
       "nameEn": "USS Iowa (BB-61)"
     },
     {
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "probability": 0.24,
+      "limit": 2,
+      "id": "Mark45Astor",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Mark-45 ASTOR (483mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.06,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
       "name": "[德]萨克森(F124型)",
       "probability": 0.14,
       "limit": 1,
@@ -35,22 +52,12 @@
       "nameEn": "FGS F124"
     },
     {
-      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
-      "probability": 0.24,
-      "limit": 2,
-      "id": "Mark45Astor",
-      "type": "鱼雷",
-      "rarity": "legendary",
-      "nameEn": "Mark-45 ASTOR (483 mm)"
-    },
-    {
-      "name": "ASN4G",
-      "probability": 0.35,
-      "limit": 2,
-      "id": "ASN4G",
-      "type": "导弹",
-      "rarity": "legendary",
-      "nameEn": "ASN4G"
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "龟船",
@@ -62,15 +69,6 @@
       "nameEn": "Geobukseon"
     },
     {
-      "name": "Mark-71 (203 mm)",
-      "probability": 0.52,
-      "limit": 2,
-      "id": "Mark71",
-      "type": "主炮",
-      "rarity": "legendary",
-      "nameEn": "Mark-71 (203 mm)"
-    },
-    {
       "name": "RBU-10000 (300 mm)",
       "probability": 1.53,
       "limit": 1,
@@ -80,11 +78,11 @@
       "nameEn": "RBU-10000 (300 mm)"
     },
     {
-      "name": "筹码",
-      "probability": 4.06,
+      "name": "6 高级导弹诱饵",
+      "probability": 12.5,
       "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
+      "id": "PremiumMissileDecoy",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {
@@ -96,20 +94,13 @@
       "rarity": "common"
     },
     {
-      "name": "6 高级导弹诱饵",
-      "probability": 12.5,
-      "limit": 0,
-      "id": "PremiumMissileDecoy",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
-      "name": "2 高级鱼雷诱饵",
-      "probability": 17.0,
-      "limit": 0,
-      "id": "PremiumTorpedoDecoy",
-      "type": "战斗增益",
-      "rarity": "common"
+      "name": "Mark-71 (203 mm)",
+      "probability": 0.52,
+      "limit": 2,
+      "id": "Mark71",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Mark-71 (203 mm)"
     },
     {
       "name": "4 艺术硬币",
@@ -120,11 +111,20 @@
       "rarity": "common"
     },
     {
-      "name": "15 黄金",
-      "probability": 33.0,
+      "name": "ASN4G",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "ASN4G",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "ASN4G"
+    },
+    {
+      "name": "2 高级鱼雷诱饵",
+      "probability": 17.0,
       "limit": 0,
-      "id": "Hard",
-      "type": "资源",
+      "id": "PremiumTorpedoDecoy",
+      "type": "战斗增益",
       "rarity": "common"
     }
   ]

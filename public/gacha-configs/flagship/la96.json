@@ -193,9 +193,10 @@
           "name": "[美]蒙大拿(BB-67)",
           "probability": 0.14,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
+          "id": "Montana",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "USS Montana (BB-67)"
         },
         {
           "name": "AD-12\"蜻蜓\"",

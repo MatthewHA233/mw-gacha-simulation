@@ -18,31 +18,12 @@
       "nameEn": "RF Project 22350M"
     },
     {
-      "name": "[中]天津",
-      "probability": 0.16,
-      "limit": 1,
-      "id": "Tianjin",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "CN Tianjin"
-    },
-    {
-      "name": "[美]圣安东尼奥(LPD-17)",
-      "probability": 0.16,
-      "limit": 1,
-      "id": "SanAntonio",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "USS San Antonio (LPD-17)"
-    },
-    {
-      "name": "HyFly-2",
-      "probability": 0.21,
+      "name": "10 艺术硬币",
+      "probability": 9.0,
       "limit": 0,
-      "id": "HyFly2",
-      "type": "导弹",
-      "rarity": "legendary",
-      "nameEn": "HyFly-2"
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "62型鱼雷(533mm)",
@@ -54,28 +35,27 @@
       "nameEn": "Torped 62 (533 mm)"
     },
     {
-      "name": "PKX-B (130 mm)",
-      "probability": 0.41,
-      "limit": 2,
-      "id": "LIGNex1",
-      "type": "火箭炮",
-      "rarity": "epic",
-      "nameEn": "PKX-B (130mm)"
-    },
-    {
-      "name": "战争之犬",
-      "probability": 1.0,
-      "limit": 1,
-      "id": "Title_WarDog",
-      "type": "头衔",
-      "rarity": "legendary",
-      "nameEn": "War Dog"
-    },
-    {
       "name": "1 天高级账户",
       "probability": 1.75,
       "limit": 0,
       "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[中]天津",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Tianjin",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Tianjin"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
       "type": "资源",
       "rarity": "common"
     },
@@ -88,28 +68,22 @@
       "rarity": "common"
     },
     {
-      "name": "筹码",
-      "probability": 6.0,
+      "name": "HyFly-2",
+      "probability": 0.21,
       "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
+      "id": "HyFly2",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "HyFly-2"
     },
     {
-      "name": "10 艺术硬币",
-      "probability": 9.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "5 艺术硬币",
-      "probability": 18.08,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
+      "name": "战争之犬",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Title_WarDog",
+      "type": "头衔",
+      "rarity": "legendary",
+      "nameEn": "War Dog"
     },
     {
       "name": "15 黄金",
@@ -120,10 +94,36 @@
       "rarity": "common"
     },
     {
-      "name": "20 黄金",
-      "probability": 35.0,
+      "name": "[美]圣安东尼奥(LPD-17)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "SanAntonio",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS San Antonio (LPD-17)"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
       "limit": 0,
-      "id": "Hard",
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "PKX-B (130 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "LIGNex1",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "PKX-B (130mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

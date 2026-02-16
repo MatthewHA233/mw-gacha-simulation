@@ -19,31 +19,12 @@
       "nameEn": "Pan Spatial Hexeres"
     },
     {
-      "name": "[美]杰克·H·卢卡斯(DDG-125)",
-      "probability": 0.16,
-      "limit": 1,
-      "id": "JackHLucas",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "USS Jack H. Lucas (DDG-125)"
-    },
-    {
-      "name": "[美]战巡2000",
-      "probability": 0.16,
-      "limit": 1,
-      "id": "Battlecruiser2000",
-      "type": "战舰",
-      "rarity": "legendary",
-      "nameEn": "USS Battlecruiser 2000"
-    },
-    {
-      "name": "红鲨(382 mm)",
-      "probability": 0.21,
+      "name": "10 艺术硬币",
+      "probability": 9.0,
       "limit": 0,
-      "id": "RedShark",
-      "type": "导弹",
-      "rarity": "epic",
-      "nameEn": "Red Shark (382 mm)"
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
     },
     {
       "name": "A-220M (57 mm)",
@@ -55,28 +36,27 @@
       "nameEn": "A-220M (57mm)"
     },
     {
-      "name": "寂静狩猎者",
-      "probability": 0.41,
-      "limit": 2,
-      "id": "SilentHunter",
-      "type": "防空设备",
-      "rarity": "epic",
-      "nameEn": "Silent Hunter"
-    },
-    {
-      "name": "午夜城堡",
-      "probability": 1.0,
-      "limit": 1,
-      "id": "Camo_MidnightCitadel",
-      "type": "涂装",
-      "rarity": "legendary",
-      "nameEn": "Midnight Citadel"
-    },
-    {
       "name": "1 天高级账户",
       "probability": 1.75,
       "limit": 0,
       "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[美]杰克·H·卢卡斯(DDG-125)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "JackHLucas",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Jack H. Lucas (DDG-125)"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
       "type": "资源",
       "rarity": "common"
     },
@@ -89,28 +69,22 @@
       "rarity": "common"
     },
     {
-      "name": "筹码",
-      "probability": 6.0,
+      "name": "红鲨(382 mm)",
+      "probability": 0.21,
       "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
+      "id": "RedShark",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "Red Shark (382 mm)"
     },
     {
-      "name": "10 艺术硬币",
-      "probability": 9.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "5 艺术硬币",
-      "probability": 18.08,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
+      "name": "午夜城堡",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Camo_MidnightCitadel",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Midnight Citadel"
     },
     {
       "name": "15 黄金",
@@ -121,10 +95,36 @@
       "rarity": "common"
     },
     {
-      "name": "20 黄金",
-      "probability": 35.0,
+      "name": "[美]战巡2000",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Battlecruiser2000",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "USS Battlecruiser 2000"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
       "limit": 0,
-      "id": "Hard",
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "寂静狩猎者",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "SilentHunter",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "Silent Hunter"
+    },
+    {
+      "name": "筹码",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
       "type": "资源",
       "rarity": "common"
     }

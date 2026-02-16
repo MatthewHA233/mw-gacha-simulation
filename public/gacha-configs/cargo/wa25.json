@@ -24,6 +24,14 @@
           "nameEn": "SUT 264 (533 mm)"
         },
         {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "[印度斯坦航空]AMCA",
           "probability": 0.55,
           "limit": 1,
@@ -33,36 +41,11 @@
           "nameEn": "HAL AMCA"
         },
         {
-          "name": "米-8TV\"河马\"-E",
-          "probability": 0.55,
-          "limit": 2,
-          "id": "MI8TV",
-          "type": "直升机",
-          "rarity": "epic",
-          "nameEn": "Mi-8TV Hip"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
+          "name": "5 高级修理包",
+          "probability": 30.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "7 高级导弹诱饵",
-          "probability": 2.15,
-          "limit": 0,
-          "id": "PremiumMissileDecoy",
+          "id": "PremiumRepairKit",
           "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
           "rarity": "common"
         },
         {
@@ -74,6 +57,31 @@
           "rarity": "common"
         },
         {
+          "name": "300 代币",
+          "probability": 32.7,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "米-8TV\"河马\"-E",
+          "probability": 0.55,
+          "limit": 2,
+          "id": "MI8TV",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Mi-8TV Hip"
+        },
+        {
           "name": "20 无人机电池",
           "probability": 25.0,
           "limit": 0,
@@ -82,19 +90,11 @@
           "rarity": "common"
         },
         {
-          "name": "5 高级修理包",
-          "probability": 30.0,
+          "name": "7 高级导弹诱饵",
+          "probability": 2.15,
           "limit": 0,
-          "id": "PremiumRepairKit",
+          "id": "PremiumMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "300 代币",
-          "probability": 32.7,
-          "limit": 0,
-          "id": "Token",
-          "type": "资源",
           "rarity": "common"
         }
       ]
@@ -116,6 +116,14 @@
           "nameEn": "IT FREMM-EVO"
         },
         {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "P-900\"阿尔法\"",
           "probability": 0.2,
           "limit": 2,
@@ -125,39 +133,12 @@
           "nameEn": "P-900 Alfa"
         },
         {
-          "name": "东风-100",
-          "probability": 0.23,
-          "limit": 2,
-          "id": "DF100",
-          "type": "导弹",
-          "rarity": "legendary",
-          "nameEn": "DF-100"
-        },
-        {
-          "name": "RUR-5\"阿斯洛克\"C",
-          "probability": 0.3,
-          "limit": 3,
-          "id": "RUR5CASROC",
-          "type": "火箭炮",
-          "rarity": "epic",
-          "nameEn": "RUR-5C ASROC"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 3.67,
+          "name": "5 艺术硬币",
+          "probability": 30.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
-        },
-        {
-          "name": "怪物之眼",
-          "probability": 4.0,
-          "limit": 2,
-          "id": "Flag_EyeOfMonster",
-          "type": "旗帜",
-          "rarity": "legendary",
-          "nameEn": "Eye of the Monster"
         },
         {
           "name": "200 代币",
@@ -176,12 +157,31 @@
           "rarity": "common"
         },
         {
-          "name": "5 艺术硬币",
-          "probability": 30.0,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
+          "name": "怪物之眼",
+          "probability": 4.0,
+          "limit": 2,
+          "id": "Flag_EyeOfMonster",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Eye of the Monster"
+        },
+        {
+          "name": "东风-100",
+          "probability": 0.23,
+          "limit": 2,
+          "id": "DF100",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "DF-100"
+        },
+        {
+          "name": "RUR-5\"阿斯洛克\"C",
+          "probability": 0.3,
+          "limit": 3,
+          "id": "RUR5CASROC",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "RUR-5C ASROC"
         },
         {
           "name": "20 黄金",

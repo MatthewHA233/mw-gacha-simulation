@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { buildCurrencyIconUrl } from '../../services/cdnService'
+import { PriceSourceModal } from '../ui/PriceSourceModal'
 
 /**
  * 充值商店弹窗组件（支持筹码、机密货物和旗舰钥匙三种模式）
@@ -21,6 +23,8 @@ export function ShopModal({
   isPremium = false,
   onOpenMembership
 }) {
+  const [priceSourceOpen, setPriceSourceOpen] = useState(false)
+
   if (!isOpen) return null
 
   // 根据活动类型选择正确的货币ID
@@ -236,12 +240,20 @@ export function ShopModal({
 
         {/* 价格参考来源（仅会员可见） */}
         {isPremium && (
-          <div className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto">
+          <div
+            className="text-center text-sm text-gray-400 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-600/30 pointer-events-auto cursor-pointer hover:border-amber-500/40 transition-colors"
+            onClick={(e) => { e.stopPropagation(); setPriceSourceOpen(true) }}
+          >
             价格参考来源：
-            <span className="text-cyan-400 ml-1">QQ:平头哥 代充 微信:熊猫 代充</span>
+            <span className="text-cyan-400 hover:text-cyan-300 ml-1 underline">QQ:平头哥 代充 微信:熊猫 代充</span>
           </div>
         )}
       </div>
+
+      <PriceSourceModal
+        isOpen={priceSourceOpen}
+        onClose={() => setPriceSourceOpen(false)}
+      />
     </motion.div>
   )
 }
