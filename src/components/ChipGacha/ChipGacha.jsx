@@ -6,6 +6,7 @@ import { CDN_BASE_URL } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
+import { findCheapestPurchase } from '../../services/gachaService'
 import { buildShopPackageUrl, buildItemImageUrl, buildBackgroundUrl, loadActivityConfig } from '../../services/cdnService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
@@ -17,6 +18,7 @@ import { ShopModal } from './ShopModal'
 import { SponsorModal } from './SponsorModal'
 import { ResetModal } from '../ui/ResetModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
+import { QuickPurchaseConfirm } from '../ui/QuickPurchaseConfirm'
 import { MembershipModal } from '../ui/MembershipModal'
 
 /**
@@ -154,10 +156,14 @@ export function ChipGacha({
   const [showMembershipModal, setShowMembershipModal] = useState(false)
   const [resetModal, setResetModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
+  const [quickPurchaseConfirm, setQuickPurchaseConfirm] = useState(null)
   const [highlightedItemName, setHighlightedItemName] = useState(null)
 
   // 停止动画标志
   const stopAnimationRef = useRef(false)
+
+  // VIP 快捷购买数据
+  const autoPurchaseRef = useRef(null)
 
   // 商店套餐状态
   const [shopPackages, setShopPackages] = useState([
@@ -618,9 +624,35 @@ export function ChipGacha({
     return 0
   }
 
+  // ========== 快捷购买确认/取消 ==========
+  const handleQuickPurchaseConfirm = () => {
+    if (!quickPurchaseConfirm) return
+    const { purchase, drawFnName } = quickPurchaseConfirm
+    autoPurchaseRef.current = purchase
+    setShopModal(false)
+    setQuickPurchaseConfirm(null)
+    // 回调对应的 draw 函数（此时 autoPurchaseRef 已设置，会跳过货币检查）
+    const fns = { singleDraw, multiDraw, draw100, draw500, draw5000 }
+    if (fns[drawFnName]) fns[drawFnName]()
+  }
+
+  const handleQuickPurchaseCancel = () => {
+    setQuickPurchaseConfirm(null)
+    // 商店保持打开，用户可手动选购
+  }
+
   // ========== 单抽 ==========
   const singleDraw = () => {
-    if (gameState.currency < gameState.singleCost) {
+    if (!autoPurchaseRef.current && gameState.currency < gameState.singleCost) {
+      if (isPremium) {
+        const deficit = gameState.singleCost - gameState.currency
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'singleDraw', currencyName: '筹码' })
+          return
+        }
+      }
       toast.error('筹码不够，请充值', {
         duration: 2000,
         position: 'top-center',
@@ -635,7 +667,9 @@ export function ChipGacha({
     }
 
     setIsDrawing(true)
-    setGameState(prev => ({ ...prev, currency: prev.currency - prev.singleCost, totalDraws: prev.totalDraws + 1 }))
+    const singlePurchase = autoPurchaseRef.current
+    autoPurchaseRef.current = null
+    setGameState(prev => ({ ...prev, currency: prev.currency + (singlePurchase?.totalCoins || 0) - prev.singleCost, rmb: prev.rmb - (singlePurchase?.totalPrice || 0), totalDraws: prev.totalDraws + 1 }))
 
     // 先抽出结果
     const result = drawLottery()
@@ -760,7 +794,16 @@ export function ChipGacha({
 
   // ========== 十连抽 ==========
   const multiDraw = () => {
-    if (gameState.currency < 10) {
+    if (!autoPurchaseRef.current && gameState.currency < 10) {
+      if (isPremium) {
+        const deficit = 10 - gameState.currency
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'multiDraw', currencyName: '筹码' })
+          return
+        }
+      }
       toast.error('筹码不够，请充值', {
         duration: 2000,
         position: 'top-center',
@@ -775,7 +818,8 @@ export function ChipGacha({
     }
 
     setIsDrawing(true)
-    setGameState(prev => ({ ...prev, currency: prev.currency - 10, totalDraws: prev.totalDraws + 10 }))
+    const multiPurchase = autoPurchaseRef.current
+    setGameState(prev => ({ ...prev, currency: prev.currency + (multiPurchase?.totalCoins || 0) - 10, rmb: prev.rmb - (multiPurchase?.totalPrice || 0), totalDraws: prev.totalDraws + 10 }))
 
     // 播放随机跳动动画
     const availableItems = gameState.items.filter(item =>
@@ -823,9 +867,12 @@ export function ChipGacha({
   // 执行十连抽逻辑（从 multiDraw 中提取出来）
   const performMultiDraw = () => {
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState.currency = gameState.currency - 10
+      tempGameState.currency = gameState.currency + (purchase?.totalCoins || 0) - 10
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState.totalDraws = gameState.totalDraws + 10
 
       for (let i = 0; i < 10; i++) {
@@ -911,7 +958,16 @@ export function ChipGacha({
 
   // ========== 百连抽 ==========
   const draw100 = () => {
-    if (gameState.currency < 100) {
+    if (!autoPurchaseRef.current && gameState.currency < 100) {
+      if (isPremium) {
+        const deficit = 100 - gameState.currency
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'draw100', currencyName: '筹码' })
+          return
+        }
+      }
       toast.error('筹码不够，请充值', {
         duration: 2000,
         position: 'top-center',
@@ -926,7 +982,8 @@ export function ChipGacha({
     }
 
     setIsDrawing(true)
-    setGameState(prev => ({ ...prev, currency: prev.currency - 100, totalDraws: prev.totalDraws + 100 }))
+    const draw100Purchase = autoPurchaseRef.current
+    setGameState(prev => ({ ...prev, currency: prev.currency + (draw100Purchase?.totalCoins || 0) - 100, rmb: prev.rmb - (draw100Purchase?.totalPrice || 0), totalDraws: prev.totalDraws + 100 }))
 
     // 播放随机跳动动画
     const availableItems = gameState.items.filter(item =>
@@ -974,9 +1031,12 @@ export function ChipGacha({
   // 执行百连抽逻辑（从 draw100 中提取出来）
   const performDraw100 = () => {
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState.currency = gameState.currency - 100
+      tempGameState.currency = gameState.currency + (purchase?.totalCoins || 0) - 100
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState.totalDraws = gameState.totalDraws + 100
 
       for (let i = 0; i < 100; i++) {
@@ -1066,7 +1126,16 @@ export function ChipGacha({
 
   // ========== 五百连抽 ==========
   const draw500 = () => {
-    if (gameState.currency < 500) {
+    if (!autoPurchaseRef.current && gameState.currency < 500) {
+      if (isPremium) {
+        const deficit = 500 - gameState.currency
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'draw500', currencyName: '筹码' })
+          return
+        }
+      }
       toast.error('筹码不够，请充值', {
         duration: 2000,
         position: 'top-center',
@@ -1081,7 +1150,8 @@ export function ChipGacha({
     }
 
     setIsDrawing(true)
-    setGameState(prev => ({ ...prev, currency: prev.currency - 500, totalDraws: prev.totalDraws + 500 }))
+    const draw500Purchase = autoPurchaseRef.current
+    setGameState(prev => ({ ...prev, currency: prev.currency + (draw500Purchase?.totalCoins || 0) - 500, rmb: prev.rmb - (draw500Purchase?.totalPrice || 0), totalDraws: prev.totalDraws + 500 }))
 
     // 播放随机跳动动画
     const availableItems = gameState.items.filter(item =>
@@ -1129,9 +1199,12 @@ export function ChipGacha({
   // 执行五百连抽逻辑（从 draw500 中提取出来）
   const performDraw500 = () => {
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState.currency = gameState.currency - 500
+      tempGameState.currency = gameState.currency + (purchase?.totalCoins || 0) - 500
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState.totalDraws = gameState.totalDraws + 500
 
       for (let i = 0; i < 500; i++) {
@@ -1221,7 +1294,16 @@ export function ChipGacha({
 
   // ========== 五千连抽 ==========
   const draw5000 = () => {
-    if (gameState.currency < 5000) {
+    if (!autoPurchaseRef.current && gameState.currency < 5000) {
+      if (isPremium) {
+        const deficit = 5000 - gameState.currency
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'draw5000', currencyName: '筹码' })
+          return
+        }
+      }
       toast.error('筹码不够，请充值', {
         duration: 2000,
         position: 'top-center',
@@ -1236,7 +1318,8 @@ export function ChipGacha({
     }
 
     setIsDrawing(true)
-    setGameState(prev => ({ ...prev, currency: prev.currency - 5000, totalDraws: prev.totalDraws + 5000 }))
+    const draw5000Purchase = autoPurchaseRef.current
+    setGameState(prev => ({ ...prev, currency: prev.currency + (draw5000Purchase?.totalCoins || 0) - 5000, rmb: prev.rmb - (draw5000Purchase?.totalPrice || 0), totalDraws: prev.totalDraws + 5000 }))
 
     // 播放随机跳动动画
     const availableItems = gameState.items.filter(item =>
@@ -1283,9 +1366,12 @@ export function ChipGacha({
   // 执行五千连抽逻辑
   const performDraw5000 = () => {
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState.currency = gameState.currency - 5000
+      tempGameState.currency = gameState.currency + (purchase?.totalCoins || 0) - 5000
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState.totalDraws = gameState.totalDraws + 5000
 
       for (let i = 0; i < 5000; i++) {
@@ -1512,6 +1598,15 @@ export function ChipGacha({
         message="确定要重置所有活动的数据吗？将清除所有活动的筹码、人民币余额、抽奖记录和已获得物品。此操作不可撤销！"
         confirmText="确认重置"
         cancelText="取消"
+      />
+
+      {/* 快捷购买确认弹窗 */}
+      <QuickPurchaseConfirm
+        isOpen={!!quickPurchaseConfirm}
+        onConfirm={handleQuickPurchaseConfirm}
+        onCancel={handleQuickPurchaseCancel}
+        purchase={quickPurchaseConfirm?.purchase}
+        currencyName={quickPurchaseConfirm?.currencyName || '筹码'}
       />
     </>
   )

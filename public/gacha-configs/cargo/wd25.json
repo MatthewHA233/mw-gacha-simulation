@@ -24,20 +24,13 @@
           "nameEn": "HSTDV"
         },
         {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "5 高级修理包",
-          "probability": 20.0,
-          "limit": 0,
-          "id": "PremiumRepairKit",
-          "type": "战斗增益",
-          "rarity": "common"
+          "name": "阿卡亚(533 mm)",
+          "probability": 0.45,
+          "limit": 1,
+          "id": "Akya",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Akya (533mm)"
         },
         {
           "name": "A129\"猫鼬\"-CBT",
@@ -57,10 +50,18 @@
           "rarity": "common"
         },
         {
-          "name": "300 代币",
-          "probability": 30.0,
+          "name": "10 艺术硬币",
+          "probability": 2.5,
           "limit": 0,
-          "id": "Token",
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Hard",
           "type": "资源",
           "rarity": "common"
         },
@@ -73,13 +74,12 @@
           "rarity": "common"
         },
         {
-          "name": "阿卡亚(533 mm)",
-          "probability": 0.45,
-          "limit": 1,
-          "id": "Akya",
-          "type": "鱼雷",
-          "rarity": "legendary",
-          "nameEn": "Akya (533mm)"
+          "name": "5 高级修理包",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
         },
         {
           "name": "20 无人机电池",
@@ -90,10 +90,10 @@
           "rarity": "common"
         },
         {
-          "name": "20 黄金",
-          "probability": 7.7,
+          "name": "300 代币",
+          "probability": 30.0,
           "limit": 0,
-          "id": "Hard",
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         }
@@ -116,31 +116,6 @@
           "nameEn": "USS Iowa (BB-61)"
         },
         {
-          "name": "授权密钥",
-          "probability": 3.67,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "飞天一号",
-          "probability": 2.17,
-          "limit": 2,
-          "id": "Feitian1",
-          "type": "导弹",
-          "rarity": "legendary",
-          "nameEn": "Feitian-1"
-        },
-        {
-          "name": "25 黄金",
-          "probability": 29.0,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "[美]圣安东尼奥(LPD-17)",
           "probability": 0.1,
           "limit": 1,
@@ -148,14 +123,6 @@
           "type": "战舰",
           "rarity": "epic",
           "nameEn": "USS San Antonio (LPD-17)"
-        },
-        {
-          "name": "2 电子对抗",
-          "probability": 17.52,
-          "limit": 0,
-          "id": "ElectronicWarfare",
-          "type": "战斗增益",
-          "rarity": "common"
         },
         {
           "name": "电磁加速炮\"天冲\"",
@@ -167,14 +134,6 @@
           "nameEn": "ERS Tensho (127 mm)"
         },
         {
-          "name": "5 艺术硬币",
-          "probability": 31.0,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "虎鲸XLUUV",
           "probability": 0.3,
           "limit": 2,
@@ -184,10 +143,51 @@
           "nameEn": "Orca XLUUV"
         },
         {
+          "name": "飞天-1",
+          "probability": 2.17,
+          "limit": 2,
+          "id": "Feitian1",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "Feitian-1"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "200 代币",
           "probability": 16.0,
           "limit": 170,
           "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 31.0,
+          "limit": 0,
+          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         }

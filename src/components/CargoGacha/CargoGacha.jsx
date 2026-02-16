@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { loadActivityConfig, buildBackgroundUrl, buildCargoPoolImageUrl, buildItemImageUrl, buildShopPackageUrl } from '../../services/cdnService'
+import { findCheapestPurchase } from '../../services/gachaService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
 import { useSound } from '../../hooks/useSound'
@@ -17,6 +18,7 @@ import { ShopModal } from '../ChipGacha/ShopModal'
 import { SponsorModal } from '../ChipGacha/SponsorModal'
 import { ResetModal } from '../ui/ResetModal'
 import { ConfirmModal } from '../ui/ConfirmModal'
+import { QuickPurchaseConfirm } from '../ui/QuickPurchaseConfirm'
 import { MembershipModal } from '../ui/MembershipModal'
 import { MilestonePullButton } from '../ui/MilestonePullButton'
 
@@ -177,6 +179,7 @@ export function CargoGacha({
   const [historyModal, setHistoryModal] = useState(false)
   const [resetModal, setResetModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
+  const [quickPurchaseConfirm, setQuickPurchaseConfirm] = useState(null)
   const [showMembershipModal, setShowMembershipModal] = useState(false)
 
   // 抽奖动画状态
@@ -185,6 +188,9 @@ export function CargoGacha({
 
   // 停止动画标志
   const stopAnimationRef = useRef(false)
+
+  // VIP 自动购买数据
+  const autoPurchaseRef = useRef(null)
 
   // 结果弹窗状态
   const [resultModal, setResultModal] = useState({
@@ -561,6 +567,21 @@ export function CargoGacha({
     }
   }
 
+  // ========== 快捷购买确认/取消 ==========
+  const handleQuickPurchaseConfirm = () => {
+    if (!quickPurchaseConfirm) return
+    const { purchase, drawFnName } = quickPurchaseConfirm
+    autoPurchaseRef.current = purchase
+    setShopModal(false)
+    setQuickPurchaseConfirm(null)
+    const fns = { handleSingleDraw, handleMultiDraw, handleDraw100, handleDraw500, handleDraw5000 }
+    if (fns[drawFnName]) fns[drawFnName]()
+  }
+
+  const handleQuickPurchaseCancel = () => {
+    setQuickPurchaseConfirm(null)
+  }
+
   // ========== 单抽 ==========
   const handleSingleDraw = () => {
     const suffix = selectedCargoType === 'rm' ? '' : '_else'
@@ -574,7 +595,16 @@ export function CargoGacha({
     // gameplay货币（遥控器/电池）消耗是rm货币的30倍
     const singleCost = selectedCargoType === 'rm' ? gameState.singleCost : 30
 
-    if (gameState[currencyKey] < singleCost) {
+    if (!autoPurchaseRef.current && gameState[currencyKey] < singleCost) {
+      if (selectedCargoType === 'rm' && isPremium) {
+        const deficit = singleCost - gameState[currencyKey]
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleSingleDraw', currencyName })
+          return
+        }
+      }
       toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
@@ -584,17 +614,19 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      // 只有rm货币不够时才弹出商店
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
       return
     }
 
+    const singlePurchase = autoPurchaseRef.current
+    autoPurchaseRef.current = null
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - singleCost,
+      [currencyKey]: prev[currencyKey] + (singlePurchase?.totalCoins || 0) - singleCost,
+      rmb: prev.rmb - (singlePurchase?.totalPrice || 0),
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 1
     }))
 
@@ -755,7 +787,16 @@ export function CargoGacha({
     // gameplay货币（遥控器/电池）消耗是rm货币的30倍
     const multiCost = selectedCargoType === 'rm' ? 10 : 300
 
-    if (gameState[currencyKey] < multiCost) {
+    if (!autoPurchaseRef.current && gameState[currencyKey] < multiCost) {
+      if (selectedCargoType === 'rm' && isPremium) {
+        const deficit = multiCost - gameState[currencyKey]
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleMultiDraw', currencyName })
+          return
+        }
+      }
       toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
@@ -765,17 +806,18 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      // 只有rm货币不够时才弹出商店
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
       return
     }
 
+    const multiPurchase = autoPurchaseRef.current
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - multiCost,
+      [currencyKey]: prev[currencyKey] + (multiPurchase?.totalCoins || 0) - multiCost,
+      rmb: prev.rmb - (multiPurchase?.totalPrice || 0),
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 10
     }))
 
@@ -830,6 +872,9 @@ export function CargoGacha({
     const multiCost = selectedCargoType === 'rm' ? 10 : 300
 
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
+
       const itemsKey = suffix ? `items${suffix}` : 'items'
       const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
       const legendaryCountKey = suffix ? `legendaryCount${suffix}` : 'legendaryCount'
@@ -841,7 +886,8 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - multiCost
+      tempGameState[currencyKey] = gameState[currencyKey] + (purchase?.totalCoins || 0) - multiCost
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 10
 
       for (let i = 0; i < 10; i++) {
@@ -947,7 +993,16 @@ export function CargoGacha({
     // gameplay货币（遥控器/电池）消耗是rm货币的30倍
     const draw100Cost = selectedCargoType === 'rm' ? 100 : 3000
 
-    if (gameState[currencyKey] < draw100Cost) {
+    if (!autoPurchaseRef.current && gameState[currencyKey] < draw100Cost) {
+      if (selectedCargoType === 'rm' && isPremium) {
+        const deficit = draw100Cost - gameState[currencyKey]
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleDraw100', currencyName })
+          return
+        }
+      }
       toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
@@ -957,17 +1012,18 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      // 只有rm货币不够时才弹出商店
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
       return
     }
 
+    const draw100Purchase = autoPurchaseRef.current
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - draw100Cost,
+      [currencyKey]: prev[currencyKey] + (draw100Purchase?.totalCoins || 0) - draw100Cost,
+      rmb: prev.rmb - (draw100Purchase?.totalPrice || 0),
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 100
     }))
 
@@ -1022,6 +1078,9 @@ export function CargoGacha({
     const draw100Cost = selectedCargoType === 'rm' ? 100 : 3000
 
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
+
       const itemsKey = suffix ? `items${suffix}` : 'items'
       const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
       const legendaryCountKey = suffix ? `legendaryCount${suffix}` : 'legendaryCount'
@@ -1033,7 +1092,8 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - draw100Cost
+      tempGameState[currencyKey] = gameState[currencyKey] + (purchase?.totalCoins || 0) - draw100Cost
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 100
 
       for (let i = 0; i < 100; i++) {
@@ -1142,7 +1202,16 @@ export function CargoGacha({
     // gameplay货币（遥控器/电池）消耗是rm货币的30倍
     const draw500Cost = selectedCargoType === 'rm' ? 500 : 15000
 
-    if (gameState[currencyKey] < draw500Cost) {
+    if (!autoPurchaseRef.current && gameState[currencyKey] < draw500Cost) {
+      if (selectedCargoType === 'rm' && isPremium) {
+        const deficit = draw500Cost - gameState[currencyKey]
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleDraw500', currencyName })
+          return
+        }
+      }
       toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
@@ -1152,17 +1221,18 @@ export function CargoGacha({
           border: '1px solid #0ea5e9',
         },
       })
-      // 只有rm货币不够时才弹出商店
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
       return
     }
 
+    const draw500Purchase = autoPurchaseRef.current
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - draw500Cost,
+      [currencyKey]: prev[currencyKey] + (draw500Purchase?.totalCoins || 0) - draw500Cost,
+      rmb: prev.rmb - (draw500Purchase?.totalPrice || 0),
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 500
     }))
 
@@ -1217,6 +1287,9 @@ export function CargoGacha({
     const draw500Cost = selectedCargoType === 'rm' ? 500 : 15000
 
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
+
       const itemsKey = suffix ? `items${suffix}` : 'items'
       const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
       const legendaryCountKey = suffix ? `legendaryCount${suffix}` : 'legendaryCount'
@@ -1228,7 +1301,8 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - draw500Cost
+      tempGameState[currencyKey] = gameState[currencyKey] + (purchase?.totalCoins || 0) - draw500Cost
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 500
 
       for (let i = 0; i < 500; i++) {
@@ -1335,7 +1409,16 @@ export function CargoGacha({
 
     const draw5000Cost = selectedCargoType === 'rm' ? 5000 : 150000
 
-    if (gameState[currencyKey] < draw5000Cost) {
+    if (!autoPurchaseRef.current && gameState[currencyKey] < draw5000Cost) {
+      if (selectedCargoType === 'rm' && isPremium) {
+        const deficit = draw5000Cost - gameState[currencyKey]
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleDraw5000', currencyName })
+          return
+        }
+      }
       toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
         duration: 2000,
         position: 'top-center',
@@ -1351,10 +1434,12 @@ export function CargoGacha({
       return
     }
 
+    const draw5000Purchase = autoPurchaseRef.current
     setIsDrawing(true)
     setGameState(prev => ({
       ...prev,
-      [currencyKey]: prev[currencyKey] - draw5000Cost,
+      [currencyKey]: prev[currencyKey] + (draw5000Purchase?.totalCoins || 0) - draw5000Cost,
+      rmb: prev.rmb - (draw5000Purchase?.totalPrice || 0),
       [suffix ? `totalDraws${suffix}` : 'totalDraws']: prev[suffix ? `totalDraws${suffix}` : 'totalDraws'] + 5000
     }))
 
@@ -1407,6 +1492,9 @@ export function CargoGacha({
     const draw5000Cost = selectedCargoType === 'rm' ? 5000 : 150000
 
     setTimeout(() => {
+      const purchase = autoPurchaseRef.current
+      autoPurchaseRef.current = null
+
       const itemsKey = suffix ? `items${suffix}` : 'items'
       const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
       const legendaryCountKey = suffix ? `legendaryCount${suffix}` : 'legendaryCount'
@@ -1418,7 +1506,8 @@ export function CargoGacha({
 
       const results = []
       let tempGameState = { ...gameState }
-      tempGameState[currencyKey] = gameState[currencyKey] - draw5000Cost
+      tempGameState[currencyKey] = gameState[currencyKey] + (purchase?.totalCoins || 0) - draw5000Cost
+      tempGameState.rmb = gameState.rmb - (purchase?.totalPrice || 0)
       tempGameState[totalDrawsKey] = gameState[totalDrawsKey] + 5000
 
       for (let i = 0; i < 5000; i++) {
@@ -1989,6 +2078,15 @@ export function CargoGacha({
         message="此操作将清除所有活动的抽奖记录，包括物品获取记录、抽奖历史等。此操作不可恢复！"
         confirmText="确认重置"
         cancelText="取消"
+      />
+
+      {/* 快捷购买确认弹窗 */}
+      <QuickPurchaseConfirm
+        isOpen={!!quickPurchaseConfirm}
+        onConfirm={handleQuickPurchaseConfirm}
+        onCancel={handleQuickPurchaseCancel}
+        purchase={quickPurchaseConfirm?.purchase}
+        currencyName={quickPurchaseConfirm?.currencyName || '授权密钥'}
       />
     </div>
   )

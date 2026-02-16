@@ -19,31 +19,6 @@
       "nameEn": "IT Trieste (L9890)"
     },
     {
-      "name": "10 艺术硬币",
-      "probability": 9.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "Mark-71 (203 mm)",
-      "probability": 0.41,
-      "limit": 2,
-      "id": "Mark71",
-      "type": "主炮",
-      "rarity": "legendary",
-      "nameEn": "Mark-71 (203 mm)"
-    },
-    {
-      "name": "20 引擎过载",
-      "probability": 1.75,
-      "limit": 0,
-      "id": "EngineBoost",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
       "name": "[法]SNLE 3G",
       "probability": 0.16,
       "limit": 1,
@@ -51,48 +26,6 @@
       "type": "战舰",
       "rarity": "epic",
       "nameEn": "FS SNLE 3G"
-    },
-    {
-      "name": "20 黄金",
-      "probability": 35.0,
-      "limit": 0,
-      "id": "Hard",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "3 筹码",
-      "probability": 2.53,
-      "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "国家反舰导弹增程型",
-      "probability": 0.21,
-      "limit": 0,
-      "id": "MANSUPER",
-      "type": "导弹",
-      "rarity": "epic",
-      "nameEn": "MANSUP-ER"
-    },
-    {
-      "name": "外星有机物",
-      "probability": 1.0,
-      "limit": 1,
-      "id": "Camo_AlienOrganic",
-      "type": "涂装",
-      "rarity": "legendary",
-      "nameEn": "Alien Organic"
-    },
-    {
-      "name": "15 黄金",
-      "probability": 25.2,
-      "limit": 0,
-      "id": "Hard",
-      "type": "资源",
-      "rarity": "common"
     },
     {
       "name": "[德]萨克森(F124型)",
@@ -104,12 +37,22 @@
       "nameEn": "FGS F124"
     },
     {
-      "name": "5 艺术硬币",
-      "probability": 18.08,
+      "name": "国家反舰导弹-ER",
+      "probability": 0.21,
       "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
+      "id": "MANSUPER",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "MANSUP-ER"
+    },
+    {
+      "name": "Mark-71 (203 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "Mark71",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Mark-71 (203 mm)"
     },
     {
       "name": "M270 MLRS (270 mm)",
@@ -121,10 +64,67 @@
       "nameEn": "M270 MLRS (270mm)"
     },
     {
+      "name": "外星有机物",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Camo_AlienOrganic",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Alien Organic"
+    },
+    {
+      "name": "20 引擎过载",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "EngineBoost",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "3 筹码",
+      "probability": 2.53,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
       "name": "筹码",
       "probability": 6.0,
       "limit": 0,
       "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 25.2,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
       "type": "资源",
       "rarity": "common"
     }

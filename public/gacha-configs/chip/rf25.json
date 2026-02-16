@@ -18,31 +18,6 @@
       "nameEn": "FS Richelieu"
     },
     {
-      "name": "10 艺术硬币",
-      "probability": 8.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "台风MLS-NLOS",
-      "probability": 0.51,
-      "limit": 2,
-      "id": "TyphoonMLS",
-      "type": "自卫炮",
-      "rarity": "epic",
-      "nameEn": "Typhoon MLS-NLOS"
-    },
-    {
-      "name": "5 高级修理包",
-      "probability": 3.0,
-      "limit": 0,
-      "id": "PremiumRepairKit",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
       "name": "[中]天津",
       "probability": 0.14,
       "limit": 1,
@@ -50,48 +25,6 @@
       "type": "战舰",
       "rarity": "epic",
       "nameEn": "CN Tianjin"
-    },
-    {
-      "name": "15 黄金",
-      "probability": 32.0,
-      "limit": 0,
-      "id": "Hard",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "3 筹码",
-      "probability": 1.53,
-      "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "Mark-71 (203 mm)",
-      "probability": 0.24,
-      "limit": 0,
-      "id": "Mark71",
-      "type": "主炮",
-      "rarity": "legendary",
-      "nameEn": "Mark-71 (203 mm)"
-    },
-    {
-      "name": "脉冲",
-      "probability": 2.0,
-      "limit": 1,
-      "id": "Camo_CyberGlitch",
-      "type": "涂装",
-      "rarity": "legendary",
-      "nameEn": "Glitch"
-    },
-    {
-      "name": "烟幕",
-      "probability": 23.0,
-      "limit": 0,
-      "id": "TankSmokeBombs",
-      "type": "战斗增益",
-      "rarity": "common"
     },
     {
       "name": "[俄]22350M型",
@@ -103,12 +36,13 @@
       "nameEn": "RF Project 22350M"
     },
     {
-      "name": "4 艺术硬币",
-      "probability": 25.0,
+      "name": "Mark-71 (203 mm)",
+      "probability": 0.24,
       "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
+      "id": "Mark71",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Mark-71 (203 mm)"
     },
     {
       "name": "URWS (30 mm)",
@@ -120,10 +54,76 @@
       "nameEn": "URWS (30 mm)"
     },
     {
+      "name": "台风MLS-NLOS",
+      "probability": 0.51,
+      "limit": 2,
+      "id": "TyphoonMLS",
+      "type": "自卫炮",
+      "rarity": "epic",
+      "nameEn": "Typhoon MLS-NLOS"
+    },
+    {
+      "name": "3 筹码",
+      "probability": 1.53,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "脉冲",
+      "probability": 2.0,
+      "limit": 1,
+      "id": "Camo_CyberGlitch",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Glitch"
+    },
+    {
+      "name": "5 高级修理包",
+      "probability": 3.0,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
       "name": "筹码",
       "probability": 4.0,
       "limit": 0,
       "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "烟幕",
+      "probability": 23.0,
+      "limit": 0,
+      "id": "TankSmokeBombs",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 25.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 32.0,
+      "limit": 0,
+      "id": "Hard",
       "type": "资源",
       "rarity": "common"
     }

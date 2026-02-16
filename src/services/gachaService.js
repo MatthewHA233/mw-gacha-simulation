@@ -188,3 +188,80 @@ export function shuffleArray(array) {
 export function hasEpicOrLegendary(items) {
   return items.some(item => item.rarity === 'epic' || item.rarity === 'legendary')
 }
+
+/**
+ * 计算最便宜的购买方案，使总币数 >= deficit
+ * @param {number} deficit - 缺少的货币数量
+ * @param {Array} packages - 商店套餐数组，每项含 coins/baseCoins/bonus/price/basePrice/id
+ * @returns {{ totalCoins: number, totalPrice: number, purchases: Array }}
+ */
+export function findCheapestPurchase(deficit, packages) {
+  if (deficit <= 0 || !packages || packages.length === 0) {
+    return { totalCoins: 0, totalPrice: 0, purchases: [] }
+  }
+
+  // 标准化套餐：计算每单位的币数和价格
+  const normalized = packages.map(pkg => ({
+    id: pkg.id,
+    coins: (pkg.baseCoins || pkg.coins) + (pkg.bonus || 0),
+    price: pkg.basePrice || pkg.price
+  }))
+
+  // 按币数降序排列（大套餐放外层循环）
+  normalized.sort((a, b) => b.coins - a.coins)
+
+  let best = null
+
+  const tryCombo = (quantities) => {
+    let totalCoins = 0
+    let totalPrice = 0
+    const purchases = []
+
+    quantities.forEach((qty, i) => {
+      if (qty > 0) {
+        totalCoins += qty * normalized[i].coins
+        totalPrice += qty * normalized[i].price
+        purchases.push({
+          id: normalized[i].id,
+          quantity: qty,
+          coins: qty * normalized[i].coins,
+          price: qty * normalized[i].price
+        })
+      }
+    })
+
+    if (totalCoins >= deficit && (!best || totalPrice < best.totalPrice)) {
+      best = { totalCoins, totalPrice, purchases }
+    }
+  }
+
+  if (normalized.length === 1) {
+    const q = Math.ceil(deficit / normalized[0].coins)
+    tryCombo([q])
+  } else if (normalized.length === 2) {
+    const maxQ0 = Math.ceil(deficit / normalized[0].coins)
+    for (let q0 = 0; q0 <= maxQ0; q0++) {
+      const remaining = deficit - q0 * normalized[0].coins
+      const q1 = remaining > 0 ? Math.ceil(remaining / normalized[1].coins) : 0
+      tryCombo([q0, q1])
+    }
+  } else {
+    // 3 层循环：大套餐 → 中套餐 → 小套餐（自动补齐）
+    const maxQ0 = Math.ceil(deficit / normalized[0].coins)
+    for (let q0 = 0; q0 <= maxQ0; q0++) {
+      const remaining1 = deficit - q0 * normalized[0].coins
+      if (remaining1 <= 0) {
+        tryCombo([q0, 0, 0])
+        continue
+      }
+      const maxQ1 = Math.ceil(remaining1 / normalized[1].coins)
+      for (let q1 = 0; q1 <= maxQ1; q1++) {
+        const remaining2 = remaining1 - q1 * normalized[1].coins
+        const q2 = remaining2 > 0 ? Math.ceil(remaining2 / normalized[2].coins) : 0
+        tryCombo([q0, q1, q2])
+      }
+    }
+  }
+
+  return best || { totalCoins: 0, totalPrice: 0, purchases: [] }
+}

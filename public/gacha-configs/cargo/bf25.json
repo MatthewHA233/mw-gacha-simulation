@@ -14,29 +14,13 @@
       },
       "items": [
         {
-          "name": "ET40 (324 mm)",
+          "name": "ET40 (533 mm)",
           "probability": 0.05,
           "limit": 1,
           "id": "ET40",
           "type": "鱼雷",
           "rarity": "epic",
-          "nameEn": "ET40 (324 mm)"
-        },
-        {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "5 高级修理包",
-          "probability": 22.15,
-          "limit": 0,
-          "id": "PremiumRepairKit",
-          "type": "战斗增益",
-          "rarity": "common"
+          "nameEn": "ET40 (533 mm)"
         },
         {
           "name": "超级军旗",
@@ -48,6 +32,15 @@
           "nameEn": "Super Etendard"
         },
         {
+          "name": "普拉雷",
+          "probability": 0.65,
+          "limit": 1,
+          "id": "Pralay",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Pralay"
+        },
+        {
           "name": "授权密钥",
           "probability": 1.5,
           "limit": 0,
@@ -56,10 +49,18 @@
           "rarity": "common"
         },
         {
-          "name": "300 代币",
-          "probability": 30.0,
+          "name": "10 艺术硬币",
+          "probability": 2.5,
           "limit": 0,
-          "id": "Token",
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Hard",
           "type": "资源",
           "rarity": "common"
         },
@@ -72,15 +73,6 @@
           "rarity": "common"
         },
         {
-          "name": "普拉雷",
-          "probability": 0.65,
-          "limit": 1,
-          "id": "Pralay",
-          "type": "导弹",
-          "rarity": "epic",
-          "nameEn": "Pralay"
-        },
-        {
           "name": "20 无人机电池",
           "probability": 20.0,
           "limit": 0,
@@ -89,10 +81,18 @@
           "rarity": "common"
         },
         {
-          "name": "20 黄金",
-          "probability": 7.7,
+          "name": "5 高级修理包",
+          "probability": 22.15,
           "limit": 0,
-          "id": "Hard",
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
           "type": "资源",
           "rarity": "common"
         }
@@ -114,31 +114,6 @@
           "nameEn": "CN Type 051B Shenzhen"
         },
         {
-          "name": "授权密钥",
-          "probability": 3.67,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "UGST\"物理学家\"-2(533 mm)",
-          "probability": 0.32,
-          "limit": 2,
-          "id": "UGSTPhysic2",
-          "type": "鱼雷",
-          "rarity": "legendary",
-          "nameEn": "UGST Futlyar (533 mm)"
-        },
-        {
-          "name": "25 黄金",
-          "probability": 29.5,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "[法]阿基坦(D650)",
           "probability": 0.1,
           "limit": 1,
@@ -146,14 +121,6 @@
           "type": "战舰",
           "rarity": "epic",
           "nameEn": "FS Aquitaine (D650)"
-        },
-        {
-          "name": "2 电子对抗",
-          "probability": 17.52,
-          "limit": 0,
-          "id": "ElectronicWarfare",
-          "type": "战斗增益",
-          "rarity": "common"
         },
         {
           "name": "蜂群-2\"阿特拉斯\"",
@@ -165,15 +132,16 @@
           "nameEn": "Swarmer-2 Atlas"
         },
         {
-          "name": "5 艺术硬币",
-          "probability": 31.0,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
+          "name": "UGST\"物理学家\"-2(533 mm)",
+          "probability": 0.32,
+          "limit": 2,
+          "id": "UGSTPhysic2",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "UGST Futlyar (533 mm)"
         },
         {
-          "name": "格克德尼兹增程型",
+          "name": "格克德尼兹-ER",
           "probability": 1.65,
           "limit": 2,
           "id": "GOKDENIZER",
@@ -182,10 +150,42 @@
           "nameEn": "GOKDENIZ ER"
         },
         {
+          "name": "授权密钥",
+          "probability": 3.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "200 代币",
           "probability": 16.0,
           "limit": 170,
           "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "2 电子对抗",
+          "probability": 17.52,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.5,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 31.0,
+          "limit": 0,
+          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         }

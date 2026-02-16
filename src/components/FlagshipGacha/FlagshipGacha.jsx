@@ -7,6 +7,7 @@ import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
 import { loadActivityConfig, buildItemImageUrl, IMG_WEBP } from '../../services/cdnService'
+import { findCheapestPurchase } from '../../services/gachaService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
 import { LootboxSelector } from './LootboxSelector'
@@ -22,6 +23,7 @@ import { ConfirmModal } from '../ui/ConfirmModal'
 import { ResetModal } from '../ui/ResetModal'
 import { MembershipModal } from '../ui/MembershipModal'
 import { MilestonePullButton } from '../ui/MilestonePullButton'
+import { QuickPurchaseConfirm } from '../ui/QuickPurchaseConfirm'
 
 /**
  * 旗舰宝箱类抽卡组件
@@ -41,6 +43,7 @@ export function FlagshipGacha({
   const [resetModal, setResetModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
   const [showMembershipModal, setShowMembershipModal] = useState(false)
+  const [quickPurchaseConfirm, setQuickPurchaseConfirm] = useState(null)
 
   // 选中的宝箱类型
   const [selectedLootboxType, setSelectedLootboxType] = useState('event_premium')
@@ -63,6 +66,9 @@ export function FlagshipGacha({
 
   // 停止动画标志
   const stopAnimationRef = useRef(false)
+
+  // VIP 自动购买数据
+  const autoPurchaseRef = useRef(null)
 
   // 活动配置
   const [activityConfig, setActivityConfig] = useState({
@@ -612,6 +618,9 @@ export function FlagshipGacha({
     }
     isPerformingDrawRef.current = true
 
+    // 清理自动购买引用（已在 draw 函数中应用）
+    autoPurchaseRef.current = null
+
     const suffix = getFieldSuffix()
     const itemsKey = suffix ? `items${suffix}` : 'items'
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
@@ -790,28 +799,52 @@ export function FlagshipGacha({
     isPerformingDrawRef.current = false
   }
 
+  // ========== 快捷购买确认/取消 ==========
+  const handleQuickPurchaseConfirm = () => {
+    if (!quickPurchaseConfirm) return
+    const { purchase, drawFnName } = quickPurchaseConfirm
+    autoPurchaseRef.current = purchase
+    setShopModal(false)
+    setQuickPurchaseConfirm(null)
+    const fns = { handleSingleDraw, handleMultiDraw, handleDraw100, handleDraw500, handleDraw5000 }
+    if (fns[drawFnName]) fns[drawFnName]()
+  }
+
+  const handleQuickPurchaseCancel = () => {
+    setQuickPurchaseConfirm(null)
+  }
+
   // 抽卡函数
   const handleSingleDraw = async () => {
     if (isAnimating) return
 
     // 根据宝箱类型决定钥匙类型和单价
-    const isPremium = selectedLootboxType === 'event_premium'
+    const isPremiumLootbox = selectedLootboxType === 'event_premium'
     const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
-    const currentKeys = isPremium ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremium ? '旗舰钥匙' : '普通钥匙'
+    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
-    if (currentKeys < singleCost) {
+    if (!autoPurchaseRef.current && currentKeys < singleCost) {
+      if (isPremiumLootbox && isPremium) {
+        const deficit = singleCost - currentKeys
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleSingleDraw', currencyName: keyName })
+          return
+        }
+      }
       toast.error(`${keyName}不够`, {
         duration: 2000,
         position: 'top-center',
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremium ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremium) {
+      if (isPremiumLootbox) {
         setShopModal(true)
       }
       return
@@ -827,12 +860,15 @@ export function FlagshipGacha({
     const suffix = getFieldSuffix()
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
 
+    const singlePurchase = autoPurchaseRef.current
+    autoPurchaseRef.current = null
     setGameState(prev => ({
       ...prev,
-      ...(isPremium
-        ? { currency: prev.currency - singleCost }
+      ...(isPremiumLootbox
+        ? { currency: prev.currency + (singlePurchase?.totalCoins || 0) - singleCost }
         : { commonCurrency: (prev.commonCurrency || 0) - singleCost }
       ),
+      rmb: prev.rmb - (singlePurchase?.totalPrice || 0),
       [totalDrawsKey]: prev[totalDrawsKey] + 1
     }))
 
@@ -862,24 +898,33 @@ export function FlagshipGacha({
     if (isAnimating) return
 
     // 根据宝箱类型决定钥匙类型和单价
-    const isPremium = selectedLootboxType === 'event_premium'
+    const isPremiumLootbox = selectedLootboxType === 'event_premium'
     const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
     const totalCost = singleCost * 10
-    const currentKeys = isPremium ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremium ? '旗舰钥匙' : '普通钥匙'
+    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
-    if (currentKeys < totalCost) {
+    if (!autoPurchaseRef.current && currentKeys < totalCost) {
+      if (isPremiumLootbox && isPremium) {
+        const deficit = totalCost - currentKeys
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleMultiDraw', currencyName: keyName })
+          return
+        }
+      }
       toast.error(`${keyName}不够`, {
         duration: 2000,
         position: 'top-center',
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremium ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremium) {
+      if (isPremiumLootbox) {
         setShopModal(true)
       }
       return
@@ -908,12 +953,14 @@ export function FlagshipGacha({
     const suffix = getFieldSuffix()
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
 
+    const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremium
-        ? { currency: prev.currency - totalCost }
+      ...(isPremiumLootbox
+        ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
+      rmb: prev.rmb - (multiPurchase?.totalPrice || 0),
       [totalDrawsKey]: prev[totalDrawsKey] + 10
     }))
 
@@ -942,24 +989,33 @@ export function FlagshipGacha({
     if (isAnimating) return
 
     // 根据宝箱类型决定钥匙类型和单价
-    const isPremium = selectedLootboxType === 'event_premium'
+    const isPremiumLootbox = selectedLootboxType === 'event_premium'
     const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
     const totalCost = singleCost * 100
-    const currentKeys = isPremium ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremium ? '旗舰钥匙' : '普通钥匙'
+    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
-    if (currentKeys < totalCost) {
+    if (!autoPurchaseRef.current && currentKeys < totalCost) {
+      if (isPremiumLootbox && isPremium) {
+        const deficit = totalCost - currentKeys
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleDraw100', currencyName: keyName })
+          return
+        }
+      }
       toast.error(`${keyName}不够`, {
         duration: 2000,
         position: 'top-center',
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremium ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremium) {
+      if (isPremiumLootbox) {
         setShopModal(true)
       }
       return
@@ -988,12 +1044,14 @@ export function FlagshipGacha({
     const suffix = getFieldSuffix()
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
 
+    const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremium
-        ? { currency: prev.currency - totalCost }
+      ...(isPremiumLootbox
+        ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
+      rmb: prev.rmb - (multiPurchase?.totalPrice || 0),
       [totalDrawsKey]: prev[totalDrawsKey] + 100
     }))
 
@@ -1022,24 +1080,33 @@ export function FlagshipGacha({
     if (isAnimating) return
 
     // 根据宝箱类型决定钥匙类型和单价
-    const isPremium = selectedLootboxType === 'event_premium'
+    const isPremiumLootbox = selectedLootboxType === 'event_premium'
     const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
     const totalCost = singleCost * 500
-    const currentKeys = isPremium ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremium ? '旗舰钥匙' : '普通钥匙'
+    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
-    if (currentKeys < totalCost) {
+    if (!autoPurchaseRef.current && currentKeys < totalCost) {
+      if (isPremiumLootbox && isPremium) {
+        const deficit = totalCost - currentKeys
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleDraw500', currencyName: keyName })
+          return
+        }
+      }
       toast.error(`${keyName}不够`, {
         duration: 2000,
         position: 'top-center',
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremium ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremium) {
+      if (isPremiumLootbox) {
         setShopModal(true)
       }
       return
@@ -1068,12 +1135,14 @@ export function FlagshipGacha({
     const suffix = getFieldSuffix()
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
 
+    const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremium
-        ? { currency: prev.currency - totalCost }
+      ...(isPremiumLootbox
+        ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
+      rmb: prev.rmb - (multiPurchase?.totalPrice || 0),
       [totalDrawsKey]: prev[totalDrawsKey] + 500
     }))
 
@@ -1101,23 +1170,32 @@ export function FlagshipGacha({
   const handleDraw5000 = async () => {
     if (isAnimating) return
 
-    const isPremium = selectedLootboxType === 'event_premium'
+    const isPremiumLootbox = selectedLootboxType === 'event_premium'
     const singleCost = gameState.singleCost
     const totalCost = singleCost * 5000
-    const currentKeys = isPremium ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremium ? '旗舰钥匙' : '普通钥匙'
+    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
 
-    if (currentKeys < totalCost) {
+    if (!autoPurchaseRef.current && currentKeys < totalCost) {
+      if (isPremiumLootbox && isPremium) {
+        const deficit = totalCost - currentKeys
+        const purchase = findCheapestPurchase(deficit, shopPackages)
+        if (purchase.totalCoins > 0) {
+          setShopModal(true)
+          setQuickPurchaseConfirm({ purchase, drawFnName: 'handleDraw5000', currencyName: keyName })
+          return
+        }
+      }
       toast.error(`${keyName}不够`, {
         duration: 2000,
         position: 'top-center',
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremium ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremium) {
+      if (isPremiumLootbox) {
         setShopModal(true)
       }
       return
@@ -1142,12 +1220,14 @@ export function FlagshipGacha({
     const suffix = getFieldSuffix()
     const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
 
+    const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremium
-        ? { currency: prev.currency - totalCost }
+      ...(isPremiumLootbox
+        ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
+      rmb: prev.rmb - (multiPurchase?.totalPrice || 0),
       [totalDrawsKey]: prev[totalDrawsKey] + 5000
     }))
 
@@ -1547,6 +1627,15 @@ export function FlagshipGacha({
         message="此操作将清除所有活动的抽奖记录，包括物品获取记录、抽奖历史等。此操作不可恢复！"
         confirmText="确认重置"
         cancelText="取消"
+      />
+
+      {/* 快捷购买确认弹窗 */}
+      <QuickPurchaseConfirm
+        isOpen={!!quickPurchaseConfirm}
+        onConfirm={handleQuickPurchaseConfirm}
+        onCancel={handleQuickPurchaseCancel}
+        purchase={quickPurchaseConfirm?.purchase}
+        currencyName={quickPurchaseConfirm?.currencyName || '旗舰钥匙'}
       />
     </div>
   )

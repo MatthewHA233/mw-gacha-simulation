@@ -26,23 +26,6 @@
       "nameEn": "USS Iowa (BB-61)"
     },
     {
-      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
-      "probability": 0.24,
-      "limit": 2,
-      "id": "Mark45Astor",
-      "type": "鱼雷",
-      "rarity": "legendary",
-      "nameEn": "Mark-45 ASTOR (483mm)"
-    },
-    {
-      "name": "筹码",
-      "probability": 4.06,
-      "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
       "name": "[德]萨克森(F124型)",
       "probability": 0.14,
       "limit": 1,
@@ -52,63 +35,13 @@
       "nameEn": "FGS F124"
     },
     {
-      "name": "15 黄金",
-      "probability": 33.0,
-      "limit": 0,
-      "id": "Hard",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "龟船",
-      "probability": 0.5,
-      "limit": 1,
-      "id": "Flag_TurtleShip",
-      "type": "旗帜",
-      "rarity": "legendary",
-      "nameEn": "Geobukseon"
-    },
-    {
-      "name": "RBU-10000 (300 mm)",
-      "probability": 1.53,
-      "limit": 1,
-      "id": "RBU10000",
-      "type": "火箭炮",
-      "rarity": "epic",
-      "nameEn": "RBU-10000 (300 mm)"
-    },
-    {
-      "name": "6 高级导弹诱饵",
-      "probability": 12.5,
-      "limit": 0,
-      "id": "PremiumMissileDecoy",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
-      "name": "10 艺术硬币",
-      "probability": 8.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "Mark-71 (203 mm)",
-      "probability": 0.52,
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "probability": 0.24,
       "limit": 2,
-      "id": "Mark71",
-      "type": "主炮",
+      "id": "Mark45Astor",
+      "type": "鱼雷",
       "rarity": "legendary",
-      "nameEn": "Mark-71 (203 mm)"
-    },
-    {
-      "name": "4 艺术硬币",
-      "probability": 22.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
+      "nameEn": "Mark-45 ASTOR (483 mm)"
     },
     {
       "name": "ASN4G",
@@ -120,11 +53,78 @@
       "nameEn": "ASN4G"
     },
     {
+      "name": "龟船",
+      "probability": 0.5,
+      "limit": 1,
+      "id": "Flag_TurtleShip",
+      "type": "旗帜",
+      "rarity": "legendary",
+      "nameEn": "Geobukseon"
+    },
+    {
+      "name": "Mark-71 (203 mm)",
+      "probability": 0.52,
+      "limit": 2,
+      "id": "Mark71",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Mark-71 (203 mm)"
+    },
+    {
+      "name": "RBU-10000 (300 mm)",
+      "probability": 1.53,
+      "limit": 1,
+      "id": "RBU10000",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "RBU-10000 (300 mm)"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.06,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "6 高级导弹诱饵",
+      "probability": 12.5,
+      "limit": 0,
+      "id": "PremiumMissileDecoy",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
       "name": "2 高级鱼雷诱饵",
       "probability": 17.0,
       "limit": 0,
       "id": "PremiumTorpedoDecoy",
       "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
       "rarity": "common"
     }
   ]

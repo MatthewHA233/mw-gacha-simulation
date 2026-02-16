@@ -1,69 +1,60 @@
 {
-  "id": "ag96",
+  "id": "ag100",
   "gacha_type": "筹码类",
   "metadata": {
-    "name": "禁品追缉",
-    "nameEn": "Contraband Hunt",
-    "formattedDate": "2025年9月"
+    "name": "暗影交易",
+    "nameEn": "Deal with the Shadow",
+    "formattedDate": "2026年1月"
   },
   "items": [
     {
-      "name": "[法]黎塞留",
+      "name": "[俄]守卫者",
       "probability": 0.08,
       "limit": 1,
-      "id": "Richelieu",
+      "id": "Straj",
       "type": "战舰",
       "rarity": "epic",
-      "nameEn": "FS Richelieu"
+      "nameEn": "RF Strazh"
     },
     {
-      "name": "[俄]符拉迪沃斯托克(68M-Bis-Zif型)",
-      "probability": 0.09,
+      "name": "[韩]幽灵指挥官",
+      "probability": 0.08,
       "limit": 1,
-      "id": "Vladivostok",
+      "id": "GhostCommander",
       "type": "战舰",
       "rarity": "epic",
-      "nameEn": "RF Vladivostok (68M-bis-Zif)"
+      "nameEn": "ROKS Ghost Commander"
     },
     {
-      "name": "[美]弗莱彻(DD-992)",
-      "probability": 0.14,
+      "name": "[美]衣阿华(BB-61)",
+      "probability": 0.15,
       "limit": 1,
-      "id": "Fletcher",
+      "id": "Iowa",
       "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "USS Fletcher (DD-992)"
-    },
-    {
-      "name": "HyFly-2(核)",
-      "probability": 0.24,
-      "limit": 0,
-      "id": "HyFly2Nuke",
-      "type": "导弹",
       "rarity": "legendary",
-      "nameEn": "HyFly-2 (Nuke)"
+      "nameEn": "USS Iowa (BB-61)"
     },
     {
-      "name": "苏-39",
+      "name": "弓箭手(155 mm)",
+      "probability": 0.21,
+      "limit": 2,
+      "id": "Archer",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Archer (155 mm)"
+    },
+    {
+      "name": "歼-36(空优挂载)",
       "probability": 0.35,
       "limit": 2,
-      "id": "SU39",
-      "type": "攻击机",
+      "id": "J36ASF",
+      "type": "战斗机",
       "rarity": "epic",
-      "nameEn": "Su-39"
-    },
-    {
-      "name": "台风MLS-NLOS",
-      "probability": 0.5,
-      "limit": 1,
-      "id": "TyphoonMLS",
-      "type": "自卫炮",
-      "rarity": "epic",
-      "nameEn": "Typhoon MLS-NLOS"
+      "nameEn": "J-36 ASF"
     },
     {
       "name": "T-122\"萨卡里亚\"(122 mm)",
-      "probability": 0.52,
+      "probability": 0.45,
       "limit": 2,
       "id": "T122Sakarya",
       "type": "火箭炮",
@@ -71,17 +62,26 @@
       "nameEn": "T-122 Sakarya (122 mm)"
     },
     {
-      "name": "幽灵之影",
-      "probability": 1.53,
+      "name": "普拉雷",
+      "probability": 0.68,
+      "limit": 3,
+      "id": "Pralay",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "Pralay"
+    },
+    {
+      "name": "自由之光",
+      "probability": 1.51,
       "limit": 1,
-      "id": "Camo_CyberGhost",
+      "id": "Camo_BE96Offer",
       "type": "涂装",
       "rarity": "legendary",
-      "nameEn": "Phantom Shadow"
+      "nameEn": "Light of Freedom"
     },
     {
       "name": "筹码",
-      "probability": 4.06,
+      "probability": 4.0,
       "limit": 0,
       "id": "currency_gachacoins",
       "type": "资源",
@@ -96,18 +96,18 @@
       "rarity": "common"
     },
     {
-      "name": "6 高级修理包",
+      "name": "6 高级导弹诱饵",
       "probability": 12.5,
       "limit": 0,
-      "id": "PremiumRepairKit",
+      "id": "PremiumMissileDecoy",
       "type": "战斗增益",
       "rarity": "common"
     },
     {
-      "name": "2 烟幕",
+      "name": "2 高级鱼雷诱饵",
       "probability": 17.0,
       "limit": 0,
-      "id": "TankSmokeBombs",
+      "id": "PremiumTorpedoDecoy",
       "type": "战斗增益",
       "rarity": "common"
     },

@@ -24,14 +24,6 @@
           "nameEn": "MKE 76 (76 mm)"
         },
         {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "UGST\"物理学家\"-2(533 mm)",
           "probability": 0.1,
           "limit": 2,
@@ -41,10 +33,35 @@
           "nameEn": "UGST Futlyar (533 mm)"
         },
         {
-          "name": "25 000 美金",
-          "probability": 30.0,
+          "name": "沙色",
+          "probability": 0.15,
+          "limit": 3,
+          "id": "Camo_MilitarySandy",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Sand"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
           "limit": 0,
-          "id": "Soft",
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 2.15,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         },
@@ -57,31 +74,6 @@
           "rarity": "common"
         },
         {
-          "name": "350 圣甲虫",
-          "probability": 34.2,
-          "limit": 0,
-          "id": "",
-          "type": "其它",
-          "rarity": "common"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "沙色",
-          "probability": 0.15,
-          "limit": 3,
-          "id": "Camo_MilitarySandy",
-          "type": "涂装",
-          "rarity": "epic",
-          "nameEn": "Sand"
-        },
-        {
           "name": "15 升级芯片",
           "probability": 21.0,
           "limit": 0,
@@ -90,11 +82,19 @@
           "rarity": "common"
         },
         {
-          "name": "1 天高级账户",
-          "probability": 2.15,
+          "name": "25 000 美金",
+          "probability": 30.0,
           "limit": 0,
-          "id": "v1_premium_1d",
+          "id": "Soft",
           "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "350 圣甲虫",
+          "probability": 34.2,
+          "limit": 0,
+          "id": "",
+          "type": "其它",
           "rarity": "common"
         }
       ]
@@ -116,12 +116,13 @@
           "nameEn": "Pan Spatial Hexeres"
         },
         {
-          "name": "10 艺术硬币",
-          "probability": 23.25,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
+          "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Mark45Astor",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Mark-45 ASTOR (483 mm)"
         },
         {
           "name": "102式",
@@ -131,48 +132,6 @@
           "type": "无人潜航器",
           "rarity": "legendary",
           "nameEn": "Type 102"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "15 无人机电池",
-          "probability": 57.5,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_gameplay",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "活动通行证积分加成",
-          "probability": 10.52,
-          "limit": 0,
-          "id": "Eventbooster",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "金色圣甲虫",
-          "probability": 5.5,
-          "limit": 3,
-          "id": "Flag_Rebirth",
-          "type": "旗帜",
-          "rarity": "legendary",
-          "nameEn": "Golden Scarab"
-        },
-        {
-          "name": "Mark-45 \"阿斯托尔\" (483 mm)",
-          "probability": 0.1,
-          "limit": 1,
-          "id": "Mark45Astor",
-          "type": "鱼雷",
-          "rarity": "legendary",
-          "nameEn": "Mark-45 ASTOR (483mm)"
         },
         {
           "name": "HVGP (Block I)",
@@ -191,6 +150,47 @@
           "type": "涂装",
           "rarity": "rare",
           "nameEn": "Legacy of the Pharaohs"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "金色圣甲虫",
+          "probability": 5.5,
+          "limit": 3,
+          "id": "Flag_Rebirth",
+          "type": "旗帜",
+          "rarity": "legendary",
+          "nameEn": "Golden Scarab"
+        },
+        {
+          "name": "活动通行证积分加成",
+          "probability": 10.52,
+          "limit": 0,
+          "id": "Eventbooster",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 艺术硬币",
+          "probability": 23.25,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "15 无人机电池",
+          "probability": 57.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
         }
       ]
     }

@@ -1,10 +1,10 @@
 {
-  "id": "hp25",
+  "id": "la99",
   "gacha_type": "旗舰宝箱类",
   "metadata": {
-    "name": "荣耀之力",
-    "formattedDate": "2025年8月",
-    "nameEn": "Honor and Power"
+    "name": "雪域之舟",
+    "formattedDate": "2025年12月",
+    "nameEn": "Snow Crew"
   },
   "lootboxes": [
     {
@@ -14,97 +14,78 @@
       },
       "items": [
         {
-          "name": "彩虹-7",
-          "probability": 0.25,
+          "name": "[美]杰克·H·卢卡斯(DDG-125)",
+          "probability": 0.15,
           "limit": 1,
-          "id": "CH7Rainbow",
-          "type": "无人机",
+          "id": "JackHLucas",
+          "type": "战舰",
           "rarity": "epic",
-          "nameEn": "CH-7 Rainbow"
+          "nameEn": "USS Jack H. Lucas (DDG-125)"
         },
         {
-          "name": "URWS (30 mm)",
+          "name": "雅克-141\"自由\"",
           "probability": 0.4,
           "limit": 2,
-          "id": "URWS",
-          "type": "自卫炮",
-          "rarity": "legendary",
-          "nameEn": "URWS (30 mm)"
+          "id": "Yak141",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Yak-141 Freestyle"
         },
         {
-          "name": "相控阵1130",
+          "name": "玄武-3C",
           "probability": 0.5,
-          "limit": 1,
-          "id": "Type1130AESA",
-          "type": "防空设备",
+          "limit": 3,
+          "id": "Hyunmoo3C",
+          "type": "导弹",
           "rarity": "epic",
-          "nameEn": "Type 1130 AESA (30 mm)"
+          "nameEn": "Hyunmoo-3C"
         },
         {
           "name": "6 旗舰钥匙",
-          "probability": 1.0,
+          "probability": 0.75,
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "勇士数码迷彩",
+          "name": "冰雪堡垒",
           "probability": 1.5,
-          "limit": 2,
-          "id": "Camo_MightofHonor",
+          "limit": 1,
+          "id": "Camo_la99",
           "type": "涂装",
           "rarity": "epic",
-          "nameEn": "Pixels of Valor"
+          "nameEn": "Ice Fortress"
         },
         {
           "name": "3 旗舰钥匙",
-          "probability": 3.0,
+          "probability": 1.5,
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "25 黄金",
-          "probability": 4.0,
+          "name": "2 旗舰钥匙",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "50 黄金",
+          "probability": 3.5,
           "limit": 0,
           "id": "Hard",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "勇士徽章",
-          "probability": 4.5,
-          "limit": 2,
-          "id": "Flag_ValiantInsignia",
-          "type": "旗帜",
-          "rarity": "epic",
-          "nameEn": "Valiant Insignia"
-        },
-        {
-          "name": "雷宇",
-          "probability": 5.0,
-          "limit": 1,
-          "id": "AvatarPortrait_HP25LootboxFemale",
-          "type": "头像",
-          "rarity": "epic",
-          "nameEn": "Lei Yu"
-        },
-        {
-          "name": "周凯",
-          "probability": 5.0,
-          "limit": 1,
-          "id": "AvatarPortrait_HP25LootboxMale",
-          "type": "头像",
-          "rarity": "epic",
-          "nameEn": "Zhou Kai"
-        },
-        {
-          "name": "2 旗舰钥匙",
-          "probability": 5.0,
+          "name": "300 000 美金",
+          "probability": 6.0,
           "limit": 0,
-          "id": "currency_premium_lootboxkey",
+          "id": "Soft",
           "type": "资源",
           "rarity": "common"
         },
@@ -118,7 +99,7 @@
         },
         {
           "name": "25 升级芯片",
-          "probability": 8.15,
+          "probability": 9.0,
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
@@ -133,27 +114,11 @@
           "rarity": "common"
         },
         {
-          "name": "5 高级修理包",
-          "probability": 10.0,
-          "limit": 0,
-          "id": "PremiumRepairKit",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "300 000 美金",
+          "name": "25 黄金",
           "probability": 12.0,
           "limit": 0,
-          "id": "Soft",
+          "id": "Hard",
           "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "50 修理包",
-          "probability": 12.0,
-          "limit": 0,
-          "id": "RepairKit",
-          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -161,6 +126,22 @@
           "probability": 12.0,
           "limit": 0,
           "id": "MissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.5,
+          "limit": 0,
+          "id": "RepairKit",
           "type": "战斗增益",
           "rarity": "common"
         }
@@ -173,118 +154,117 @@
       },
       "items": [
         {
-          "name": "[中]利刃",
-          "probability": 0.08,
+          "name": "[美]武库舰",
+          "probability": 0.003,
           "limit": 1,
-          "id": "Liren",
+          "id": "Monitor",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "CN Liren"
+          "nameEn": "USS Arsenal Ship"
         },
         {
-          "name": "[中]华清(BBE-01)",
+          "name": "[俄]斯瓦罗格(1165工程)",
           "probability": 0.1,
           "limit": 1,
-          "id": "Huaqing",
+          "id": "Project1165Svarog",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "CN Huaqing (BBE-01)"
+          "nameEn": "RF Project 1165 Svarog"
+        },
+        {
+          "name": "[日]大鲸(SS-513)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Taigei",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "JS Taigei (SS-513)"
+        },
+        {
+          "name": "[美]蒙大拿(BB-67)",
+          "probability": 0.19,
+          "limit": 1,
+          "id": "",
+          "type": "舰船",
+          "rarity": "common"
+        },
+        {
+          "name": "[日]宙斯盾武藏",
+          "probability": 0.19,
+          "limit": 1,
+          "id": "MusashiAegis",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "JS Musashi Aegis"
+        },
+        {
+          "name": "[西]SMART 8000",
+          "probability": 0.2,
+          "limit": 1,
+          "id": "SMART8000",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "SPS SMART 8000"
+        },
+        {
+          "name": "[泛空间]百慕大",
+          "probability": 0.3,
+          "limit": 1,
+          "id": "",
+          "type": "舰船",
+          "rarity": "common"
         },
         {
           "name": "[中]十堰",
-          "probability": 0.1,
+          "probability": 0.45,
           "limit": 1,
           "id": "",
           "type": "舰船",
           "rarity": "common"
         },
         {
-          "name": "彩虹-4",
-          "probability": 0.1,
-          "limit": 1,
-          "id": "CH4Rainbow",
-          "type": "无人机",
-          "rarity": "epic",
-          "nameEn": "CH-4 Rainbow"
-        },
-        {
-          "name": "[中]承影",
-          "probability": 0.11,
-          "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
-        },
-        {
-          "name": "[中]漯河(054B型)",
-          "probability": 1.0,
-          "limit": 1,
-          "id": "Type054B",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "CN Type 054B"
-        },
-        {
-          "name": "[中]达州(052DM型)",
-          "probability": 1.0,
-          "limit": 1,
-          "id": "Type052DM",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "CN Type 052DM Dazhou"
-        },
-        {
-          "name": "[中]中船探索01(07X型)",
-          "probability": 1.0,
-          "limit": 1,
-          "id": "07X",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "CN 07X"
-        },
-        {
-          "name": "[中]四川(076型)",
-          "probability": 1.0,
-          "limit": 1,
-          "id": "Type076",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "CN Type 076 Sichuan"
-        },
-        {
-          "name": "SR-5 122/300",
+          "name": "[韩]正祖大王",
           "probability": 1.5,
-          "limit": 2,
-          "id": "SR5",
-          "type": "火箭炮",
-          "rarity": "epic",
-          "nameEn": "SR-5 122/300"
-        },
-        {
-          "name": "[西飞]轰-10\"太阳黑子\"",
-          "probability": 1.5,
-          "limit": 2,
-          "id": "H10",
-          "type": "轰炸机",
-          "rarity": "epic",
-          "nameEn": "Xian H-10"
-        },
-        {
-          "name": "胜利黎明",
-          "probability": 2.5,
           "limit": 1,
-          "id": "Camo_HP25Lootbox",
-          "type": "涂装",
-          "rarity": "legendary",
-          "nameEn": "Dawn of Victory"
+          "id": "KDXIIIBatchII",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "ROKS Jeongjo the Great"
+        },
+        {
+          "name": "[俄]巴辛斯蒂海军上将",
+          "probability": 2.0,
+          "limit": 1,
+          "id": "AdmiralBasisty",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Admiral Basisty"
+        },
+        {
+          "name": "[美]迈克尔·蒙苏尔(DDG-1001)",
+          "probability": 2.2,
+          "limit": 1,
+          "id": "Monsoor",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "USS Michael Monsoor (DDG-1001)"
         },
         {
           "name": "130 艺术硬币",
-          "probability": 3.7,
+          "probability": 2.5,
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
+        },
+        {
+          "name": "冰雪堡垒",
+          "probability": 3.5,
+          "limit": 1,
+          "id": "Camo_la99",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Ice Fortress"
         },
         {
           "name": "400 黄金",
@@ -296,7 +276,7 @@
         },
         {
           "name": "75 艺术硬币",
-          "probability": 6.7,
+          "probability": 5.5,
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",
@@ -304,7 +284,7 @@
         },
         {
           "name": "40 升级芯片",
-          "probability": 7.0,
+          "probability": 6.5,
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
@@ -319,14 +299,6 @@
           "rarity": "common"
         },
         {
-          "name": "10 高级鱼雷诱饵",
-          "probability": 7.0,
-          "limit": 0,
-          "id": "PremiumTorpedoDecoy",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
           "name": "15 电子对抗",
           "probability": 7.0,
           "limit": 0,
@@ -335,23 +307,23 @@
           "rarity": "common"
         },
         {
-          "name": "15 引擎过载",
-          "probability": 7.0,
+          "name": "400 000 美金",
+          "probability": 7.5,
           "limit": 0,
-          "id": "EngineBoost",
-          "type": "战斗增益",
+          "id": "Soft",
+          "type": "资源",
           "rarity": "common"
         },
         {
           "name": "10 高级修理包",
-          "probability": 7.6,
+          "probability": 7.8,
           "limit": 0,
           "id": "PremiumRepairKit",
           "type": "战斗增益",
           "rarity": "common"
         },
         {
-          "name": "15 高级导弹诱饵",
+          "name": "10 高级导弹诱饵",
           "probability": 8.0,
           "limit": 0,
           "id": "PremiumMissileDecoy",
@@ -367,19 +339,27 @@
           "rarity": "common"
         },
         {
+          "name": "15 引擎过载",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级鱼雷诱饵",
+          "probability": 8.5,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
           "name": "10 烟幕",
           "probability": 8.9,
           "limit": 0,
           "id": "TankSmokeBombs",
           "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "600 000 美金",
-          "probability": 9.0,
-          "limit": 0,
-          "id": "Soft",
-          "type": "资源",
           "rarity": "common"
         }
       ]

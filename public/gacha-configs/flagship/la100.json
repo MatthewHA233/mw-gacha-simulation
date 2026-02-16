@@ -1,10 +1,10 @@
 {
-  "id": "la96",
+  "id": "la100",
   "gacha_type": "旗舰宝箱类",
   "metadata": {
-    "name": "头奖行动",
-    "formattedDate": "2025年9月",
-    "nameEn": "Operation Jackpot"
+    "name": "战争律动",
+    "formattedDate": "2026年1月",
+    "nameEn": "Beats of War"
   },
   "lootboxes": [
     {
@@ -14,31 +14,31 @@
       },
       "items": [
         {
-          "name": "[美]杰克·H·卢卡斯(DDG-125)",
+          "name": "[意]的里雅斯特(L9890)",
           "probability": 0.15,
           "limit": 1,
-          "id": "JackHLucas",
+          "id": "Trieste",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "USS Jack H. Lucas (DDG-125)"
+          "nameEn": "IT Trieste (L9890)"
         },
         {
-          "name": "M270 MLRS (270 mm)",
+          "name": "图-142M3M\"熊\"-F",
           "probability": 0.4,
-          "limit": 1,
-          "id": "M270Launcher",
-          "type": "火箭炮",
+          "limit": 2,
+          "id": "TU142M3M",
+          "type": "轰炸机",
           "rarity": "legendary",
-          "nameEn": "M270 MLRS (270mm)"
+          "nameEn": "Tu-142M3M Bear-F"
         },
         {
-          "name": "MH-60L DAP\"渗透者\"",
+          "name": "CVS401\"英仙座\"",
           "probability": 0.5,
-          "limit": 2,
-          "id": "MH60LDAP",
-          "type": "直升机",
+          "limit": 3,
+          "id": "CVS401Perseus",
+          "type": "导弹",
           "rarity": "epic",
-          "nameEn": "MH-60L DAP"
+          "nameEn": "CVS401 Perseus"
         },
         {
           "name": "6 旗舰钥匙",
@@ -49,13 +49,31 @@
           "rarity": "common"
         },
         {
-          "name": "装饰艺术",
-          "probability": 1.5,
+          "name": "均衡器",
+          "probability": 1.2,
           "limit": 1,
-          "id": "Camo_LB96",
+          "id": "Camo_la100",
           "type": "涂装",
           "rarity": "epic",
-          "nameEn": "Art Deco"
+          "nameEn": "Equalizer"
+        },
+        {
+          "name": "金·“脉冲”·安俊",
+          "probability": 1.4,
+          "limit": 1,
+          "id": "AvatarPortrait_la100Male",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Kim \"Pulse\" Anjoon"
+        },
+        {
+          "name": "莉拉·“霓虹”·福斯",
+          "probability": 1.4,
+          "limit": 1,
+          "id": "AvatarPortrait_la100Female",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Lila \"Neon\" Foss"
         },
         {
           "name": "3 旗舰钥匙",
@@ -67,7 +85,7 @@
         },
         {
           "name": "2 旗舰钥匙",
-          "probability": 3.0,
+          "probability": 2.5,
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
@@ -76,32 +94,6 @@
         {
           "name": "50 黄金",
           "probability": 3.5,
-          "limit": 2,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "曼尼·奥申",
-          "probability": 5.0,
-          "limit": 1,
-          "id": "AvatarPortrait_LB96Male",
-          "type": "头像",
-          "rarity": "epic",
-          "nameEn": "Manny Ocean"
-        },
-        {
-          "name": "格蕾丝·方丹",
-          "probability": 5.0,
-          "limit": 1,
-          "id": "AvatarPortrait_LB96Female",
-          "type": "头像",
-          "rarity": "epic",
-          "nameEn": "Grace Fontaine"
-        },
-        {
-          "name": "25 黄金",
-          "probability": 6.0,
           "limit": 0,
           "id": "Hard",
           "type": "资源",
@@ -109,9 +101,17 @@
         },
         {
           "name": "10 钥匙",
-          "probability": 6.0,
+          "probability": 5.5,
           "limit": 0,
           "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300 000 美金",
+          "probability": 6.0,
+          "limit": 0,
+          "id": "Soft",
           "type": "资源",
           "rarity": "common"
         },
@@ -132,19 +132,11 @@
           "rarity": "common"
         },
         {
-          "name": "300 000 美金",
+          "name": "25 黄金",
           "probability": 12.0,
           "limit": 0,
-          "id": "Soft",
+          "id": "Hard",
           "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "50 修理包",
-          "probability": 12.0,
-          "limit": 0,
-          "id": "RepairKit",
-          "type": "战斗增益",
           "rarity": "common"
         },
         {
@@ -162,6 +154,14 @@
           "id": "PremiumRepairKit",
           "type": "战斗增益",
           "rarity": "common"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.5,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
         }
       ]
     },
@@ -172,17 +172,8 @@
       },
       "items": [
         {
-          "name": "[美]武库舰",
-          "probability": 0.003,
-          "limit": 1,
-          "id": "Monitor",
-          "type": "战舰",
-          "rarity": "legendary",
-          "nameEn": "USS Arsenal Ship"
-        },
-        {
           "name": "CH-1\"铜斑蛇\"",
-          "probability": 0.11,
+          "probability": 0.06,
           "limit": 1,
           "id": "Copperhead",
           "type": "直升机",
@@ -190,34 +181,62 @@
           "nameEn": "CH-1"
         },
         {
-          "name": "[美]蒙大拿(BB-67)",
-          "probability": 0.14,
+          "name": "[法]超级阿尔萨斯",
+          "probability": 0.08,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
-        },
-        {
-          "name": "AD-12\"蜻蜓\"",
-          "probability": 0.19,
-          "limit": 1,
-          "id": "AD12Dragonfly",
-          "type": "直升机",
-          "rarity": "legendary",
-          "nameEn": "AD-12 Dragonfly"
-        },
-        {
-          "name": "[美]新罕布什尔(BB-1011)",
-          "probability": 0.2,
-          "limit": 1,
-          "id": "Hampshire",
+          "id": "SuperAlsace",
           "type": "战舰",
           "rarity": "legendary",
-          "nameEn": "USS New Hampshire (BB-1011)"
+          "nameEn": "FS Super Alsace"
+        },
+        {
+          "name": "[中]东巡-125",
+          "probability": 0.15,
+          "limit": 1,
+          "id": "DX125",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN DX-125"
+        },
+        {
+          "name": "[韩]龟船II",
+          "probability": 0.15,
+          "limit": 1,
+          "id": "GeobukseonII",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "ROKS Geobukseon II"
+        },
+        {
+          "name": "[泛空间]阿尔戈纳斯",
+          "probability": 0.18,
+          "limit": 1,
+          "id": "Argonas",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "Pan Spatial Argonas"
+        },
+        {
+          "name": "[法]PANG",
+          "probability": 0.2,
+          "limit": 1,
+          "id": "PANG",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "FS PANG"
+        },
+        {
+          "name": "SP-12\"游隼\"",
+          "probability": 0.25,
+          "limit": 1,
+          "id": "SP12",
+          "type": "无人机",
+          "rarity": "legendary",
+          "nameEn": "SP-12 Sapsan"
         },
         {
           "name": "B-2A\"幽灵\"",
-          "probability": 0.25,
+          "probability": 0.35,
           "limit": 1,
           "id": "B2Spirit",
           "type": "轰炸机",
@@ -225,17 +244,8 @@
           "nameEn": "B-2A Spirit"
         },
         {
-          "name": "SR-71D\"黑鸟\"",
-          "probability": 0.35,
-          "limit": 1,
-          "id": "SR71D",
-          "type": "轰炸机",
-          "rarity": "legendary",
-          "nameEn": "SR-71D Blackbird"
-        },
-        {
           "name": "A-14B\"申冤者\"",
-          "probability": 0.35,
+          "probability": 1.7,
           "limit": 1,
           "id": "A14",
           "type": "攻击机",
@@ -243,31 +253,31 @@
           "nameEn": "A-14B Equalizer"
         },
         {
-          "name": "[美]阿肯色(CGN-41)",
-          "probability": 1.5,
-          "limit": 1,
-          "id": "CGN41Arkansas",
-          "type": "战舰",
-          "rarity": "epic",
-          "nameEn": "USS Arkansas (CGN-41)"
-        },
-        {
-          "name": "[美]迈克尔·蒙苏尔(DDG-1001)",
+          "name": "[西]博尼法兹(F-110型)",
           "probability": 2.0,
           "limit": 1,
-          "id": "Monsoor",
+          "id": "F110",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "USS Michael Monsoor (DDG-1001)"
+          "nameEn": "SPS F-110"
         },
         {
-          "name": "[美]宪法II(DDR-2000)",
+          "name": "[美]泰德·史蒂文斯(DDG-128)",
           "probability": 2.2,
           "limit": 1,
-          "id": "DDR2000",
+          "id": "TedStevens",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "USS Constitution II (DDR-2000)"
+          "nameEn": "USS Ted Stevens (DDG-128)"
+        },
+        {
+          "name": "均衡器",
+          "probability": 2.5,
+          "limit": 1,
+          "id": "Camo_la100",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Equalizer"
         },
         {
           "name": "130 艺术硬币",
@@ -278,15 +288,6 @@
           "rarity": "common"
         },
         {
-          "name": "装饰艺术",
-          "probability": 3.5,
-          "limit": 1,
-          "id": "Camo_LB96",
-          "type": "涂装",
-          "rarity": "epic",
-          "nameEn": "Art Deco"
-        },
-        {
           "name": "400 黄金",
           "probability": 4.0,
           "limit": 0,
@@ -295,16 +296,8 @@
           "rarity": "common"
         },
         {
-          "name": "40 升级芯片",
-          "probability": 6.5,
-          "limit": 0,
-          "id": "Upgrades",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "75 艺术硬币",
-          "probability": 6.5,
+          "probability": 5.5,
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",
@@ -327,18 +320,18 @@
           "rarity": "common"
         },
         {
-          "name": "15 引擎过载",
-          "probability": 7.0,
-          "limit": 0,
-          "id": "EngineBoost",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
           "name": "400 000 美金",
           "probability": 7.5,
           "limit": 0,
           "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "40 升级芯片",
+          "probability": 7.5,
+          "limit": 0,
+          "id": "Upgrades",
           "type": "资源",
           "rarity": "common"
         },
@@ -363,6 +356,14 @@
           "probability": 8.0,
           "limit": 0,
           "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "15 引擎过载",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "EngineBoost",
           "type": "战斗增益",
           "rarity": "common"
         },

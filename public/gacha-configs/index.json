@@ -22,6 +22,48 @@
       "nameEn": "Deal with the Shadow"
     },
     {
+      "id": "ag100",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "formattedDate": "2026年1月",
+      "nameEn": "Deal with the Shadow"
+    },
+    {
+      "id": "la100",
+      "gacha_type": "旗舰宝箱类",
+      "name": "战争律动",
+      "formattedDate": "2026年1月",
+      "nameEn": "Beats of War"
+    },
+    {
+      "id": "be100",
+      "gacha_type": "机密货物类",
+      "name": "联盟冲突",
+      "formattedDate": "2026年1月",
+      "nameEn": "Alliance Clash"
+    },
+    {
+      "id": "ag99",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "formattedDate": "2025年12月",
+      "nameEn": "Deal with the Shadow"
+    },
+    {
+      "id": "la99",
+      "gacha_type": "旗舰宝箱类",
+      "name": "雪域之舟",
+      "formattedDate": "2025年12月",
+      "nameEn": "Snow Crew"
+    },
+    {
+      "id": "be99",
+      "gacha_type": "机密货物类",
+      "name": "北极风暴",
+      "formattedDate": "2025年12月",
+      "nameEn": "Arctic Storm"
+    },
+    {
       "id": "la98",
       "gacha_type": "旗舰宝箱类",
       "name": "海上盛宴",

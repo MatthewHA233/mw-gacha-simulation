@@ -1,10 +1,10 @@
 {
-  "id": "be98",
+  "id": "be100",
   "gacha_type": "机密货物类",
   "metadata": {
-    "name": "舰队时代",
-    "formattedDate": "2025年11月",
-    "nameEn": "Age of Fleets"
+    "name": "联盟冲突",
+    "formattedDate": "2026年1月",
+    "nameEn": "Alliance Clash"
   },
   "cargos": [
     {
@@ -14,44 +14,44 @@
       },
       "items": [
         {
-          "name": "[泛空间]冲击风暴-1",
+          "name": "TAL\"什耶那\"(324 mm)",
           "probability": 0.25,
           "limit": 1,
-          "id": "RAMSTORM1",
-          "type": "无人自爆艇",
+          "id": "TALShyena",
+          "type": "鱼雷",
           "rarity": "epic",
-          "nameEn": "Pan Spatial RAMSTORM 1"
+          "nameEn": "TAL Shyena (324 mm)"
         },
         {
-          "name": "[印度斯坦航空]AMCA",
+          "name": "米-24\"超级雌鹿\"Mk.III",
           "probability": 0.5,
           "limit": 1,
-          "id": "HALAMCA",
-          "type": "攻击机",
+          "id": "MI24SH",
+          "type": "直升机",
           "rarity": "epic",
-          "nameEn": "HAL AMCA"
+          "nameEn": "Mi-24 SuperHind Mk.III"
         },
         {
-          "name": "加百利V",
+          "name": "URWS (30 mm)",
           "probability": 0.75,
           "limit": 2,
-          "id": "GabrielV",
-          "type": "导弹",
-          "rarity": "epic",
-          "nameEn": "Gabriel V"
+          "id": "URWS",
+          "type": "自卫炮",
+          "rarity": "legendary",
+          "nameEn": "URWS (30 mm)"
         },
         {
           "name": "授权密钥",
-          "probability": 1.5,
+          "probability": 1.25,
           "limit": 0,
           "id": "bigevent_currency_gacha_rm",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "Grumpy Eye",
-          "probability": 2.0,
-          "limit": 4,
+          "name": "Guardian Bear",
+          "probability": 2.25,
+          "limit": 3,
           "id": "",
           "type": "其它",
           "rarity": "common"
@@ -105,49 +105,49 @@
       },
       "items": [
         {
-          "name": "[英]32型",
-          "probability": 0.05,
+          "name": "[俄]恰巴年科海军上将",
+          "probability": 0.07,
           "limit": 1,
-          "id": "Type32",
+          "id": "AdmiralChabanenko",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "HMS Type 32"
+          "nameEn": "RF Admiral Chabanenko"
         },
         {
-          "name": "[中]天津",
+          "name": "[俄]巴尔蒂尼 A-2000-7",
           "probability": 0.1,
           "limit": 1,
-          "id": "Tianjin",
+          "id": "BartiniA2000",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "CN Tianjin"
+          "nameEn": "RF Bartini A-2000-7"
         },
         {
-          "name": "北极星-4",
-          "probability": 0.3,
+          "name": "法塔赫-2",
+          "probability": 0.23,
           "limit": 2,
-          "id": "Pukguksong4SLBM",
+          "id": "Fattah2",
           "type": "导弹",
           "rarity": "legendary",
-          "nameEn": "Pukguksong-4"
+          "nameEn": "Fattah-2"
         },
         {
-          "name": "ASN4G",
-          "probability": 0.35,
-          "limit": 3,
-          "id": "ASN4G",
-          "type": "导弹",
-          "rarity": "legendary",
-          "nameEn": "ASN4G"
-        },
-        {
-          "name": "SUT 264 (533 mm)",
-          "probability": 0.4,
+          "name": "62型鱼雷(533mm)",
+          "probability": 0.45,
           "limit": 2,
-          "id": "SUT264",
+          "id": "Torped62",
           "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Torped 62 (533 mm)"
+        },
+        {
+          "name": "电磁加速炮\"天冲\"",
+          "probability": 0.65,
+          "limit": 3,
+          "id": "ERSTensho",
+          "type": "主炮",
           "rarity": "epic",
-          "nameEn": "SUT 264 (533 mm)"
+          "nameEn": "ERS Tensho (127 mm)"
         },
         {
           "name": "授权密钥",
@@ -158,16 +158,16 @@
           "rarity": "common"
         },
         {
-          "name": "5 高级修理包",
+          "name": "5 高级导弹诱饵",
           "probability": 17.0,
           "limit": 0,
-          "id": "PremiumRepairKit",
+          "id": "PremiumMissileDecoy",
           "type": "战斗增益",
           "rarity": "common"
         },
         {
           "name": "200 Token",
-          "probability": 20.0,
+          "probability": 20.2,
           "limit": 180,
           "id": "",
           "type": "其它",
@@ -175,7 +175,7 @@
         },
         {
           "name": "5 艺术硬币",
-          "probability": 28.0,
+          "probability": 27.5,
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",

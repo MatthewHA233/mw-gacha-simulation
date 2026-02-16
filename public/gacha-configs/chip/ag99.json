@@ -1,10 +1,10 @@
 {
-  "id": "ag96",
+  "id": "ag99",
   "gacha_type": "筹码类",
   "metadata": {
-    "name": "禁品追缉",
-    "nameEn": "Contraband Hunt",
-    "formattedDate": "2025年9月"
+    "name": "暗影交易",
+    "nameEn": "Deal with the Shadow",
+    "formattedDate": "2025年12月"
   },
   "items": [
     {
@@ -17,71 +17,71 @@
       "nameEn": "FS Richelieu"
     },
     {
-      "name": "[俄]符拉迪沃斯托克(68M-Bis-Zif型)",
+      "name": "[意]FREMM-EVO",
       "probability": 0.09,
       "limit": 1,
-      "id": "Vladivostok",
+      "id": "FREMMEVO",
       "type": "战舰",
       "rarity": "epic",
-      "nameEn": "RF Vladivostok (68M-bis-Zif)"
+      "nameEn": "IT FREMM-EVO"
     },
     {
-      "name": "[美]弗莱彻(DD-992)",
+      "name": "[英]前卫(S28)",
       "probability": 0.14,
       "limit": 1,
-      "id": "Fletcher",
+      "id": "Vanguard",
       "type": "战舰",
       "rarity": "epic",
-      "nameEn": "USS Fletcher (DD-992)"
+      "nameEn": "HMS Vanguard (S28)"
     },
     {
-      "name": "HyFly-2(核)",
+      "name": "国王轨道炮(180 mm)",
       "probability": 0.24,
-      "limit": 0,
-      "id": "HyFly2Nuke",
-      "type": "导弹",
+      "limit": 2,
+      "id": "MRPGKonigEMRG",
+      "type": "主炮",
       "rarity": "legendary",
-      "nameEn": "HyFly-2 (Nuke)"
+      "nameEn": "EMRG Konig (180 mm)"
     },
     {
-      "name": "苏-39",
+      "name": "OH-2B\"手里剑\"",
       "probability": 0.35,
       "limit": 2,
-      "id": "SU39",
-      "type": "攻击机",
-      "rarity": "epic",
-      "nameEn": "Su-39"
+      "id": "OH2BShuriken",
+      "type": "直升机",
+      "rarity": "legendary",
+      "nameEn": "OH-2B Shuriken"
+    },
+    {
+      "name": "阿卡亚(533 mm)",
+      "probability": 0.5,
+      "limit": 2,
+      "id": "Akya",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Akya (533mm)"
     },
     {
       "name": "台风MLS-NLOS",
-      "probability": 0.5,
-      "limit": 1,
+      "probability": 0.52,
+      "limit": 2,
       "id": "TyphoonMLS",
       "type": "自卫炮",
       "rarity": "epic",
       "nameEn": "Typhoon MLS-NLOS"
     },
     {
-      "name": "T-122\"萨卡里亚\"(122 mm)",
-      "probability": 0.52,
-      "limit": 2,
-      "id": "T122Sakarya",
-      "type": "火箭炮",
-      "rarity": "epic",
-      "nameEn": "T-122 Sakarya (122 mm)"
-    },
-    {
-      "name": "幽灵之影",
-      "probability": 1.53,
+      "name": "末日之怒",
+      "probability": 1.59,
       "limit": 1,
-      "id": "Camo_CyberGhost",
+      "id": "Camo_BigEventBF25Offer",
       "type": "涂装",
       "rarity": "legendary",
-      "nameEn": "Phantom Shadow"
+      "nameEn": "Wrath of the Doomed"
     },
     {
       "name": "筹码",
-      "probability": 4.06,
+      "probability": 4.0,
       "limit": 0,
       "id": "currency_gachacoins",
       "type": "资源",
@@ -96,18 +96,18 @@
       "rarity": "common"
     },
     {
-      "name": "6 高级修理包",
+      "name": "6 高级导弹诱饵",
       "probability": 12.5,
       "limit": 0,
-      "id": "PremiumRepairKit",
+      "id": "PremiumMissileDecoy",
       "type": "战斗增益",
       "rarity": "common"
     },
     {
-      "name": "2 烟幕",
+      "name": "2 高级鱼雷诱饵",
       "probability": 17.0,
       "limit": 0,
-      "id": "TankSmokeBombs",
+      "id": "PremiumTorpedoDecoy",
       "type": "战斗增益",
       "rarity": "common"
     },

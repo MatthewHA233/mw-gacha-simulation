@@ -23,10 +23,60 @@
           "nameEn": "Nasir"
         },
         {
+          "name": "米-8TV\"河马\"-E",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "MI8TV",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Mi-8TV Hip"
+        },
+        {
+          "name": "RapidFire LMM",
+          "probability": 0.75,
+          "limit": 2,
+          "id": "RapidFireLMM",
+          "type": "自卫炮",
+          "rarity": "legendary",
+          "nameEn": "RapidFire LMM"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "10 艺术硬币",
           "probability": 2.0,
           "limit": 0,
           "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "3 引擎过载",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
           "type": "资源",
           "rarity": "common"
         },
@@ -39,61 +89,11 @@
           "rarity": "common"
         },
         {
-          "name": "米-8TV\"河马\"-E",
-          "probability": 0.5,
-          "limit": 1,
-          "id": "MI8TV",
-          "type": "直升机",
-          "rarity": "epic",
-          "nameEn": "Mi-8TV Hip"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 1.5,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
           "name": "300 Token",
           "probability": 30.0,
           "limit": 0,
           "id": "",
           "type": "其它",
-          "rarity": "common"
-        },
-        {
-          "name": "3 引擎过载",
-          "probability": 15.0,
-          "limit": 0,
-          "id": "EngineBoost",
-          "type": "战斗增益",
-          "rarity": "common"
-        },
-        {
-          "name": "RapidFire LMM",
-          "probability": 0.75,
-          "limit": 2,
-          "id": "RapidFireLMM",
-          "type": "自卫炮",
-          "rarity": "legendary",
-          "nameEn": "RapidFire LMM"
-        },
-        {
-          "name": "20 无人机电池",
-          "probability": 20.0,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_gameplay",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "20 黄金",
-          "probability": 8.0,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
           "rarity": "common"
         }
       ]
@@ -105,38 +105,13 @@
       },
       "items": [
         {
-          "name": "[法]福尔宾",
+          "name": "[法]福尔班",
           "probability": 0.05,
           "limit": 1,
           "id": "Forbin",
           "type": "战舰",
           "rarity": "epic",
           "nameEn": "FS Forbin"
-        },
-        {
-          "name": "授权密钥",
-          "probability": 4.3,
-          "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "弓箭手(155 mm)",
-          "probability": 0.35,
-          "limit": 2,
-          "id": "Archer",
-          "type": "主炮",
-          "rarity": "legendary",
-          "nameEn": "Archer (155 mm)"
-        },
-        {
-          "name": "25 黄金",
-          "probability": 29.5,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
         },
         {
           "name": "[中]093AG型",
@@ -148,12 +123,22 @@
           "nameEn": "CN Type 093AG"
         },
         {
-          "name": "5 高级修理包",
-          "probability": 17.0,
-          "limit": 0,
-          "id": "PremiumRepairKit",
-          "type": "战斗增益",
-          "rarity": "common"
+          "name": "SH-16 (155 mm)",
+          "probability": 0.3,
+          "limit": 3,
+          "id": "SH16",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "SH-16 (155 mm)"
+        },
+        {
+          "name": "弓箭手(155 mm)",
+          "probability": 0.35,
+          "limit": 2,
+          "id": "Archer",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "Archer (155 mm)"
         },
         {
           "name": "TRG-300\"虎\"(300 mm)",
@@ -173,13 +158,20 @@
           "rarity": "common"
         },
         {
-          "name": "SH-16 (155 mm)",
-          "probability": 0.3,
-          "limit": 3,
-          "id": "SH16",
-          "type": "主炮",
-          "rarity": "epic",
-          "nameEn": "SH-16 (155 mm)"
+          "name": "授权密钥",
+          "probability": 4.3,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 17.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
         },
         {
           "name": "200 Token",
@@ -187,6 +179,14 @@
           "limit": 180,
           "id": "",
           "type": "其它",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.5,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
           "rarity": "common"
         }
       ]

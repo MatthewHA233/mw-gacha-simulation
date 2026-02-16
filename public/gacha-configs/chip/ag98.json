@@ -26,23 +26,6 @@
       "nameEn": "IT Vittorio Veneto (C 550)"
     },
     {
-      "name": "RG-30霰弹(127 mm)",
-      "probability": 0.24,
-      "limit": 2,
-      "id": "RG30Buckshot",
-      "type": "主炮",
-      "rarity": "legendary",
-      "nameEn": "RG-30 Buckshot (127 mm)"
-    },
-    {
-      "name": "筹码",
-      "probability": 4.0,
-      "limit": 0,
-      "id": "currency_gachacoins",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
       "name": "[法]阿基坦(D650)",
       "probability": 0.14,
       "limit": 1,
@@ -52,62 +35,13 @@
       "nameEn": "FS Aquitaine (D650)"
     },
     {
-      "name": "15 黄金",
-      "probability": 33.0,
-      "limit": 0,
-      "id": "Hard",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "Incoming!",
-      "probability": 0.5,
+      "name": "RG-30霰弹(127 mm)",
+      "probability": 0.24,
       "limit": 2,
-      "id": "",
-      "type": "其它",
-      "rarity": "common"
-    },
-    {
-      "name": "蜂群-2\"阿特拉斯\"",
-      "probability": 1.59,
-      "limit": 1,
-      "id": "Swarmer2Atlas",
-      "type": "火箭炮",
-      "rarity": "epic",
-      "nameEn": "Swarmer-2 Atlas"
-    },
-    {
-      "name": "6 高级导弹诱饵",
-      "probability": 12.5,
-      "limit": 0,
-      "id": "PremiumMissileDecoy",
-      "type": "战斗增益",
-      "rarity": "common"
-    },
-    {
-      "name": "兑换券",
-      "probability": 8.0,
-      "limit": 0,
-      "id": "",
-      "type": "其它",
-      "rarity": "common"
-    },
-    {
-      "name": "ET40 (324 mm)",
-      "probability": 0.52,
-      "limit": 2,
-      "id": "ET40",
-      "type": "鱼雷",
-      "rarity": "epic",
-      "nameEn": "ET40 (324 mm)"
-    },
-    {
-      "name": "4 艺术硬币",
-      "probability": 22.0,
-      "limit": 0,
-      "id": "Artstorm",
-      "type": "资源",
-      "rarity": "common"
+      "id": "RG30Buckshot",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "RG-30 Buckshot (127 mm)"
     },
     {
       "name": "东风-100",
@@ -119,11 +53,77 @@
       "nameEn": "DF-100"
     },
     {
+      "name": "Incoming!",
+      "probability": 0.5,
+      "limit": 2,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    },
+    {
+      "name": "ET40 (533 mm)",
+      "probability": 0.52,
+      "limit": 2,
+      "id": "ET40",
+      "type": "鱼雷",
+      "rarity": "epic",
+      "nameEn": "ET40 (533 mm)"
+    },
+    {
+      "name": "蜂群-2\"阿特拉斯\"",
+      "probability": 1.59,
+      "limit": 1,
+      "id": "Swarmer2Atlas",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "Swarmer-2 Atlas"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "兑换券",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    },
+    {
+      "name": "6 高级导弹诱饵",
+      "probability": 12.5,
+      "limit": 0,
+      "id": "PremiumMissileDecoy",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
       "name": "2 高级鱼雷诱饵",
       "probability": 17.0,
       "limit": 0,
       "id": "PremiumTorpedoDecoy",
       "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
       "rarity": "common"
     }
   ]

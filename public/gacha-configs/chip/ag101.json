@@ -8,123 +8,124 @@
   },
   "items": [
     {
-      "id": "VittorioVeneto",
-      "limit": 1,
       "name": "[意]维托里奥·维内托(C 550)",
-      "nameEn": "IT Vittorio Veneto (C 550)",
       "probability": 0.08,
+      "limit": 1,
+      "id": "VittorioVeneto",
+      "type": "战舰",
       "rarity": "epic",
-      "type": "战舰"
+      "nameEn": "IT Vittorio Veneto (C 550)"
     },
     {
-      "id": "30DX",
-      "limit": 1,
       "name": "[日]30DX",
-      "nameEn": "JS 30DX",
       "probability": 0.08,
-      "rarity": "epic",
-      "type": "战舰"
-    },
-    {
-      "id": "Tianjin",
       "limit": 1,
+      "id": "30DX",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "JS 30DX"
+    },
+    {
       "name": "[中]天津",
-      "nameEn": "CN Tianjin",
       "probability": 0.15,
+      "limit": 1,
+      "id": "Tianjin",
+      "type": "战舰",
       "rarity": "epic",
-      "type": "战舰"
+      "nameEn": "CN Tianjin"
     },
     {
-      "id": "Mark45Astor",
-      "limit": 0,
-      "name": "MARK-45\"阿斯托尔\"(483mm)",
-      "nameEn": "Mark-45 ASTOR (483mm)",
-      "probability": 0.25,
-      "rarity": "legendary",
-      "type": "鱼雷"
-    },
-    {
-      "id": "TRG300Tiger",
-      "limit": 2,
-      "name": "TRG-300\"虎\"(300 mm)",
-      "nameEn": "TRG-300 Tiger (300 mm)",
-      "probability": 0.235,
-      "rarity": "epic",
-      "type": "火箭炮"
-    },
-    {
-      "id": "Z18F",
-      "limit": 2,
       "name": "直-18F",
-      "nameEn": "Z-18F",
       "probability": 0.15,
-      "rarity": "epic",
-      "type": "直升机"
-    },
-    {
-      "id": "Hyunmoo4",
       "limit": 2,
-      "name": "玄武-4.4",
-      "nameEn": "Hyunmoo-4.4",
-      "probability": 0.7,
-      "rarity": "legendary",
-      "type": "导弹"
+      "id": "Z18F",
+      "type": "直升机",
+      "rarity": "epic",
+      "nameEn": "Z-18F"
     },
     {
-      "id": "Camo_be97Offer",
+      "name": "TRG-300\"虎\"(300 mm)",
+      "probability": 0.24,
+      "limit": 2,
+      "id": "TRG300Tiger",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "TRG-300 Tiger (300 mm)"
+    },
+    {
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "probability": 0.25,
+      "limit": 0,
+      "id": "Mark45Astor",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Mark-45 ASTOR (483 mm)"
+    },
+    {
+      "name": "玄武-4.4",
+      "probability": 0.7,
+      "limit": 3,
+      "id": "Hyunmoo44",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "Hyunmoo 4.4"
+    },
+    {
       "name": "诅咒之船",
+      "probability": 1.65,
+      "limit": 2,
+      "id": "Camo_be97Offer",
       "type": "涂装",
       "rarity": "legendary",
-      "probability": 1.65,
-      "limit": 1
+      "nameEn": "Ship of Damned"
     },
     {
-      "id": "currency_gachacoins",
-      "limit": 0,
       "name": "筹码",
-      "probability": 4,
-      "rarity": "common",
-      "type": "资源"
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
     },
     {
-      "id": "Artstorm",
-      "limit": 0,
       "name": "10 艺术硬币",
-      "probability": 8,
-      "rarity": "common",
-      "type": "资源"
-    },
-    {
-      "id": "Hard",
+      "probability": 8.0,
       "limit": 0,
-      "name": "15 黄金",
-      "probability": 33,
-      "rarity": "common",
-      "type": "资源"
-    },
-    {
-      "id": "EngineBoost",
-      "limit": 0,
-      "name": "2 引擎过载",
-      "probability": 17,
-      "rarity": "common",
-      "type": "战斗增益"
-    },
-    {
       "id": "Artstorm",
-      "limit": 0,
-      "name": "4 艺术硬币",
-      "probability": 22,
-      "rarity": "common",
-      "type": "资源"
+      "type": "资源",
+      "rarity": "common"
     },
     {
-      "id": "PremiumRepairKit",
-      "limit": 0,
       "name": "6 高级修理包",
-      "probability": 12.705,
-      "rarity": "common",
-      "type": "战斗增益"
+      "probability": 12.71,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "2 引擎过载",
+      "probability": 17.0,
+      "limit": 0,
+      "id": "EngineBoost",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
     }
   ]
 }

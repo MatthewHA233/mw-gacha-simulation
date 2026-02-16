@@ -1,10 +1,10 @@
 {
-  "id": "be98",
+  "id": "be99",
   "gacha_type": "机密货物类",
   "metadata": {
-    "name": "舰队时代",
-    "formattedDate": "2025年11月",
-    "nameEn": "Age of Fleets"
+    "name": "北极风暴",
+    "formattedDate": "2025年12月",
+    "nameEn": "Arctic Storm"
   },
   "cargos": [
     {
@@ -14,31 +14,31 @@
       },
       "items": [
         {
-          "name": "[泛空间]冲击风暴-1",
+          "name": "玄武-4.4",
           "probability": 0.25,
           "limit": 1,
-          "id": "RAMSTORM1",
-          "type": "无人自爆艇",
-          "rarity": "epic",
-          "nameEn": "Pan Spatial RAMSTORM 1"
-        },
-        {
-          "name": "[印度斯坦航空]AMCA",
-          "probability": 0.5,
-          "limit": 1,
-          "id": "HALAMCA",
-          "type": "攻击机",
-          "rarity": "epic",
-          "nameEn": "HAL AMCA"
-        },
-        {
-          "name": "加百利V",
-          "probability": 0.75,
-          "limit": 2,
-          "id": "GabrielV",
+          "id": "Hyunmoo44",
           "type": "导弹",
           "rarity": "epic",
-          "nameEn": "Gabriel V"
+          "nameEn": "Hyunmoo 4.4"
+        },
+        {
+          "name": "彩虹-7",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "CH7Rainbow",
+          "type": "无人机",
+          "rarity": "epic",
+          "nameEn": "CH-7 Rainbow"
+        },
+        {
+          "name": "JRVG-1 (76 mm)",
+          "probability": 0.75,
+          "limit": 2,
+          "id": "JRVG1",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "JRVG-1 (76 mm)"
         },
         {
           "name": "授权密钥",
@@ -49,9 +49,9 @@
           "rarity": "common"
         },
         {
-          "name": "Grumpy Eye",
+          "name": "Wonder What’s Inside?",
           "probability": 2.0,
-          "limit": 4,
+          "limit": 3,
           "id": "",
           "type": "其它",
           "rarity": "common"
@@ -105,49 +105,49 @@
       },
       "items": [
         {
-          "name": "[英]32型",
+          "name": "[日]30DX",
           "probability": 0.05,
           "limit": 1,
-          "id": "Type32",
+          "id": "30DX",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "HMS Type 32"
+          "nameEn": "JS 30DX"
         },
         {
-          "name": "[中]天津",
+          "name": "[俄]符拉迪沃斯托克(68M-Bis-Zif型)",
           "probability": 0.1,
           "limit": 1,
-          "id": "Tianjin",
+          "id": "Vladivostok",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "CN Tianjin"
+          "nameEn": "RF Vladivostok (68M-bis-Zif)"
         },
         {
-          "name": "北极星-4",
+          "name": "MAR-290 (290 mm)",
           "probability": 0.3,
           "limit": 2,
-          "id": "Pukguksong4SLBM",
-          "type": "导弹",
+          "id": "MAR290",
+          "type": "火箭炮",
           "rarity": "legendary",
-          "nameEn": "Pukguksong-4"
+          "nameEn": "MAR-290 (290 mm)"
         },
         {
-          "name": "ASN4G",
+          "name": "HyFly-2(核)",
           "probability": 0.35,
           "limit": 3,
-          "id": "ASN4G",
+          "id": "HyFly2Nuke",
           "type": "导弹",
           "rarity": "legendary",
-          "nameEn": "ASN4G"
+          "nameEn": "HyFly-2 (Nuke)"
         },
         {
-          "name": "SUT 264 (533 mm)",
+          "name": "Mark-71 (203 mm)",
           "probability": 0.4,
           "limit": 2,
-          "id": "SUT264",
-          "type": "鱼雷",
-          "rarity": "epic",
-          "nameEn": "SUT 264 (533 mm)"
+          "id": "Mark71",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "Mark-71 (203 mm)"
         },
         {
           "name": "授权密钥",

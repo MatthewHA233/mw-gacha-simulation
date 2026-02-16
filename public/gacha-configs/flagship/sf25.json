@@ -194,10 +194,9 @@
           "name": "[俄]喀琅施塔得",
           "probability": 0.1,
           "limit": 1,
-          "id": "Kronshtadt",
-          "type": "战舰",
-          "rarity": "legendary",
-          "nameEn": "RF Kronshtadt"
+          "id": "",
+          "type": "舰船",
+          "rarity": "common"
         },
         {
           "name": "SP-12\"游隼\"",
@@ -221,10 +220,9 @@
           "name": "[中]共青团员(1164E型)",
           "probability": 0.11,
           "limit": 1,
-          "id": "Project2164E",
-          "type": "战舰",
-          "rarity": "legendary",
-          "nameEn": "CN Project 1164E"
+          "id": "",
+          "type": "舰船",
+          "rarity": "common"
         },
         {
           "name": "[俄]刻赤(1134BM型)",
