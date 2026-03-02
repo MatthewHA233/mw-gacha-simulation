@@ -310,14 +310,14 @@ function Overview() {
             <div className="w-full overflow-hidden">
               {monthlyChartData.length ? (
                 <ResponsiveContainer width="100%" height={200}>
-                  <ComposedChart data={monthlyChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barCategoryGap="30%">
+                  <ComposedChart data={monthlyChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barCategoryGap="25%" barGap={0}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
                     <XAxis dataKey="month" tick={{ fill: '#6b7280', fontSize: 9 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
                     <YAxis tickFormatter={fmtShort} tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} width={44} />
                     <Tooltip content={<MonthlyChartTip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                     <Legend wrapperStyle={{ fontSize: 10, color: '#9ca3af', paddingTop: 6 }} />
-                    <Bar dataKey="revenue" fill="#3b82f6" radius={[2, 2, 0, 0]} maxBarSize={18} name="收入" />
-                    <Bar dataKey="cost"    fill="#ef4444" radius={[2, 2, 0, 0]} maxBarSize={18} name="成本" />
+                    <Bar dataKey="revenue" fill="#3b82f6" radius={[2, 2, 0, 0]} name="收入" />
+                    <Bar dataKey="cost"    fill="#ef4444" radius={[2, 2, 0, 0]} name="成本" />
                     <Line type="monotone" dataKey="profit" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e', r: 2 }} activeDot={{ r: 4 }} name="利润" />
                   </ComposedChart>
                 </ResponsiveContainer>
