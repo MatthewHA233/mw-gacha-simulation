@@ -432,22 +432,22 @@ function Orders() {
 
         <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900">
           <div className="flex-1 overflow-auto scrollbar-hide">
-            <table className="w-full min-w-[820px] text-sm">
+            <table className="w-full min-w-[960px] text-sm">
               <thead className="sticky top-0 z-10 bg-gray-900">
                 <tr className="border-b border-gray-800">
-                  {['#', '订单号', '金额', '净额/手续费', '类型', '支付方式', '属性', '时间'].map(h => (
+                  {['#', '订单号', '序列号', '金额', '净额/手续费', '类型', '支付方式', '属性', '时间'].map(h => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {loading && (
-                  <tr><td colSpan={8} className="py-20 text-center text-sm text-gray-600">
+                  <tr><td colSpan={9} className="py-20 text-center text-sm text-gray-600">
                     <RefreshCw size={16} className="mx-auto mb-2 animate-spin opacity-40" />加载中...
                   </td></tr>
                 )}
                 {!loading && orders.length === 0 && (
-                  <tr><td colSpan={8} className="py-20 text-center text-sm text-gray-600">暂无订单数据</td></tr>
+                  <tr><td colSpan={9} className="py-20 text-center text-sm text-gray-600">暂无订单数据</td></tr>
                 )}
                 {!loading && orders.map((o, i) => {
                   const fee = Math.round(o.amount * FEE_RATE)
@@ -457,6 +457,12 @@ function Orders() {
                       <td className="px-4 py-3 text-xs text-gray-600">{(page-1)*PAGE_SIZE + i + 1}</td>
                       <td className="max-w-[160px] px-4 py-3 font-mono text-xs text-gray-400">
                         <span className="block truncate" title={o.out_trade_no}>{o.out_trade_no}</span>
+                      </td>
+                      <td className="px-4 py-3 font-mono text-xs">
+                        {o.activation_code
+                          ? <span className="text-blue-400" title={o.activation_code}>{o.activation_code}</span>
+                          : <span className="text-gray-700">—</span>
+                        }
                       </td>
                       <td className="px-4 py-3 font-semibold text-white">{fmt(o.amount)}</td>
                       <td className="px-4 py-3 text-xs font-medium">

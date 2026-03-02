@@ -19,7 +19,7 @@ export async function GET(request) {
 
     const { data: orders, error, count } = await supabase
       .from('payment_orders')
-      .select('out_trade_no, amount, pay_type, pay_time, membership_type, is_admin_purchase', { count: 'exact' })
+      .select('out_trade_no, amount, pay_type, pay_time, membership_type, is_admin_purchase, activation_code', { count: 'exact' })
       .eq('status', 'paid')
       .order('pay_time', { ascending: false })
       .range(from, to)
@@ -34,6 +34,7 @@ export async function GET(request) {
         pay_time:          o.pay_time,
         membership_type:   o.membership_type || 'unknown',
         is_admin_purchase: o.is_admin_purchase ?? false,
+        activation_code:   o.activation_code   || null,
       })),
       total:      count ?? 0,
       page,
