@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, LineChart, Line, ComposedChart,
+  PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import {
   LayoutDashboard, Receipt, Wallet, Menu, X,
@@ -120,6 +121,30 @@ function ChartTip({ active, payload, label }) {
   )
 }
 
+function MonthlyChartTip({ active, payload, label }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-xs shadow-xl space-y-0.5">
+      <p className="mb-1 text-gray-400">{label}</p>
+      {payload.map(p => (
+        <p key={p.dataKey} style={{ color: p.color || p.stroke }}>
+          {p.name}：{fmt(p.value)}
+        </p>
+      ))}
+    </div>
+  )
+}
+
+function HourlyChartTip({ active, payload, label }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-xs shadow-xl">
+      <p className="mb-0.5 text-gray-400">{String(label).padStart(2, '0')}:00 – {String((label + 1) % 24).padStart(2, '0')}:00</p>
+      <p className="font-semibold text-white">{payload[0].value} 笔</p>
+    </div>
+  )
+}
+
 function TypeBadge({ value }) {
   const cls = value === 'monthly' || value === 'alipay'
     ? 'bg-blue-950 text-blue-400'
@@ -191,6 +216,29 @@ function Overview() {
 
   const gTx = s.growthPct != null ? (s.growthPct >= 0 ? `+${s.growthPct}%` : `${s.growthPct}%`) : '-'
   const gCl = s.growthPct == null ? 'text-gray-500' : s.growthPct >= 0 ? 'text-green-400' : 'text-red-400'
+  // 按月汇总额外支出
+  const extraCostByMonth = {}
+  allCosts.forEach(c => {
+    if (c.cost_date) {
+      const mon = c.cost_date.slice(0, 7)
+      extraCostByMonth[mon] = (extraCostByMonth[mon] || 0) + c.amount
+    }
+  })
+
+  // 过去12个月：收入 / 成本 / 利润
+  const monthlyChartData = (stats?.monthlyRevenue || []).map(m => {
+    const rv   = m.realRevenue  || 0
+    const av   = m.adminRevenue || 0
+    const cost = Math.round((rv + av) * FEE_RATE) + (extraCostByMonth[m.month] || 0)
+    return { month: m.month, revenue: rv, cost, profit: rv - cost }
+  })
+
+  // 24小时分布（补全0笔的小时）
+  const hourlyData = Array.from({ length: 24 }, (_, h) => {
+    const found = (stats?.hourlyDistribution || []).find(d => d.hour === h)
+    return { hour: h, count: found?.count || 0 }
+  })
+
   const ptT = (stats?.byType    || []).reduce((a, d) => a + d.amount, 0)
   const ppT = (stats?.byPayType || []).reduce((a, d) => a + d.amount, 0)
 
@@ -253,34 +301,38 @@ function Overview() {
           </div>
         </div>
 
-        {/* Monthly bar */}
-        <div className="rounded-xl border border-gray-800 bg-gray-900 p-5">
-          <p className="mb-4 text-sm font-medium text-gray-300">过去 12 个月收入趋势</p>
-          <div className="w-full overflow-hidden">
-            {stats?.monthlyRevenue?.length ? (
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={stats.monthlyRevenue} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barCategoryGap="35%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                  <XAxis dataKey="month" tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                  <YAxis tickFormatter={fmtShort} tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} width={44} />
-                  <Tooltip content={<ChartTip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-                  <Bar dataKey="amount" fill="#3b82f6" radius={[3, 3, 0, 0]} maxBarSize={52} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex h-[200px] items-center justify-center text-sm text-gray-600">暂无数据</div>
-            )}
-          </div>
-        </div>
-
-        {/* Daily + Pies */}
+        {/* 2×2 图表网格 */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
+          {/* 左上：过去12个月 收入/成本/利润 */}
+          <div className="rounded-xl border border-gray-800 bg-gray-900 p-5 min-w-0">
+            <p className="mb-4 text-sm font-medium text-gray-300">过去 12 个月趋势</p>
+            <div className="w-full overflow-hidden">
+              {monthlyChartData.length ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <ComposedChart data={monthlyChartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barCategoryGap="30%">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
+                    <XAxis dataKey="month" tick={{ fill: '#6b7280', fontSize: 9 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                    <YAxis tickFormatter={fmtShort} tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} width={44} />
+                    <Tooltip content={<MonthlyChartTip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                    <Legend wrapperStyle={{ fontSize: 10, color: '#9ca3af', paddingTop: 6 }} />
+                    <Bar dataKey="revenue" fill="#3b82f6" radius={[2, 2, 0, 0]} maxBarSize={18} name="收入" />
+                    <Bar dataKey="cost"    fill="#ef4444" radius={[2, 2, 0, 0]} maxBarSize={18} name="成本" />
+                    <Line type="monotone" dataKey="profit" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e', r: 2 }} activeDot={{ r: 4 }} name="利润" />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-[200px] items-center justify-center text-sm text-gray-600">暂无数据</div>
+              )}
+            </div>
+          </div>
+
+          {/* 右上：当月每日收入 */}
           <div className="rounded-xl border border-gray-800 bg-gray-900 p-5 min-w-0">
             <p className="mb-4 text-sm font-medium text-gray-300">{ml} 每日收入</p>
             <div className="w-full overflow-hidden">
               {stats?.dailyRevenue?.length ? (
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer width="100%" height={200}>
                   <LineChart data={stats.dailyRevenue} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
                     <XAxis dataKey="date" tickFormatter={v => v.slice(8)} tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} />
@@ -290,11 +342,33 @@ function Overview() {
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="flex h-[180px] items-center justify-center text-sm text-gray-600">本月暂无数据</div>
+                <div className="flex h-[200px] items-center justify-center text-sm text-gray-600">本月暂无数据</div>
               )}
             </div>
           </div>
 
+          {/* 左下：当月交易时间分布（按小时） */}
+          <div className="rounded-xl border border-gray-800 bg-gray-900 p-5 min-w-0">
+            <p className="mb-4 text-sm font-medium text-gray-300">{ml} 交易时间分布</p>
+            <div className="w-full overflow-hidden">
+              {hourlyData.some(d => d.count > 0) ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={hourlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barCategoryGap="10%">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
+                    <XAxis dataKey="hour" tick={{ fill: '#6b7280', fontSize: 9 }} tickLine={false} axisLine={false}
+                      tickFormatter={v => v % 6 === 0 ? `${v}:00` : ''} />
+                    <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} width={28} allowDecimals={false} />
+                    <Tooltip content={<HourlyChartTip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                    <Bar dataKey="count" fill="#8b5cf6" radius={[2, 2, 0, 0]} name="订单数" />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-[200px] items-center justify-center text-sm text-gray-600">本月暂无数据</div>
+              )}
+            </div>
+          </div>
+
+          {/* 右下：本月分布饼图 */}
           <div className="rounded-xl border border-gray-800 bg-gray-900 p-5 min-w-0">
             <p className="mb-4 text-sm font-medium text-gray-300">本月分布</p>
             <div className="grid grid-cols-2 gap-3 min-w-0">
@@ -329,6 +403,7 @@ function Overview() {
               ))}
             </div>
           </div>
+
         </div>
       </div>
     </div>
