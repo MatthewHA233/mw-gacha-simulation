@@ -13,6 +13,21 @@ import { verifySign } from '@lib/payment/signUtil'
 import { getOrder, updateOrderStatus } from '@lib/payment/orderStore'
 import { getSupabase } from '@lib/supabase/serverClient'
 
+/**
+ * 将支付网关回调的北京本地时间字符串转换为 UTC ISO 字符串
+ * 网关回调的 pay_time 为北京时间（UTC+8），不带时区信息，需手动补 +08:00
+ */
+function payTimeToUTC(payTime) {
+  if (!payTime) return null
+  const s = String(payTime).trim()
+  // 已带时区信息（含 Z / + / -）则直接解析
+  if (s.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(s)) {
+    return new Date(s).toISOString()
+  }
+  // 无时区信息：视为北京时间（UTC+8），补 +08:00 后转 UTC
+  return new Date(s.replace(' ', 'T') + '+08:00').toISOString()
+}
+
 const APP_SECRET = process.env.PAYMENT_APP_SECRET
 
 /**
@@ -103,7 +118,7 @@ export async function POST(request) {
           .update({
             status: 'paid',
             trade_no,
-            pay_time: pay_time || new Date().toISOString(),
+            pay_time: payTimeToUTC(pay_time) || new Date().toISOString(),
             updated_at: new Date().toISOString()
           })
           .eq('out_trade_no', out_trade_no)
