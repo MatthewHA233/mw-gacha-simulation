@@ -218,7 +218,7 @@ function Overview() {
           <KpiCard label="真实收入"   value={fmt(realRevenue)}                                     sub={`管理员购置 ${fmt(adminRevenue)}`} />
           <KpiCard label="订单笔数"   value={s.realOrderCount ?? '-'}                              sub={`含管理员 ${s.adminOrderCount ?? 0} 笔`} />
           <KpiCard label="环比增长"   value={gTx}                                                  sub={s.prevMonthRevenue ? `上月 ${fmt(s.prevMonthRevenue)}` : '上月无数据'} subColor={gCl} />
-          <KpiCard label="平均客单价" value={s.avgOrderValue != null ? fmt(s.avgOrderValue) : '-'} sub="真实订单均值" />
+          <KpiCard label="真实净利润" value={`${netProfit >= 0 ? '+' : ''}${fmt(netProfit)}`} sub="扣手续费及所有成本" subColor={netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'} />
         </div>
 
         {/* 成本分析卡 */}
