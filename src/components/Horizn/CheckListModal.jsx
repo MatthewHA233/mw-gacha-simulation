@@ -1,22 +1,32 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import toast from 'react-hot-toast'
-import { getMonthlyCheckData, getMonthlyRules, saveMonthlyRules, getQQMembers, sendGroupMessage } from '@/services/horiznSupabase'
+import { getMonthlyCheckData, getMonthlyRules, saveMonthlyRules, getQQMembers, sendGroupMessage, getNewcomerDailyCheck, getMonthlyMembershipEvents } from '@/services/horiznSupabase'
+
+/**
+ * 计算当前日期所属的周号（按所属周日计算，与 DuckDB CEIL(sunday_day/7) 一致）
+ * 例如 3月11日 → 下个周日是3月15日 → CEIL(15/7) = 3
+ */
+function getCurrentWeekNumber() {
+  const now = new Date()
+  const dayOfWeek = now.getDay() // 0=Sun
+  const daysUntilSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek
+  const nextSundayDay = now.getDate() + daysUntilSunday
+  return Math.ceil(nextSundayDay / 7)
+}
 
 // 默认规则配置（与 electron 版本格式一致）
 const DEFAULT_RULES = {
   achievementLines: [
     {
       id: 'line_1',
-      name: '达标线1',
+      name: '预设1',
       weekNumbers: [1, 2, 3, 4],
       condition: { weekly: 2500, daily: 500 },
       enabled: true
     }
   ],
-  bufferEnable: false,  // 网页版不使用
+  bufferEnable: false,
   buffer: { weekly_min: 1500, weekly_max: 2500, review_daily_threshold: 500 },
-  newcomerEnable: false,  // 网页版不使用
-  newcomer: { start_day: 21, daily_threshold: 600 },
   cutoff: { weekly_hour: 12, daily_hour: 0 },
   exclude_members: []
 }
@@ -35,12 +45,56 @@ export default function CheckListModal({
   const [selectedYear, setSelectedYear] = useState(now.getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1)
 
+  const isCurrentMonth = selectedYear === now.getFullYear() && selectedMonth === now.getMonth() + 1
+
+  // 月历数据：计算当月完整日历网格（周数按 CEIL(day/7) 与 DuckDB 一致）
+  const monthCalendar = useMemo(() => {
+    const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate()
+    const firstDayOfWeek = new Date(selectedYear, selectedMonth - 1, 1).getDay()
+    const totalWeeks = Math.ceil(daysInMonth / 7)
+    const monBasedOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
+    const prevMonthDays = new Date(selectedYear, selectedMonth - 1, 0).getDate()
+    const rows = []
+    let dayCounter = 1
+    let nextMonthDay = 1
+    // 第一行
+    const firstRowCells = []
+    for (let col = 0; col < monBasedOffset; col++) {
+      const d = prevMonthDays - monBasedOffset + 1 + col
+      firstRowCells.push({ day: d, isSunday: false, isCurrentMonth: false })
+    }
+    while (firstRowCells.length < 7) {
+      const dow = new Date(selectedYear, selectedMonth - 1, dayCounter).getDay()
+      firstRowCells.push({ day: dayCounter, isSunday: dow === 0, isCurrentMonth: true })
+      dayCounter++
+    }
+    const firstRowHasSunday = firstRowCells.some(c => c.isCurrentMonth && c.isSunday)
+    rows.push({ weekNumber: firstRowHasSunday ? 1 : null, hasSundayInMonth: firstRowHasSunday, cells: firstRowCells })
+    while (dayCounter <= daysInMonth) {
+      const rowCells = []
+      while (rowCells.length < 7) {
+        if (dayCounter <= daysInMonth) {
+          const dow = new Date(selectedYear, selectedMonth - 1, dayCounter).getDay()
+          rowCells.push({ day: dayCounter, isSunday: dow === 0, isCurrentMonth: true })
+          dayCounter++
+        } else {
+          rowCells.push({ day: nextMonthDay, isSunday: false, isCurrentMonth: false })
+          nextMonthDay++
+        }
+      }
+      const hasSun = rowCells.some(c => c.isCurrentMonth && c.isSunday)
+      const sundayCell = rowCells.find(c => c.isCurrentMonth && c.isSunday)
+      const wn = sundayCell ? Math.ceil(sundayCell.day / 7) : null
+      rows.push({ weekNumber: hasSun ? wn : null, hasSundayInMonth: hasSun, cells: rowCells })
+    }
+    return { daysInMonth, firstDayOfWeek, rows, totalWeeks }
+  }, [selectedYear, selectedMonth])
+
   // 数据状态
   const [loading, setLoading] = useState(false)
   const [checkData, setCheckData] = useState([])
   const [rulesConfig, setRulesConfig] = useState(DEFAULT_RULES)
-  const [rawRulesConfig, setRawRulesConfig] = useState(null) // 保留原始完整配置
-  const [hasIgnoredRules, setHasIgnoredRules] = useState(false) // 是否有被忽略的规则
+  const [rawRulesConfig, setRawRulesConfig] = useState(null)
 
   // UI 状态
   const [checkTab, setCheckTab] = useState(null) // null=未初始化, 0=进行中, 1-4=周
@@ -56,6 +110,12 @@ export default function CheckListModal({
 
   // 复制选项
   const [copyOnlyFail, setCopyOnlyFail] = useState(true) // 只复制不达标
+
+  // 新人追踪状态
+  const [newcomerData, setNewcomerData] = useState([])
+  const [newcomerLoading, setNewcomerLoading] = useState(false)
+  const [newcomerEvents, setNewcomerEvents] = useState([]) // 入离队事件（用于退队标记）
+  const [useYesterdayAsToday, setUseYesterdayAsToday] = useState(false)
 
   // 从 yearMonth 初始化月份
   useEffect(() => {
@@ -78,10 +138,22 @@ export default function CheckListModal({
         setRawRulesConfig(rules)
 
         // 规则迁移：将旧格式转换为新格式（与 electron 版本一致）
+        const totalWeeks = Math.ceil(new Date(selectedYear, selectedMonth, 0).getDate() / 7)
         let migratedRules
         if (rules.achievementLines && Array.isArray(rules.achievementLines)) {
-          // 新格式：已有 achievementLines
-          migratedRules = rules
+          // 新格式：已有 achievementLines — 确保 weekNumbers 覆盖当月实际周数
+          migratedRules = {
+            ...rules,
+            achievementLines: rules.achievementLines.map(line => {
+              const maxWeek = Math.max(...line.weekNumbers, 0)
+              const coversAllPrevWeeks = line.weekNumbers.length >= maxWeek && maxWeek > 0
+              if (coversAllPrevWeeks && totalWeeks > maxWeek) {
+                const expanded = Array.from({ length: totalWeeks }, (_, i) => i + 1)
+                return { ...line, weekNumbers: expanded }
+              }
+              return line
+            })
+          }
         } else {
           // 旧格式迁移
           const legacyWeekly = rules.weeklyThreshold ?? 2500
@@ -90,32 +162,23 @@ export default function CheckListModal({
             achievementLines: [
               {
                 id: 'line_1',
-                name: '达标线1',
-                weekNumbers: [1, 2, 3, 4],
+                name: '预设1',
+                weekNumbers: Array.from({ length: totalWeeks }, (_, i) => i + 1),
                 condition: { weekly: legacyWeekly, daily: legacyDaily },
                 enabled: true
               }
             ],
             bufferEnable: rules.bufferEnable ?? false,
             buffer: rules.buffer ?? { weekly_min: 1500, weekly_max: 2500, review_daily_threshold: 500 },
-            newcomerEnable: rules.newcomerEnable ?? false,
-            newcomer: rules.newcomer ?? { start_day: 21, daily_threshold: 600 },
             cutoff: rules.cutoff ?? { weekly_hour: rules.cutoffHour ?? 12, daily_hour: 0 },
             exclude_members: rules.exclude_members ?? rules.excludeMembers ?? []
           }
         }
 
         setRulesConfig(migratedRules)
-
-        // 检测是否有被忽略的规则（缓冲区、缓冲复核、月底新人）
-        const ignoredFields = []
-        if (migratedRules.bufferEnable) ignoredFields.push('缓冲区')
-        if (migratedRules.newcomerEnable) ignoredFields.push('月底新人')
-        setHasIgnoredRules(ignoredFields.length > 0)
       } else {
         setRawRulesConfig(null)
         setRulesConfig(DEFAULT_RULES)
-        setHasIgnoredRules(false)
       }
 
       // 加载考核数据
@@ -134,6 +197,8 @@ export default function CheckListModal({
   useEffect(() => {
     if (show) {
       setCheckTab(null) // 重置标签
+      setNewcomerData([]) // 重置新人数据（切换月份/重新打开时重新加载）
+      setNewcomerEvents([])
       loadData()
     }
   }, [show, loadData])
@@ -154,10 +219,8 @@ export default function CheckListModal({
       .sort((a, b) => a.week_number - b.week_number)
   }, [checkData])
 
-  // 计算周标签（支持周合并）
+  // 计算周标签（支持周合并 + 动态周数）
   const weekTabs = useMemo(() => {
-    const now = new Date()
-    const isCurrentMonth = now.getFullYear() === selectedYear && now.getMonth() + 1 === selectedMonth
     const weeksWithData = new Set(weeklyFrames.map(f => f.week_number))
     const hasInProgress = weeksWithData.has(0) && isCurrentMonth
 
@@ -166,7 +229,7 @@ export default function CheckListModal({
     for (const line of rulesConfig.achievementLines || []) {
       if (line.enabled !== false) {
         for (const weekNum of line.weekNumbers || []) {
-          if (weekNum >= 1 && weekNum <= 4) {
+          if (weekNum >= 1 && weekNum <= 5) {
             weeksWithLines.add(weekNum)
           }
         }
@@ -174,15 +237,15 @@ export default function CheckListModal({
     }
 
     const tabs = []
+    const maxWeeks = monthCalendar.totalWeeks
     let i = 1
-    while (i <= 4) {
+    while (i <= maxWeeks) {
       if (!weeksWithData.has(i)) {
         i++
         continue
       }
 
       if (weeksWithLines.has(i)) {
-        // 当前周有达标线，不需要合并
         const frame = weeklyFrames.find(f => f.week_number === i)
         tabs.push({
           week: i,
@@ -193,20 +256,15 @@ export default function CheckListModal({
         })
         i++
       } else {
-        // 当前周无达标线，寻找后续有达标线的周进行合并
         const mergeStart = i
         let mergeEnd = i
 
-        // 向后查找第一个有达标线的周
-        while (mergeEnd <= 4) {
-          if (weeksWithLines.has(mergeEnd)) {
-            break
-          }
+        while (mergeEnd <= maxWeeks) {
+          if (weeksWithLines.has(mergeEnd)) break
           mergeEnd++
         }
 
-        // 如果找到有达标线的周，合并到该周
-        if (mergeEnd <= 4 && weeksWithData.has(mergeEnd) && weeksWithLines.has(mergeEnd)) {
+        if (mergeEnd <= maxWeeks && weeksWithData.has(mergeEnd) && weeksWithLines.has(mergeEnd)) {
           const frame = weeklyFrames.find(f => f.week_number === mergeEnd)
           const label = mergeStart === mergeEnd ? `第${mergeEnd}周` : `第${mergeStart}-${mergeEnd}周`
           tabs.push({
@@ -218,7 +276,6 @@ export default function CheckListModal({
           })
           i = mergeEnd + 1
         } else {
-          // 没找到有达标线的周，跳过这些周
           i = mergeEnd + 1
         }
       }
@@ -226,7 +283,7 @@ export default function CheckListModal({
 
     if (hasInProgress) {
       const inProgressFrame = weeklyFrames.find(f => f.week_number === 0)
-      const currentWeek = Math.ceil(now.getDate() / 7)
+      const currentWeek = getCurrentWeekNumber()
       tabs.push({
         week: 0,
         mergeStart: 0,
@@ -237,7 +294,7 @@ export default function CheckListModal({
     }
 
     return tabs
-  }, [weeklyFrames, selectedYear, selectedMonth, rulesConfig.achievementLines])
+  }, [weeklyFrames, selectedYear, selectedMonth, isCurrentMonth, rulesConfig.achievementLines, monthCalendar.totalWeeks])
 
   // 自动选中标签
   useEffect(() => {
@@ -274,7 +331,7 @@ export default function CheckListModal({
 
     // 筛选适用当前周的达标线（enabled !== false 且 weekNumbers 包含当前周）
     // 进行中的周（checkTab=0）使用当前是第几周来匹配
-    const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+    const currentWeekNumber = checkTab === 0 ? getCurrentWeekNumber() : checkTab
     const applicableLines = (rulesConfig.achievementLines || []).filter(
       line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
     )
@@ -422,7 +479,7 @@ export default function CheckListModal({
     }
 
     // 筛选适用当前周的达标线
-    const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+    const currentWeekNumber = checkTab === 0 ? getCurrentWeekNumber() : checkTab
     const applicableLines = (rulesConfig.achievementLines || []).filter(
       line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
     )
@@ -440,7 +497,7 @@ export default function CheckListModal({
       }).join('；')
     }
 
-    let text = `HORIZN地平线 ${selectedMonth}月第${checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab}周活跃度考核\n`
+    let text = `HORIZN地平线 ${selectedMonth}月第${checkTab === 0 ? getCurrentWeekNumber() : checkTab}周活跃度考核\n`
     text += `考核标准：${standardText}\n`
     text += `时间：${currentFrameLabel}\n\n`
 
@@ -489,7 +546,7 @@ export default function CheckListModal({
     }
 
     // 筛选适用当前周的达标线
-    const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+    const currentWeekNumber = checkTab === 0 ? getCurrentWeekNumber() : checkTab
     const applicableLines = (rulesConfig.achievementLines || []).filter(
       line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
     )
@@ -743,6 +800,105 @@ export default function CheckListModal({
       .slice(0, 8)
   }, [excludeSearch, currentWeekData, rulesConfig.exclude_members])
 
+  // 加载新人追踪数据（懒加载：切换到新人追踪标签时才加载）
+  const loadNewcomerData = useCallback(async () => {
+    setNewcomerLoading(true)
+    try {
+      const [data, events] = await Promise.all([
+        getNewcomerDailyCheck(selectedYear, selectedMonth, 1, 0),
+        getMonthlyMembershipEvents(selectedYear, selectedMonth)
+      ])
+      setNewcomerData(data)
+      setNewcomerEvents(events)
+    } catch (err) {
+      console.error('加载新人追踪数据失败:', err)
+      toast.error('加载新人追踪数据失败')
+    } finally {
+      setNewcomerLoading(false)
+    }
+  }, [selectedYear, selectedMonth])
+
+  // 切换到新人追踪标签时加载数据
+  useEffect(() => {
+    if (checkTab === 5 && newcomerData.length === 0 && !newcomerLoading) {
+      loadNewcomerData()
+    }
+  }, [checkTab, newcomerData.length, newcomerLoading, loadNewcomerData])
+
+  // 处理新人数据为表格格式
+  const newcomerTableData = useMemo(() => {
+    if (newcomerData.length === 0) return { members: [], dates: [] }
+
+    // 获取所有日期、时间戳和是否今天
+    const dateInfoMap = new Map()
+    for (const r of newcomerData) {
+      if (!dateInfoMap.has(r.check_date)) {
+        dateInfoMap.set(r.check_date, { time: r.check_time, isToday: r.is_today })
+      }
+    }
+    const allDates = [...dateInfoMap.keys()].sort()
+
+    // 从 events 获取退队信息
+    const leaveMap = new Map() // player_id -> leave_date
+    for (const e of newcomerEvents) {
+      if (e.eventType === 'leave') {
+        const leaveDate = e.eventTime.split('T')[0]
+        if (!leaveMap.has(e.playerId) || leaveDate < leaveMap.get(e.playerId)) {
+          leaveMap.set(e.playerId, leaveDate)
+        }
+      }
+    }
+
+    // 按成员分组
+    const memberMap = new Map()
+    for (const record of newcomerData) {
+      if (!memberMap.has(record.player_id)) {
+        memberMap.set(record.player_id, {
+          player_id: record.player_id,
+          member_name: record.member_name,
+          member_number: record.member_number,
+          join_date: record.join_date,
+          leave_date: leaveMap.get(record.player_id) || null,
+          dailyData: new Map()
+        })
+      }
+      memberMap.get(record.player_id).dailyData.set(record.check_date, {
+        season_activity: record.season_activity,
+        check_time: record.check_time
+      })
+    }
+
+    // 转换为数组，按入队时间倒序
+    const members = [...memberMap.values()].sort((a, b) =>
+      new Date(b.join_date).getTime() - new Date(a.join_date).getTime()
+    )
+
+    // 日期信息
+    let dates = allDates.map(date => {
+      const info = dateInfoMap.get(date)
+      return { date, time: info.time, isToday: info.isToday }
+    })
+
+    // "以昨日为今日"模式
+    if (useYesterdayAsToday) {
+      dates = dates.filter(d => !d.isToday)
+      if (dates.length > 0) {
+        dates[dates.length - 1] = { ...dates[dates.length - 1], isToday: true }
+      }
+    }
+
+    return { members, dates }
+  }, [newcomerData, newcomerEvents, useYesterdayAsToday])
+
+  // 计算日均（入队那天不算）
+  const calcDailyAvg = useCallback((joinDate, checkDate, seasonActivity) => {
+    const join = new Date(joinDate)
+    const check = new Date(checkDate)
+    const days = Math.floor((check.getTime() - join.getTime()) / (1000 * 60 * 60 * 24))
+    if (days <= 0) return 0
+    return Math.floor(seasonActivity / days)
+  }, [])
+
   if (!show) return null
 
   return (
@@ -831,10 +987,178 @@ export default function CheckListModal({
                 {tab.label}
               </button>
             ))}
+            <button
+              onClick={() => setCheckTab(5)}
+              className={`flex-1 py-1.5 text-[11px] font-medium transition-all border-b-2 ${
+                checkTab === 5
+                  ? 'text-cyan-400 border-cyan-400 bg-cyan-400/10'
+                  : 'text-gray-500 border-transparent hover:text-gray-300'
+              }`}
+            >
+              新人追踪
+            </button>
           </div>
         )}
 
         {/* 内容区 - 可滚动 */}
+        {checkTab === 5 ? (
+          /* 新人追踪标签页 */
+          newcomerLoading ? (
+            <div className="flex-1 flex items-center justify-center py-8">
+              <div className="w-5 h-5 border-2 border-gray-600 border-t-cyan-400 rounded-full animate-spin"></div>
+            </div>
+          ) : newcomerTableData.members.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center py-8">
+              <span className="text-[11px] text-gray-500">暂无本月入队的新人</span>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* 表格标题 */}
+              <div className="flex items-center justify-between px-3 py-1.5 flex-shrink-0 border-b border-gray-700/50">
+                <span className="text-[10px] text-cyan-400 font-medium">
+                  本月新人追踪
+                </span>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={useYesterdayAsToday}
+                      onChange={e => setUseYesterdayAsToday(e.target.checked)}
+                      className="w-3 h-3 rounded border-gray-600 bg-gray-700 text-cyan-500 focus:ring-0"
+                    />
+                    <span className="text-[9px] text-gray-400">以昨日为今日</span>
+                  </label>
+                  <span className="text-[10px] text-gray-500">
+                    共{newcomerTableData.members.length}人
+                  </span>
+                </div>
+              </div>
+
+              {/* 表格区域 — 双向滚动，表头冻结 */}
+              <div className="flex-1 overflow-auto min-h-0">
+                <table className="w-full text-[10px] border-collapse">
+                  <thead className="sticky top-0 z-10">
+                    <tr className="bg-gray-800">
+                      <th className="sticky left-0 z-20 bg-gray-800 px-2 py-1 text-left text-gray-400 font-medium border-b border-gray-700/50 min-w-[80px]">
+                        成员
+                      </th>
+                      <th className="bg-gray-800 px-2 py-1 text-center text-gray-400 font-medium border-b border-gray-700/50 min-w-[40px]">
+                        入队
+                      </th>
+                      {newcomerTableData.dates.map(({ date, time, isToday }) => {
+                        const [, m, d] = date.split('-')
+                        const dateStr = `${parseInt(m)}/${parseInt(d)}`
+
+                        let timeStr = '--:--'
+                        if (time) {
+                          const timeObj = new Date(time)
+                          if (!isNaN(timeObj.getTime())) {
+                            const hh = String(timeObj.getHours()).padStart(2, '0')
+                            const mm = String(timeObj.getMinutes()).padStart(2, '0')
+                            timeStr = isToday ? `${hh}:${mm}` : `次日${hh}:${mm}`
+                          }
+                        }
+
+                        return (
+                          <th
+                            key={date}
+                            className={`px-1 py-1 text-center font-normal border-b min-w-[60px] ${
+                              isToday
+                                ? 'text-yellow-400 border-yellow-400 bg-yellow-400/10'
+                                : 'text-gray-500 border-gray-700/50'
+                            }`}
+                            style={isToday ? { borderLeft: '2px solid #facc15', borderRight: '2px solid #facc15', borderTop: '2px solid #facc15' } : {}}
+                          >
+                            {isToday && <div className="text-[9px] font-medium">今日</div>}
+                            <div className="text-[11px]">{dateStr}</div>
+                            <div className="text-[9px]">{timeStr}</div>
+                          </th>
+                        )
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {newcomerTableData.members.map(member => (
+                      <tr key={member.player_id} className="hover:bg-gray-700/30">
+                        <td className="sticky left-0 bg-gray-800/95 px-2 py-1 text-white border-b border-gray-700/50 min-w-[80px] max-w-[100px] break-all">
+                          {member.member_name}
+                        </td>
+                        <td className="px-2 py-1 text-center text-green-400 border-b border-gray-700/50">
+                          {parseInt(member.join_date.split('-')[2])}日
+                        </td>
+                        {newcomerTableData.dates.map(({ date, isToday }) => {
+                          const isJoinDay = date === member.join_date
+                          const isAfterLeave = member.leave_date && date > member.leave_date
+                          const data = member.dailyData.get(date)
+
+                          const todayStyle = isToday ? { borderLeft: '2px solid #facc15', borderRight: '2px solid #facc15' } : {}
+                          const todayBg = isToday ? 'bg-yellow-400/10' : ''
+
+                          // 入队前
+                          if (date < member.join_date) {
+                            return (
+                              <td key={date} className={`px-1 py-1 text-center text-gray-600 border-b border-gray-700/50 ${todayBg}`} style={todayStyle}>
+                                -
+                              </td>
+                            )
+                          }
+
+                          // 退队后
+                          if (isAfterLeave) {
+                            const [, m, d] = member.leave_date.split('-')
+                            return (
+                              <td key={date} className={`px-1 py-1 text-center text-red-400 border-b border-gray-700/50 text-[11px] ${todayBg}`} style={todayStyle}>
+                                {parseInt(m)}.{parseInt(d)}退
+                              </td>
+                            )
+                          }
+
+                          // 入队当天
+                          if (isJoinDay) {
+                            return (
+                              <td key={date} className={`px-1 py-1 text-center border-b border-gray-700/50 ${todayBg}`} style={todayStyle}>
+                                <div className="flex flex-col items-center">
+                                  <span className="text-[11px] text-white">
+                                    {data ? data.season_activity : '-'}
+                                  </span>
+                                  <span className="text-[9px] text-gray-500">入队日</span>
+                                </div>
+                              </td>
+                            )
+                          }
+
+                          // 缺失数据
+                          if (!data || data.season_activity === 0) {
+                            return (
+                              <td key={date} className={`px-1 py-1 text-center text-yellow-500 border-b border-gray-700/50 text-[11px] ${todayBg}`} style={todayStyle}>
+                                (缺失)
+                              </td>
+                            )
+                          }
+
+                          // 正常数据
+                          const dailyAvg = calcDailyAvg(member.join_date, date, data.season_activity)
+                          return (
+                            <td key={date} className={`px-1 py-1 text-center border-b border-gray-700/50 ${todayBg}`} style={todayStyle}>
+                              <div className="flex flex-col items-center">
+                                <span className="text-[11px] text-white">
+                                  {data.season_activity}
+                                </span>
+                                <span className="text-[9px] text-gray-500">
+                                  日均{dailyAvg}
+                                </span>
+                              </div>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )
+        ) : (
         <div className="flex-1 overflow-auto px-3 py-2 space-y-2">
           {loading ? (
             <div className="flex items-center justify-center py-8">
@@ -858,7 +1182,7 @@ export default function CheckListModal({
                       {(() => {
                         // 如果是进行中标签页，检查是否有当前周的已结算标签页
                         if (checkTab === 0) {
-                          const currentWeekNumber = Math.ceil(new Date().getDate() / 7)
+                          const currentWeekNumber = getCurrentWeekNumber()
                           const settledWeekTab = weekTabs.find(t => t.week !== 0 && t.week === currentWeekNumber)
 
                           if (settledWeekTab) {
@@ -886,7 +1210,7 @@ export default function CheckListModal({
                       达标条件：
                       <span className="text-yellow-300">
                         {(() => {
-                          const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+                          const currentWeekNumber = checkTab === 0 ? getCurrentWeekNumber() : checkTab
                           const applicableLines = (rulesConfig.achievementLines || []).filter(
                             line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
                           )
@@ -912,13 +1236,6 @@ export default function CheckListModal({
                   </div>
                 </div>
               </div>
-
-              {/* 忽略规则提示 */}
-              {hasIgnoredRules && (
-                <div className="text-[10px] text-amber-500/80 bg-amber-900/20 border border-amber-700/30 rounded px-2 py-1 text-center">
-                  ⚠️ 已忽略缓冲区相关规则
-                </div>
-              )}
 
               {/* 统计 */}
               <div className="space-y-1.5">
@@ -979,7 +1296,7 @@ export default function CheckListModal({
                   ) : (
                     categorizedList.fail.map((p, i) => {
                       // 获取适用的达标线，判断各项条件
-                      const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+                      const currentWeekNumber = checkTab === 0 ? getCurrentWeekNumber() : checkTab
                       const applicableLines = (rulesConfig.achievementLines || []).filter(
                         line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
                       )
@@ -1092,7 +1409,7 @@ export default function CheckListModal({
                   <div className="max-h-32 overflow-y-auto custom-scrollbar divide-y divide-gray-800/50">
                     {categorizedList.pass.map((p, i) => {
                       // 获取适用的达标线，判断各项条件
-                      const currentWeekNumber = checkTab === 0 ? Math.ceil(new Date().getDate() / 7) : checkTab
+                      const currentWeekNumber = checkTab === 0 ? getCurrentWeekNumber() : checkTab
                       const applicableLines = (rulesConfig.achievementLines || []).filter(
                         line => (line.enabled !== false) && (line.weekNumbers || [1, 2, 3, 4]).includes(currentWeekNumber)
                       )
@@ -1159,8 +1476,10 @@ export default function CheckListModal({
             </>
           )}
         </div>
+        )}
 
-        {/* 底部按钮 */}
+        {/* 底部按钮（仅周考核标签页显示） */}
+        {checkTab !== 5 && (
         <div className="px-3 py-2 bg-gray-900/30 border-t border-gray-700/50 flex gap-2 flex-shrink-0">
           {checkTab === 0 && categorizedList.fail.length > 0 && (
             <button
@@ -1211,6 +1530,7 @@ export default function CheckListModal({
             复制文本
           </button>
         </div>
+        )}
       </div>
 
       {/* 规则设置弹窗 */}
@@ -1232,38 +1552,135 @@ export default function CheckListModal({
 
             {/* 规则配置 */}
             <div className="p-3 space-y-3 max-h-[60vh] overflow-y-auto custom-scrollbar">
-              {/* 达标线列表 */}
+              {/* 月历可视化 */}
+              {(() => {
+                const presetColors = ['#00d4ff', '#00e676', '#ffab40', '#ff5252', '#b388ff']
+                const weekDayLabels = ['一', '二', '三', '四', '五', '六', '日']
+                const lines = rulesConfig.achievementLines || []
+                const weekToPresetIdx = (wn) => lines.findIndex(l => l.weekNumbers.includes(wn))
+                const cyclePreset = (wn) => {
+                  const currentIdx = weekToPresetIdx(wn)
+                  const nextIdx = currentIdx + 1 >= lines.length ? -1 : currentIdx + 1
+                  const updated = lines.map((l, i) => {
+                    const without = l.weekNumbers.filter(w => w !== wn)
+                    if (i === nextIdx) {
+                      return { ...l, weekNumbers: [...without, wn].sort((a, b) => a - b) }
+                    }
+                    return { ...l, weekNumbers: without }
+                  })
+                  setRulesConfig(prev => ({ ...prev, achievementLines: updated }))
+                }
+                return (
+                  <div className="bg-gray-900/50 rounded p-2 border border-gray-700/50">
+                    <div className="text-[10px] text-gray-400 mb-1.5 text-center">{selectedYear}年{selectedMonth}月 周预设分布</div>
+                    {/* 星期表头 */}
+                    <div className="flex gap-0.5 mb-1">
+                      <div className="w-8 flex-shrink-0" />
+                      {weekDayLabels.map(d => (
+                        <div key={d} className="flex-1 text-center text-[9px] text-gray-500">{d}</div>
+                      ))}
+                      <div className="flex-1" />
+                    </div>
+                    {monthCalendar.rows.map((row, rowIdx) => {
+                      const isInteractive = row.weekNumber !== null
+                      const pidx = isInteractive ? weekToPresetIdx(row.weekNumber) : -1
+                      const color = pidx >= 0 ? presetColors[pidx % presetColors.length] : null
+                      const presetName = pidx >= 0 ? (lines[pidx].name || `预设${pidx + 1}`) : isInteractive ? '未指定' : ''
+
+                      return (
+                        <div
+                          key={rowIdx}
+                          className={`flex items-center gap-0.5 mb-0.5 rounded transition-all ${
+                            isInteractive ? 'cursor-pointer hover:bg-gray-700/30' : ''
+                          }`}
+                          onClick={isInteractive ? () => cyclePreset(row.weekNumber) : undefined}
+                          title={isInteractive ? '点击切换预设' : undefined}
+                        >
+                          {/* 周号 */}
+                          <div className="w-8 flex-shrink-0 text-right pr-1">
+                            {row.weekNumber && (
+                              <span className="text-[9px]" style={{ color: color || '#6b7280' }}>W{row.weekNumber}</span>
+                            )}
+                          </div>
+                          {/* 日期格子 */}
+                          {row.cells.map((cell, ci) => (
+                            <div
+                              key={ci}
+                              className="flex-1 h-5 flex items-center justify-center rounded-sm text-[9px]"
+                              style={{
+                                background: cell.isCurrentMonth && color ? `${color}15` : 'transparent',
+                                border: cell.isCurrentMonth && color ? `1px solid ${color}33` : '1px solid transparent',
+                              }}
+                            >
+                              {cell.isCurrentMonth ? (
+                                cell.isSunday ? (
+                                  <span className="text-[10px] font-medium" style={{ color: color || '#9ca3af' }}>{cell.day}</span>
+                                ) : (
+                                  <span className="text-gray-400">{cell.day}</span>
+                                )
+                              ) : (
+                                <span className="text-gray-600 opacity-25">{cell.day}</span>
+                              )}
+                            </div>
+                          ))}
+                          {/* 预设名 */}
+                          <div className="flex-1 flex justify-end">
+                            {isInteractive && (
+                              <div
+                                className="text-[9px] px-1 py-0.5 rounded-sm"
+                                style={{
+                                  background: color ? `${color}15` : 'transparent',
+                                  color: color || '#6b7280',
+                                  border: `1px solid ${color ? `${color}44` : '#374151'}`,
+                                }}
+                              >
+                                {presetName}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })()}
+
+              {/* 达标预设列表 */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[10px] text-gray-400">达标线（满足任一即达标）</label>
+                  <label className="text-[10px] text-gray-400">达标预设（满足任一即达标）</label>
                   {rulesConfig.achievementLines.length < 4 && (
                     <button
                       onClick={() => setRulesConfig(prev => ({
                         ...prev,
                         achievementLines: [...prev.achievementLines, {
                           id: `line_${Date.now()}`,
-                          name: `达标线${prev.achievementLines.length + 1}`,
-                          weekNumbers: [1, 2, 3, 4],
+                          name: `预设${prev.achievementLines.length + 1}`,
+                          weekNumbers: Array.from({ length: monthCalendar.totalWeeks }, (_, i) => i + 1)
+                            .filter(w => !prev.achievementLines.some(l => l.weekNumbers.includes(w))),
                           condition: { weekly: 2000, daily: 400 },
                           enabled: true
                         }]
                       }))}
                       className="text-[10px] text-yellow-400 hover:text-yellow-300"
                     >
-                      + 添加达标线
+                      + 添加预设
                     </button>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  {rulesConfig.achievementLines.map((line, index) => (
-                    <div key={line.id || index} className={`bg-gray-900/50 rounded p-2 border ${line.enabled !== false ? 'border-gray-700/50' : 'border-gray-700/30 opacity-60'}`}>
-                      {/* 达标线头部：名称 + 开关 + 删除 */}
-                      <div className="flex items-center justify-between mb-1.5">
-                        <div className="flex items-center gap-2">
+                  {rulesConfig.achievementLines.map((line, index) => {
+                    const presetColors = ['#00d4ff', '#00e676', '#ffab40', '#ff5252', '#b388ff']
+                    const color = presetColors[index % presetColors.length]
+                    return (
+                      <div key={line.id || index} className="bg-gray-900/50 rounded p-2 border-l-2" style={{ borderLeftColor: color, borderTop: '1px solid rgba(55,65,81,0.5)', borderRight: '1px solid rgba(55,65,81,0.5)', borderBottom: '1px solid rgba(55,65,81,0.5)' }}>
+                        {/* 头部：色块 + 名称 + 适用周说明 + 删除 */}
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: color }} />
                           <input
                             type="text"
-                            value={line.name || `达标线${index + 1}`}
+                            value={line.name || `预设${index + 1}`}
                             onChange={(e) => setRulesConfig(prev => ({
                               ...prev,
                               achievementLines: prev.achievementLines.map((l, i) =>
@@ -1272,119 +1689,86 @@ export default function CheckListModal({
                             }))}
                             className="w-20 h-5 px-1 bg-gray-700 text-white text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none"
                           />
-                          {/* 启用开关 */}
-                          <button
-                            onClick={() => setRulesConfig(prev => ({
-                              ...prev,
-                              achievementLines: prev.achievementLines.map((l, i) =>
-                                i === index ? { ...l, enabled: !(l.enabled !== false) } : l
-                              )
-                            }))}
-                            className={`text-[10px] px-1.5 py-0.5 rounded ${line.enabled !== false ? 'bg-green-600/30 text-green-400' : 'bg-gray-700 text-gray-500'}`}
-                          >
-                            {line.enabled !== false ? '启用' : '禁用'}
-                          </button>
-                        </div>
-                        {rulesConfig.achievementLines.length > 1 && (
-                          <button
-                            onClick={() => setRulesConfig(prev => ({
-                              ...prev,
-                              achievementLines: prev.achievementLines.filter((_, i) => i !== index)
-                            }))}
-                            className="text-[10px] text-red-400 hover:text-red-300"
-                          >
-                            删除
-                          </button>
-                        )}
-                      </div>
-
-                      {/* 适用周数 */}
-                      <div className="flex items-center gap-1 mb-1.5">
-                        <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">适用周</span>
-                        <div className="flex gap-1">
-                          {[1, 2, 3, 4].map(w => (
+                          <span className="flex-1 text-[9px] text-gray-500">
+                            {line.weekNumbers.length === 0
+                              ? '无'
+                              : line.weekNumbers.length === monthCalendar.totalWeeks
+                                ? `全部 ${monthCalendar.totalWeeks} 周`
+                                : line.weekNumbers.map(w => `第${w}周`).join(', ')
+                            }
+                          </span>
+                          {rulesConfig.achievementLines.length > 1 && (
                             <button
-                              key={w}
                               onClick={() => setRulesConfig(prev => ({
                                 ...prev,
-                                achievementLines: prev.achievementLines.map((l, i) => {
-                                  if (i !== index) return l
-                                  const weeks = l.weekNumbers || [1, 2, 3, 4]
-                                  const newWeeks = weeks.includes(w) ? weeks.filter(x => x !== w) : [...weeks, w].sort()
-                                  return { ...l, weekNumbers: newWeeks.length > 0 ? newWeeks : [w] }
-                                })
+                                achievementLines: prev.achievementLines.filter((_, i) => i !== index)
                               }))}
-                              className={`w-6 h-5 text-[10px] rounded border ${(line.weekNumbers || [1, 2, 3, 4]).includes(w)
-                                ? 'bg-yellow-600/30 border-yellow-600 text-yellow-400'
-                                : 'bg-gray-700 border-gray-600 text-gray-500'}`}
+                              className="text-[10px] text-red-400 hover:text-red-300"
                             >
-                              {w}
+                              删除
                             </button>
-                          ))}
+                          )}
+                        </div>
+
+                        {/* 条件配置（内联） */}
+                        <div className="flex items-center gap-1 text-[10px] flex-wrap">
+                          <span className="text-gray-500">满足</span>
+                          <div className="flex items-center gap-0.5">
+                            <span style={{ color }} className="font-medium">周≥</span>
+                            <input
+                              type="number"
+                              value={line.condition?.weekly ?? ''}
+                              placeholder="不限"
+                              onChange={(e) => setRulesConfig(prev => ({
+                                ...prev,
+                                achievementLines: prev.achievementLines.map((l, i) =>
+                                  i === index ? { ...l, condition: { ...l.condition, weekly: e.target.value ? parseInt(e.target.value) : undefined } } : l
+                                )
+                              }))}
+                              className="w-14 h-5 px-1 bg-gray-700 text-center text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              style={{ color }}
+                            />
+                          </div>
+                          <span className="text-gray-500">或</span>
+                          <div className="flex items-center gap-0.5">
+                            <span style={{ color }} className="font-medium">日均≥</span>
+                            <input
+                              type="number"
+                              value={line.condition?.daily ?? ''}
+                              placeholder="不限"
+                              onChange={(e) => setRulesConfig(prev => ({
+                                ...prev,
+                                achievementLines: prev.achievementLines.map((l, i) =>
+                                  i === index ? { ...l, condition: { ...l.condition, daily: e.target.value ? parseInt(e.target.value) : undefined } } : l
+                                )
+                              }))}
+                              className="w-14 h-5 px-1 bg-gray-700 text-center text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              style={{ color }}
+                            />
+                          </div>
+                          <span className="text-gray-500">或</span>
+                          <div className="flex items-center gap-0.5">
+                            <span style={{ color }} className="font-medium">赛季≥</span>
+                            <input
+                              type="number"
+                              value={line.condition?.season ?? ''}
+                              placeholder="不限"
+                              onChange={(e) => setRulesConfig(prev => ({
+                                ...prev,
+                                achievementLines: prev.achievementLines.map((l, i) =>
+                                  i === index ? { ...l, condition: { ...l.condition, season: e.target.value ? parseInt(e.target.value) : undefined } } : l
+                                )
+                              }))}
+                              className="w-14 h-5 px-1 bg-gray-700 text-center text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              style={{ color }}
+                            />
+                          </div>
                         </div>
                       </div>
-
-                      {/* 条件配置 - 一行三列 */}
-                      <div className="flex items-center gap-2">
-                        {/* 周活跃度 */}
-                        <div className="flex-1">
-                          <label className="text-[10px] text-gray-500 block mb-0.5">周活跃</label>
-                          <input
-                            type="number"
-                            value={line.condition?.weekly ?? ''}
-                            placeholder="不限"
-                            onChange={(e) => setRulesConfig(prev => ({
-                              ...prev,
-                              achievementLines: prev.achievementLines.map((l, i) =>
-                                i === index ? { ...l, condition: { ...l.condition, weekly: e.target.value ? parseInt(e.target.value) : undefined } } : l
-                              )
-                            }))}
-                            className="w-full h-6 px-1 bg-gray-700 text-white text-center text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          />
-                        </div>
-
-                        {/* 日均活跃度 */}
-                        <div className="flex-1">
-                          <label className="text-[10px] text-gray-500 block mb-0.5">日均</label>
-                          <input
-                            type="number"
-                            value={line.condition?.daily ?? ''}
-                            placeholder="不限"
-                            onChange={(e) => setRulesConfig(prev => ({
-                              ...prev,
-                              achievementLines: prev.achievementLines.map((l, i) =>
-                                i === index ? { ...l, condition: { ...l.condition, daily: e.target.value ? parseInt(e.target.value) : undefined } } : l
-                              )
-                            }))}
-                            className="w-full h-6 px-1 bg-gray-700 text-white text-center text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          />
-                        </div>
-
-                        {/* 赛季活跃度 */}
-                        <div className="flex-1">
-                          <label className="text-[10px] text-gray-500 block mb-0.5">赛季</label>
-                          <input
-                            type="number"
-                            value={line.condition?.season ?? ''}
-                            placeholder="不限"
-                            onChange={(e) => setRulesConfig(prev => ({
-                              ...prev,
-                              achievementLines: prev.achievementLines.map((l, i) =>
-                                i === index ? { ...l, condition: { ...l.condition, season: e.target.value ? parseInt(e.target.value) : undefined } } : l
-                              )
-                            }))}
-                            className="w-full h-6 px-1 bg-gray-700 text-white text-center text-[10px] rounded border border-gray-600 focus:border-yellow-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
-
-              <p className="text-[10px] text-gray-500">
-                判定逻辑：满足适用当前周的任一达标线的任一条件（或关系）即为达标
-              </p>
 
               {/* 排除成员 */}
               <div>

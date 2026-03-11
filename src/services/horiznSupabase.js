@@ -772,8 +772,34 @@ export async function markEventKicked(eventId, isKicked) {
   return { success: true }
 }
 
+// ===================================================
+// DuckDB HTTP API（活跃度数据）
+// ===================================================
+
+const DUCKDB_URL = process.env.NEXT_PUBLIC_DUCKDB_URL
+
+async function queryDuckDB(sql, args = []) {
+  if (!DUCKDB_URL) throw new Error('NEXT_PUBLIC_DUCKDB_URL 未配置')
+  const response = await fetch(`${DUCKDB_URL}/api/query`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: sql, args })
+  })
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`DuckDB query failed (${response.status}): ${errorText}`)
+  }
+  return response.json()
+}
+
+function getChinaToday() {
+  const now = new Date()
+  const chinaTime = new Date(now.getTime() + 8 * 60 * 60 * 1000)
+  return chinaTime.toISOString().slice(0, 10)
+}
+
 /**
- * 获取整月活跃度考核数据（一次性加载所有周）
+ * 获取整月活跃度考核数据（DuckDB 活跃度 + Supabase 成员信息）
  * @param {number} year - 年份
  * @param {number} month - 月份 (1-12)
  * @param {number} cutoffHour - 考核截止小时（默认12，即周日中午12点）
@@ -782,21 +808,265 @@ export async function markEventKicked(eventId, isKicked) {
 export async function getMonthlyCheckData(year, month, cutoffHour = 12) {
   const supabase = assertSupabase()
 
-  console.log(`[horiznSupabase] 获取 ${year}年${month}月 全月考核数据 (截止${cutoffHour}点)...`)
+  console.log(`[horiznSupabase] 获取 ${year}年${month}月 全月考核数据 (DuckDB + Supabase)...`)
 
-  const { data, error } = await supabase.rpc('horizn_get_monthly_check_data', {
-    p_year: year,
-    p_month: month,
-    p_cutoff_hour: cutoffHour
-  })
+  const today = getChinaToday()
+  const todayDate = new Date(today)
+  const isCurrentMonth = todayDate.getFullYear() === year && todayDate.getMonth() + 1 === month
 
-  if (error) {
-    console.error('[horiznSupabase] 获取全月考核数据失败:', error)
-    throw error
+  const startDate = `${year}-${String(month).padStart(2, '0')}-01T00:00:00`
+  const nextMonth = month === 12 ? 1 : month + 1
+  const nextYear = month === 12 ? year + 1 : year
+  const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01T00:00:00`
+
+  const duckDbSql = `
+    WITH sunday_records AS (
+      SELECT DISTINCT session_time,
+        strftime(session_time, '%m-%d %H:%M') AS frame_label,
+        CEIL(EXTRACT(DAY FROM session_time) / 7.0)::int AS week_number,
+        session_time::date AS sunday_date,
+        EXTRACT(HOUR FROM session_time) AS frame_hour
+      FROM horizn_activity_records
+      WHERE session_time >= ?::timestamp AND session_time < ?::timestamp
+        AND EXTRACT(DOW FROM session_time) = 0
+    ),
+    ranked AS (
+      SELECT *, ROW_NUMBER() OVER (PARTITION BY sunday_date ORDER BY session_time) AS rn
+      FROM sunday_records WHERE frame_hour >= ?
+    ),
+    sunday_frames AS (
+      SELECT session_time, frame_label, week_number FROM ranked WHERE rn = 1
+    ),
+    latest_frame AS (
+      SELECT session_time,
+        strftime(session_time, '%m-%d %H:%M') AS frame_label,
+        0 AS week_number
+      FROM horizn_activity_records
+      WHERE session_time >= ?::timestamp AND session_time < ?::timestamp
+      ORDER BY session_time DESC LIMIT 1
+    ),
+    all_frames AS (
+      SELECT * FROM sunday_frames
+      UNION ALL
+      SELECT * FROM latest_frame
+      WHERE ? = true
+        AND session_time NOT IN (SELECT session_time FROM sunday_frames)
+    )
+    SELECT af.week_number, af.session_time, af.frame_label,
+           ar.player_id,
+           COALESCE(ar.weekly_activity, 0) AS weekly_activity,
+           COALESCE(ar.season_activity, 0) AS season_activity
+    FROM all_frames af
+    JOIN horizn_activity_records ar ON ar.session_time = af.session_time
+    ORDER BY af.week_number, af.session_time, ar.player_id
+  `
+
+  // 并行请求 DuckDB 活跃度 + Supabase 成员 + 入队日期
+  const [duckResult, membersResult, joinDatesResult] = await Promise.all([
+    queryDuckDB(duckDbSql, [
+      startDate, endDate,       // sunday_records WHERE
+      cutoffHour,               // ranked WHERE
+      startDate, endDate,       // latest_frame WHERE
+      isCurrentMonth            // all_frames WHERE
+    ]),
+    supabase.rpc('horizn_get_members'),
+    supabase
+      .from('horizn_membership_events')
+      .select('player_id, event_time')
+      .eq('event_type', 'join')
+      .order('event_time', { ascending: false })
+  ])
+
+  // 成员 Map
+  const memberMap = new Map()
+  if (membersResult.data) {
+    for (const m of membersResult.data) {
+      memberMap.set(m.player_id, {
+        name: m.primary_name || m.player_id,
+        member_number: m.member_number
+      })
+    }
   }
 
-  console.log(`[horiznSupabase] 获取到 ${(data || []).length} 条全月考核数据`)
-  return data || []
+  // 入队日期 Map
+  const joinDateMap = new Map()
+  if (joinDatesResult.data) {
+    for (const event of joinDatesResult.data) {
+      if (!joinDateMap.has(event.player_id)) {
+        joinDateMap.set(event.player_id, event.event_time.slice(0, 10))
+      }
+    }
+  }
+
+  // 合并
+  const rows = duckResult.rows || []
+  const records = rows.map(row => {
+    const playerId = row[3]
+    const info = memberMap.get(playerId)
+    return {
+      week_number: row[0],
+      session_time: row[1],
+      frame_label: row[2],
+      player_id: playerId,
+      member_name: info?.name || playerId,
+      member_number: info?.member_number || '???',
+      join_date: joinDateMap.get(playerId) || null,
+      weekly_activity: row[4],
+      season_activity: row[5]
+    }
+  })
+
+  console.log(`[horiznSupabase] DuckDB ${rows.length} 行活跃度 + ${memberMap.size} 成员 → ${records.length} 条考核数据`)
+  return records
+}
+
+/**
+ * 获取新人每日追踪数据（DuckDB 活跃度 + Supabase 成员/入队事件）
+ * @param {number} year
+ * @param {number} month
+ * @param {number} startDay - 从几号开始算新人（1 = 追踪本月所有入队新人）
+ * @param {number} cutoffHour - 凌晨几点算次日数据
+ * @returns {Promise<Array>} NewcomerDailyRecord[]
+ */
+export async function getNewcomerDailyCheck(year, month, startDay = 1, cutoffHour = 0) {
+  const supabase = assertSupabase()
+
+  console.log(`[horiznSupabase] 获取 ${year}年${month}月 新人追踪数据 (startDay=${startDay})...`)
+
+  const today = getChinaToday()
+  const newcomerStart = `${year}-${String(month).padStart(2, '0')}-${String(startDay).padStart(2, '0')}`
+  const monthEnd = new Date(year, month, 0)
+  const monthEndStr = monthEnd.toISOString().slice(0, 10)
+
+  // 1. 从 Supabase 查找本月 startDay 后入队的新人
+  const { data: joinEvents, error: joinError } = await supabase
+    .from('horizn_membership_events')
+    .select('player_id, event_time')
+    .eq('event_type', 'join')
+    .gte('event_time', `${newcomerStart}T00:00:00`)
+    .lte('event_time', `${monthEndStr}T23:59:59`)
+    .order('event_time', { ascending: false })
+
+  if (joinError) {
+    console.error('[horiznSupabase] 获取新人入队事件失败:', joinError)
+    throw joinError
+  }
+
+  if (!joinEvents || joinEvents.length === 0) {
+    console.log('[horiznSupabase] 本月无新人')
+    return []
+  }
+
+  // 去重：每个 player_id 只取最新的入队事件
+  const newcomerMap = new Map()
+  for (const event of joinEvents) {
+    if (!newcomerMap.has(event.player_id)) {
+      newcomerMap.set(event.player_id, {
+        player_id: event.player_id,
+        join_date: event.event_time.slice(0, 10)
+      })
+    }
+  }
+
+  const playerIds = Array.from(newcomerMap.keys())
+  console.log(`[horiznSupabase] 找到 ${playerIds.length} 个新人`)
+
+  // 2. DuckDB 查每日活跃度
+  const newcomerStartPlus1 = new Date(year, month - 1, startDay + 1).toISOString().slice(0, 10)
+  const playerPlaceholders = playerIds.map(() => '?').join(', ')
+
+  const sql = `
+    WITH
+    history_frames AS (
+      SELECT
+        (session_time::date - INTERVAL '1 day')::date AS frame_date,
+        session_time AS frame_time,
+        false AS is_today,
+        ROW_NUMBER() OVER (
+          PARTITION BY (session_time::date - INTERVAL '1 day')::date
+          ORDER BY session_time ASC
+        ) AS rn
+      FROM horizn_activity_records
+      WHERE session_time::date >= ?::date
+        AND session_time::date <= ?::date
+        AND EXTRACT(HOUR FROM session_time) >= ?
+        AND (session_time::date - INTERVAL '1 day')::date >= ?::date
+        AND (session_time::date - INTERVAL '1 day')::date < ?::date
+    ),
+    today_frame AS (
+      SELECT ?::date AS frame_date, session_time AS frame_time, true AS is_today,
+        ROW_NUMBER() OVER (ORDER BY session_time DESC) AS rn
+      FROM horizn_activity_records
+      WHERE session_time::date = ?::date
+    ),
+    all_frames AS (
+      SELECT frame_date, frame_time, is_today FROM history_frames WHERE rn = 1
+      UNION ALL
+      SELECT frame_date, frame_time, is_today FROM today_frame WHERE rn = 1
+    )
+    SELECT af.frame_date, af.frame_time, af.is_today,
+           ar.player_id, COALESCE(ar.season_activity, 0) AS season_activity
+    FROM all_frames af
+    LEFT JOIN horizn_activity_records ar
+      ON ar.session_time = af.frame_time
+      AND ar.player_id IN (${playerPlaceholders})
+    ORDER BY af.frame_date, ar.player_id
+  `
+
+  const duckArgs = [
+    newcomerStartPlus1, today, cutoffHour,
+    newcomerStart, today,
+    today, today,
+    ...playerIds
+  ]
+
+  // 并行查 DuckDB + 成员信息
+  const [duckResult, membersResult] = await Promise.all([
+    queryDuckDB(sql, duckArgs),
+    supabase.rpc('horizn_get_members')
+  ])
+
+  const memberMap = new Map()
+  if (membersResult.data) {
+    for (const m of membersResult.data) {
+      memberMap.set(m.player_id, {
+        name: m.primary_name || m.player_id,
+        member_number: m.member_number
+      })
+    }
+  }
+
+  // 合并
+  const records = []
+  for (const row of (duckResult.rows || [])) {
+    const playerId = row[3]
+    if (!playerId) continue
+    const newcomer = newcomerMap.get(playerId)
+    if (!newcomer) continue
+    const frameDate = row[0]
+    if (frameDate < newcomer.join_date) continue
+
+    const info = memberMap.get(playerId)
+    records.push({
+      player_id: playerId,
+      member_name: info?.name || playerId,
+      member_number: info?.member_number || '???',
+      join_date: newcomer.join_date,
+      check_date: frameDate,
+      check_time: row[1],
+      season_activity: row[4],
+      is_today: row[2]
+    })
+  }
+
+  records.sort((a, b) => {
+    if (a.join_date !== b.join_date) return b.join_date.localeCompare(a.join_date)
+    if (a.player_id !== b.player_id) return a.player_id.localeCompare(b.player_id)
+    return a.check_date.localeCompare(b.check_date)
+  })
+
+  console.log(`[horiznSupabase] 返回 ${records.length} 条新人追踪数据`)
+  return records
 }
 
 /**
