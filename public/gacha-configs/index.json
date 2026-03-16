@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "be102",
+      "gacha_type": "机密货物类",
+      "name": "黑色前哨",
+      "formattedDate": "2026年3月",
+      "nameEn": "Black Outpost"
+    },
+    {
       "id": "ag102",
       "gacha_type": "筹码类",
       "name": "暗影交易",

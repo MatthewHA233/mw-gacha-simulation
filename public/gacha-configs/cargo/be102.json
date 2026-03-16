@@ -1,0 +1,195 @@
+{
+  "id": "be102",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "黑色前哨",
+    "formattedDate": "2026年3月",
+    "nameEn": "Black Outpost"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机"
+      },
+      "items": [
+        {
+          "name": "阿卡什-NG",
+          "probability": 0.25,
+          "limit": 1,
+          "id": "AkashNG",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Akash NG"
+        },
+        {
+          "name": "米-28NM\"浩劫\"-B",
+          "probability": 0.5,
+          "limit": 2,
+          "id": "MI28NM",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Mi-28NM Havoc"
+        },
+        {
+          "name": "罗兰-2",
+          "probability": 0.75,
+          "limit": 1,
+          "id": "Roland2",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "Roland 2"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.25,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "索尼娅",
+          "probability": 2.25,
+          "limit": 4,
+          "id": "decal_events102rare3",
+          "type": "贴花",
+          "rarity": "rare"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级导弹诱饵",
+          "probability": 22.0,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物"
+      },
+      "items": [
+        {
+          "name": "[泛空间]鹦鹉螺",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "Nautilos",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "Pan Spatial Nautilos"
+        },
+        {
+          "name": "[法]福尔班",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Forbin",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS Forbin"
+        },
+        {
+          "name": "UUM-44反潜导弹",
+          "probability": 0.3,
+          "limit": 3,
+          "id": "UUM44SUBROC",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "UUM-44 SUBROC"
+        },
+        {
+          "name": "阿卡亚(533 mm)",
+          "probability": 0.35,
+          "limit": 3,
+          "id": "Akya",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Akya (533mm)"
+        },
+        {
+          "name": "阿斯特罗斯II MK6",
+          "probability": 0.4,
+          "limit": 3,
+          "id": "AstrosIIMK6",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "Astros II MK6"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 4.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 17.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "250 代币",
+          "probability": 22.0,
+          "limit": 190,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 26.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.1,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}
