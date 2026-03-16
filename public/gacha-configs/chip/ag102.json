@@ -1,0 +1,122 @@
+{
+  "id": "ag102",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "暗影交易",
+    "formattedDate": "2026年2月"
+  },
+  "items": [
+    {
+      "id": "Fletcher",
+      "name": "[美]弗莱彻(DD-992)",
+      "type": "战舰",
+      "rarity": "epic",
+      "probability": 0.08,
+      "limit": 1
+    },
+    {
+      "id": "Battlecruiser2000",
+      "name": "[美]战巡2000",
+      "type": "战舰",
+      "rarity": "legendary",
+      "probability": 0.095,
+      "limit": 1
+    },
+    {
+      "id": "Vanguard",
+      "name": "[英]前卫(S28)",
+      "type": "战舰",
+      "rarity": "epic",
+      "probability": 0.15,
+      "limit": 1
+    },
+    {
+      "id": "MAR290",
+      "name": "MAR-290 (290 mm)",
+      "type": "火箭炮",
+      "rarity": "legendary",
+      "probability": 0.25,
+      "limit": 1
+    },
+    {
+      "id": "MRPGKonigEMRG",
+      "name": "国王轨道炮(180 mm)",
+      "type": "主炮",
+      "rarity": "legendary",
+      "probability": 0.22,
+      "limit": 1
+    },
+    {
+      "id": "SU24M",
+      "name": "苏-24M\"击剑手\"-D",
+      "type": "攻击机",
+      "rarity": "legendary",
+      "probability": 0.15,
+      "limit": 2
+    },
+    {
+      "id": "ASN4G",
+      "name": "ASN4G",
+      "type": "导弹",
+      "rarity": "legendary",
+      "probability": 0.7,
+      "limit": 3
+    },
+    {
+      "id": "Camo_be99Offer",
+      "name": "冰封混沌",
+      "type": "涂装",
+      "rarity": "legendary",
+      "probability": 1.65,
+      "limit": 1
+    },
+    {
+      "id": "currency_gachacoins",
+      "limit": 0,
+      "name": "筹码",
+      "probability": 4,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "Artstorm",
+      "limit": 0,
+      "name": "10 艺术硬币",
+      "probability": 8,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "Hard",
+      "limit": 0,
+      "name": "15 黄金",
+      "probability": 33,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "EngineBoost",
+      "limit": 0,
+      "name": "2 引擎过载",
+      "probability": 17,
+      "rarity": "common",
+      "type": "战斗增益"
+    },
+    {
+      "id": "Artstorm",
+      "limit": 0,
+      "name": "4 艺术硬币",
+      "probability": 22,
+      "rarity": "common",
+      "type": "资源"
+    },
+    {
+      "id": "PremiumRepairKit",
+      "limit": 0,
+      "name": "6 高级修理包",
+      "probability": 13,
+      "rarity": "common",
+      "type": "战斗增益"
+    }
+  ]
+}
