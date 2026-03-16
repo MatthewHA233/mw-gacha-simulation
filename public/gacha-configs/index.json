@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "la102",
+      "gacha_type": "旗舰宝箱类",
+      "name": "四叶草行动",
+      "nameEn": "Operation Clover",
+      "formattedDate": "2026年3月"
+    },
+    {
       "id": "be102",
       "gacha_type": "机密货物类",
       "name": "黑色前哨",
