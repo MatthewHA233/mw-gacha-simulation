@@ -1504,7 +1504,7 @@ export default function MemberAdminModal({ show, onClose, isMobile }) {
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-                    座位图
+                    {!isMobile && '座位图'}
                   </button>
                   <button
                     onClick={() => setHullView('list')}
@@ -1515,7 +1515,7 @@ export default function MemberAdminModal({ show, onClose, isMobile }) {
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    列表
+                    {!isMobile && '列表'}
                   </button>
                 </div>
               )}
@@ -1532,15 +1532,21 @@ export default function MemberAdminModal({ show, onClose, isMobile }) {
                       : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                     }
                   </svg>
-                  {hullSort === 'date' ? '入群时间' : '序号'}
+                  {!isMobile && (hullSort === 'date' ? '入群时间' : '序号')}
                 </button>
               )}
               <button
                 onClick={loadMembers}
                 disabled={loading}
                 className="text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                title="刷新"
               >
-                {loading ? '...' : '刷新'}
+                {loading
+                  ? <svg className="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  : isMobile
+                    ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                    : '刷新'
+                }
               </button>
               <button
                 onClick={onClose}
