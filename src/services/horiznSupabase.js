@@ -1148,6 +1148,261 @@ export async function getQQMembers() {
  * @param {string} message - 消息内容（支持 CQ 码）
  * @returns {Promise<{success: boolean, message_id?: number, error?: string}>}
  */
+/**
+ * 获取全部成员（含 hull_number / blacklist 字段），不走缓存
+ * @returns {Promise<Array>} 成员列表
+ */
+export async function getAllMembersForAdmin() {
+  const supabase = assertSupabase()
+
+  // 专用轻量 RPC：服务端关联名字，一次返回全部
+  const { data, error } = await supabase.rpc('horizn_get_members_admin')
+  if (error) {
+    console.error('[horiznSupabase] getAllMembersForAdmin failed:', error)
+    throw error
+  }
+  return data || []
+}
+
+/**
+ * 设置成员舷号
+ * @param {string} playerId - 玩家 ID
+ * @param {string|null} hullNumber - 舷号（null 清除）
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function setHullNumber(playerId, hullNumber) {
+  const supabase = assertSupabase()
+  const { data, error } = await supabase.rpc('horizn_set_hull_number', {
+    p_player_id: playerId,
+    p_hull_number: hullNumber
+  })
+  if (error) {
+    console.error('[horiznSupabase] setHullNumber failed:', error)
+    return { success: false, error: error.message }
+  }
+  // RPC 返回 jsonb { success, error, ... }
+  if (data && !data.success) {
+    return { success: false, error: data.error || '未知错误' }
+  }
+  return { success: true }
+}
+
+/**
+ * 设置成员黑名单状态
+ * @param {string} playerId - 玩家 ID
+ * @param {boolean} isBlacklisted - 是否加入黑名单
+ * @param {string} [note] - 备注
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function setHullDate(playerId, hullDate) {
+  const supabase = assertSupabase()
+  const { error } = await supabase
+    .from('horizn_members')
+    .update({ hull_date: hullDate })
+    .eq('player_id', playerId)
+  if (error) {
+    console.error('[horiznSupabase] setHullDate failed:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true }
+}
+
+export async function setMemberBlacklist(playerId, isBlacklisted, note) {
+  const supabase = assertSupabase()
+  const { data, error } = await supabase.rpc('horizn_set_member_blacklist', {
+    p_player_id: playerId,
+    p_is_blacklisted: isBlacklisted,
+    p_note: note || null
+  })
+  if (error) {
+    console.error('[horiznSupabase] setMemberBlacklist failed:', error)
+    return { success: false, error: error.message }
+  }
+  if (data && !data.success) {
+    return { success: false, error: data.error || '未知错误' }
+  }
+  return { success: true }
+}
+
+export async function setMemberBlacklistDate(playerId, date) {
+  const supabase = assertSupabase()
+  const { error } = await supabase
+    .from('horizn_members')
+    .update({ blacklist_date: date || null })
+    .eq('player_id', playerId)
+  if (error) {
+    console.error('[horiznSupabase] setMemberBlacklistDate failed:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true }
+}
+
+/**
+ * 更迭舷号（旧持有人标记为[旧]，新持有人获得舷号）
+ * @param {string} oldPlayerId - 旧持有人 player_id
+ * @param {string} newPlayerId - 新持有人 player_id
+ * @param {string} hullNumber - 舷号（如 No.001）
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function transferHullNumber(oldPlayerId, newPlayerId, hullNumber) {
+  const supabase = assertSupabase()
+  const { data, error } = await supabase.rpc('horizn_transfer_hull_number', {
+    p_old_player_id: oldPlayerId,
+    p_new_player_id: newPlayerId,
+    p_hull_number: hullNumber
+  })
+  if (error) {
+    console.error('[horiznSupabase] transferHullNumber failed:', error)
+    return { success: false, error: error.message }
+  }
+  if (data && !data.success) {
+    return { success: false, error: data.error || '未知错误' }
+  }
+  return { success: true }
+}
+
+/**
+ * 订阅 horizn_members 表变更（Realtime）
+ * @param {Function} callback - 回调函数，参数 { new: row, old: row }
+ * @returns {Function} 取消订阅函数
+ */
+export function subscribeToMemberChanges(callback) {
+  const supabase = assertSupabase()
+  const channel = supabase
+    .channel('member-admin-changes')
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'horizn_members'
+    }, (payload) => {
+      callback({ new: payload.new, old: payload.old })
+    })
+    .subscribe()
+
+  return () => { channel.unsubscribe() }
+}
+
+// ===================================================
+// 外部黑名单（horizn_blacklist_else）
+// ===================================================
+
+/** 获取全部外部黑名单记录 */
+export async function getBlacklistElse() {
+  const supabase = assertSupabase()
+  const { data, error } = await supabase
+    .from('horizn_blacklist_else')
+    .select('*')
+    .order('blacklist_date', { ascending: false })
+  if (error) {
+    console.error('[horiznSupabase] getBlacklistElse failed:', error)
+    throw error
+  }
+  return data || []
+}
+
+/** 新增外部黑名单记录 */
+export async function addBlacklistElse({ name, player_id, qq_number, note }) {
+  const supabase = assertSupabase()
+  const { data, error } = await supabase
+    .from('horizn_blacklist_else')
+    .insert({ name, player_id: player_id || null, qq_number: qq_number || null, note: note || null })
+    .select()
+    .single()
+  if (error) {
+    console.error('[horiznSupabase] addBlacklistElse failed:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true, data }
+}
+
+/** 更新外部黑名单记录 */
+export async function updateBlacklistElse(id, { name, player_id, qq_number, note, blacklist_date }) {
+  const supabase = assertSupabase()
+  const payload = { name, player_id: player_id || null, qq_number: qq_number || null, note: note || null }
+  if (blacklist_date !== undefined) payload.blacklist_date = blacklist_date || null
+  const { error } = await supabase
+    .from('horizn_blacklist_else')
+    .update(payload)
+    .eq('id', id)
+  if (error) {
+    console.error('[horiznSupabase] updateBlacklistElse failed:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true }
+}
+
+/** 删除外部黑名单记录 */
+export async function deleteBlacklistElse(id) {
+  const supabase = assertSupabase()
+  const { error } = await supabase
+    .from('horizn_blacklist_else')
+    .delete()
+    .eq('id', id)
+  if (error) {
+    console.error('[horiznSupabase] deleteBlacklistElse failed:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true }
+}
+
+/**
+ * 手动绑定 QQ（黑名单场景：只填 QQ 号 + 退群时间）
+ * @param {string} playerId
+ * @param {number} qqId
+ * @param {string|null} leftAt - 退群时间 ISO 日期
+ */
+export async function manualBindQQ(playerId, qqId, leftAt) {
+  const supabase = assertSupabase()
+
+  // 1. 获取 member_id
+  const { data: memberData, error: memberErr } = await supabase
+    .from('horizn_members')
+    .select('id')
+    .eq('player_id', playerId)
+    .single()
+
+  if (memberErr || !memberData) {
+    return { success: false, error: '成员不存在' }
+  }
+
+  // 2. upsert qq_accounts
+  const { error } = await supabase
+    .from('horizn_qq_accounts')
+    .upsert({
+      qq_id: qqId,
+      member_id: memberData.id,
+      left_at: leftAt || null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'qq_id' })
+
+  if (error) {
+    console.error('[horiznSupabase] manualBindQQ failed:', error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}
+
+/**
+ * 更新 QQ 账号退群时间
+ * @param {number} qqId
+ * @param {string|null} leftAt
+ */
+export async function updateQQLeftAt(qqId, leftAt) {
+  const supabase = assertSupabase()
+  const { error } = await supabase
+    .from('horizn_qq_accounts')
+    .update({ left_at: leftAt || null, updated_at: new Date().toISOString() })
+    .eq('qq_id', qqId)
+
+  if (error) {
+    console.error('[horiznSupabase] updateQQLeftAt failed:', error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}
+
 export async function sendGroupMessage(message) {
   try {
     const resp = await fetch('/api/napcat/send', {

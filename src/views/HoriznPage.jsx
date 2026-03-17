@@ -9,6 +9,7 @@ import CopyRankModal from '@/components/Horizn/CopyRankModal'
 import CheckListModal from '@/components/Horizn/CheckListModal'
 import KickReviewModal from '@/components/Horizn/KickReviewModal'
 import MemberEventsModal from '@/components/Horizn/MemberEventsModal'
+import MemberAdminModal from '@/components/Horizn/MemberAdminModal'
 import { CDN_BASE_URL } from '@/utils/constants'
 import { getHoriznAvailableMonths, getHoriznMonthlyBaseSmart, buildHoriznTimelineFromBase } from '@/services/horiznSupabase'
 import '@/components/Layout/Sidebar.css'
@@ -39,6 +40,9 @@ export default function HoriznPage({ yearMonth }) {
 
   // 成员入离队细目相关状态
   const [showMemberEventsModal, setShowMemberEventsModal] = useState(false)
+
+  // 舷号与黑名单管理弹窗
+  const [showMemberAdminModal, setShowMemberAdminModal] = useState(false)
 
   // 搜索定位玩家
   const [pinnedPlayerId, setPinnedPlayerId] = useState(null)
@@ -181,6 +185,12 @@ export default function HoriznPage({ yearMonth }) {
   const handleOpenMemberEventsModal = () => {
     setShowAdminMenu(false)
     setShowMemberEventsModal(true)
+  }
+
+  // 打开舷号与黑名单管理弹窗
+  const handleOpenMemberAdminModal = () => {
+    setShowAdminMenu(false)
+    setShowMemberAdminModal(true)
   }
 
   // 设置页面标题
@@ -538,6 +548,15 @@ export default function HoriznPage({ yearMonth }) {
                             </svg>
                             <span>入离队细目</span>
                           </button>
+                          <button
+                            onClick={handleOpenMemberAdminModal}
+                            className="w-full px-3 py-1.5 text-left text-xs text-emerald-400 hover:bg-gray-700 transition-colors flex items-center gap-2"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                            <span>舷号和黑名单</span>
+                          </button>
                           <div className="border-t border-gray-700"></div>
                           <button
                             onClick={handleLogout}
@@ -609,6 +628,13 @@ export default function HoriznPage({ yearMonth }) {
         onClose={() => setShowMemberEventsModal(false)}
         isMobile={isMobile}
         isAdmin={isAdmin}
+      />
+
+      {/* 舷号与黑名单管理弹窗 */}
+      <MemberAdminModal
+        show={showMemberAdminModal}
+        onClose={() => setShowMemberAdminModal(false)}
+        isMobile={isMobile}
       />
     </div>
   )

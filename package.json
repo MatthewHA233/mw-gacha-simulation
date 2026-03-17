@@ -31,7 +31,8 @@
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.7.0",
     "tailwind-merge": "^3.3.1",
-    "three": "^0.159.0"
+    "three": "^0.159.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20",
