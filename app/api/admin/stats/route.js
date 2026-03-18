@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 /**
  * 管理员收入统计 API
  * GET /api/admin/stats?year=2026&month=3

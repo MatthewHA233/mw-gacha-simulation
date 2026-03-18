@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 /**
  * 管理员订单分页 API
  * GET /api/admin/orders?page=1&limit=20

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/horizn/hull-seatmap
  * 生成舷号座位图 PNG 图片，供 QQ 机器人调用
