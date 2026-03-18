@@ -209,6 +209,18 @@ export function GachaPage({ type, activityId }) {
 
           {/* 抽卡组件内容 */}
           {renderGachaComponent()}
+
+          {/* 底部合作频道链接 */}
+          <div className="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none z-10">
+            <a
+              href="https://pd.qq.com/s/b3dsx9rgf?b=9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pointer-events-auto mb-1 px-3 py-0.5 text-[11px] text-white/40 hover:text-white/70 transition-colors"
+            >
+              合作腾讯频道：长空之王【现代战舰中国玩家社区】
+            </a>
+          </div>
         </div>
       </div>
     </div>
