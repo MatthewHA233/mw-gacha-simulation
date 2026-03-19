@@ -3,7 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
 
   // Puppeteer/Chromium 需要作为外部包，不被 webpack 打包
-  serverExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
+  experimental: {
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
+  },
 
   // 图片域名白名单（CDN 图片）
   images: {
