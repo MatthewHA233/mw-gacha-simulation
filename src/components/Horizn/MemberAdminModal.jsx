@@ -247,8 +247,11 @@ export default function MemberAdminModal({ show, onClose, isMobile }) {
   // ========== 数据 ==========
   const hullMembers = useMemo(() => {
     return members
-      .filter(m => m.hull_number && m.hull_number !== '__pending__')
+      .filter(m => m.hull_number)
       .sort((a, b) => {
+        // __pending__ 始终排最前（正在输入舷号的新增项）
+        if (a.hull_number === '__pending__') return -1
+        if (b.hull_number === '__pending__') return 1
         if (hullSort === 'number') {
           const aNum = parseInt(a.hull_number.replace(/\D/g, ''), 10) || 0
           const bNum = parseInt(b.hull_number.replace(/\D/g, ''), 10) || 0
