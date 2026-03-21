@@ -1,7 +1,5 @@
-'use client'
-
-import { HoriznRedirect } from '@/components/HoriznRedirect'
+import { redirect } from 'next/navigation'
 
 export default function HoriznIndexPage() {
-  return <HoriznRedirect />
+  redirect('https://horizn.cn')
 }
