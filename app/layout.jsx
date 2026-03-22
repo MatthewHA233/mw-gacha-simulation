@@ -18,6 +18,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN">
+      <head>
+        <script defer src="https://umami.lingflow.cn/script.js" data-website-id="b982957c-d4c7-4e48-af34-e84bf8788261"></script>
+      </head>
       <body>
         <VersionInitializer />
         <ServiceWorkerRegistrar />
