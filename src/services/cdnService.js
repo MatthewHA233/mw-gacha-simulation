@@ -360,6 +360,11 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_decals/${item.id}.png${IMG_WEBP}`
   }
 
+  // 港口：独立目录 contentseparated_assets_porticons
+  if (item.type === '港口') {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_porticons/${item.id}.png${IMG_WEBP}`
+  }
+
   // 史诗/传说物品：根据 type 和 id 动态生成
   if (item.rarity === 'epic' || item.rarity === 'legendary') {
     let folder
