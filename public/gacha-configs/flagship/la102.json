@@ -157,6 +157,179 @@
       ]
     },
     {
+      "type": "medium",
+      "items": [
+        {
+          "id": "Amagi",
+          "limit": 1,
+          "name": "[日]天城",
+          "probability": 0.02,
+          "rarity": "legendary",
+          "type": "战舰"
+        },
+        {
+          "id": "Type055A",
+          "limit": 1,
+          "name": "[中]东莞(055第二批次)",
+          "probability": 0.05,
+          "rarity": "epic",
+          "type": "战舰"
+        },
+        {
+          "id": "Type039C",
+          "limit": 1,
+          "name": "[中]039C型",
+          "probability": 0.10,
+          "rarity": "epic",
+          "type": "战舰"
+        },
+        {
+          "id": "HSTDV",
+          "limit": 2,
+          "name": "HSTDV",
+          "probability": 0.30,
+          "rarity": "epic",
+          "type": "导弹"
+        },
+        {
+          "id": "Nilgiri",
+          "limit": 1,
+          "name": "[印]尼尔吉里(P-17A)",
+          "probability": 0.35,
+          "rarity": "epic",
+          "type": "战舰"
+        },
+        {
+          "id": "NavalReview",
+          "limit": 1,
+          "name": "阅舰式",
+          "probability": 1.00,
+          "rarity": "epic",
+          "type": "港口"
+        },
+        {
+          "id": "Camo_InfiniteSpace",
+          "limit": 2,
+          "name": "无垠太空",
+          "probability": 1.00,
+          "rarity": "legendary",
+          "type": "涂装"
+        },
+        {
+          "id": "Camo_PirateEssence",
+          "limit": 2,
+          "name": "海盗本色",
+          "probability": 1.00,
+          "rarity": "legendary",
+          "type": "涂装"
+        },
+        {
+          "id": "Artstorm",
+          "limit": 0,
+          "name": "100 艺术硬币",
+          "probability": 2.50,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "Artstorm",
+          "limit": 0,
+          "name": "40 艺术硬币",
+          "probability": 4.50,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "Hard",
+          "limit": 0,
+          "name": "400 黄金",
+          "probability": 4.50,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "Upgrades",
+          "limit": 0,
+          "name": "40 升级芯片",
+          "probability": 7.70,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "AirElectronicWarfare",
+          "limit": 0,
+          "name": "10 机载电子对抗",
+          "probability": 7.00,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "PremiumRepairKit",
+          "limit": 0,
+          "name": "10 高级修理包",
+          "probability": 7.50,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "PremiumAircraftMissileDecoy",
+          "limit": 0,
+          "name": "10 高级机载导弹诱饵",
+          "probability": 8.00,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "ElectronicWarfare",
+          "limit": 0,
+          "name": "10 电子对抗",
+          "probability": 8.00,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "PremiumTorpedoDecoy",
+          "limit": 0,
+          "name": "10 高级鱼雷诱饵",
+          "probability": 8.50,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "EngineBoost",
+          "limit": 0,
+          "name": "10 引擎过载",
+          "probability": 8.50,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "PremiumMissileDecoy",
+          "limit": 0,
+          "name": "10 高级导弹诱饵",
+          "probability": 8.98,
+          "rarity": "common",
+          "type": "战斗增益"
+        },
+        {
+          "id": "Soft",
+          "limit": 0,
+          "name": "400 000 美金",
+          "probability": 11.00,
+          "rarity": "common",
+          "type": "资源"
+        },
+        {
+          "id": "TankSmokeBombs",
+          "limit": 0,
+          "name": "10 烟幕",
+          "probability": 9.50,
+          "rarity": "common",
+          "type": "战斗增益"
+        }
+      ]
+    },
+    {
       "type": "flagship",
       "items": [
         {

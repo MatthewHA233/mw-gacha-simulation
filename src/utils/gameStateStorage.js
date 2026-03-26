@@ -33,7 +33,8 @@ export function getDefaultGameState(gachaType = '筹码类') {
       currencyName: "旗舰钥匙",
       commonCurrency: 0, // 普通宝箱钥匙（初始为0）
       rmb: -88,
-      singleCost: 10,
+      singleCost: 10, // 旗舰宝箱单抽消耗
+      singleCost_medium: 2, // 中等旗舰宝箱单抽消耗
       // 旗舰宝箱数据
       totalDraws: 0,
       legendaryCount: 0,
@@ -42,6 +43,14 @@ export function getDefaultGameState(gachaType = '筹码类') {
       history: [],
       epicLegendaryHistory: [],
       items: [],
+      // 中等旗舰宝箱数据
+      totalDraws_medium: 0,
+      legendaryCount_medium: 0,
+      epicCount_medium: 0,
+      rareCount_medium: 0,
+      history_medium: [],
+      epicLegendaryHistory_medium: [],
+      items_medium: [],
       // 普通宝箱数据（使用 _else 尾缀）
       totalDraws_else: 0,
       legendaryCount_else: 0,

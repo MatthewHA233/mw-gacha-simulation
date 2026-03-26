@@ -168,9 +168,11 @@ export function FlagshipGacha({
 
         console.log(`[FlagshipGacha] Loaded config:`, fullConfig)
 
-        // 旗舰宝箱配置有 lootboxes 数组，同时加载两种类型
+        // 旗舰宝箱配置有 lootboxes 数组，同时加载多种类型
         let itemsWithIcons = []
+        let itemsWithIcons_medium = []
         let itemsWithIcons_else = []
+        let hasMediumLootbox = false
 
         if (fullConfig.lootboxes && Array.isArray(fullConfig.lootboxes)) {
           // 加载旗舰宝箱物品
@@ -183,6 +185,19 @@ export function FlagshipGacha({
               tier: (item.rarity === 'epic' || item.rarity === 'legendary') ? true : undefined
             }))
             console.log(`[FlagshipGacha] Found ${itemsWithIcons.length} items for flagship`)
+          }
+
+          // 加载中等旗舰宝箱物品
+          const mediumLootbox = fullConfig.lootboxes.find(lb => lb.type === 'medium')
+          if (mediumLootbox && mediumLootbox.items) {
+            hasMediumLootbox = true
+            itemsWithIcons_medium = mediumLootbox.items.map(item => ({
+              ...item,
+              icon: buildItemImageUrl(item, fullConfig),
+              obtained: 0,
+              tier: (item.rarity === 'epic' || item.rarity === 'legendary') ? true : undefined
+            }))
+            console.log(`[FlagshipGacha] Found ${itemsWithIcons_medium.length} items for medium`)
           }
 
           // 加载普通宝箱物品
@@ -206,6 +221,9 @@ export function FlagshipGacha({
           }))
         }
 
+        // 保存是否有中等旗舰宝箱
+        setActivityConfig(prev => ({ ...prev, hasMediumLootbox }))
+
         console.log(`[FlagshipGacha] Items with icons:`, itemsWithIcons)
 
         // 尝试从 localStorage 加载该活动的状态
@@ -217,6 +235,15 @@ export function FlagshipGacha({
           // 合并旗舰宝箱物品数据
           const mergedItems = itemsWithIcons.map(newItem => {
             const savedItem = savedState.items.find(item => item.id === newItem.id)
+            return {
+              ...newItem,
+              obtained: savedItem ? savedItem.obtained : 0
+            }
+          })
+
+          // 合并中等旗舰宝箱物品数据
+          const mergedItems_medium = itemsWithIcons_medium.map(newItem => {
+            const savedItem = savedState.items_medium?.find(item => item.id === newItem.id)
             return {
               ...newItem,
               obtained: savedItem ? savedItem.obtained : 0
@@ -238,9 +265,11 @@ export function FlagshipGacha({
           setGameState({
             ...defaultState,
             ...savedState,
-            singleCost: defaultState.singleCost,  // 强制使用新的消耗值
-            currencyName: '旗舰钥匙',  // 确保货币名称正确
+            singleCost: defaultState.singleCost,
+            singleCost_medium: defaultState.singleCost_medium,
+            currencyName: '旗舰钥匙',
             items: mergedItems,
+            items_medium: mergedItems_medium,
             items_else: mergedItems_else
           })
         } else {
@@ -249,6 +278,7 @@ export function FlagshipGacha({
           setGameState({
             ...getDefaultGameState('旗舰宝箱类'),
             items: itemsWithIcons,
+            items_medium: itemsWithIcons_medium,
             items_else: itemsWithIcons_else
           })
         }
@@ -280,13 +310,22 @@ export function FlagshipGacha({
 
   // 获取当前宝箱类型对应的数据字段名后缀
   const getFieldSuffix = () => {
-    return selectedLootboxType === 'event_premium' ? '' : '_else'
+    if (selectedLootboxType === 'event_premium') return ''
+    if (selectedLootboxType === 'event_medium') return '_medium'
+    return '_else' // event_common
   }
 
   // 获取当前宝箱类型的物品列表
   const getCurrentItems = () => {
     const suffix = getFieldSuffix()
     return suffix ? gameState[`items${suffix}`] : gameState.items
+  }
+
+  // 获取当前宝箱类型的单抽消耗
+  const getCurrentSingleCost = () => {
+    if (selectedLootboxType === 'event_medium') return gameState.singleCost_medium || 2
+    if (selectedLootboxType === 'event_premium') return gameState.singleCost
+    return 2 // event_common 固定 2
   }
 
   // 更新 Header 数据
@@ -820,13 +859,16 @@ export function FlagshipGacha({
 
     // 根据宝箱类型决定钥匙类型和单价
     const isPremiumLootbox = selectedLootboxType === 'event_premium'
-    const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
-    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
+    const isMediumLootbox = selectedLootboxType === 'event_medium'
+    const singleCost = getCurrentSingleCost()
+    // 旗舰宝箱和中等旗舰宝箱用旗舰钥匙，普通宝箱用普通钥匙
+    const usesPremiumKey = isPremiumLootbox || isMediumLootbox
+    const currentKeys = usesPremiumKey ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = usesPremiumKey ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
     if (!autoPurchaseRef.current && currentKeys < singleCost) {
-      if (isPremiumLootbox && isPremium) {
+      if (usesPremiumKey && isPremium) {
         const deficit = singleCost - currentKeys
         const purchase = findCheapestPurchase(deficit, shopPackages)
         if (purchase.totalCoins > 0) {
@@ -841,10 +883,10 @@ export function FlagshipGacha({
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremiumLootbox) {
+      if (usesPremiumKey) {
         setShopModal(true)
       }
       return
@@ -864,7 +906,7 @@ export function FlagshipGacha({
     autoPurchaseRef.current = null
     setGameState(prev => ({
       ...prev,
-      ...(isPremiumLootbox
+      ...(usesPremiumKey
         ? { currency: prev.currency + (singlePurchase?.totalCoins || 0) - singleCost }
         : { commonCurrency: (prev.commonCurrency || 0) - singleCost }
       ),
@@ -899,14 +941,16 @@ export function FlagshipGacha({
 
     // 根据宝箱类型决定钥匙类型和单价
     const isPremiumLootbox = selectedLootboxType === 'event_premium'
-    const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
+    const isMediumLootbox = selectedLootboxType === 'event_medium'
+    const singleCost = getCurrentSingleCost()
     const totalCost = singleCost * 10
-    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
+    const usesPremiumKey = isPremiumLootbox || isMediumLootbox
+    const currentKeys = usesPremiumKey ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = usesPremiumKey ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
     if (!autoPurchaseRef.current && currentKeys < totalCost) {
-      if (isPremiumLootbox && isPremium) {
+      if (usesPremiumKey && isPremium) {
         const deficit = totalCost - currentKeys
         const purchase = findCheapestPurchase(deficit, shopPackages)
         if (purchase.totalCoins > 0) {
@@ -921,10 +965,10 @@ export function FlagshipGacha({
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremiumLootbox) {
+      if (usesPremiumKey) {
         setShopModal(true)
       }
       return
@@ -956,7 +1000,7 @@ export function FlagshipGacha({
     const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremiumLootbox
+      ...(usesPremiumKey
         ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
@@ -990,14 +1034,16 @@ export function FlagshipGacha({
 
     // 根据宝箱类型决定钥匙类型和单价
     const isPremiumLootbox = selectedLootboxType === 'event_premium'
-    const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
+    const isMediumLootbox = selectedLootboxType === 'event_medium'
+    const singleCost = getCurrentSingleCost()
     const totalCost = singleCost * 100
-    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
+    const usesPremiumKey = isPremiumLootbox || isMediumLootbox
+    const currentKeys = usesPremiumKey ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = usesPremiumKey ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
     if (!autoPurchaseRef.current && currentKeys < totalCost) {
-      if (isPremiumLootbox && isPremium) {
+      if (usesPremiumKey && isPremium) {
         const deficit = totalCost - currentKeys
         const purchase = findCheapestPurchase(deficit, shopPackages)
         if (purchase.totalCoins > 0) {
@@ -1012,10 +1058,10 @@ export function FlagshipGacha({
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremiumLootbox) {
+      if (usesPremiumKey) {
         setShopModal(true)
       }
       return
@@ -1047,7 +1093,7 @@ export function FlagshipGacha({
     const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremiumLootbox
+      ...(usesPremiumKey
         ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
@@ -1081,14 +1127,16 @@ export function FlagshipGacha({
 
     // 根据宝箱类型决定钥匙类型和单价
     const isPremiumLootbox = selectedLootboxType === 'event_premium'
-    const singleCost = gameState.singleCost // 两种宝箱都是 10 钥匙/次
+    const isMediumLootbox = selectedLootboxType === 'event_medium'
+    const singleCost = getCurrentSingleCost()
     const totalCost = singleCost * 500
-    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
+    const usesPremiumKey = isPremiumLootbox || isMediumLootbox
+    const currentKeys = usesPremiumKey ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = usesPremiumKey ? '旗舰钥匙' : '普通钥匙'
 
     // 检查钥匙是否足够
     if (!autoPurchaseRef.current && currentKeys < totalCost) {
-      if (isPremiumLootbox && isPremium) {
+      if (usesPremiumKey && isPremium) {
         const deficit = totalCost - currentKeys
         const purchase = findCheapestPurchase(deficit, shopPackages)
         if (purchase.totalCoins > 0) {
@@ -1103,10 +1151,10 @@ export function FlagshipGacha({
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremiumLootbox) {
+      if (usesPremiumKey) {
         setShopModal(true)
       }
       return
@@ -1138,7 +1186,7 @@ export function FlagshipGacha({
     const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremiumLootbox
+      ...(usesPremiumKey
         ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
@@ -1171,13 +1219,15 @@ export function FlagshipGacha({
     if (isAnimating) return
 
     const isPremiumLootbox = selectedLootboxType === 'event_premium'
-    const singleCost = gameState.singleCost
+    const isMediumLootbox = selectedLootboxType === 'event_medium'
+    const singleCost = getCurrentSingleCost()
     const totalCost = singleCost * 5000
-    const currentKeys = isPremiumLootbox ? gameState.currency : (gameState.commonCurrency || 0)
-    const keyName = isPremiumLootbox ? '旗舰钥匙' : '普通钥匙'
+    const usesPremiumKey = isPremiumLootbox || isMediumLootbox
+    const currentKeys = usesPremiumKey ? gameState.currency : (gameState.commonCurrency || 0)
+    const keyName = usesPremiumKey ? '旗舰钥匙' : '普通钥匙'
 
     if (!autoPurchaseRef.current && currentKeys < totalCost) {
-      if (isPremiumLootbox && isPremium) {
+      if (usesPremiumKey && isPremium) {
         const deficit = totalCost - currentKeys
         const purchase = findCheapestPurchase(deficit, shopPackages)
         if (purchase.totalCoins > 0) {
@@ -1192,10 +1242,10 @@ export function FlagshipGacha({
         style: {
           background: '#1e293b',
           color: '#fff',
-          border: isPremiumLootbox ? '1px solid #f59e0b' : '1px solid #9ca3af',
+          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
         },
       })
-      if (isPremiumLootbox) {
+      if (usesPremiumKey) {
         setShopModal(true)
       }
       return
@@ -1223,7 +1273,7 @@ export function FlagshipGacha({
     const multiPurchase = autoPurchaseRef.current
     setGameState(prev => ({
       ...prev,
-      ...(isPremiumLootbox
+      ...(usesPremiumKey
         ? { currency: prev.currency + (multiPurchase?.totalCoins || 0) - totalCost }
         : { commonCurrency: (prev.commonCurrency || 0) - totalCost }
       ),
@@ -1465,6 +1515,7 @@ export function FlagshipGacha({
             selectedType={selectedLootboxType}
             onSelect={setSelectedLootboxType}
             isScrolling={isScrolling}
+            hasMediumLootbox={activityConfig.hasMediumLootbox}
           />
         </div>
 

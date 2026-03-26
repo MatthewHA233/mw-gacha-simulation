@@ -84,15 +84,36 @@ gacha-configs/
 
 ```json
 {
-  "id": "la101",
+  "id": "la102",
   "gacha_type": "旗舰宝箱类",
   "metadata": { "name": "...", "formattedDate": "...", "nameEn": "..." },
   "lootboxes": [
     { "type": "container", "items": [...] },
+    { "type": "medium",    "items": [...] },   // 可选：中等旗舰宝箱
     { "type": "flagship",  "items": [...] }
   ]
 }
 ```
+
+#### 宝箱类型说明
+
+| type | 名称 | 钥匙消耗 | 货币 | 图片命名 |
+|------|------|---------|------|---------|
+| `container` | 普通宝箱 | 2/20 | 普通钥匙 (`commonCurrency`) | `{activityId}_common_lootbox_ticket.png` |
+| `medium` | 中等旗舰宝箱 | 2/20 | 旗舰钥匙 (`currency`) | `{activityId}_medium_lootbox_ticket.png` |
+| `flagship` | 旗舰宝箱 | 10/100 | 旗舰钥匙 (`currency`) | `{activityId}_premium_lootbox_ticket.png` |
+
+- **普通宝箱**：使用普通钥匙，初始为 0
+- **中等旗舰宝箱**：使用旗舰钥匙，但消耗仅为旗舰宝箱的 1/5，适合微氪玩家
+- **旗舰宝箱**：使用旗舰钥匙，最高档奖励
+
+#### 代码数据结构映射
+
+| 宝箱类型 | 物品数据 | 抽卡记录 | 史诗传说记录 |
+|---------|---------|---------|-------------|
+| flagship | `items` | `history` | `epicLegendaryHistory` |
+| medium | `items_medium` | `history_medium` | `epicLegendaryHistory_medium` |
+| container | `items_else` | `history_else` | `epicLegendaryHistory_else` |
 
 ---
 

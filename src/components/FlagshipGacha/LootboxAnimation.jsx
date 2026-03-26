@@ -24,7 +24,8 @@ export const LootboxAnimation = forwardRef(({ activityId, lootboxType = 'event_p
   // 预加载音频
   useEffect(() => {
     // 根据宝箱类型选择音效路径
-    const audioPath = lootboxType === 'event_premium' ? 'lootbox_premium' : 'lootbox_common'
+    // 旗舰宝箱和中等旗舰宝箱用 premium 音效，普通宝箱用 common 音效
+    const audioPath = (lootboxType === 'event_premium' || lootboxType === 'event_medium') ? 'lootbox_premium' : 'lootbox_common'
     audioRefs.current.down = new Audio(`${CDN_BASE_URL}/audio/${audioPath}/lootbox_down.wav`)
     audioRefs.current.shaking = new Audio(`${CDN_BASE_URL}/audio/${audioPath}/lootbox_shaking_loop.wav`)
     audioRefs.current.shaking.loop = true
