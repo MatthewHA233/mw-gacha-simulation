@@ -20,6 +20,21 @@ export function LootboxSelector({ activityId, selectedType, onSelect, isScrollin
       disabled: true, // 常驻宝箱，不可选
     },
     {
+      type: 'clan',
+      label: '联队宝箱',
+      disabled: true, // 常驻宝箱，不可选
+    },
+    {
+      type: 'clan_premium',
+      label: '精英联队宝箱',
+      disabled: true, // 常驻宝箱，不可选
+    },
+    {
+      type: 'clan_cosmetic',
+      label: '联队装饰品宝箱',
+      disabled: true, // 常驻宝箱，不可选
+    },
+    {
       type: 'event_common',
       label: '普通宝箱',
       disabled: false,

@@ -454,6 +454,12 @@ export function buildLootboxTicketUrl(type, activityId = null) {
       return `${basePath}/common_lootbox_ticket.png${IMG_WEBP}`
     case 'ad':
       return `${basePath}/ad_lootbox_ticket.png${IMG_WEBP}`
+    case 'clan':
+      return `${basePath}/common_clan_lootbox_ticket.png${IMG_WEBP}`
+    case 'clan_premium':
+      return `${basePath}/premium_clan_lootbox_ticket.png${IMG_WEBP}`
+    case 'clan_cosmetic':
+      return `${basePath}/common_cosmetic_clan_lootbox_ticket.png${IMG_WEBP}`
     case 'event_common':
       return `${basePath}/${activityId}_common_lootbox_ticket.png${IMG_WEBP}`
     case 'event_medium':

@@ -1509,7 +1509,7 @@ export function FlagshipGacha({
       {/* 主内容区域 */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 md:px-12">
         {/* 左上角：宝箱选择器 */}
-        <div className="absolute top-4 md:top-8 left-2 md:left-8 scale-[0.65] md:scale-100 origin-top-left">
+        <div className="absolute top-4 md:top-8 left-2 md:left-8 scale-[0.65] md:scale-100 origin-top-left z-20">
           <LootboxSelector
             activityId={activityId}
             selectedType={selectedLootboxType}
@@ -1520,7 +1520,7 @@ export function FlagshipGacha({
         </div>
 
         {/* 右上角：物品展示栏 */}
-        <div className="absolute top-4 md:top-8 right-2 md:right-8 w-64 scale-[0.65] md:scale-100 origin-top-right">
+        <div className="absolute top-4 md:top-8 right-2 md:right-8 w-64 scale-[0.65] md:scale-100 origin-top-right z-20">
           <LootboxItemGrid items={getCurrentItems()} isScrolling={isScrolling} />
         </div>
 
