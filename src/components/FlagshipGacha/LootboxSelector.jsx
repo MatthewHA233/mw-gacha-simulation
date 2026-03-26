@@ -61,7 +61,7 @@ export function LootboxSelector({ activityId, selectedType, onSelect, isScrollin
 
   return (
     <div
-      className="grid grid-cols-2 gap-2 md:gap-4 transition-opacity duration-500"
+      className="grid grid-cols-2 gap-2 md:gap-3 transition-opacity duration-500"
       style={{
         opacity: isScrolling ? 0 : 1
       }}
@@ -76,7 +76,7 @@ export function LootboxSelector({ activityId, selectedType, onSelect, isScrollin
             onClick={() => !lootbox.disabled && onSelect(lootbox.type)}
             disabled={lootbox.disabled}
             className={`
-              w-24 h-24 md:w-32 md:h-32 border md:border-2 flex items-center justify-center
+              w-24 h-24 md:w-[112px] md:h-[112px] border flex items-center justify-center
               transition-all
               ${lootbox.disabled
                 ? 'cursor-not-allowed opacity-60'
@@ -91,7 +91,7 @@ export function LootboxSelector({ activityId, selectedType, onSelect, isScrollin
             <img
               src={imageUrl}
               alt={lootbox.label}
-              className="w-[88px] h-[88px] md:w-28 md:h-28 object-contain"
+              className="w-[88px] h-[88px] md:w-[100px] md:h-[100px] object-contain"
             />
           </button>
         )
