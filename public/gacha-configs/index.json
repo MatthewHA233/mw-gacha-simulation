@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "ag103",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "nameEn": "Deal with the Shadow",
+      "formattedDate": "2026年4月"
+    },
+    {
       "id": "la102",
       "gacha_type": "旗舰宝箱类",
       "name": "四叶草行动",

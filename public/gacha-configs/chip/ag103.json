@@ -1,0 +1,131 @@
+{
+  "id": "ag103",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "暗影交易",
+    "nameEn": "Deal with the Shadow",
+    "formattedDate": "2026年4月"
+  },
+  "items": [
+    {
+      "name": "[中]宁波(956EM型)",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "Type956EM",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Type 956EM Ningbo"
+    },
+    {
+      "name": "[英]32型",
+      "probability": 0.095,
+      "limit": 1,
+      "id": "Type32",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "HMS Type 32"
+    },
+    {
+      "name": "[俄]守卫者",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "Straj",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Strazh"
+    },
+    {
+      "name": "燎原-1",
+      "probability": 0.35,
+      "limit": 2,
+      "id": "LY1",
+      "type": "防空设备",
+      "rarity": "legendary",
+      "nameEn": "LY-1"
+    },
+    {
+      "name": "HYFLY-2",
+      "probability": 0.7,
+      "limit": 3,
+      "id": "HyFly2",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "HyFly-2"
+    },
+    {
+      "name": "FARA",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "FARA",
+      "type": "直升机",
+      "rarity": "legendary",
+      "nameEn": "FARA"
+    },
+    {
+      "name": "弓箭手(155 mm)",
+      "probability": 0.22,
+      "limit": 2,
+      "id": "Archer",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "Archer (155 mm)"
+    },
+    {
+      "name": "至臻幻影",
+      "probability": 1.55,
+      "limit": 0,
+      "id": "Camo_be100Offer",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Excelsior"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "2 引擎过载",
+      "probability": 17.0,
+      "limit": 0,
+      "id": "EngineBoost",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 艺术硬币",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    }
+  ]
+}

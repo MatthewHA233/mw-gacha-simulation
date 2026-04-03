@@ -18,6 +18,62 @@ gacha-configs/
 
 ---
 
+## 配置文件上传规则（重要）
+
+**配置文件（JSON）必须由用户确认无误后，再由用户指示上传，Claude 不得自主上传。**
+
+用户确认 JSON 无误后，执行：
+
+```bash
+cd "D:\my_pro\web_ob\现代战舰抽奖模拟器"
+python -X utf8 -u scripts/upload-to-oss.py configs
+```
+
+---
+
+## 静态资源解包与同步
+
+当需要图片资源（如新活动的物品图、港口图标等）时，依次执行以下两步：
+
+### 第1步：解包提取
+
+```bash
+cd "D:\Users\Administrator\AppData\Local\ModernWarships\MW资源\MW解包有益资源"
+python -X utf8 extract_all_events.py
+```
+
+提取结果输出到 `MW解包有益资源\` 下各子目录（如 `contentseparated_assets_porticons\`、`contentseparated_assets_activities\` 等）。
+
+**运行时长**：约 3-5 分钟（633 个 bundle，8 线程并行）。输出会因缓冲区限制只显示前 80 行左右，进程仍在后台运行，等任务通知即可。
+
+### 第2步：同步到项目（仅静态资源，不动 gacha-configs）
+
+```bash
+cd "D:\Users\Administrator\AppData\Local\ModernWarships\MW资源"
+python -X utf8 同步资源到项目.py 解包资源
+```
+
+参数 `解包资源` 表示只跑第一条同步规则（`MW解包有益资源` → `public/assets`），**不会覆盖 `public/gacha-configs/` 下的 JSON 文件**。
+
+**运行时长**：约 1-3 分钟（本地文件复制，取决于新增文件数量）。
+
+### 第3步：增量上传到 OSS
+
+```bash
+cd "D:\my_pro\web_ob\现代战舰抽奖模拟器"
+python -X utf8 -u scripts/upload-to-oss.py incremental
+```
+
+**运行时长**：每次资源包更新约 10-30 分钟。
+
+**⚠️ 重要：上传前必须关闭系统代理**（如 Clash、v2ray 等），否则速度极慢甚至连接失败。上传时观察速度，若单文件超过 3 秒则说明代理未关，需提醒用户关闭后重跑。
+
+### 编码注意事项
+
+脚本内含 emoji（如 📁），在 Windows GBK 终端下直接运行会报 `UnicodeEncodeError`。**所有脚本统一加 `-X utf8` 参数运行**（已体现在上述命令中）。`upload-to-oss.py` 还需清除系统代理（已在脚本内自动处理，无需手动操作）。
+
+---
+
 ## 日常编辑工作流（用户发图片时的操作步骤）
 
 用户会发三种截图：
@@ -146,6 +202,7 @@ gacha-configs/
 | **贴花** | 卡通/动漫风格插图贴纸（角色、机甲、图案等），透明背景 | `contentseparated_assets_decals/` | `decal_events{期数}{rarity}{序号}` 例：`decal_events102epic3` |
 | **头像** | 写实/半写实人物肖像，方形带背景 | `avataricons/AvatarPortrait_*.png` | `AvatarPortrait_{名称}` 例：`AvatarPortrait_Jinjoo` |
 | **涂装** | 船体皮肤，画在船壳上的艺术图案，内容多样：几何图案（如 Camo_la102Epic 的绿色刻面三叶草）、插画场景（如 Camo_Clover 的三叶草+马蹄铁）、机甲/角色artwork（如 Camo_LegendaryMecha 的机甲头像）；方形预览图，背景通常为深色 | `camouflages/Camo_*.png` | `Camo_{名称}` 例：`Camo_Clover` |
+| **港口** | 港口/基地小图标，通常为俯视角建筑或基地外观；史诗稀有度 | `contentseparated_assets_porticons/` | `port_{名称}` 例：`port_birthday2025` |
 
 ### 贴花 ID 查找流程
 
@@ -165,6 +222,12 @@ gacha-configs/
 1. 在 `camouflages/` 目录找 `Camo_` 开头的文件
 2. 可先在 CSV（`裝飾品/涂装.csv`）中搜索中文名，获取 ID
 3. 新涂装可能不在 CSV 中，需去 `camouflages/` 目录翻图确认
+
+### 港口 ID 查找流程
+
+1. 在 `contentseparated_assets_porticons/` 目录找 `port_` 开头的文件
+2. ID 即文件名去掉 `.png` 后缀，如 `port_birthday2025`
+3. 港口是相对较新的物品类型，不在 CSV 中，只能通过解包图片目录确认
 
 ---
 

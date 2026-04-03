@@ -16,6 +16,11 @@ import json
 import hashlib
 import mimetypes
 from pathlib import Path
+
+# 清除代理环境变量，防止本地代理干扰 OSS 连接
+for _k in ('HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy'):
+    os.environ.pop(_k, None)
+
 import oss2
 from dotenv import load_dotenv
 
@@ -61,6 +66,7 @@ EXCLUDE_PATTERNS = [
     '*.swp',
     '*.tmp',
     '.git',
+    '.claude',
     'node_modules',
     'gacha-configs',  # 配置文件单独管理
 ]
@@ -87,8 +93,10 @@ def should_exclude(path):
         if pattern.startswith('*'):
             if name.endswith(pattern[1:]):
                 return True
-        elif name == pattern or str(path).find(f'/{pattern}/') >= 0 or str(path).find(f'\\{pattern}\\') >= 0:
-            return True
+        else:
+            p = str(path).replace('\\', '/')
+            if name == pattern or f'/{pattern}/' in p or p.startswith(f'{pattern}/'):
+                return True
     return False
 
 
@@ -173,7 +181,7 @@ def scan_oss_files(bucket, prefix):
     return files
 
 
-def upload_configs(bucket):
+def upload_configs(bucket, auto_confirm=False):
     """功能1: 覆盖上传所有配置文件"""
     print("\n" + "=" * 70)
     print("📝 功能1: 覆盖上传所有配置文件")
@@ -200,11 +208,12 @@ def upload_configs(bucket):
         print(f"   ... 还有 {len(config_files) - 10} 个")
 
     # 确认上传
-    print()
-    response = input(f"确认上传 {len(config_files)} 个配置文件？(y/N): ")
-    if response.lower() != 'y':
-        print("❌ 取消上传")
-        return
+    if not auto_confirm:
+        print()
+        response = input(f"确认上传 {len(config_files)} 个配置文件？(y/N): ")
+        if response.lower() != 'y':
+            print("❌ 取消上传")
+            return
 
     print("\n⏳ 开始上传...\n")
     success_count = 0
@@ -221,7 +230,7 @@ def upload_configs(bucket):
     print(f"\n✅ 完成: {success_count} 个 | ❌ 失败: {fail_count} 个")
 
 
-def upload_static_incremental(bucket, dry_run=False):
+def upload_static_incremental(bucket, dry_run=False, auto_confirm=False):
     """功能2/3: 增量上传静态资源"""
     mode_text = "预览增量" if dry_run else "增量上传静态资源"
     print("\n" + "=" * 70)
@@ -262,11 +271,12 @@ def upload_static_incremental(bucket, dry_run=False):
         return
 
     # 确认上传
-    print()
-    response = input(f"确认上传 {len(to_upload)} 个文件？(y/N): ")
-    if response.lower() != 'y':
-        print("❌ 取消上传")
-        return
+    if not auto_confirm:
+        print()
+        response = input(f"确认上传 {len(to_upload)} 个文件？(y/N): ")
+        if response.lower() != 'y':
+            print("❌ 取消上传")
+            return
 
     print("\n⏳ 开始上传...\n")
     success_count = 0
@@ -325,6 +335,9 @@ def show_menu():
 
 
 def main():
+    # 命令行参数：python upload-to-oss.py incremental
+    cli_action = sys.argv[1] if len(sys.argv) > 1 else None
+
     # 初始化 OSS
     try:
         auth = oss2.Auth(ACCESS_KEY_ID, ACCESS_KEY_SECRET)
@@ -333,6 +346,14 @@ def main():
     except Exception as e:
         print(f"❌ 连接 OSS 失败: {e}")
         sys.exit(1)
+
+    # 非交互模式
+    if cli_action == 'incremental':
+        upload_static_incremental(bucket, dry_run=False, auto_confirm=True)
+        return
+    if cli_action == 'configs':
+        upload_configs(bucket, auto_confirm=True)
+        return
 
     # 交互式菜单
     while True:
