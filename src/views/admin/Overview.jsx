@@ -78,6 +78,15 @@ export function Overview() {
         return { month: m.month, revenue: rv, cost, profit: rv - cost }
     })
 
+    // 每日收入（补全0收入的日期）
+    const daysInMonth = new Date(year, month, 0).getDate()
+    const dailyMap = Object.fromEntries((stats?.dailyRevenue || []).map(d => [d.date, d.amount]))
+    const dailyChartData = Array.from({ length: daysInMonth }, (_, i) => {
+        const d = i + 1
+        const date = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+        return { date, amount: dailyMap[date] ?? 0 }
+    })
+
     // 24小时分布（补全0笔的小时）
     const hourlyData = Array.from({ length: 24 }, (_, h) => {
         const found = (stats?.hourlyDistribution || []).find(d => d.hour === h)
@@ -203,9 +212,9 @@ export function Overview() {
                             </p>
                         </div>
                         <div className="w-full overflow-hidden">
-                            {stats?.dailyRevenue?.length ? (
+                            {dailyChartData.some(d => d.amount > 0) ? (
                                 <ResponsiveContainer width="100%" height={240}>
-                                    <LineChart data={stats.dailyRevenue} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <LineChart data={dailyChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#141825" vertical={false} />
                                         <XAxis dataKey="date" tickFormatter={v => v.slice(8)} tick={{ fill: '#E8EDF2', fontSize: 10, opacity: 0.5, fontFamily: 'Roboto Mono' }} tickLine={false} axisLine={false} />
                                         <YAxis tickFormatter={fmtShort} tick={{ fill: '#E8EDF2', fontSize: 10, opacity: 0.5, fontFamily: 'Roboto Mono' }} tickLine={false} axisLine={false} width={44} />
