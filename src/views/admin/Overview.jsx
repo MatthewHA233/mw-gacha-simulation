@@ -78,10 +78,12 @@ export function Overview() {
         return { month: m.month, revenue: rv, cost, profit: rv - cost }
     })
 
-    // 每日收入（补全0收入的日期）
+    // 每日收入（补全0收入的日期，当前年月只显示到今天）
     const daysInMonth = new Date(year, month, 0).getDate()
+    const isCurrentMonth = year === now.getFullYear() && month === now.getMonth() + 1
+    const lastDay = isCurrentMonth ? now.getDate() : daysInMonth
     const dailyMap = Object.fromEntries((stats?.dailyRevenue || []).map(d => [d.date, d.amount]))
-    const dailyChartData = Array.from({ length: daysInMonth }, (_, i) => {
+    const dailyChartData = Array.from({ length: lastDay }, (_, i) => {
         const d = i + 1
         const date = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`
         return { date, amount: dailyMap[date] ?? 0 }
