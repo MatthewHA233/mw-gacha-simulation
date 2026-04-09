@@ -319,6 +319,15 @@ export function CargoGacha({
     return 0
   }
 
+  // 根据货币 item.id 确定应累加到哪个 state 键
+  // 不依赖当前选中的奖池，而是看物品本身是哪类货币
+  const getCurrencyStateKey = (item) => {
+    const id = item.id
+    if (id === 'bigevent_currency_gacha_rm' || id === 'Authorization_Key') return 'currency'
+    if (id === 'bigevent_currency_gacha_gameplay' || id === 'Drone_Fob') return 'commonCurrency'
+    return null // 非货币物品
+  }
+
   // 检查奖池中剩余未抽满的限定史诗/传说物品数量
   const getRemainingLimitedEpicLegendary = (items) => {
     return items.filter(item =>
@@ -690,6 +699,7 @@ export function CargoGacha({
             })
 
             const currencyBonus = extractCurrencyAmount(result)
+            const actualCurrencyKey = getCurrencyStateKey(result) || currencyKey
 
             let updatedEpicCount = prev[epicCountKey]
             let updatedLegendaryCount = prev[legendaryCountKey]
@@ -733,7 +743,7 @@ export function CargoGacha({
             return {
               ...prev,
               [itemsKey]: updatedItems,
-              [currencyKey]: prev[currencyKey] + currencyBonus,
+              [actualCurrencyKey]: prev[actualCurrencyKey] + currencyBonus,
               [epicCountKey]: updatedEpicCount,
               [legendaryCountKey]: updatedLegendaryCount,
               [rareCountKey]: updatedRareCount,
@@ -895,6 +905,7 @@ export function CargoGacha({
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+        const actualCurrencyKey = getCurrencyStateKey(result) || currencyKey
 
         // 检查是否抽中头奖
         const prizeItem = tempGameState[itemsKey][0]
@@ -902,7 +913,7 @@ export function CargoGacha({
 
         tempGameState = {
           ...tempGameState,
-          [currencyKey]: tempGameState[currencyKey] + currencyBonus,
+          [actualCurrencyKey]: tempGameState[actualCurrencyKey] + currencyBonus,
           [itemsKey]: tempGameState[itemsKey].map(item => {
             if (item.name === result.name && item.rarity === result.rarity) {
               return { ...item, obtained: item.obtained + 1 }
@@ -1101,6 +1112,7 @@ export function CargoGacha({
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+        const actualCurrencyKey = getCurrencyStateKey(result) || currencyKey
 
         // 检查是否抽中头奖
         const prizeItem = tempGameState[itemsKey][0]
@@ -1108,7 +1120,7 @@ export function CargoGacha({
 
         tempGameState = {
           ...tempGameState,
-          [currencyKey]: tempGameState[currencyKey] + currencyBonus,
+          [actualCurrencyKey]: tempGameState[actualCurrencyKey] + currencyBonus,
           [itemsKey]: tempGameState[itemsKey].map(item => {
             if (item.name === result.name && item.rarity === result.rarity) {
               return { ...item, obtained: item.obtained + 1 }
@@ -1310,6 +1322,7 @@ export function CargoGacha({
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+        const actualCurrencyKey = getCurrencyStateKey(result) || currencyKey
 
         // 检查是否抽中头奖
         const prizeItem = tempGameState[itemsKey][0]
@@ -1317,7 +1330,7 @@ export function CargoGacha({
 
         tempGameState = {
           ...tempGameState,
-          [currencyKey]: tempGameState[currencyKey] + currencyBonus,
+          [actualCurrencyKey]: tempGameState[actualCurrencyKey] + currencyBonus,
           [itemsKey]: tempGameState[itemsKey].map(item => {
             if (item.name === result.name && item.rarity === result.rarity) {
               return { ...item, obtained: item.obtained + 1 }
@@ -1515,13 +1528,14 @@ export function CargoGacha({
         results.push(result)
 
         const currencyBonus = extractCurrencyAmount(result)
+        const actualCurrencyKey = getCurrencyStateKey(result) || currencyKey
 
         const prizeItem = tempGameState[itemsKey][0]
         const isPrizeItem = prizeItem && result.name === prizeItem.name && result.id === prizeItem.id
 
         tempGameState = {
           ...tempGameState,
-          [currencyKey]: tempGameState[currencyKey] + currencyBonus,
+          [actualCurrencyKey]: tempGameState[actualCurrencyKey] + currencyBonus,
           [itemsKey]: tempGameState[itemsKey].map(item => {
             if (item.name === result.name && item.rarity === result.rarity) {
               return { ...item, obtained: item.obtained + 1 }
