@@ -297,6 +297,12 @@ export function buildCurrencyIconUrl(currencyId, activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png${IMG_WEBP}`
   }
 
+  // 通用货币（不含活动后缀）：currency_universaltoken 等周年庆/跨活动货币
+  const UNIVERSAL_CURRENCIES = ['currency_universaltoken']
+  if (UNIVERSAL_CURRENCIES.includes(currencyId)) {
+    return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}.png${IMG_WEBP}`
+  }
+
   // 其他货币类型：currency_gachacoins, currency_premium_lootboxkey 等
   // 动态生成：{currencyId}_{activityId}.png
   return `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/${currencyId}_${activityId}.png${IMG_WEBP}`

@@ -1,0 +1,131 @@
+{
+  "id": "ag104",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "暗影交易",
+    "nameEn": "Deal with the Shadow",
+    "formattedDate": "2026年5月"
+  },
+  "items": [
+    {
+      "name": "[朝]崔贤",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "ChoeHyon",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "KPN Choe Hyon"
+    },
+    {
+      "name": "[法]夏尔·戴高乐(R91)",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "R91CharlesDeGaulle",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FR Charles de Gaulle (R91)"
+    },
+    {
+      "name": "[法]黎塞留",
+      "probability": 0.095,
+      "limit": 1,
+      "id": "Richelieu",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FR Richelieu"
+    },
+    {
+      "name": "SUT 264(533 mm)",
+      "probability": 0.27,
+      "limit": 2,
+      "id": "SUT264",
+      "type": "鱼雷",
+      "rarity": "epic",
+      "nameEn": "SUT 264 (533 mm)"
+    },
+    {
+      "name": "RG-30霰弹(127 mm)",
+      "probability": 0.7,
+      "limit": 3,
+      "id": "RG30Buckshot",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "RG-30 Buckshot (127 mm)"
+    },
+    {
+      "name": "[泛空间]冲击风暴-1",
+      "probability": 0.18,
+      "limit": 2,
+      "id": "RAMSTORM1",
+      "type": "无人艇",
+      "rarity": "epic",
+      "nameEn": "[Pan-Space] Impact Storm-1"
+    },
+    {
+      "name": "北极星-4",
+      "probability": 0.22,
+      "limit": 2,
+      "id": "Pukguksong4SLBM",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "Pukguksong-4 SLBM"
+    },
+    {
+      "name": "烁烈步伐",
+      "probability": 1.55,
+      "limit": 1,
+      "id": "Camo_be101Offer",
+      "type": "涂装",
+      "rarity": "epic",
+      "nameEn": "Blazing Steps"
+    },
+    {
+      "name": "70 升级芯片",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 螺旋密钥",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 升级芯片",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "2 引擎过载",
+      "probability": 17.0,
+      "limit": 0,
+      "id": "EngineBoost",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 螺旋密钥",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    }
+  ]
+}

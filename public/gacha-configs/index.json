@@ -1,6 +1,27 @@
 {
   "activities": [
     {
+      "id": "ag104",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "nameEn": "Deal with the Shadow",
+      "formattedDate": "2026年5月"
+    },
+    {
+      "id": "la103",
+      "gacha_type": "旗舰宝箱类",
+      "name": "荣光之猎",
+      "nameEn": "Trophy Hunt",
+      "formattedDate": "2026年4月"
+    },
+    {
+      "id": "be103",
+      "gacha_type": "机密货物类",
+      "name": "发射点",
+      "nameEn": "Launch Point",
+      "formattedDate": "2026年4月"
+    },
+    {
       "id": "ag103",
       "gacha_type": "筹码类",
       "name": "暗影交易",

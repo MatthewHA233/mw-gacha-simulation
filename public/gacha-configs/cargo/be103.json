@@ -1,0 +1,196 @@
+{
+  "id": "be103",
+  "gacha_type": "机密货物类",
+  "metadata": {
+    "name": "发射点",
+    "formattedDate": "2026年4月",
+    "nameEn": "Launch Point"
+  },
+  "cargos": [
+    {
+      "type": "gameplay",
+      "metadata": {
+        "name": "货运无人机"
+      },
+      "items": [
+        {
+          "name": "K731\"白鲨\"",
+          "probability": 0.25,
+          "limit": 1,
+          "id": "K731WhiteShark",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "K731 White Shark"
+        },
+        {
+          "name": "雅克-141\"自由\"",
+          "probability": 0.85,
+          "limit": 1,
+          "id": "Yak141",
+          "type": "攻击机",
+          "rarity": "epic",
+          "nameEn": "Yak-141 Freestyle"
+        },
+        {
+          "name": "海星-III",
+          "probability": 0.4,
+          "limit": 1,
+          "id": "HaeseongIII",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "Haeseong III"
+        },
+        {
+          "name": "在轨",
+          "probability": 2.25,
+          "limit": 4,
+          "id": "decal_events103rare3",
+          "type": "贴花",
+          "rarity": "rare",
+          "nameEn": "In Orbit"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.25,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 15.0,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20.0,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级导弹诱饵",
+          "probability": 22.0,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "rm",
+      "metadata": {
+        "name": "机密货物"
+      },
+      "items": [
+        {
+          "name": "[美]中途岛(CV-41)",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "Midway",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "USS Midway (CV-41)"
+        },
+        {
+          "name": "[意]FREMM-EVO",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "FREMMEVO",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "IT FREMM-EVO"
+        },
+        {
+          "name": "FQF-2500(240 mm)",
+          "probability": 0.3,
+          "limit": 3,
+          "id": "FQF2500",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "FQF-2500 (240 mm)"
+        },
+        {
+          "name": "Mark-71(203 mm)",
+          "probability": 0.42,
+          "limit": 3,
+          "id": "Mark71",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "Mark-71 (203 mm)"
+        },
+        {
+          "name": "法塔赫-2",
+          "probability": 0.35,
+          "limit": 3,
+          "id": "Fattah2",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "Fattah-2"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 3.9,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 引擎过载",
+          "probability": 17.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "250 代币",
+          "probability": 22.0,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "5 艺术硬币",
+          "probability": 26.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 29.2,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}
