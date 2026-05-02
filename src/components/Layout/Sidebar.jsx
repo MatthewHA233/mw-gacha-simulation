@@ -26,6 +26,18 @@ export function Sidebar({
   const currentActivityId = pathname?.split('/').pop() || ''
   const { playButtonClick } = useSound()
 
+  const scrollContainerRef = useRef(null)
+  const activeItemRef = useRef(null)
+
+  // 活动列表加载后，将当前活动卡片滚动到容器中央
+  useEffect(() => {
+    if (!activities.length || !activeItemRef.current || !scrollContainerRef.current) return
+    const container = scrollContainerRef.current
+    const item = activeItemRef.current
+    const target = item.offsetTop - container.clientHeight / 2 + item.offsetHeight / 2
+    container.scrollTop = Math.max(0, target)
+  }, [activities])
+
   // 音乐播放器状态 - 初始为 false，客户端挂载后从 localStorage 读取
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
@@ -329,7 +341,7 @@ export function Sidebar({
         </div>
 
         {/* 活动列表 - 可滚动 */}
-        <div className="flex-1 overflow-y-auto py-4 space-y-3 custom-scrollbar">
+        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto py-4 space-y-3 custom-scrollbar">
           {loading && (
             <div className="text-white text-center text-xs md:text-sm">加载中...</div>
           )}
@@ -343,6 +355,7 @@ export function Sidebar({
             return (
               <motion.div
                 key={activity.id}
+                ref={isActive ? activeItemRef : null}
                 className="relative w-full cursor-pointer overflow-hidden group"
                 onClick={() => handleActivityClick(activity)}
                 whileHover={{ scale: 1.02 }}
