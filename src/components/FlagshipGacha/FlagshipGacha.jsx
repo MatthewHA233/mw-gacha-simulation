@@ -1359,8 +1359,9 @@ export function FlagshipGacha({
       const defaultState = getDefaultGameState('旗舰宝箱类')
       return {
         ...defaultState,
-        items: prev.items.map(item => ({ ...item, obtained: 0 })),
-        items_else: prev.items_else.map(item => ({ ...item, obtained: 0 }))
+        items: prev.items?.map(item => ({ ...item, obtained: 0 })) ?? [],
+        items_medium: prev.items_medium?.map(item => ({ ...item, obtained: 0 })) ?? [],
+        items_else: prev.items_else?.map(item => ({ ...item, obtained: 0 })) ?? []
       }
     })
 
@@ -1432,8 +1433,9 @@ export function FlagshipGacha({
       const defaultState = getDefaultGameState('旗舰宝箱类')
       return {
         ...defaultState,
-        items: prev.items.map(item => ({ ...item, obtained: 0 })),
-        items_else: prev.items_else.map(item => ({ ...item, obtained: 0 }))
+        items: prev.items?.map(item => ({ ...item, obtained: 0 })) ?? [],
+        items_medium: prev.items_medium?.map(item => ({ ...item, obtained: 0 })) ?? [],
+        items_else: prev.items_else?.map(item => ({ ...item, obtained: 0 })) ?? []
       }
     })
 
@@ -1638,17 +1640,29 @@ export function FlagshipGacha({
       <HistoryModal
         isOpen={historyModal}
         onClose={() => setHistoryModal(false)}
-        history={selectedLootboxType === 'event_premium' ? gameState.epicLegendaryHistory : gameState.epicLegendaryHistory_else}
+        history={
+          selectedLootboxType === 'event_premium' ? gameState.epicLegendaryHistory
+          : selectedLootboxType === 'event_medium' ? (gameState.epicLegendaryHistory_medium ?? [])
+          : gameState.epicLegendaryHistory_else
+        }
       />
 
       {/* 信息弹窗 */}
       <InfoModal
         isOpen={infoModal}
         onClose={() => setInfoModal(false)}
-        epicLegendaryHistory={selectedLootboxType === 'event_premium' ? gameState.epicLegendaryHistory : gameState.epicLegendaryHistory_else}
+        epicLegendaryHistory={
+          selectedLootboxType === 'event_premium' ? gameState.epicLegendaryHistory
+          : selectedLootboxType === 'event_medium' ? (gameState.epicLegendaryHistory_medium ?? [])
+          : gameState.epicLegendaryHistory_else
+        }
         itemScale={itemScale}
         activityId={activityId}
-        totalDraws={selectedLootboxType === 'event_premium' ? gameState.totalDraws : gameState.totalDraws_else}
+        totalDraws={
+          selectedLootboxType === 'event_premium' ? gameState.totalDraws
+          : selectedLootboxType === 'event_medium' ? (gameState.totalDraws_medium ?? 0)
+          : gameState.totalDraws_else
+        }
       />
 
       {/* 赞助弹窗 */}
