@@ -33,7 +33,7 @@ export function Header({
   const { playButtonClick } = useSound()
   const router = useRouter()
   const [firstActivityId, setFirstActivityId] = useState(null)
-  const { user, isPremium, isMember, membership, logout, isActivated, userAccount, allMemberships, totalRemainingDays, bindPass } = useAuth()
+  const { user, isPremium, isMember, membership, logout, isActivated, userAccount, allMemberships, totalRemainingDays, bindPass, updateAccount } = useAuth()
   const [showMembershipModal, setShowMembershipModal] = useState(false)
   const [membershipInitialStep, setMembershipInitialStep] = useState('select')
   const [showAccountMenu, setShowAccountMenu] = useState(false)
@@ -43,6 +43,39 @@ export function Header({
   const [bindPassError, setBindPassError] = useState('')
   const [bindPassSuccess, setBindPassSuccess] = useState('')
   const [codeCopied, setCodeCopied] = useState(false)
+
+  // 编辑账号信息
+  const [showEditAccount, setShowEditAccount] = useState(false)
+  const [editNewLoginId, setEditNewLoginId] = useState('')
+  const [editNewPassword, setEditNewPassword] = useState('')
+  const [editCurrentPassword, setEditCurrentPassword] = useState('')
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState('')
+
+  const handleUpdateAccount = async () => {
+    if (!editCurrentPassword.trim()) {
+      setEditError('请输入当前密码')
+      return
+    }
+    if (!editNewLoginId.trim() && !editNewPassword.trim()) {
+      setEditError('账号名和新密码不能同时为空')
+      return
+    }
+    setEditLoading(true)
+    setEditError('')
+    try {
+      await updateAccount(editCurrentPassword, editNewLoginId, editNewPassword)
+      toast.success('修改成功')
+      setShowEditAccount(false)
+      setEditNewLoginId('')
+      setEditNewPassword('')
+      setEditCurrentPassword('')
+    } catch (err) {
+      setEditError(err.message || '修改失败')
+    } finally {
+      setEditLoading(false)
+    }
+  }
 
   const openMembership = (step = 'select') => {
     setMembershipInitialStep(step)
@@ -159,6 +192,43 @@ export function Header({
       }
     })
     return total
+  }
+
+  // 特殊资源定义：累积型资源（如周年庆螺旋密钥、机密货物代币），仅当当前活动包含时才显示
+  // 用 Tailwind 完整类名（不能用模板字符串，否则会被 purge 掉）
+  const SPECIAL_CURRENCIES = [
+    {
+      id: 'currency_universaltoken',
+      label: '螺旋密钥',
+      iconUrl: `${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/currency_universaltoken.png${IMG_WEBP}`,
+      borderClass: 'border-pink-500/30',
+      textClass: 'text-pink-400'
+    },
+    {
+      id: 'Token',
+      label: '代币',
+      iconUrl: `${CDN_BASE_URL}/assets/common-items/Token.png${IMG_WEBP}`,
+      borderClass: 'border-fuchsia-500/30',
+      textClass: 'text-fuchsia-400'
+    }
+  ]
+
+  // 计算特殊资源总数（仅返回当前活动中实际出现的）
+  const getSpecialCurrencyTotals = () => {
+    const allItems = getAllItems()
+    return SPECIAL_CURRENCIES.map(def => {
+      let total = 0
+      let exists = false
+      allItems.forEach(item => {
+        if (item.id === def.id) {
+          exists = true
+          const match = item.name.match(/^(\d+)\s/)
+          const quantity = match ? parseInt(match[1]) : 1
+          total += (item.obtained || 0) * quantity
+        }
+      })
+      return exists ? { ...def, total } : null
+    }).filter(Boolean)
   }
 
   // 计算钥匙总数（普通宝箱钥匙） - 从物品奖励中累计
@@ -322,9 +392,77 @@ export function Header({
                       {/* 账号信息 */}
                       <div className="px-2 py-1.5 md:px-3 md:py-2 border-b border-slate-800">
                         <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider">账号</p>
-                        <p className="text-xs md:text-sm text-white font-mono truncate">
-                          {userAccount?.login_id || '未绑定'}
-                        </p>
+                        <div className="flex items-center gap-1">
+                          <p className="text-xs md:text-sm text-white font-mono truncate flex-1">
+                            {userAccount?.login_id || '未绑定'}
+                          </p>
+                          {userAccount && (
+                            <button
+                              onClick={() => {
+                                setShowEditAccount(v => !v)
+                                setEditError('')
+                                setEditNewLoginId('')
+                                setEditNewPassword('')
+                                setEditCurrentPassword('')
+                              }}
+                              className="shrink-0 p-0.5 text-slate-500 hover:text-cyan-400 transition-colors"
+                              title="修改账号名/密码"
+                            >
+                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+                        {/* 内联编辑表单 */}
+                        {showEditAccount && userAccount && (
+                          <div className="mt-1.5 space-y-1.5">
+                            <input
+                              type="text"
+                              value={editNewLoginId}
+                              onChange={e => { setEditNewLoginId(e.target.value); setEditError('') }}
+                              placeholder={`新账号名（留空不改）`}
+                              className="w-full bg-slate-800 border border-slate-600 text-white text-[10px] md:text-xs font-mono px-1.5 py-1 focus:outline-none focus:border-cyan-500"
+                              disabled={editLoading}
+                            />
+                            <input
+                              type="password"
+                              value={editNewPassword}
+                              onChange={e => { setEditNewPassword(e.target.value); setEditError('') }}
+                              placeholder="新密码（留空不改）"
+                              className="w-full bg-slate-800 border border-slate-600 text-white text-[10px] md:text-xs font-mono px-1.5 py-1 focus:outline-none focus:border-cyan-500"
+                              disabled={editLoading}
+                            />
+                            <input
+                              type="password"
+                              value={editCurrentPassword}
+                              onChange={e => { setEditCurrentPassword(e.target.value); setEditError('') }}
+                              placeholder="当前密码（必填）"
+                              className="w-full bg-slate-800 border border-slate-600 text-white text-[10px] md:text-xs font-mono px-1.5 py-1 focus:outline-none focus:border-cyan-500"
+                              disabled={editLoading}
+                              onKeyDown={e => { if (e.key === 'Enter') handleUpdateAccount() }}
+                            />
+                            {editError && (
+                              <p className="text-[10px] text-red-400">{editError}</p>
+                            )}
+                            <div className="flex gap-1">
+                              <button
+                                onClick={handleUpdateAccount}
+                                disabled={editLoading}
+                                className="flex-1 py-1 text-[10px] md:text-xs font-bold bg-cyan-700 hover:bg-cyan-600 disabled:bg-slate-700 disabled:text-slate-500 text-white transition-colors"
+                              >
+                                {editLoading ? '...' : '确认'}
+                              </button>
+                              <button
+                                onClick={() => setShowEditAccount(false)}
+                                className="px-2 py-1 text-[10px] md:text-xs text-slate-300 hover:text-white transition-colors"
+                              >
+                                取消
+                              </button>
+                            </div>
+                          </div>
+                        )}
                         <div className="flex items-center gap-1 mt-0.5">
                           <p className="text-[10px] md:text-xs text-slate-400 font-mono truncate">
                             {membership?.activation_code
@@ -706,6 +844,17 @@ export function Header({
                 </span>
               </div>
             )}
+
+            {/* 特殊资源（仅当当前活动有该资源时显示） */}
+            {getSpecialCurrencyTotals().map(s => (
+              <div
+                key={s.id}
+                className={`flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border ${s.borderClass}`}
+              >
+                <img src={s.iconUrl} alt={s.label} className="w-4 h-4 md:w-6 md:h-6" />
+                <span className={`${s.textClass} font-bold text-[10px] md:text-sm`}>{s.total}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

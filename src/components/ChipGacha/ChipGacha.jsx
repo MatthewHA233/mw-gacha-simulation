@@ -615,11 +615,12 @@ export function ChipGacha({
 
   // ========== 辅助函数：提取筹码数量 ==========
   const extractCurrencyAmount = (item) => {
-    // 通过 id 判断是否为货币类物品（以 currency_ 开头）
-    if (item.id.startsWith('currency_')) {
+    // 仅识别主货币（筹码 currency_gachacoins）
+    // 螺旋密钥(currency_universaltoken)等特殊资源由 Header 单独累计显示，不计入主货币
+    if (item.id === 'currency_gachacoins') {
       // 从名称中提取数量，如 "1 筹码" → 1, "3 筹码" → 3, "筹码" → 1
       const match = item.name.match(/^(\d+)\s*筹码/)
-      return match ? parseInt(match[1]) : 1 // 默认为 1
+      return match ? parseInt(match[1]) : 1
     }
     return 0
   }
