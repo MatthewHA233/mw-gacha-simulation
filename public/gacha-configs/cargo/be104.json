@@ -1,10 +1,10 @@
 {
-  "id": "be102",
+  "id": "be104",
   "gacha_type": "机密货物类",
   "metadata": {
-    "name": "黑色前哨",
-    "formattedDate": "2026年3月",
-    "nameEn": "Black Outpost"
+    "name": "关键载荷",
+    "formattedDate": "2026年5月",
+    "nameEn": "Critical Payload"
   },
   "cargos": [
     {
@@ -15,31 +15,40 @@
       },
       "items": [
         {
-          "name": "阿卡什-NG",
+          "name": "层云-RS",
           "probability": 0.25,
           "limit": 1,
-          "id": "AkashNG",
+          "id": "Stratus",
           "type": "导弹",
           "rarity": "epic",
-          "nameEn": "Akash NG"
+          "nameEn": "Stratus-RS"
         },
         {
-          "name": "米-28NM\"浩劫\"-B",
-          "probability": 0.5,
+          "name": "Mark 55/12 (305 mm)",
+          "probability": 0.85,
           "limit": 2,
-          "id": "MI28NM",
-          "type": "直升机",
+          "id": "Mark5512",
+          "type": "主炮",
           "rarity": "epic",
-          "nameEn": "Mi-28NM Havoc"
+          "nameEn": "Mark 55/12 (305 mm)"
         },
         {
-          "name": "罗兰-2",
-          "probability": 0.75,
-          "limit": 1,
-          "id": "Roland2",
-          "type": "防空设备",
-          "rarity": "epic",
-          "nameEn": "Roland 2"
+          "name": "62型鱼雷(533 mm)",
+          "probability": 0.4,
+          "limit": 2,
+          "id": "Torped62",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Torped 62 (533 mm)"
+        },
+        {
+          "name": "指挥官猎手",
+          "probability": 2.25,
+          "limit": 4,
+          "id": "decal_events104rare3",
+          "type": "贴花",
+          "rarity": "rare",
+          "nameEn": "Commander Hunter"
         },
         {
           "name": "授权密钥",
@@ -48,14 +57,6 @@
           "id": "bigevent_currency_gacha_rm",
           "type": "资源",
           "rarity": "common"
-        },
-        {
-          "name": "索尼娅",
-          "probability": 2.25,
-          "limit": 4,
-          "id": "decal_events102rare3",
-          "type": "贴花",
-          "rarity": "rare"
         },
         {
           "name": "20 黄金",
@@ -107,87 +108,87 @@
       },
       "items": [
         {
-          "name": "[泛空间]鹦鹉螺",
+          "name": "[美]加利福尼亚(CGN-36)",
           "probability": 0.05,
           "limit": 1,
-          "id": "Nautilos",
+          "id": "CaliforniaCGN36",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "Pan Spatial Nautilos"
+          "nameEn": "USS California (CGN-36)"
         },
         {
-          "name": "[法]福尔班",
-          "probability": 0.1,
+          "name": "[泛空间]巫师",
+          "probability": 0.08,
           "limit": 1,
-          "id": "Forbin",
+          "id": "Hexeres",
           "type": "战舰",
           "rarity": "epic",
-          "nameEn": "FS Forbin"
+          "nameEn": "Pan Spatial Hexeres"
         },
         {
-          "name": "UUM-44反潜导弹",
+          "name": "SPGH EVA (155 mm)",
           "probability": 0.3,
           "limit": 3,
-          "id": "UUM44SUBROC",
-          "type": "导弹",
+          "id": "SPGH155EVA",
+          "type": "主炮",
           "rarity": "legendary",
-          "nameEn": "UUM-44 SUBROC"
+          "nameEn": "SPGH EVA (155 mm)"
         },
         {
-          "name": "阿卡亚(533 mm)",
-          "probability": 0.35,
+          "name": "T-122\"萨卡里亚\"(122 mm)",
+          "probability": 0.42,
           "limit": 3,
-          "id": "Akya",
-          "type": "鱼雷",
-          "rarity": "legendary",
-          "nameEn": "Akya (533mm)"
-        },
-        {
-          "name": "阿斯特罗斯II MK6",
-          "probability": 0.4,
-          "limit": 3,
-          "id": "AstrosIIMK6",
+          "id": "T122Sakarya",
           "type": "火箭炮",
           "rarity": "epic",
-          "nameEn": "Astros II MK6"
+          "nameEn": "T-122 Sakarya (122 mm)"
         },
         {
-          "name": "授权密钥",
-          "probability": 4.0,
+          "name": "Mark-45\"阿斯托尔\"(483 mm)",
+          "probability": 0.35,
+          "limit": 3,
+          "id": "Mark45Astor",
+          "type": "鱼雷",
+          "rarity": "legendary",
+          "nameEn": "Mark-45 ASTOR (483 mm)"
+        },
+        {
+          "name": "15 无人机电池",
+          "probability": 13.1,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
+          "id": "bigevent_currency_gacha_gameplay",
           "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "5 高级修理包",
-          "probability": 17.0,
-          "limit": 0,
-          "id": "PremiumRepairKit",
-          "type": "战斗增益",
           "rarity": "common"
         },
         {
           "name": "250 代币",
           "probability": 22.0,
-          "limit": 190,
+          "limit": 0,
           "id": "Token",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "5 艺术硬币",
+          "name": "5 引擎过载",
+          "probability": 17.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 无人机电池",
           "probability": 26.7,
           "limit": 0,
-          "id": "Artstorm",
+          "id": "bigevent_currency_gacha_gameplay",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "25 黄金",
-          "probability": 29.1,
+          "name": "15 升级芯片",
+          "probability": 20.0,
           "limit": 0,
-          "id": "Hard",
+          "id": "Upgrades",
           "type": "资源",
           "rarity": "common"
         }

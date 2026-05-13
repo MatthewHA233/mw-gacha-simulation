@@ -10,7 +10,8 @@
     {
       "type": "gameplay",
       "metadata": {
-        "name": "货运无人机"
+        "name": "货运无人机",
+        "guaranteeThreshold": 750
       },
       "items": [
         {
@@ -102,7 +103,8 @@
     {
       "type": "rm",
       "metadata": {
-        "name": "机密货物"
+        "name": "机密货物",
+        "guaranteeThreshold": 1350
       },
       "items": [
         {

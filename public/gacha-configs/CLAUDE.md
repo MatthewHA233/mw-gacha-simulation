@@ -136,6 +136,24 @@ python -X utf8 -u scripts/upload-to-oss.py incremental
 }
 ```
 
+#### 自定义保底抽数（可选）
+
+每个 cargo 池的 `metadata` 里可以加 `guaranteeThreshold` 字段覆盖默认保底抽数：
+
+```json
+{
+  "type": "rm",
+  "metadata": {
+    "name": "机密货物",
+    "guaranteeThreshold": 1200
+  },
+  "items": [...]
+}
+```
+
+**默认值**：机密货物(rm) 1150 抽，货运无人机(gameplay) 950 抽。
+**何时配置**：游戏内活动公告里写了不同保底次数时填上，否则可省略。
+
 ### 旗舰宝箱类 (flagship/)
 
 ```json
@@ -254,6 +272,51 @@ ID 来自爬取数据 CSV 的 `id` 列，大小写完全一致。CSV 在：
 **稀有度映射**（CSV → JSON）：传说→`legendary`，史诗→`epic`，稀有→`rare`，普通→`common`
 
 **贴花**：ID 来自解包图片文件名，规律：`decal_events{期数}rare{N}`
+
+---
+
+## CSV 更新脚本（AI 友好版）
+
+当 CSV 中找不到新物品（如新月份刚上线的战舰、武器），用以下脚本按需更新对应分类的 CSV。**仅在 CSV 没有目标物品时才需要跑**，已收录的 CSV 不要重复爬取。
+
+### 脚本位置
+
+`D:\Users\Administrator\AppData\Local\ModernWarships\MW资源\MW数据站爬虫\爬取单分类.py`
+
+### 使用方法
+
+```bash
+cd "D:\Users\Administrator\AppData\Local\ModernWarships\MW资源\MW数据站爬虫"
+
+# 列出所有可爬取分类
+python -X utf8 -u 爬取单分类.py --list
+
+# 单个分类
+python -X utf8 -u 爬取单分类.py 战舰
+
+# 多个分类一次跑完（推荐：判断好需要哪些再批量跑）
+python -X utf8 -u 爬取单分类.py 战舰 主炮 导弹
+```
+
+### 匹配规则
+
+1. **精确匹配**：CSV 文件名（无扩展名），如 `战舰`、`主炮`
+2. **路径子串**：如 `武器/主炮`
+3. **关键字匹配**：模糊命中（如输 `主炮` 会匹配到 `武器/主炮`）
+
+匹配到多个会列出候选并退出，需明确指定路径形式。
+
+### 何时使用
+
+- **不要**默认就跑全量爬取，会浪费时间和请求量
+- **该用**的场景：截图中物品的中文名在现有 CSV 里 grep 不到 → 先判断它属于哪个分类（战舰 / 武器某子类 / 航空器 / 装饰品），然后只爬那个分类
+- **可能爬不到**的情况：极新物品数据站还没收录，这时直接去解包资源目录（`MW解包有益资源/contentseparated_assets_content/textures/sprites/{weapons|units_ships|camouflages|...}`）按图标外观匹配文件名
+
+### 注意事项
+
+- 脚本自身**无交互**，可直接通过 Bash 工具运行
+- Windows 终端必须加 `-X utf8` 防 GBK 编码错误
+- 爬完会覆盖对应 CSV，旧数据会被新数据替换（不影响其他分类的 CSV）
 
 ---
 

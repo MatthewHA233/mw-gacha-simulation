@@ -259,8 +259,8 @@ export function CargoGacha({
     const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
     const items = customItems || gameState[itemsKey]
 
-    // 保底机制：机密货物1150抽，货运无人机950抽
-    const guaranteeThreshold = selectedCargoType === 'rm' ? 1150 : 950
+    // 保底机制：默认机密货物1150抽、货运无人机950抽，可被配置文件覆盖
+    const guaranteeThreshold = getGuaranteeThreshold(selectedCargoType)
     const currentCounter = customCounter !== null ? customCounter : (gameState[guaranteeCounterKey] || 0)
 
     // 检查是否达到保底（在保底抽数-1时触发，因为计数器从0开始）
@@ -326,6 +326,15 @@ export function CargoGacha({
     if (id === 'bigevent_currency_gacha_rm' || id === 'Authorization_Key') return 'currency'
     if (id === 'bigevent_currency_gacha_gameplay' || id === 'Drone_Fob') return 'commonCurrency'
     return null // 非货币物品
+  }
+
+  // 读取奖池保底阈值：优先用配置文件 cargos[].metadata.guaranteeThreshold，否则用默认值
+  // 默认值：rm（机密货物）1150，gameplay（货运无人机）950
+  const getGuaranteeThreshold = (cargoType) => {
+    const cargo = activityConfig?.cargos?.find(c => c.type === cargoType)
+    const configured = cargo?.metadata?.guaranteeThreshold
+    if (typeof configured === 'number' && configured > 0) return configured
+    return cargoType === 'rm' ? 1150 : 950
   }
 
   // 检查奖池中剩余未抽满的限定史诗/传说物品数量
@@ -1882,7 +1891,7 @@ export function CargoGacha({
                   const prizeItem = currentItems[0] // 头奖物品
                   const suffix = selectedCargoType === 'rm' ? '' : '_else'
                   const guaranteeCounterKey = suffix ? `guaranteeCounter${suffix}` : 'guaranteeCounter'
-                  const guaranteeThreshold = selectedCargoType === 'rm' ? 1150 : 950
+                  const guaranteeThreshold = getGuaranteeThreshold(selectedCargoType)
                   const currentCounter = gameState[guaranteeCounterKey] || 0
                   const remainingDraws = guaranteeThreshold - currentCounter
 
