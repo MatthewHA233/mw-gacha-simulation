@@ -1,0 +1,561 @@
+{
+  "id": "la104",
+  "gacha_type": "旗舰宝箱类",
+  "metadata": {
+    "name": "未来碎片",
+    "formattedDate": "2026年5月",
+    "nameEn": "Shards of the Future"
+  },
+  "lootboxes": [
+    {
+      "type": "container",
+      "items": [
+        {
+          "name": "[俄]22350M型",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Project22350M",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Project 22350M"
+        },
+        {
+          "name": "SH-16 (155 mm)",
+          "probability": 0.4,
+          "limit": 3,
+          "id": "SH16",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "SH-16 (155 mm)"
+        },
+        {
+          "name": "东风-100",
+          "probability": 0.55,
+          "limit": 2,
+          "id": "DF100",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "DF-100"
+        },
+        {
+          "name": "群青",
+          "probability": 1.0,
+          "limit": 1,
+          "id": "Camo_la104Epic",
+          "type": "涂装",
+          "rarity": "epic"
+        },
+        {
+          "name": "我其实还好",
+          "probability": 3.0,
+          "limit": 1,
+          "id": "decal_events104epic3",
+          "type": "贴花",
+          "rarity": "epic",
+          "nameEn": "I'm Fine"
+        },
+        {
+          "name": "指挥官猎手",
+          "probability": 7.0,
+          "limit": 1,
+          "id": "decal_events104rare1",
+          "type": "贴花",
+          "rarity": "rare",
+          "nameEn": "No Subs Allowed"
+        },
+        {
+          "name": "6 旗舰钥匙",
+          "probability": 0.75,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "3 旗舰钥匙",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "2 旗舰钥匙",
+          "probability": 2.0,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "50 黄金",
+          "probability": 3.5,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "10 钥匙",
+          "probability": 4.5,
+          "limit": 0,
+          "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "300,000 美金",
+          "probability": 6.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 升级芯片",
+          "probability": 9.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 14.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "15 高级导弹诱饵",
+          "probability": 9.7,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "100 导弹诱饵",
+          "probability": 12.0,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 12.5,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.5,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "medium",
+      "items": [
+        {
+          "name": "[印尼]努山塔拉",
+          "probability": 0.03,
+          "limit": 1,
+          "id": "Nusantara",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "KRI Nusantara"
+        },
+        {
+          "name": "[韩]正祖大王",
+          "probability": 0.04,
+          "limit": 1,
+          "id": "KDXIIIBatchII",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "ROKS Jeongjo the Great"
+        },
+        {
+          "name": "[德]F127型",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "F127",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FGS F127"
+        },
+        {
+          "name": "灯笼之港",
+          "probability": 2.0,
+          "limit": 1,
+          "id": "port_lunarnewyear2025",
+          "type": "港口",
+          "rarity": "legendary"
+        },
+        {
+          "name": "海鹰西格玛(30 mm)",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "SeahawkSigma",
+          "type": "自卫炮",
+          "rarity": "epic",
+          "nameEn": "Seahawk Sigma (30 mm)"
+        },
+        {
+          "name": "[博福斯]M/42(152 mm)",
+          "probability": 0.35,
+          "limit": 1,
+          "id": "BoforsM42",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Bofors M/42 (152 mm)"
+        },
+        {
+          "name": "深渊巨怪",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "Camo_SeaMonster",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Monster of the Deep"
+        },
+        {
+          "name": "幽灵之影",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "Camo_CyberGhost",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Phantom Shadow"
+        },
+        {
+          "name": "100 螺旋密钥",
+          "probability": 1.0,
+          "limit": 0,
+          "id": "currency_universaltoken",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "40 螺旋密钥",
+          "probability": 4.5,
+          "limit": 0,
+          "id": "currency_universaltoken",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "65 升级芯片",
+          "probability": 5.0,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "40 升级芯片",
+          "probability": 7.7,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "400,000 美金",
+          "probability": 11.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "10 机载电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "AirElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级修理包",
+          "probability": 7.5,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级机载导弹诱饵",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 电子对抗",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级鱼雷诱饵",
+          "probability": 8.5,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 引擎过载",
+          "probability": 8.5,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 高级导弹诱饵",
+          "probability": 8.98,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 烟幕",
+          "probability": 9.5,
+          "limit": 0,
+          "id": "TankSmokeBombs",
+          "type": "战斗增益",
+          "rarity": "common"
+        }
+      ]
+    },
+    {
+      "type": "flagship",
+      "items": [
+        {
+          "name": "[中]东巡-125",
+          "probability": 0.08,
+          "limit": 1,
+          "id": "DX125",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN DX-125"
+        },
+        {
+          "name": "[英]胡德",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "Hood",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "HMS Hood"
+        },
+        {
+          "name": "[法]自由法国(PANG)",
+          "probability": 0.12,
+          "limit": 1,
+          "id": "PANG",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "FS PANG"
+        },
+        {
+          "name": "[德]俾斯麦(H-41V)",
+          "probability": 0.18,
+          "limit": 1,
+          "id": "BismarckH41V",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "KMS Bismarck (H-41V)"
+        },
+        {
+          "name": "[德]下萨克森(F126型)",
+          "probability": 0.45,
+          "limit": 1,
+          "id": "F126",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FGS F126"
+        },
+        {
+          "name": "[中]达州(052DM型)",
+          "probability": 1.6,
+          "limit": 1,
+          "id": "Type052DM",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 052DM Dazhou"
+        },
+        {
+          "name": "[日]出云",
+          "probability": 1.8,
+          "limit": 1,
+          "id": "Izumo",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "JS Izumo"
+        },
+        {
+          "name": "[中]039C型",
+          "probability": 2.0,
+          "limit": 1,
+          "id": "Type039C",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN Type 039C"
+        },
+        {
+          "name": "RG-32 MK1 (150 mm)",
+          "probability": 0.004,
+          "limit": 1,
+          "id": "RG32",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "RG-32 Mk1 (150 mm)"
+        },
+        {
+          "name": "[DTCN] L5 (533 mm)",
+          "probability": 0.55,
+          "limit": 2,
+          "id": "DTCNL5",
+          "type": "鱼雷",
+          "rarity": "epic",
+          "nameEn": "DTCN L5 (533 mm)"
+        },
+        {
+          "name": "无风-1",
+          "probability": 0.8,
+          "limit": 2,
+          "id": "Shtil1",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Shtil-1"
+        },
+        {
+          "name": "群青",
+          "probability": 2.5,
+          "limit": 2,
+          "id": "Camo_la104Epic",
+          "type": "涂装",
+          "rarity": "epic"
+        },
+        {
+          "name": "130 螺旋密钥",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "currency_universaltoken",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "75 螺旋密钥",
+          "probability": 4.0,
+          "limit": 0,
+          "id": "currency_universaltoken",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "100 升级芯片",
+          "probability": 4.5,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "80 升级芯片",
+          "probability": 7.5,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "800,000 美金",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "20 机载电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "AirElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "15 电子对抗",
+          "probability": 7.0,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 高级修理包",
+          "probability": 7.9,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 高级机载导弹诱饵",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "15 引擎过载",
+          "probability": 8.0,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 高级导弹诱饵",
+          "probability": 8.016,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "20 高级鱼雷诱饵",
+          "probability": 8.5,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "战斗增益",
+          "rarity": "common"
+        },
+        {
+          "name": "10 烟幕",
+          "probability": 8.9,
+          "limit": 0,
+          "id": "TankSmokeBombs",
+          "type": "战斗增益",
+          "rarity": "common"
+        }
+      ]
+    }
+  ]
+}

@@ -284,11 +284,11 @@ export function Header({
           </motion.button>
 
           {/* 股东炮抽奖链接 - 不在 la101 页面时显示 */}
-          {activityId !== 'la101' && (
+          {activityId !== 'la104' && (
             <motion.button
               onClick={() => {
                 playButtonClick();
-                router.push('/gacha/flagship/la101');
+                router.push('/gacha/flagship/la104');
               }}
               className="p-[2px] relative"
               whileHover={{ scale: 1.05 }}

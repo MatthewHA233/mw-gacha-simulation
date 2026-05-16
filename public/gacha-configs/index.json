@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "la104",
+      "gacha_type": "旗舰宝箱类",
+      "name": "未来碎片",
+      "nameEn": "Shards of the Future",
+      "formattedDate": "2026年5月"
+    },
+    {
       "id": "be104",
       "gacha_type": "机密货物类",
       "name": "关键载荷",
