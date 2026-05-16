@@ -215,7 +215,11 @@ export function Header({
 
   // 计算特殊资源总数（仅返回当前活动中实际出现的）
   const getSpecialCurrencyTotals = () => {
-    const allItems = getAllItems()
+    const allItems = [
+      ...(gameState.items || []),
+      ...(gameState.items_medium || []),
+      ...(gameState.items_else || [])
+    ]
     return SPECIAL_CURRENCIES.map(def => {
       let total = 0
       let exists = false
