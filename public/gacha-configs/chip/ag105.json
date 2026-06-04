@@ -1,0 +1,131 @@
+{
+  "id": "ag105",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "暗影交易",
+    "nameEn": "Deal with the Shadow",
+    "formattedDate": "2026年6月"
+  },
+  "items": [
+    {
+      "name": "[美]弗莱彻(DD-992)",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "Fletcher",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Fletcher (DD-992)"
+    },
+    {
+      "name": "[日]30DX",
+      "probability": 0.095,
+      "limit": 1,
+      "id": "30DX",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "JS 30DX"
+    },
+    {
+      "name": "[英]前卫(S28)",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Vanguard",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "HMS Vanguard (S28)"
+    },
+    {
+      "name": "僚机",
+      "probability": 0.27,
+      "limit": 2,
+      "id": "Wingman",
+      "type": "无人机",
+      "rarity": "legendary",
+      "nameEn": "Wingman"
+    },
+    {
+      "name": "法塔赫-2",
+      "probability": 0.7,
+      "limit": 3,
+      "id": "Fattah2",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "Fattah-2"
+    },
+    {
+      "name": "OH-2B\"手里剑\"",
+      "probability": 0.18,
+      "limit": 1,
+      "id": "OH2BShuriken",
+      "type": "直升机",
+      "rarity": "legendary",
+      "nameEn": "OH-2B Shuriken"
+    },
+    {
+      "name": "TRG-300\"虎\"(300 mm)",
+      "probability": 0.22,
+      "limit": 2,
+      "id": "TRG300Tiger",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "TRG-300 Tiger (300 mm)"
+    },
+    {
+      "name": "刻耳柏洛斯",
+      "probability": 1.51,
+      "limit": 1,
+      "id": "Camo_be102OfferLegendary",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Cerberus"
+    },
+    {
+      "name": "筹码",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "currency_gachacoins",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 螺旋密钥",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 升级芯片",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "2 电子对抗",
+      "probability": 17.0,
+      "limit": 0,
+      "id": "ElectronicWarfare",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "4 螺旋密钥",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    }
+  ]
+}
