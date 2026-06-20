@@ -9,6 +9,107 @@ import { useVersionData } from '../../hooks/useVersionData'
 import { useSiteInfo } from '../../hooks/useSiteInfo'
 import { Tabs } from '../ui/tabs'
 
+// ===== 战术终端风格展示组件（海军 HUD / 机密档案） =====
+
+const TONES = {
+  cyan: { text: 'text-cyan-400', rule: 'from-cyan-400/40', tick: 'border-cyan-400/50' },
+  amber: { text: 'text-amber-400', rule: 'from-amber-400/40', tick: 'border-amber-400/50' },
+  rose: { text: 'text-rose-400', rule: 'from-rose-400/40', tick: 'border-rose-400/50' },
+}
+
+const TECH_STACK = [
+  { name: 'React 18', role: 'FRAMEWORK' },
+  { name: 'Vite', role: 'BUILD' },
+  { name: 'Tailwind CSS', role: 'STYLING' },
+  { name: 'Framer Motion', role: 'MOTION' },
+  { name: 'React Router', role: 'ROUTING' },
+  { name: 'Vercel', role: 'DEPLOY' },
+]
+
+// 四角定位标记（HUD 取景框）
+function CornerTicks({ tone = 'cyan' }) {
+  const base = `pointer-events-none absolute w-2 h-2 sm:w-2.5 sm:h-2.5 ${TONES[tone].tick}`
+  return (
+    <>
+      <span className={`${base} left-0 top-0 border-l border-t`} />
+      <span className={`${base} right-0 top-0 border-r border-t`} />
+      <span className={`${base} left-0 bottom-0 border-l border-b`} />
+      <span className={`${base} right-0 bottom-0 border-r border-b`} />
+    </>
+  )
+}
+
+// 分区标题：序号 + 中文 + 拉丁副标 + 延伸标尺线
+function TacticalHeader({ index, zh, en, tone = 'cyan' }) {
+  const t = TONES[tone]
+  return (
+    <div className="flex items-center gap-2 sm:gap-2.5 mb-2 sm:mb-2.5">
+      {index != null && (
+        <span className={`font-mono text-[10px] sm:text-xs font-bold ${t.text} w-4 text-center shrink-0`}>{index}</span>
+      )}
+      <h3 className="text-white font-bold text-sm sm:text-base tracking-wide shrink-0">{zh}</h3>
+      <span className={`font-mono text-[8px] sm:text-[10px] uppercase tracking-[0.25em] ${t.text} opacity-60 shrink-0`}>{en}</span>
+      <span className={`flex-1 h-px bg-gradient-to-r ${t.rule} to-transparent`} />
+    </div>
+  )
+}
+
+// 系统清单行：▸ 名称 ········ 角色
+function ManifestRow({ name, role }) {
+  return (
+    <div className="group flex items-baseline gap-2 py-1 sm:py-1.5 font-mono text-[10px] sm:text-xs border-b border-white/[0.06] last:border-0">
+      <span className="text-cyan-400/70 shrink-0">▸</span>
+      <span className="text-white/85 tracking-wide shrink-0">{name}</span>
+      <span className="flex-1 self-center border-b border-dotted border-white/15 group-hover:border-cyan-400/30 transition-colors min-w-[16px]" />
+      <span className="text-white/45 uppercase tracking-[0.15em] text-[9px] sm:text-[10px] shrink-0">{role}</span>
+    </div>
+  )
+}
+
+// 规格行：标签 ········ 值（可选外链）
+function SpecRow({ label, value, href }) {
+  const val = href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline inline-flex items-center gap-0.5">
+      {value}<span className="text-[0.85em]">↗</span>
+    </a>
+  ) : (
+    <span className="text-white/60">{value}</span>
+  )
+  return (
+    <div className="group flex items-baseline gap-2 py-1 sm:py-1.5 font-mono text-[10px] sm:text-xs border-b border-white/[0.06] last:border-0">
+      <span className="text-white/80 tracking-wide shrink-0">{label}</span>
+      <span className="flex-1 self-center border-b border-dotted border-white/15 group-hover:border-white/25 transition-colors min-w-[16px]" />
+      <span className="text-right shrink-0 max-w-[62%] truncate">{val}</span>
+    </div>
+  )
+}
+
+// 仪表读数面板（紧凑）
+function GaugePanel({ value, zh, en }) {
+  return (
+    <div className="relative overflow-hidden rounded-sm border border-cyan-400/20 bg-gradient-to-b from-cyan-400/[0.07] to-transparent px-2.5 sm:px-3 py-2 sm:py-2.5">
+      <CornerTicks tone="cyan" />
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-cyan-300 tabular-nums leading-none">{value ?? '—'}</div>
+      <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
+        <span className="text-white/70 text-[10px] sm:text-xs">{zh}</span>
+        <span className="font-mono text-cyan-400/50 text-[8px] sm:text-[9px] uppercase tracking-[0.15em]">{en}</span>
+      </div>
+      <div className="mt-1.5 h-px w-full bg-gradient-to-r from-cyan-400/60 to-transparent" />
+    </div>
+  )
+}
+
+// 赞赏者条目（紧凑卡片）
+function SponsorChip({ name, amount }) {
+  return (
+    <div className="flex items-center gap-2 rounded-sm border border-white/10 bg-black/30 px-2 sm:px-2.5 py-1.5 hover:border-rose-400/40 hover:bg-rose-400/[0.05] transition-colors">
+      <span className="w-1 h-1 rounded-full bg-rose-400/60 shrink-0" />
+      <span className="text-white/85 text-[11px] sm:text-xs font-medium truncate" title={name}>{name}</span>
+      <span className="ml-auto font-mono text-rose-300 text-[10px] sm:text-xs font-bold tabular-nums shrink-0">¥{amount}</span>
+    </div>
+  )
+}
+
 /**
  * 版本信息与网站声明弹窗（性能优化版）
  * 展示版本历史、网站信息、免责声明等
@@ -181,92 +282,93 @@ export function VersionModal({ isOpen, onClose }) {
       title: "关于",
       value: "about",
       content: (
-        <div className="w-full overflow-hidden relative rounded-2xl p-2 sm:p-3 lg:p-4 space-y-2 sm:space-y-3 lg:space-y-4">
-          {/* 网站简介 */}
-          <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-cyan-400/40">
-            <h3 className="text-cyan-400 text-sm sm:text-lg lg:text-xl font-bold mb-1 sm:mb-2">{SITE_INFO.name}</h3>
-            <p className="text-white/80 mb-2 sm:mb-3 text-[10px] sm:text-xs lg:text-sm">{SITE_INFO.description}</p>
-            <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 text-[10px] sm:text-xs lg:text-sm flex-wrap">
-              <div className="flex items-center gap-1 sm:gap-2 text-white/70">
-                <span>作者:</span>
-                <span className="text-cyan-400 font-bold">{SITE_INFO.author}</span>
+        <div className="w-full relative p-2 sm:p-3 lg:p-4 space-y-2.5 sm:space-y-3">
+          {/* 身份档案横幅 */}
+          <div className="relative overflow-hidden rounded-sm border border-cyan-400/30 bg-[#081521]/80 p-3 sm:p-4 lg:p-5">
+            <CornerTicks tone="cyan" />
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.05]"
+              style={{ backgroundImage: 'repeating-linear-gradient(0deg, #22d3ee 0, #22d3ee 1px, transparent 1px, transparent 4px)' }}
+            />
+            <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-cyan-400 via-cyan-400/40 to-transparent" />
+            <div className="relative pl-2 sm:pl-3">
+              <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-cyan-400/80">档案 // DOSSIER</span>
+                <span className="ml-auto flex items-center gap-1 font-mono text-[9px] sm:text-[10px] text-emerald-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />ONLINE
+                </span>
               </div>
-              <div className="flex items-center gap-1 sm:gap-2 text-white/70">
-                <span>版本:</span>
-                <span className="text-cyan-400 font-bold">v{getAppVersion()}</span>
+              <h3 className="text-white text-lg sm:text-2xl lg:text-3xl font-bold tracking-tight">{SITE_INFO.name}</h3>
+              <p className="font-mono text-cyan-400/70 text-[10px] sm:text-xs tracking-wider mt-0.5">{SITE_INFO.nameEn}</p>
+              <p className="text-white/60 text-[11px] sm:text-sm mt-2 border-l-2 border-white/15 pl-2 sm:pl-3">{SITE_INFO.description}</p>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mt-3 font-mono text-[10px] sm:text-xs">
+                <span className="flex items-center gap-1.5"><span className="text-white/40">操作员 / OPERATOR</span><span className="text-cyan-400 font-bold">{SITE_INFO.author}</span></span>
+                <span className="flex items-center gap-1.5"><span className="text-white/40">构建 / BUILD</span><span className="text-cyan-400 font-bold">v{getAppVersion()}</span></span>
               </div>
             </div>
           </div>
 
-          {/* 技术栈 */}
-          <div>
-            <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base mb-1 sm:mb-2">技术栈</h3>
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-              {[
-                { name: 'React 18', color: 'from-blue-500/20 to-cyan-500/20', border: 'border-blue-400/30' },
-                { name: 'Vite', color: 'from-purple-500/20 to-pink-500/20', border: 'border-purple-400/30' },
-                { name: 'Tailwind CSS', color: 'from-cyan-500/20 to-blue-500/20', border: 'border-cyan-400/30' },
-                { name: 'Framer Motion', color: 'from-pink-500/20 to-purple-500/20', border: 'border-pink-400/30' },
-                { name: 'React Router', color: 'from-red-500/20 to-orange-500/20', border: 'border-red-400/30' },
-                { name: 'Vercel', color: 'from-gray-500/20 to-slate-500/20', border: 'border-gray-400/30' }
-              ].map((tech) => (
-                <div
-                  key={tech.name}
-                  className={`bg-gradient-to-br ${tech.color} rounded-md sm:rounded-lg p-1.5 sm:p-2 lg:p-3 border ${tech.border} text-center`}
-                >
-                  <span className="text-white text-[10px] sm:text-xs lg:text-sm">{tech.name}</span>
+          {/* 主体：左侧系统清单 / 右侧统计 + 通讯 */}
+          <div className="grid lg:grid-cols-2 gap-2.5 sm:gap-3">
+            {/* 01 系统配置 */}
+            <section>
+              <TacticalHeader index="01" zh="系统配置" en="Systems Manifest" />
+              <div className="rounded-sm border border-white/10 bg-black/30 px-3 sm:px-4">
+                {TECH_STACK.map((t) => (
+                  <ManifestRow key={t.name} name={t.name} role={t.role} />
+                ))}
+              </div>
+            </section>
+
+            {/* 右列：开发统计 + 通讯频道 */}
+            <div className="space-y-2.5 sm:space-y-3">
+              {/* 02 开发统计 */}
+              <section>
+                <TacticalHeader index="02" zh="开发统计" en="Statistics" />
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  <GaugePanel value={VERSION_STATS.totalCommits} zh="提交次数" en="Commits" />
+                  <GaugePanel value={VERSION_STATS.developmentDays} zh="开发天数" en="Dev Days" />
                 </div>
-              ))}
-            </div>
-          </div>
+              </section>
 
-          {/* 链接 */}
-          <div>
-            <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base mb-1 sm:mb-2">相关链接</h3>
-            <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-              {SITE_INFO.github && (
-                <a
-                  href={SITE_INFO.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-3 border border-white/10 hover:border-cyan-400/50"
-                >
-                  <Github className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-white text-xs sm:text-sm font-semibold">GitHub 仓库</div>
-                    <div className="text-white/60 text-[10px] sm:text-xs">查看源代码</div>
-                  </div>
-                </a>
-              )}
-              {SITE_INFO.contact?.github && (
-                <a
-                  href={SITE_INFO.contact.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 sm:gap-3 bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-3 border border-white/10 hover:border-cyan-400/50"
-                >
-                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-white text-xs sm:text-sm font-semibold">联系方式</div>
-                    <div className="text-white/60 text-[10px] sm:text-xs">通过 GitHub Issues 联系</div>
-                  </div>
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* 开发统计 */}
-          <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-white/20">
-            <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base mb-2 sm:mb-3">开发统计</h3>
-            <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
-              <div className="text-center">
-                <div className="text-cyan-400 text-lg sm:text-xl lg:text-2xl font-bold">{VERSION_STATS.totalCommits}</div>
-                <div className="text-white/60 text-[10px] sm:text-xs">Git 提交次数</div>
-              </div>
-              <div className="text-center">
-                <div className="text-cyan-400 text-lg sm:text-xl lg:text-2xl font-bold">{VERSION_STATS.developmentDays}</div>
-                <div className="text-white/60 text-[10px] sm:text-xs">开发天数</div>
-              </div>
+              {/* 03 通讯频道 */}
+              <section>
+                <TacticalHeader index="03" zh="通讯频道" en="Comms Channels" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+                  {SITE_INFO.github && (
+                    <a
+                      href={SITE_INFO.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-2.5 rounded-sm border border-white/10 bg-black/30 px-3 py-2 hover:border-cyan-400/50 hover:bg-cyan-400/[0.04] transition-colors"
+                    >
+                      <span className="font-mono text-cyan-400/50 text-xs">&gt;</span>
+                      <Github className="w-4 h-4 text-cyan-400 shrink-0" />
+                      <span className="min-w-0">
+                        <span className="block text-white text-xs sm:text-sm font-semibold">GitHub 仓库</span>
+                        <span className="block font-mono text-white/40 text-[9px] sm:text-[10px] tracking-wider">SOURCE CODE</span>
+                      </span>
+                      <span className="ml-auto font-mono text-cyan-400/60 text-xs group-hover:translate-x-0.5 transition-transform">↗</span>
+                    </a>
+                  )}
+                  {SITE_INFO.contact?.github && (
+                    <a
+                      href={SITE_INFO.contact.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-2.5 rounded-sm border border-white/10 bg-black/30 px-3 py-2 hover:border-cyan-400/50 hover:bg-cyan-400/[0.04] transition-colors"
+                    >
+                      <span className="font-mono text-cyan-400/50 text-xs">&gt;</span>
+                      <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
+                      <span className="min-w-0">
+                        <span className="block text-white text-xs sm:text-sm font-semibold">联系方式</span>
+                        <span className="block font-mono text-white/40 text-[9px] sm:text-[10px] tracking-wider">GITHUB ISSUES</span>
+                      </span>
+                      <span className="ml-auto font-mono text-cyan-400/60 text-xs group-hover:translate-x-0.5 transition-transform">↗</span>
+                    </a>
+                  )}
+                </div>
+              </section>
             </div>
           </div>
         </div>
@@ -276,94 +378,61 @@ export function VersionModal({ isOpen, onClose }) {
       title: "声明与致谢",
       value: "disclaimer",
       content: (
-        <div className="w-full overflow-hidden relative rounded-2xl p-2 sm:p-3 lg:p-4 space-y-2 sm:space-y-3 lg:space-y-4">
-          {/* 免责声明 */}
-          <div>
-            <h3 className="text-yellow-400 font-bold text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-base sm:text-lg lg:text-xl">⚠️</span>
-              免责声明
-            </h3>
-            <div className="bg-yellow-900/20 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-yellow-400/40 space-y-1 sm:space-y-1.5 lg:space-y-2">
-              {SITE_INFO.disclaimer?.map((text, idx) => (
-                <p key={idx} className="text-white/80 text-[10px] sm:text-xs leading-relaxed">
-                  {text}
-                </p>
-              )) || <p className="text-white/60 text-sm">暂无免责声明</p>}
-            </div>
-          </div>
-
-          {/* 致谢：赞赏者 */}
-          {SITE_INFO.sponsors && SITE_INFO.sponsors.length > 0 && (
-            <div>
-              <h3 className="text-pink-400 font-bold text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
-                <span className="text-base sm:text-lg lg:text-xl">💖</span>
-                致谢：赞赏者
-              </h3>
-              <div className="bg-gradient-to-br from-pink-900/20 to-purple-900/20 rounded-md sm:rounded-lg p-2 sm:p-3 lg:p-4 border border-pink-400/40">
-                {SITE_INFO.sponsors.length === 0 ? (
-                  <p className="text-white/60 text-[10px] sm:text-xs text-center py-3 sm:py-4">
-                    暂无赞赏记录
-                  </p>
+        <div className="w-full relative p-2 sm:p-3 lg:p-4 space-y-2.5 sm:space-y-3">
+          {/* 免责声明（双栏排版） */}
+          <section>
+            <TacticalHeader index="!" zh="免责声明" en="Disclaimer" tone="amber" />
+            <div className="relative overflow-hidden rounded-sm border border-amber-400/30 bg-[#1a1405]/60">
+              <div
+                className="h-1.5 w-full"
+                style={{ backgroundImage: 'repeating-linear-gradient(45deg, #f59e0b 0, #f59e0b 9px, #0a0a0a 9px, #0a0a0a 18px)' }}
+              />
+              <div className="p-3 sm:p-4 grid sm:grid-cols-2 gap-x-5 gap-y-1.5">
+                {SITE_INFO.disclaimer?.length ? (
+                  SITE_INFO.disclaimer.map((text, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <span className="font-mono text-[10px] sm:text-xs shrink-0 pt-0.5 tabular-nums">
+                        <span className="text-amber-400/90">{String(idx + 1).padStart(2, '0')}</span>
+                        <span className="text-amber-400/30">/{String(SITE_INFO.disclaimer.length).padStart(2, '0')}</span>
+                      </span>
+                      <p className="text-white/75 text-[11px] sm:text-xs leading-relaxed">{text}</p>
+                    </div>
+                  ))
                 ) : (
-                  <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
-                    {SITE_INFO.sponsors.map((sponsor, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-black/30 rounded-md sm:rounded-lg p-1.5 sm:p-2 border border-white/10"
-                      >
-                        <div className="text-white text-[10px] sm:text-xs font-semibold">
-                          {sponsor.name}
-                        </div>
-                        {sponsor.amount && (
-                          <div className="text-pink-400 text-[10px] sm:text-xs mt-0.5">
-                            ¥{sponsor.amount}
-                          </div>
-                        )}
-                        {sponsor.date && (
-                          <div className="text-white/50 text-[9px] sm:text-[10px] mt-0.5">
-                            {sponsor.date}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <p className="text-white/50 text-sm">暂无免责声明</p>
                 )}
               </div>
             </div>
-          )}
+          </section>
 
-          {/* 额外致谢 */}
-          <div>
-            <h3 className="text-cyan-400 font-bold text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-base sm:text-lg lg:text-xl">🙏</span>
-              额外致谢
-            </h3>
-            {/* 游戏开发商 + 数据来源 + 托管平台 + CDN服务 */}
-            <div className="grid grid-cols-4 gap-2 sm:gap-2.5 lg:gap-3">
-              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
-                <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">游戏开发商</h4>
-                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits?.gameDeveloper || '暂无'}</p>
+          {/* 赞赏致谢 + 鸣谢 并排 */}
+          <div className="grid lg:grid-cols-2 gap-2.5 sm:gap-3">
+            {SITE_INFO.sponsors?.length > 0 && (
+              <section>
+                <TacticalHeader index="✦" zh="赞赏致谢" en="Sponsors" tone="rose" />
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[...SITE_INFO.sponsors]
+                    .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+                    .map((sponsor, idx) => (
+                      <SponsorChip key={`${sponsor.name}-${idx}`} name={sponsor.name} amount={sponsor.amount} />
+                    ))}
+                </div>
+              </section>
+            )}
+
+            <section>
+              <TacticalHeader zh="鸣谢" en="Credits" />
+              <div className="rounded-sm border border-white/10 bg-black/30 px-3 sm:px-4">
+                <SpecRow label="游戏开发商" value={SITE_INFO.credits?.gameDeveloper || '暂无'} />
+                <SpecRow
+                  label="数据来源"
+                  value={SITE_INFO.credits?.dataSource?.name || '暂无'}
+                  href={SITE_INFO.credits?.dataSource?.url}
+                />
+                <SpecRow label="托管平台" value={SITE_INFO.credits?.hosting || '暂无'} />
+                <SpecRow label="CDN 服务" value={SITE_INFO.credits?.cdn || '暂无'} />
               </div>
-              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
-                <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">数据来源</h4>
-                <a
-                  href={SITE_INFO.credits?.dataSource?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 hover:text-cyan-300 text-[10px] sm:text-xs underline transition-colors break-all"
-                >
-                  {SITE_INFO.credits?.dataSource?.name || '暂无'}
-                </a>
-              </div>
-              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
-                <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">托管平台</h4>
-                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits?.hosting || '暂无'}</p>
-              </div>
-              <div className="bg-black/40 rounded-md sm:rounded-lg p-2 sm:p-2.5 lg:p-3 border border-white/10">
-                <h4 className="text-white text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1">CDN服务</h4>
-                <p className="text-white/70 text-[10px] sm:text-xs">{SITE_INFO.credits?.cdn || '暂无'}</p>
-              </div>
-            </div>
+            </section>
           </div>
         </div>
       ),
