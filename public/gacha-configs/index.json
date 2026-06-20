@@ -1,6 +1,13 @@
 {
   "activities": [
     {
+      "id": "la105",
+      "gacha_type": "旗舰宝箱类",
+      "name": "端午节",
+      "nameEn": "Dragon Boat Festival",
+      "formattedDate": "2026年6月"
+    },
+    {
       "id": "be105",
       "gacha_type": "机密货物类",
       "name": "昔日君王",
