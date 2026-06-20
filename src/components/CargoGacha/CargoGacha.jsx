@@ -220,6 +220,7 @@ export function CargoGacha({
     }))
 
     toast.success(`已完成几轮任务，获得${currencyName} ${batteriesToAdd}`, {
+      id: 'add-batteries', // 固定 id，连点时刷新同一个 toast 而非堆叠
       duration: 2000,
       position: 'top-center',
       style: {

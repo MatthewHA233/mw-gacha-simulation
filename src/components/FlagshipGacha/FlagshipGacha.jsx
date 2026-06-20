@@ -1485,6 +1485,7 @@ export function FlagshipGacha({
     }))
 
     toast.success('做完6轮当日任务奖励150个钥匙', {
+      id: 'add-common-keys', // 固定 id，连点时刷新同一个 toast 而非堆叠
       duration: 2000,
       position: 'top-center',
       style: {
