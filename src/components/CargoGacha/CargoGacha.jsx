@@ -184,7 +184,7 @@ export function CargoGacha({
 
   // 抽奖动画状态
   const [isDrawing, setIsDrawing] = useState(false)
-  const [highlightedItemId, setHighlightedItemId] = useState(null)
+  const [highlightedItemName, setHighlightedItemName] = useState(null)
 
   // 停止动画标志
   const stopAnimationRef = useRef(false)
@@ -344,6 +344,15 @@ export function CargoGacha({
       item.limit > 0 &&
       item.obtained < item.limit
     ).length
+  }
+
+  // 多连抽：转盘先定格在结果清单第一个物品的位置，停顿后再弹出结果弹窗
+  const landOnFirstThenShow = (firstResult, showFn) => {
+    setHighlightedItemName(firstResult?.name ?? null)
+    setTimeout(() => {
+      showFn()
+      setHighlightedItemName(null)
+    }, 500)
   }
 
   // 逐个显示物品
@@ -682,14 +691,14 @@ export function CargoGacha({
           shuffleIndex = 0
         }
 
-        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
         shuffleIndex++
         currentCount++
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
         // 最后定格在抽中的物品上
-        setHighlightedItemId(result.id)
+        setHighlightedItemName(result.name)
         setTimeout(() => {
           const totalDrawsKey = suffix ? `totalDraws${suffix}` : 'totalDraws'
           const legendaryCountKey = suffix ? `legendaryCount${suffix}` : 'legendaryCount'
@@ -785,7 +794,7 @@ export function CargoGacha({
             canSkip: false
           })
           setIsDrawing(false)
-          setHighlightedItemId(null)
+          setHighlightedItemName(null)
         }, 500)
       }
     }
@@ -869,14 +878,13 @@ export function CargoGacha({
           shuffleIndex = 0
         }
 
-        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
         shuffleIndex++
         currentCount++
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemId(null)
-        // 动画结束后执行抽奖逻辑
+        // 保持最后一格高亮，由 performMultiDraw 平滑定格到结果首项
         performMultiDraw()
       }
     }
@@ -980,23 +988,25 @@ export function CargoGacha({
         [epicLegendaryHistoryKey]: updatedEpicLegendaryHistory
       }))
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi10',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip: false
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi10',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip: false
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi10')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi10')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1076,14 +1086,13 @@ export function CargoGacha({
           shuffleIndex = 0
         }
 
-        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
         shuffleIndex++
         currentCount++
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemId(null)
-        // 动画结束后执行抽奖逻辑
+        // 保持最后一格高亮，由 performDraw100 平滑定格到结果首项
         performDraw100()
       }
     }
@@ -1190,23 +1199,25 @@ export function CargoGacha({
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
       const canSkip = remainingLimited <= 1
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi100',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi100',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi100')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi100')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1286,14 +1297,13 @@ export function CargoGacha({
           shuffleIndex = 0
         }
 
-        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
         shuffleIndex++
         currentCount++
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemId(null)
-        // 动画结束后执行抽奖逻辑
+        // 保持最后一格高亮，由 performDraw500 平滑定格到结果首项
         performDraw500()
       }
     }
@@ -1400,23 +1410,25 @@ export function CargoGacha({
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
       const canSkip = remainingLimited <= 1
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi500',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi500',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi500')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi500')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1493,13 +1505,13 @@ export function CargoGacha({
           shuffleIndex = 0
         }
 
-        setHighlightedItemId(shuffledItems[shuffleIndex].id)
+        setHighlightedItemName(shuffledItems[shuffleIndex].name)
         shuffleIndex++
         currentCount++
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemId(null)
+        // 保持最后一格高亮，由 performDraw5000 平滑定格到结果首项
         performDraw5000()
       }
     }
@@ -1604,23 +1616,25 @@ export function CargoGacha({
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
       const canSkip = remainingLimited <= 1
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi5000',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi5000',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi5000')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi5000')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1870,7 +1884,7 @@ export function CargoGacha({
                   key={item.id || i}
                   item={item}
                   activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === item.id}
+                  isHighlighted={highlightedItemName === item.name}
                 />
               ))}
             </div>
@@ -1881,7 +1895,7 @@ export function CargoGacha({
                 <SquareItem
                   item={getCurrentItems()[4]}
                   activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === getCurrentItems()[4].id}
+                  isHighlighted={highlightedItemName === getCurrentItems()[4].name}
                 />
               )}
 
@@ -1912,7 +1926,7 @@ export function CargoGacha({
                 <SquareItem
                   item={getCurrentItems()[5]}
                   activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === getCurrentItems()[5].id}
+                  isHighlighted={highlightedItemName === getCurrentItems()[5].name}
                 />
               )}
             </div>
@@ -1924,7 +1938,7 @@ export function CargoGacha({
                   key={item.id || i + 6}
                   item={item}
                   activityConfig={activityConfig}
-                  isHighlighted={highlightedItemId === item.id}
+                  isHighlighted={highlightedItemName === item.name}
                 />
               ))}
             </div>

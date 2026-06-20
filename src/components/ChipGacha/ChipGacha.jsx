@@ -328,6 +328,15 @@ export function ChipGacha({
     ).length
   }
 
+  // ========== 多连抽：转盘先定格在结果清单第一个物品，停顿后再弹出结果 ==========
+  const landOnFirstThenShow = (firstResult, showFn) => {
+    setHighlightedItemName(firstResult?.name ?? null)
+    setTimeout(() => {
+      showFn()
+      setHighlightedItemName(null)
+    }, 500)
+  }
+
   // ========== 逐个显示物品的函数 ==========
   const progressivelyShowItems = (allItems, drawType) => {
     stopAnimationRef.current = false // 重置停止标志
@@ -856,8 +865,7 @@ export function ChipGacha({
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemName(null)
-        // 动画结束后执行抽奖逻辑
+        // 保持最后一格高亮，由 performMultiDraw 平滑定格到结果首项
         performMultiDraw()
       }
     }
@@ -937,23 +945,25 @@ export function ChipGacha({
         epicLegendaryHistory: updatedEpicLegendaryHistory
       }))
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi10',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip: false  // 十连抽不需要快进
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi10',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip: false  // 十连抽不需要快进
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi10')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi10')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1020,8 +1030,7 @@ export function ChipGacha({
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemName(null)
-        // 动画结束后执行抽奖逻辑
+        // 保持最后一格高亮，由 performDraw100 平滑定格到结果首项
         performDraw100()
       }
     }
@@ -1105,23 +1114,25 @@ export function ChipGacha({
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
       const canSkip = remainingLimited <= 1
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi100',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi100',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi100')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi100')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1188,8 +1199,7 @@ export function ChipGacha({
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemName(null)
-        // 动画结束后执行抽奖逻辑
+        // 保持最后一格高亮，由 performDraw500 平滑定格到结果首项
         performDraw500()
       }
     }
@@ -1273,23 +1283,25 @@ export function ChipGacha({
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
       const canSkip = remainingLimited <= 1
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi500',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi500',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi500')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi500')
+        }, 100)
+      })
     }, 300)
   }
 
@@ -1356,7 +1368,7 @@ export function ChipGacha({
         delay += delayIncrement
         setTimeout(highlightNext, Math.min(delay, maxDelay))
       } else {
-        setHighlightedItemName(null)
+        // 保持最后一格高亮，由 performDraw5000 平滑定格到结果首项
         performDraw5000()
       }
     }
@@ -1437,23 +1449,25 @@ export function ChipGacha({
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
       const canSkip = remainingLimited <= 1
 
-      setResultModal({
-        show: true,
-        items: resultsWithDrawNum,
-        displayedItems: [],
-        isMulti: true,
-        drawType: 'multi5000',
-        isGenerating: true,
-        isPaused: false,
-        isComplete: false,
-        processedIndex: 0,
-        canSkip
-      })
-      setIsDrawing(false)
+      landOnFirstThenShow(resultsWithDrawNum[0], () => {
+        setResultModal({
+          show: true,
+          items: resultsWithDrawNum,
+          displayedItems: [],
+          isMulti: true,
+          drawType: 'multi5000',
+          isGenerating: true,
+          isPaused: false,
+          isComplete: false,
+          processedIndex: 0,
+          canSkip
+        })
+        setIsDrawing(false)
 
-      setTimeout(() => {
-        progressivelyShowItems(resultsWithDrawNum, 'multi5000')
-      }, 100)
+        setTimeout(() => {
+          progressivelyShowItems(resultsWithDrawNum, 'multi5000')
+        }, 100)
+      })
     }, 300)
   }
 
