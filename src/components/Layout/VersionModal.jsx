@@ -7,7 +7,6 @@ import { getAppVersion } from '../../utils/version'
 import { useSound } from '../../hooks/useSound'
 import { useVersionData } from '../../hooks/useVersionData'
 import { useSiteInfo } from '../../hooks/useSiteInfo'
-import { Tabs } from '../ui/tabs'
 
 // ===== 战术终端风格展示组件（海军 HUD / 机密档案） =====
 
@@ -118,6 +117,7 @@ export function VersionModal({ isOpen, onClose }) {
   const { playButtonClick } = useSound()
   const [showAllVersions, setShowAllVersions] = useState(false)
   const [selectedVersion, setSelectedVersion] = useState(null)
+  const [activeTab, setActiveTab] = useState('version')
 
   // 加载版本数据和网站信息
   const { versionData, loading: versionLoading, error: versionError } = useVersionData()
@@ -492,7 +492,43 @@ export function VersionModal({ isOpen, onClose }) {
                 </div>
               </div>
 
-              {/* Tab 切换 + 内容区域 */}
+              {/* 战术标签栏（固定在标题栏下方，不随内容滚动） */}
+              {!versionLoading && !siteLoading && !versionError && !siteError && (
+                <div className="relative flex items-stretch border-b border-white/10 bg-black/40">
+                  {tabs.map((tab, i) => {
+                    const active = activeTab === tab.value
+                    return (
+                      <button
+                        key={tab.value}
+                        onClick={() => {
+                          playButtonClick()
+                          setActiveTab(tab.value)
+                        }}
+                        className={`flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium tracking-wide transition-colors duration-200 ${
+                          active ? 'text-cyan-300' : 'text-white/45 hover:text-white/80'
+                        }`}
+                      >
+                        <span className={`font-mono text-[9px] sm:text-[10px] transition-colors duration-200 ${active ? 'text-cyan-400/80' : 'text-white/25'}`}>
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                        <span>{tab.title}</span>
+                      </button>
+                    )
+                  })}
+                  {/* 单一滑动下划线：等分段间纯水平滑动，宽度恒定 */}
+                  <motion.span
+                    className="pointer-events-none absolute -bottom-px h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                    initial={false}
+                    animate={{
+                      left: `${(tabs.findIndex((t) => t.value === activeTab) * 100) / tabs.length}%`,
+                      width: `${100 / tabs.length}%`,
+                    }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 36 }}
+                  />
+                </div>
+              )}
+
+              {/* 内容滚动区 */}
               <div className="overflow-y-auto max-h-[calc(40vh-60px)] sm:max-h-[calc(60vh-80px)] lg:max-h-[calc(85vh-120px)] custom-scrollbar">
                 {/* 加载状态 */}
                 {(versionLoading || siteLoading) && (
@@ -523,16 +559,9 @@ export function VersionModal({ isOpen, onClose }) {
                   </div>
                 )}
 
-                {/* 正常内容 */}
-                {!versionLoading && !siteLoading && !versionError && !siteError && (
-                  <Tabs
-                    tabs={tabs}
-                    containerClassName="p-2 sm:p-3 lg:p-4"
-                    activeTabClassName="bg-gradient-to-r from-cyan-500 to-blue-500"
-                    tabClassName="text-white/70 hover:text-white transition-colors text-xs sm:text-sm"
-                    contentClassName=""
-                  />
-                )}
+                {/* 当前标签内容 */}
+                {!versionLoading && !siteLoading && !versionError && !siteError &&
+                  tabs.find((t) => t.value === activeTab)?.content}
               </div>
             </div>
           </motion.div>
