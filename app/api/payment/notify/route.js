@@ -188,25 +188,29 @@ async function handlePaymentSuccess(out_trade_no, order, attach) {
  */
 async function handleMwMonitorSuccess(out_trade_no, order, customData) {
   const { user_id, tier, duration_days } = customData
-  try {
-    const r = await grantMwMonitorMembership({ user_id, tier, duration_days, out_trade_no })
-    console.log(`[MW幽灵会员] 开通成功 user=${user_id} tier=${r.tier} 到期=${r.expires_at}`)
-  } catch (err) {
-    console.error(`[MW幽灵会员] 发货失败(需人工补发) 订单=${out_trade_no} user=${user_id}:`, err)
-    return
-  }
-
-  // 标记已发货(供排查; 客户端到账与否以自建库 profiles 为准)
   const supabase = getSupabase()
-  if (supabase) {
+  const mark = async (patch) => {
+    if (!supabase) return
     const { error } = await supabase
       .from('payment_orders')
       .update({
-        metadata: { ...(order.metadata || {}), granted: true },
+        metadata: { ...(order.metadata || {}), ...patch },
         updated_at: new Date().toISOString()
       })
       .eq('out_trade_no', out_trade_no)
-    if (error) console.error('[MW幽灵会员] 订单发货标记失败:', error)
+    if (error) console.error('[MW幽灵会员] 订单标记失败:', error)
+  }
+
+  try {
+    const r = await grantMwMonitorMembership({
+      user_id, tier, duration_days, out_trade_no, amount_cents: order.amount
+    })
+    console.log(`[MW幽灵会员] 开通成功 user=${user_id} tier=${r.tier} 到期=${r.expires_at}`)
+    await mark({ granted: true })
+  } catch (err) {
+    // 失败原因落到订单上(排查不再依赖函数日志); query 轮询会自动重试补发(发货幂等)
+    console.error(`[MW幽灵会员] 发货失败(轮询将自动重试) 订单=${out_trade_no} user=${user_id}:`, err)
+    await mark({ granted: false, grant_error: String(err).slice(0, 300) })
   }
 }
 

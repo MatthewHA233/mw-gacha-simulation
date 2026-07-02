@@ -22,6 +22,7 @@ export async function GET(request) {
       .from('payment_orders')
       .select('out_trade_no, amount, pay_type, pay_time, membership_type, is_admin_purchase, activation_code', { count: 'exact' })
       .eq('status', 'paid')
+      .neq('order_type', 'mwmonitor') // MW市场幽灵 的订单不计入本项目盈利(那边管理台单独统计)
       .order('pay_time', { ascending: false })
       .range(from, to)
 
