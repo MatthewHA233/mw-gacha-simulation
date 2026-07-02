@@ -50,3 +50,4 @@ public/gacha-configs/version-history.json
 __pycache__/
 *.pyc
 *.pyo
+.vercel

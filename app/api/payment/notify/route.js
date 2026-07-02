@@ -12,6 +12,7 @@ import { NextResponse } from 'next/server'
 import { verifySign } from '@lib/payment/signUtil'
 import { getOrder, updateOrderStatus } from '@lib/payment/orderStore'
 import { getSupabase } from '@lib/supabase/serverClient'
+import { grantMwMonitorMembership } from '@lib/mwmonitor/grant'
 
 /**
  * 将支付网关回调的北京本地时间字符串转换为 UTC ISO 字符串
@@ -167,12 +168,45 @@ async function handlePaymentSuccess(out_trade_no, order, attach) {
       return
     }
 
+    if (order_type === 'mwmonitor') {
+      await handleMwMonitorSuccess(out_trade_no, order, customData)
+      return
+    }
+
     // 其他订单类型
     const { userId, itemType, itemCount } = customData
     console.log(`[业务处理] 为用户 ${userId} 发放 ${itemCount} 个 ${itemType}`)
 
   } catch (err) {
     console.error('[业务处理失败]', err)
+  }
+}
+
+/**
+ * 处理 MW市场幽灵 会员订单：无激活码，直接调自建 Supabase 开通/续费。
+ * 发货失败只记日志(订单已标 paid)，据 out_trade_no 人工补发。
+ */
+async function handleMwMonitorSuccess(out_trade_no, order, customData) {
+  const { user_id, tier, duration_days } = customData
+  try {
+    const r = await grantMwMonitorMembership({ user_id, tier, duration_days, out_trade_no })
+    console.log(`[MW幽灵会员] 开通成功 user=${user_id} tier=${r.tier} 到期=${r.expires_at}`)
+  } catch (err) {
+    console.error(`[MW幽灵会员] 发货失败(需人工补发) 订单=${out_trade_no} user=${user_id}:`, err)
+    return
+  }
+
+  // 标记已发货(供排查; 客户端到账与否以自建库 profiles 为准)
+  const supabase = getSupabase()
+  if (supabase) {
+    const { error } = await supabase
+      .from('payment_orders')
+      .update({
+        metadata: { ...(order.metadata || {}), granted: true },
+        updated_at: new Date().toISOString()
+      })
+      .eq('out_trade_no', out_trade_no)
+    if (error) console.error('[MW幽灵会员] 订单发货标记失败:', error)
   }
 }
 
