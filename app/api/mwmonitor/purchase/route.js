@@ -3,10 +3,11 @@
  * POST /api/mwmonitor/purchase
  *
  * 与 /api/membership/purchase 同一套支付平台/签名/订单存储，差异：
- * - 商品是 MW市场幽灵 的会员等级月卡(白银/黄金)
+ * - 商品是 MW市场幽灵 的会员套餐(白银/黄金，月卡/季卡/年卡)
  * - attach 带 app 用户 uuid，支付成功后 notify 直接调自建 Supabase 开通(无激活码)
  *
- * 入参: { tier: 'silver'|'gold', pay_type: 'alipay'|'wechat', pay_mode: 'native'|'h5',
+ * 入参: { tier: 'silver'|'gold', period: 'month'|'quarter'|'year',
+ *        pay_type: 'alipay'|'wechat', pay_mode: 'native'|'h5',
  *        user_id: <auth.users uuid>, email: <显示用> }
  */
 
@@ -15,17 +16,12 @@ import { addSign } from '@lib/payment/signUtil'
 import { createOrder } from '@lib/payment/orderStore'
 import { getSupabase } from '@lib/supabase/serverClient'
 import { peekMwMonitorProfile } from '@lib/mwmonitor/grant'
+import { MWMON_PERIODS, getMwMonitorPlan, quoteMwMonitorPlan } from '@lib/mwmonitor/plans.mjs'
 
 const PAYMENT_BASE_URL = process.env.PAYMENT_API_BASE_URL || 'https://open.h5zhifu.com'
 const APP_ID = process.env.PAYMENT_APP_ID
 const APP_SECRET = process.env.PAYMENT_APP_SECRET
 const NOTIFY_URL = process.env.NEXT_PUBLIC_PAYMENT_NOTIFY_URL || 'https://mw.lingflow.cn/api/payment/notify'
-
-// 价格单位: 分。等级/时长服务端定死，客户端只能选套餐，防篡改
-const PLANS = {
-  silver: { price: 1900, duration_days: 30, name: '白银会员·月卡' },
-  gold: { price: 3900, duration_days: 30, name: '黄金会员·月卡' }
-}
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -33,14 +29,20 @@ export async function POST(request) {
   try {
     const {
       tier,
+      period = 'month',
       pay_type = 'wechat',
       pay_mode = 'native',
       user_id,
       email = ''
     } = await request.json()
 
-    if (!tier || !PLANS[tier]) {
-      return NextResponse.json({ error: '无效的套餐', valid: Object.keys(PLANS) }, { status: 400 })
+    const selectedPlan = getMwMonitorPlan(tier, period)
+    if (!selectedPlan) {
+      return NextResponse.json({
+        error: '无效的套餐',
+        valid_tiers: ['silver', 'gold'],
+        valid_periods: Object.keys(MWMON_PERIODS)
+      }, { status: 400 })
     }
     if (!['alipay', 'wechat'].includes(pay_type)) {
       return NextResponse.json({ error: 'pay_type 必须是 alipay 或 wechat' }, { status: 400 })
@@ -48,8 +50,6 @@ export async function POST(request) {
     if (!user_id || !UUID_RE.test(user_id)) {
       return NextResponse.json({ error: '缺少有效的 user_id(请先在 app 内登录)' }, { status: 400 })
     }
-
-    const plan = PLANS[tier]
 
     // —— 服务端权威定价：买 / 续费 / 升级 ——
     // 升级(白银→黄金, 方案A): 抵扣 = min(整数剩余天, 30)/30×19; 超出 30 天的剩余按 19/39 折成额外黄金天数。
@@ -67,23 +67,15 @@ export async function POST(request) {
     if (cur.tier === 'gold' && tier === 'silver') {
       return NextResponse.json({ error: '黄金会员不能购买白银（降级），请到期后再购买' }, { status: 400 })
     }
-    let mode = cur.tier === tier ? 'renew' : 'buy'
-    let amount = plan.price
-    let duration_days = plan.duration_days
-    let discount = null
-    if (cur.tier === 'silver' && tier === 'gold') {
-      mode = 'upgrade'
-      const remainMs = cur.expires_at ? new Date(cur.expires_at).getTime() - Date.now() : 0
-      const remainDays = Math.max(0, Math.floor(remainMs / 86400000))
-      const discountDays = Math.min(remainDays, 30)
-      const discountCents = Math.round((discountDays / 30) * PLANS.silver.price)
-      const extraDays = Math.round((Math.max(0, remainDays - 30) * PLANS.silver.price) / PLANS.gold.price)
-      amount = PLANS.gold.price - discountCents
-      duration_days = 30 + extraDays
-      discount = { remain_days: remainDays, discount_cents: discountCents, extra_days: extraDays }
-    }
-    const MODE_TEXT = { buy: '月卡', renew: '续费', upgrade: '升级' }
-    const desc = `MW市场幽灵 - ${plan.name.replace('·月卡', '')}·${MODE_TEXT[mode]}`
+    const quote = quoteMwMonitorPlan({
+      tier,
+      period,
+      currentTier: cur.tier,
+      expiresAt: cur.expires_at
+    })
+    const { mode, amount, duration_days, discount } = quote
+    const MODE_TEXT = { buy: '购买', renew: '续费', upgrade: '升级' }
+    const desc = `MW市场幽灵 - ${selectedPlan.name}·${MODE_TEXT[mode]}`
 
     // MWM 前缀区分 MW市场幽灵 订单
     const out_trade_no = `MWM${Date.now()}${Math.random().toString(36).substring(2, 9).toUpperCase()}`
@@ -101,6 +93,7 @@ export async function POST(request) {
       attach: JSON.stringify({
         order_type: 'mwmonitor',
         tier,
+        period,
         duration_days,
         mode,
         user_id,
@@ -144,7 +137,17 @@ export async function POST(request) {
         pay_type,
         status: 'pending',
         jump_url: payUrl,
-        metadata: { pay_mode, user_id, email, mode, discount, expire_time: result.data.expire_time },
+        metadata: {
+          pay_mode,
+          user_id,
+          email,
+          period,
+          mode,
+          discount,
+          list_price: selectedPlan.list_price,
+          period_discount_cents: selectedPlan.period_discount_cents,
+          expire_time: result.data.expire_time
+        },
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
@@ -175,7 +178,17 @@ export async function POST(request) {
         jump_url: result.data.jump_url || null,
         expire_time: result.data.expire_time,
         pay_mode,
-        plan: { tier, name: desc, price: amount, duration_days, mode, discount }
+        plan: {
+          tier,
+          period,
+          name: desc,
+          price: amount,
+          list_price: selectedPlan.list_price,
+          period_discount_cents: selectedPlan.period_discount_cents,
+          duration_days,
+          mode,
+          discount
+        }
       }
     })
   } catch (error) {
