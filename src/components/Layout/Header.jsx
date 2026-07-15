@@ -342,9 +342,9 @@ export function Header({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex items-center gap-1 bg-slate-700/50 border border-slate-500 text-slate-300 px-2 py-0.5 text-xs font-bold font-mono tracking-wider"
+              className="flex items-center gap-1 bg-slate-700/50 border border-slate-500 text-slate-300 px-2 py-0.5 text-xs font-bold tracking-wider"
             >
-              EXPIRED
+              已过期
             </motion.div>
           )}
 
@@ -376,9 +376,9 @@ export function Header({
                       openMembership('select')
                     }
                   }}
-                  className="bg-orange-600 hover:bg-orange-500 text-white px-2 py-0.5 text-xs font-bold font-mono uppercase transition-all border border-orange-400"
+                  className="bg-orange-600 hover:bg-orange-500 text-white px-2 py-0.5 text-xs font-bold transition-all border border-orange-400"
                 >
-                  RENEW
+                  续费
                 </motion.button>
               )}
 
