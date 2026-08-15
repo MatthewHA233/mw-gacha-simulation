@@ -97,25 +97,25 @@ export function ResultModal({
         </motion.div>
       )}
       {/* 物品展示区域 - 小屏手机 */}
-      <div className="sm:hidden h-full flex items-center justify-center p-2 translate-y-[11px]">
+      <div className="sm:hidden h-full flex items-center justify-center p-2 translate-y-[6px]">
         {resultModal.drawType === 'single' ? (
           <div onClick={e => e.stopPropagation()}>
             <SquareItem
               item={resultModal.displayedItems[0]}
-              size={80}
+              size={72}
               index={0}
               drawNumber={resultModal.displayedItems[0]?.drawNumber}
             />
           </div>
         ) : resultModal.drawType === 'multi10' ? (
-          <div className="flex flex-col gap-1" onClick={e => e.stopPropagation()}>
+          <div className="flex flex-col gap-[3px]" onClick={e => e.stopPropagation()}>
             {[0, 1].map(rowIndex => (
-              <div key={rowIndex} className="flex gap-1 justify-center">
+              <div key={rowIndex} className="flex gap-[3px] justify-center">
                 {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
                   <SquareItem
                     key={rowIndex * 5 + colIndex}
                     item={item}
-                    size={52}
+                    size={46}
                     index={rowIndex * 5 + colIndex}
                     drawNumber={item.drawNumber}
                   />
@@ -124,14 +124,14 @@ export function ResultModal({
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-1" onClick={e => e.stopPropagation()}>
+          <div className="flex flex-col gap-[3px]" onClick={e => e.stopPropagation()}>
             {[0, 1].map(rowIndex => (
-              <div key={rowIndex} className="flex gap-1 justify-center">
+              <div key={rowIndex} className="flex gap-[3px] justify-center">
                 {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
                   <SquareItem
                     key={rowIndex * 10 + colIndex}
                     item={item}
-                    size={52}
+                    size={46}
                     index={rowIndex * 10 + colIndex}
                     drawNumber={item.drawNumber}
                   />
@@ -144,25 +144,25 @@ export function ResultModal({
 
       {/* 物品展示区域 - 平板 */}
       <div className="hidden sm:block lg:hidden h-full">
-        <div className="h-full flex items-center justify-center p-4 translate-y-[11px]">
+        <div className="h-full flex items-center justify-center p-4 translate-y-[6px]">
           {resultModal.drawType === 'single' ? (
             <div onClick={e => e.stopPropagation()}>
               <SquareItem
                 item={resultModal.displayedItems[0]}
-                size={100}
+                size={90}
                 index={0}
                 drawNumber={resultModal.displayedItems[0]?.drawNumber}
               />
             </div>
           ) : resultModal.drawType === 'multi10' ? (
-            <div className="flex flex-col gap-3" onClick={e => e.stopPropagation()}>
+            <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
               {[0, 1].map(rowIndex => (
-                <div key={rowIndex} className="flex gap-3 justify-center">
+                <div key={rowIndex} className="flex gap-2 justify-center">
                   {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
                     <SquareItem
                       key={rowIndex * 5 + colIndex}
                       item={item}
-                      size={78}
+                      size={68}
                       index={rowIndex * 5 + colIndex}
                       drawNumber={item.drawNumber}
                     />
@@ -171,14 +171,14 @@ export function ResultModal({
               ))}
             </div>
           ) : (
-            <div className="flex flex-col gap-3" onClick={e => e.stopPropagation()}>
+            <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
               {[0, 1].map(rowIndex => (
-                <div key={rowIndex} className="flex gap-3 justify-center">
+                <div key={rowIndex} className="flex gap-2 justify-center">
                   {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
                     <SquareItem
                       key={rowIndex * 10 + colIndex}
                       item={item}
-                      size={78}
+                      size={68}
                       index={rowIndex * 10 + colIndex}
                       drawNumber={item.drawNumber}
                     />
@@ -192,26 +192,26 @@ export function ResultModal({
 
       {/* 物品展示区域 - 桌面端 */}
       <div className="hidden lg:block h-full">
-        <div className="h-full flex items-center justify-center p-8 translate-y-[28px]">
+        <div className="h-full flex items-center justify-center p-8 translate-y-[14px]">
           <div style={{ transform: `scale(${itemScale})`, transformOrigin: 'center' }}>
             {resultModal.drawType === 'single' ? (
               <div onClick={e => e.stopPropagation()}>
                 <SquareItem
                   item={resultModal.displayedItems[0]}
-                  size={120}
+                  size={106}
                   index={0}
                   drawNumber={resultModal.displayedItems[0]?.drawNumber}
                 />
               </div>
             ) : resultModal.drawType === 'multi10' ? (
-              <div className="flex flex-col gap-6" onClick={e => e.stopPropagation()}>
+              <div className="flex flex-col gap-4" onClick={e => e.stopPropagation()}>
                 {[0, 1].map(rowIndex => (
-                  <div key={rowIndex} className="flex gap-6 justify-center">
+                  <div key={rowIndex} className="flex gap-4 justify-center">
                     {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
                       <SquareItem
                         key={rowIndex * 5 + colIndex}
                         item={item}
-                        size={120}
+                        size={106}
                         index={rowIndex * 5 + colIndex}
                         drawNumber={item.drawNumber}
                       />
@@ -220,14 +220,14 @@ export function ResultModal({
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col gap-6" onClick={e => e.stopPropagation()}>
+              <div className="flex flex-col gap-4" onClick={e => e.stopPropagation()}>
                 {[0, 1].map(rowIndex => (
-                  <div key={rowIndex} className="flex gap-6 justify-center">
+                  <div key={rowIndex} className="flex gap-4 justify-center">
                     {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
                       <SquareItem
                         key={rowIndex * 10 + colIndex}
                         item={item}
-                        size={120}
+                        size={106}
                         index={rowIndex * 10 + colIndex}
                         drawNumber={item.drawNumber}
                       />

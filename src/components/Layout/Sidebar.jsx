@@ -413,7 +413,7 @@ export function Sidebar({
           }}
         >
           <p className="text-white/60 text-[9px] md:text-sm text-center">
-            Made by <span className="text-cyan-400 font-semibold">HORIZN地平线-CHanGO</span>
+            Made by <span className="text-cyan-400 font-semibold">地平线『No.002』CHanGO</span>
           </p>
         </div>
       </div>
