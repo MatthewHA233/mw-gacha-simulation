@@ -102,20 +102,20 @@ export function ResultModal({
           <div onClick={e => e.stopPropagation()}>
             <SquareItem
               item={resultModal.displayedItems[0]}
-              size={72}
+              size={78}
               index={0}
               drawNumber={resultModal.displayedItems[0]?.drawNumber}
             />
           </div>
         ) : resultModal.drawType === 'multi10' ? (
-          <div className="flex flex-col gap-[3px]" onClick={e => e.stopPropagation()}>
+          <div className="flex flex-col gap-1" onClick={e => e.stopPropagation()}>
             {[0, 1].map(rowIndex => (
-              <div key={rowIndex} className="flex gap-[3px] justify-center">
+              <div key={rowIndex} className="flex gap-1 justify-center">
                 {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
                   <SquareItem
                     key={rowIndex * 5 + colIndex}
                     item={item}
-                    size={46}
+                    size={50}
                     index={rowIndex * 5 + colIndex}
                     drawNumber={item.drawNumber}
                   />
@@ -124,14 +124,14 @@ export function ResultModal({
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-[3px]" onClick={e => e.stopPropagation()}>
+          <div className="flex flex-col gap-1" onClick={e => e.stopPropagation()}>
             {[0, 1].map(rowIndex => (
-              <div key={rowIndex} className="flex gap-[3px] justify-center">
+              <div key={rowIndex} className="flex gap-1 justify-center">
                 {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
                   <SquareItem
                     key={rowIndex * 10 + colIndex}
                     item={item}
-                    size={46}
+                    size={50}
                     index={rowIndex * 10 + colIndex}
                     drawNumber={item.drawNumber}
                   />
@@ -149,20 +149,20 @@ export function ResultModal({
             <div onClick={e => e.stopPropagation()}>
               <SquareItem
                 item={resultModal.displayedItems[0]}
-                size={90}
+                size={96}
                 index={0}
                 drawNumber={resultModal.displayedItems[0]?.drawNumber}
               />
             </div>
           ) : resultModal.drawType === 'multi10' ? (
-            <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
+            <div className="flex flex-col gap-2.5" onClick={e => e.stopPropagation()}>
               {[0, 1].map(rowIndex => (
-                <div key={rowIndex} className="flex gap-2 justify-center">
+                <div key={rowIndex} className="flex gap-2.5 justify-center">
                   {resultModal.displayedItems.slice(rowIndex * 5, rowIndex * 5 + 5).map((item, colIndex) => (
                     <SquareItem
                       key={rowIndex * 5 + colIndex}
                       item={item}
-                      size={68}
+                      size={72}
                       index={rowIndex * 5 + colIndex}
                       drawNumber={item.drawNumber}
                     />
@@ -171,14 +171,14 @@ export function ResultModal({
               ))}
             </div>
           ) : (
-            <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
+            <div className="flex flex-col gap-2.5" onClick={e => e.stopPropagation()}>
               {[0, 1].map(rowIndex => (
-                <div key={rowIndex} className="flex gap-2 justify-center">
+                <div key={rowIndex} className="flex gap-2.5 justify-center">
                   {resultModal.displayedItems.slice(rowIndex * 10, rowIndex * 10 + 10).map((item, colIndex) => (
                     <SquareItem
                       key={rowIndex * 10 + colIndex}
                       item={item}
-                      size={68}
+                      size={72}
                       index={rowIndex * 10 + colIndex}
                       drawNumber={item.drawNumber}
                     />

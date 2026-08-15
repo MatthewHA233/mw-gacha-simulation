@@ -88,7 +88,8 @@ export function ShopModal({
     >
       <div className="flex flex-col items-center gap-4 pointer-events-none max-h-[90vh] overflow-y-auto">
         {/* 商品展示区域 */}
-        <div className="flex gap-6 px-8 scale-[0.6] md:scale-100 pointer-events-auto">
+        {/* 小屏缩放用 zoom 而非 scale：scale 不改变布局占位，会撑出多余的横向/纵向空白 */}
+        <div className="flex gap-6 px-8 [zoom:0.6] md:[zoom:1] pointer-events-auto">
           {shopPackages.map((pkg) => {
           const chipAdjustable = mode === 'chip' && typeof pkg.quantity === 'number' && typeof onUpdateQuantity === 'function'
           const flagshipAdjustable = mode === 'flagship' && pkg.id === topFlagshipId && typeof onUpdateQuantity === 'function'
