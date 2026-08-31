@@ -1,0 +1,98 @@
+{
+  "id": "sp01",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "Seas of Prey S01 占领",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_g_lockpickssp01.webp?v=126967d2",
+    "nameEn": "Seas of Prey S01 Domination",
+    "formattedDate": "2023年8月",
+    "image": "https://mwstats.info/images/event-key-art/a852cf7b-3c74-4a04-9cd3-27bef261f856.jpg?v=9ab560d3"
+  },
+  "items": [
+    {
+      "name": "主宰之地",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Flag_DominationGrounds",
+      "type": "旗帜",
+      "rarity": "legendary",
+      "nameEn": "Domination Grounds"
+    },
+    {
+      "name": "[意]的里雅斯特(L9890)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Trieste",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "IT Trieste (L9890)"
+    },
+    {
+      "name": "3 开锁器",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Authorization_Key",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "25 黄金",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "开锁器",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Authorization_Key",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "30 000 美金",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Soft",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "太阳神激光",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "HeliosLaser",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "Helios Laser"
+    },
+    {
+      "name": "[拜拉克塔尔]红苹果",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "BayraktarMIUS",
+      "type": "无人机",
+      "rarity": "epic",
+      "nameEn": "Bayraktar Kızılelma"
+    },
+    {
+      "name": "500 参赛者徽章",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Entrant_Badges",
+      "type": "资源",
+      "rarity": "common",
+      "image": "https://mwstats.info/images/sprites-2024-transparent/pass_b_sp01.webp?v=e75a33a1"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "id": "iw24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "网络入侵",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_iw24.webp?v=180a44c3",
+    "nameEn": "Invasion from the Web",
+    "formattedDate": "2024年9月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_iw24.jpg?v=a67c6667"
+  },
+  "items": [
+    {
+      "name": "[法]夏尔·戴高乐(R91)",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "R91CharlesDeGaulle",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Charles de Gaulle (R91)"
+    },
+    {
+      "name": "[法]无敌(SNLE-3G)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "SNLE",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS SNLE 3G"
+    },
+    {
+      "name": "[韩]联合火力攻击舰(JSS)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "JSS",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS JSS"
+    },
+    {
+      "name": "9K720\"伊斯坎德尔\"",
+      "probability": 0.21,
+      "limit": 0,
+      "id": "Iskander",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "9K720 Iskander"
+    },
+    {
+      "name": "玄武-3C",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "Hyunmoo3C",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "Hyunmoo-3C"
+    },
+    {
+      "name": "彩虹-901",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "CH901Launcher",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "CH-901"
+    },
+    {
+      "name": "巨猿",
+      "probability": 1.5,
+      "limit": 1,
+      "id": "Camo_Gorilla",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Gorilla"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 数字代币",
+      "probability": 2.53,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "数字代币",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 24.7,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

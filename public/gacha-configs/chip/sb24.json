@@ -1,0 +1,132 @@
+{
+  "id": "sb24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "花开奖池",
+    "nameEn": "Blossom Boom",
+    "formattedDate": "2024年4月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_sb24.jpg?v=8881fcde"
+  },
+  "items": [
+    {
+      "name": "[韩]联合火力攻击舰(JSS)",
+      "probability": 0.05,
+      "limit": 0,
+      "id": "JSS",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS JSS"
+    },
+    {
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "probability": 0.05,
+      "limit": 0,
+      "id": "Mark45Astor",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Mark-45 ASTOR (483 mm)"
+    },
+    {
+      "name": "[美]战巡2000",
+      "probability": 0.07,
+      "limit": 0,
+      "id": "Battlecruiser2000",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "USS Battlecruiser 2000"
+    },
+    {
+      "name": "A-220M (57 mm)",
+      "probability": 0.07,
+      "limit": 0,
+      "id": "A220M",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "A-220M (57mm)"
+    },
+    {
+      "name": "武士",
+      "probability": 2.0,
+      "limit": 0,
+      "id": "Flag_Oni",
+      "type": "旗帜",
+      "rarity": "epic",
+      "nameEn": "Samurai"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 2.0,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 樱花代币",
+      "probability": 2.1,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "荣誉与勇气",
+      "probability": 3.25,
+      "limit": 0,
+      "id": "Camo_HonorandValor",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Honor and Valor"
+    },
+    {
+      "name": "樱花妹",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "AvatarPortrait_SakuraGirl",
+      "type": "头像",
+      "rarity": "legendary",
+      "nameEn": "Sakura Girl"
+    },
+    {
+      "name": "勇敢之心",
+      "probability": 5.2,
+      "limit": 0,
+      "id": "Title_ValiantHeart",
+      "type": "头衔",
+      "rarity": "epic",
+      "nameEn": "Valiant Heart"
+    },
+    {
+      "name": "樱花代币",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 艺术硬币",
+      "probability": 8.7,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 24.1,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "40 黄金",
+      "probability": 42.41,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

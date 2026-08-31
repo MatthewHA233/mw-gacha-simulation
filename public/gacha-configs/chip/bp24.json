@@ -1,0 +1,131 @@
+{
+  "id": "bp24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "庆典狂欢",
+    "nameEn": "Celebration Craze",
+    "formattedDate": "2024年5月",
+    "image": "https://mwstats.info/images/gacha-preview/activity_c_bp24_background.jpg?v=727012ba"
+  },
+  "items": [
+    {
+      "name": "青铜",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Camo_Bronze",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Bronze"
+    },
+    {
+      "name": "[英]参战者(UXV)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "UXVCombatant",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "HMS UXV Combatant"
+    },
+    {
+      "name": "[德]萨克森(F124型)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "F124",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FGS F124"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 派对代币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "派对代币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "9K720\"伊斯坎德尔\"",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Iskander",
+      "type": "导弹",
+      "rarity": "epic",
+      "nameEn": "9K720 Iskander"
+    },
+    {
+      "name": "雅克-141\"自由\"",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Yak141",
+      "type": "攻击机",
+      "rarity": "epic",
+      "nameEn": "Yak-141 Freestyle"
+    },
+    {
+      "name": "[欧瑞康]HEL",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "OerlikonHEL",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "Oerlikon HEL"
+    },
+    {
+      "name": "A129\"猫鼬\"-CBT",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "A129CBT",
+      "type": "直升机",
+      "rarity": "epic",
+      "nameEn": "A129 CBT Mangusta"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

@@ -34,7 +34,9 @@ export const HexItem = ({
   const colors = RARITY_COLORS[rarity];
 
   // 超稀有判定（概率 < 0.01%）
-  const isUltraRare = probability != null && probability < 0.01;
+  // 必须先排除 0：部分早期活动没有概率数据（全为 0），
+  // 否则 0 < 0.01 成立，会把整池物品都误判成超稀有并加上彩虹特效
+  const isUltraRare = probability > 0 && probability < 0.01;
 
   // 提示框状态（所有物品都支持）
   const [showTooltip, setShowTooltip] = useState(false);

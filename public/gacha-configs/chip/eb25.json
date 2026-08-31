@@ -1,0 +1,132 @@
+{
+  "id": "eb25",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "复活节赏金",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_eb25.webp?v=c80425a2",
+    "nameEn": "Easter Bounty",
+    "formattedDate": "2025年4月",
+    "image": "https://mwstats.info/images/gacha-preview/activity_c_eb25_background.jpg?v=14fe7b18"
+  },
+  "items": [
+    {
+      "name": "[俄]巴尔蒂尼 A-2000-7",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "BartiniA2000",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "RF Bartini A-2000-7"
+    },
+    {
+      "name": "[法]夏尔·戴高乐(R91)",
+      "probability": 0.12,
+      "limit": 1,
+      "id": "R91CharlesDeGaulle",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Charles de Gaulle (R91)"
+    },
+    {
+      "name": "[韩]联合火力攻击舰(JSS)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "JSS",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS JSS"
+    },
+    {
+      "name": "海星-III",
+      "probability": 0.21,
+      "limit": 0,
+      "id": "HaeseongIII",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "Haeseong III"
+    },
+    {
+      "name": "H/PJ-29 (76 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "HPJ29",
+      "type": "主炮",
+      "rarity": "epic",
+      "nameEn": "H/PJ-29 (76mm)"
+    },
+    {
+      "name": "国王轨道炮(180 mm)",
+      "probability": 0.45,
+      "limit": 2,
+      "id": "MRPGKonigEMRG",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "EMRG Konig (180 mm)"
+    },
+    {
+      "name": "3 复活节硬币",
+      "probability": 1.53,
+      "limit": 0,
+      "id": "",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 引擎过载",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "EngineBoost",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "多彩图案",
+      "probability": 2.5,
+      "limit": 1,
+      "id": "Camo_ColorfulPatterns",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Colorful Patterns"
+    },
+    {
+      "name": "复活节硬币",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 17.58,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 27.2,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 36.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

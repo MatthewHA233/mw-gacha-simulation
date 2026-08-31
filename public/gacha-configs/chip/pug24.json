@@ -1,0 +1,132 @@
+{
+  "id": "pug24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "盛世传奇",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_pug24.webp?v=b2ca6b82",
+    "nameEn": "Legends of the Golden Age",
+    "formattedDate": "2024年7月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_pug24.jpg?v=3a421f0a"
+  },
+  "items": [
+    {
+      "name": "[中]赤霄",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "ChiXiao",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN ChiXiao"
+    },
+    {
+      "name": "[美]杰克·H·卢卡斯(DDG-125)",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "JackHLucas",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Jack H. Lucas (DDG-125)"
+    },
+    {
+      "name": "M270 MLRS (270 mm)",
+      "probability": 0.1,
+      "limit": 0,
+      "id": "M270Launcher",
+      "type": "火箭炮",
+      "rarity": "legendary",
+      "nameEn": "M270 MLRS (270mm)"
+    },
+    {
+      "name": "海星-III",
+      "probability": 0.1,
+      "limit": 2,
+      "id": "HaeseongIII",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "Haeseong III"
+    },
+    {
+      "name": "超级军旗",
+      "probability": 0.2,
+      "limit": 2,
+      "id": "SuperEtendard",
+      "type": "攻击机",
+      "rarity": "epic",
+      "nameEn": "Super Etendard"
+    },
+    {
+      "name": "2030型(30mm)",
+      "probability": 0.3,
+      "limit": 1,
+      "id": "Type2030",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "Type 2030 (30 mm)"
+    },
+    {
+      "name": "1 天高级账户",
+      "probability": 1.25,
+      "limit": 0,
+      "id": "v1_premium_1d",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 钥匙",
+      "probability": 3.0,
+      "limit": 0,
+      "id": "currency_common_lootboxkey",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "皇家遗产",
+      "probability": 4.0,
+      "limit": 3,
+      "id": "Camo_RoyalLegacy",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Royal Legacy"
+    },
+    {
+      "name": "钥匙",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "currency_common_lootboxkey",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 23.8,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 34.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "id": "es25",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "翠绿风暴",
+    "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_es25.webp?v=4bb76a2e",
+    "nameEn": "Emerald Storm",
+    "formattedDate": "2025年3月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_es25.jpg?v=e74010be"
+  },
+  "items": [
+    {
+      "name": "[韩]幽灵指挥官",
+      "probability": 0.1,
+      "limit": 1,
+      "id": "GhostCommander",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS Ghost Commander"
+    },
+    {
+      "name": "[美]战巡2000",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Battlecruiser2000",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "USS Battlecruiser 2000"
+    },
+    {
+      "name": "[法]阿基坦(D650)",
+      "probability": 0.16,
+      "limit": 1,
+      "id": "Aquitaine",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Aquitaine (D650)"
+    },
+    {
+      "name": "幻影IVP",
+      "probability": 0.21,
+      "limit": 0,
+      "id": "MirageIVP",
+      "type": "轰炸机",
+      "rarity": "epic",
+      "nameEn": "Mirage IVP"
+    },
+    {
+      "name": "阿卡亚(533 mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "Akya",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Akya (533mm)"
+    },
+    {
+      "name": "2030型(30mm)",
+      "probability": 0.41,
+      "limit": 2,
+      "id": "Type2030",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "Type 2030 (30 mm)"
+    },
+    {
+      "name": "帕特农神庙",
+      "probability": 1.0,
+      "limit": 1,
+      "id": "Camo_Parthenon",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Parthenon"
+    },
+    {
+      "name": "20 引擎过载",
+      "probability": 1.75,
+      "limit": 0,
+      "id": "EngineBoost",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "3 三叶草硬币",
+      "probability": 2.53,
+      "limit": 0,
+      "id": "",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "三叶草硬币",
+      "probability": 6.0,
+      "limit": 0,
+      "id": "",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "10 艺术硬币",
+      "probability": 9.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 18.08,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "20 黄金",
+      "probability": 25.2,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 黄金",
+      "probability": 35.0,
+      "limit": 0,
+      "id": "Hard",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

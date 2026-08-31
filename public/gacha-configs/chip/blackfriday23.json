@@ -1,0 +1,134 @@
+{
+  "id": "blackfriday23",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "黑色星期五",
+    "nameEn": "Black Friday",
+    "formattedDate": "2023年11月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_blackfriday23.jpg?v=0b46823f"
+  },
+  "items": [
+    {
+      "name": "艺术风暴",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Camo_ArtStorm_DR",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Storm of Art"
+    },
+    {
+      "name": "金鱼",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Camo_Goldfish",
+      "type": "涂装",
+      "rarity": "epic",
+      "nameEn": "Goldfish"
+    },
+    {
+      "name": "艺术风暴",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Camo_ArtStorm_DR",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Storm of Art"
+    },
+    {
+      "name": "龙舟",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    },
+    {
+      "name": "凯旋",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Title_Triumphant",
+      "type": "头衔",
+      "rarity": "epic",
+      "nameEn": "Triumphant"
+    },
+    {
+      "name": "独立日",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    },
+    {
+      "name": "Modern Warships",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "ModernWarships",
+      "type": "旗帜",
+      "rarity": "legendary",
+      "nameEn": "Modern Warships"
+    },
+    {
+      "name": "左御纹",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Flag_HidariMitsudomoe",
+      "type": "旗帜",
+      "rarity": "rare",
+      "nameEn": "Hidari Mitsudomoe"
+    },
+    {
+      "name": "鹰酱",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Flag_Eagle",
+      "type": "旗帜",
+      "rarity": "legendary",
+      "nameEn": "Eagle"
+    },
+    {
+      "name": "2 抽奖券",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    },
+    {
+      "name": "抽奖券",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "",
+      "type": "其它",
+      "rarity": "common"
+    },
+    {
+      "name": "RAPIDFire (40 mm)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "RapidFire",
+      "type": "自卫炮",
+      "rarity": "legendary",
+      "nameEn": "RAPIDFire (40 mm)"
+    },
+    {
+      "name": "米-28NM\"浩劫\"-B",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "MI28NM",
+      "type": "直升机",
+      "rarity": "epic",
+      "nameEn": "Mi-28NM Havoc"
+    },
+    {
+      "name": "726-4A型",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Type7264A",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "Type 726-4A"
+    }
+  ]
+}

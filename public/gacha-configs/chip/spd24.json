@@ -1,0 +1,133 @@
+{
+  "id": "spd24",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "妖精藏品",
+    "nameEn": "Leprechaun's stash",
+    "formattedDate": "2024年3月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_spd24.jpg?v=00eb0483"
+  },
+  "items": [
+    {
+      "name": "RPK-1\"旋风\"",
+      "probability": 0.05,
+      "limit": 0,
+      "id": "RPK1Vihr",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "RPK-1 Vikhr"
+    },
+    {
+      "name": "物理学家-2(533 mm)",
+      "probability": 0.05,
+      "limit": 0,
+      "id": "UGSTPhysic2",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "UGST Futlyar (533 mm)"
+    },
+    {
+      "name": "SR-5 122/300",
+      "probability": 0.1,
+      "limit": 0,
+      "id": "SR5",
+      "type": "火箭炮",
+      "rarity": "epic",
+      "nameEn": "SR-5 122/300"
+    },
+    {
+      "name": "图-160M\"海盗旗\"",
+      "probability": 0.14,
+      "limit": 0,
+      "id": "TU160M",
+      "type": "轰炸机",
+      "rarity": "epic",
+      "nameEn": "TU-160M"
+    },
+    {
+      "name": "2 三叶草代币",
+      "probability": 1.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "15 艺术硬币",
+      "probability": 2.1,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "RIM-174(标准-6)",
+      "probability": 2.1,
+      "limit": 0,
+      "id": "RIM174",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "RIM-174 (SM-6)"
+    },
+    {
+      "name": "财富猎人",
+      "probability": 2.2,
+      "limit": 0,
+      "id": "Title_FortuneHunter",
+      "type": "头衔",
+      "rarity": "legendary",
+      "nameEn": "Fortune Hunter"
+    },
+    {
+      "name": "源代码",
+      "probability": 5.0,
+      "limit": 0,
+      "id": "Camo_Origin",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Origin"
+    },
+    {
+      "name": "三叶草代币",
+      "probability": 8.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "5 艺术硬币",
+      "probability": 8.8,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "雷达",
+      "probability": 13.0,
+      "limit": 0,
+      "id": "Flag_RadarCyberGhost",
+      "type": "旗帜",
+      "rarity": "legendary",
+      "nameEn": "Radar"
+    },
+    {
+      "name": "Modern Warships",
+      "probability": 24.0,
+      "limit": 0,
+      "id": "ModernWarships",
+      "type": "旗帜",
+      "rarity": "legendary",
+      "nameEn": "Modern Warships"
+    },
+    {
+      "name": "15 升级芯片",
+      "probability": 33.46,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common"
+    }
+  ]
+}

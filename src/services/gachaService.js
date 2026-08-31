@@ -3,6 +3,34 @@
  */
 
 /**
+ * 按权重随机抽取一项
+ *
+ * 权重总和为 0 时（部分早期活动的配置没有概率数据，probability 全为 0）
+ * 退化为等概率随机：否则 rand = Math.random() * 0 = 0，而 cumulative 也恒为 0，
+ * `rand < cumulative` 永远不成立，循环走完只能返回兜底项，导致每次都抽到同一个物品。
+ *
+ * @param {Array} list - 候选物品
+ * @param {Function} weightOf - 取权重的函数
+ * @returns {Object|null} 抽中的物品
+ */
+function pickWeighted(list, weightOf) {
+  if (!list.length) return null
+
+  const total = list.reduce((sum, item) => sum + (weightOf(item) || 0), 0)
+  if (!(total > 0)) {
+    return list[Math.floor(Math.random() * list.length)]
+  }
+
+  const rand = Math.random() * total
+  let cumulative = 0
+  for (const item of list) {
+    cumulative += weightOf(item) || 0
+    if (rand < cumulative) return item
+  }
+  return list[list.length - 1]
+}
+
+/**
  * 执行单次抽奖
  * @param {Array} items - 可抽取的物品列表
  * @param {Object} gameState - 当前游戏状态（包含 obtained 信息）
@@ -32,20 +60,9 @@ export function drawSingle(items, gameState) {
     return { ...item, adjustedProbability: item.probability }
   })
 
-  // 计算总概率并抽取
-  const totalProbability = itemsWithAdjustedProb.reduce((sum, item) => sum + item.adjustedProbability, 0)
-  const rand = Math.random() * totalProbability
-  let cumulativeProbability = 0
-
-  for (const item of itemsWithAdjustedProb) {
-    cumulativeProbability += item.adjustedProbability
-    if (rand < cumulativeProbability) {
-      return item
-    }
-  }
-
-  // 兜底返回最后一个
-  return availableItems[availableItems.length - 1]
+  // 按调整后的概率抽取（概率数据缺失时等概率随机）
+  return pickWeighted(itemsWithAdjustedProb, item => item.adjustedProbability)
+    || availableItems[availableItems.length - 1]
 }
 
 /**
@@ -87,17 +104,7 @@ export function drawMultiple(items, gameState, count, guarantee = {}) {
       })
 
       if (legendaryItems.length > 0) {
-        const totalProb = legendaryItems.reduce((sum, item) => sum + item.probability, 0)
-        const rand = Math.random() * totalProb
-        let cumulative = 0
-
-        for (const item of legendaryItems) {
-          cumulative += item.probability
-          if (rand < cumulative) {
-            result = item
-            break
-          }
-        }
+        result = pickWeighted(legendaryItems, item => item.probability)
 
         if (!result) result = legendaryItems[0]
         tempGameState.guaranteeCounters.legendary = 0
@@ -118,17 +125,7 @@ export function drawMultiple(items, gameState, count, guarantee = {}) {
       })
 
       if (epicPlusItems.length > 0) {
-        const totalProb = epicPlusItems.reduce((sum, item) => sum + item.probability, 0)
-        const rand = Math.random() * totalProb
-        let cumulative = 0
-
-        for (const item of epicPlusItems) {
-          cumulative += item.probability
-          if (rand < cumulative) {
-            result = item
-            break
-          }
-        }
+        result = pickWeighted(epicPlusItems, item => item.probability)
 
         if (!result) result = epicPlusItems[0]
         tempGameState.guaranteeCounters.epic = 0

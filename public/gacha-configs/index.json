@@ -1,6 +1,41 @@
 {
   "activities": [
     {
+      "id": "la107",
+      "gacha_type": "旗舰宝箱类",
+      "name": "海之宝藏",
+      "nameEn": "Sea Treasures",
+      "formattedDate": "2026年8月"
+    },
+    {
+      "id": "be107",
+      "gacha_type": "机密货物类",
+      "name": "远古大陆",
+      "nameEn": "Ancient Continents",
+      "formattedDate": "2026年8月"
+    },
+    {
+      "id": "ag107",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "nameEn": "Deal with the Shadow",
+      "formattedDate": "2026年8月"
+    },
+    {
+      "id": "la106",
+      "gacha_type": "旗舰宝箱类",
+      "name": "夏日雨季",
+      "nameEn": "Summer Rainy Season",
+      "formattedDate": "2026年7月"
+    },
+    {
+      "id": "be106",
+      "gacha_type": "机密货物类",
+      "name": "深渊之殇",
+      "nameEn": "Depths of Despair",
+      "formattedDate": "2026年7月"
+    },
+    {
       "id": "ag106",
       "gacha_type": "筹码类",
       "name": "暗影交易",
@@ -306,6 +341,15 @@
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_wa25.webp?v=f7602a2a"
     },
     {
+      "id": "eb25",
+      "gacha_type": "筹码类",
+      "name": "复活节赏金",
+      "nameEn": "Easter Bounty",
+      "formattedDate": "2025年4月",
+      "image": "https://mwstats.info/images/gacha-preview/activity_c_eb25_background.jpg?v=14fe7b18",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_eb25.webp?v=c80425a2"
+    },
+    {
       "id": "sp06",
       "gacha_type": "无人机补给类",
       "name": "Seas of Prey: 混沌竞技场",
@@ -313,6 +357,15 @@
       "nameEn": "Seas of Prey: Arena of Chaos",
       "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp06.webp?v=ff6ffe8a",
       "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp06.webp?v=6482080b"
+    },
+    {
+      "id": "es25",
+      "gacha_type": "筹码类",
+      "name": "翠绿风暴",
+      "nameEn": "Emerald Storm",
+      "formattedDate": "2025年3月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_es25.jpg?v=e74010be",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_es25.webp?v=4bb76a2e"
     },
     {
       "id": "pf25",
@@ -404,6 +457,15 @@
       "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp05.webp?v=a94ff009"
     },
     {
+      "id": "iw24",
+      "gacha_type": "筹码类",
+      "name": "网络入侵",
+      "nameEn": "Invasion from the Web",
+      "formattedDate": "2024年9月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_iw24.jpg?v=a67c6667",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_iw24.webp?v=180a44c3"
+    },
+    {
       "id": "az24",
       "gacha_type": "机密货物类",
       "name": "未知世界",
@@ -413,6 +475,15 @@
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_az24.webp?v=8dde519d"
     },
     {
+      "id": "de24",
+      "gacha_type": "筹码类",
+      "name": "危险实验",
+      "nameEn": "Dangerous Experiments",
+      "formattedDate": "2024年8月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_de24.jpg?v=967f55fb",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_de24.webp?v=21683027"
+    },
+    {
       "id": "sph24",
       "gacha_type": "机密货物类",
       "name": "Secret of Pharaoh",
@@ -420,6 +491,15 @@
       "nameEn": "Secret of Pharaoh",
       "bigevent_currency_gacha_gameplay_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sph24.webp?v=8e1f3950",
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sph24.webp?v=bbab669e"
+    },
+    {
+      "id": "pug24",
+      "gacha_type": "筹码类",
+      "name": "盛世传奇",
+      "nameEn": "Legends of the Golden Age",
+      "formattedDate": "2024年7月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_pug24.jpg?v=3a421f0a",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_pug24.webp?v=b2ca6b82"
     },
     {
       "id": "sp04",
@@ -440,6 +520,14 @@
       "bigevent_currency_gacha_rm_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_bfe24.webp?v=dc12d013"
     },
     {
+      "id": "bp24",
+      "gacha_type": "筹码类",
+      "name": "庆典狂欢",
+      "nameEn": "Celebration Craze",
+      "formattedDate": "2024年5月",
+      "image": "https://mwstats.info/images/gacha-preview/activity_c_bp24_background.jpg?v=727012ba"
+    },
+    {
       "id": "sp03",
       "gacha_type": "无人机补给类",
       "name": "Seas of Prey S03: Corporation",
@@ -449,6 +537,30 @@
       "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp03.webp?v=6b5757a5"
     },
     {
+      "id": "sb24",
+      "gacha_type": "筹码类",
+      "name": "花开奖池",
+      "nameEn": "Blossom Boom",
+      "formattedDate": "2024年4月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_sb24.jpg?v=8881fcde"
+    },
+    {
+      "id": "spd24",
+      "gacha_type": "筹码类",
+      "name": "妖精藏品",
+      "nameEn": "Leprechaun's stash",
+      "formattedDate": "2024年3月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_spd24.jpg?v=00eb0483"
+    },
+    {
+      "id": "wb23pr",
+      "gacha_type": "筹码类",
+      "name": "冬季盛典：派对冲刺",
+      "nameEn": "Winter Bash: Party Rush",
+      "formattedDate": "2023年12月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_wb23pr.jpg?v=db1d96b9"
+    },
+    {
       "id": "sp02",
       "gacha_type": "无人机补给类",
       "name": "Seas of Prey S02: 王权之巅",
@@ -456,6 +568,23 @@
       "nameEn": "Seas of Prey S02: King's Crest",
       "Drone_Fob_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachagameplaycoins_sp02.webp?v=d3e2fe2c",
       "Authorization_Key_image": "https://mwstats.info/images/sprites-2024-transparent/currency_gachacoins_sp02.webp?v=b1b22164"
+    },
+    {
+      "id": "blackfriday23",
+      "gacha_type": "筹码类",
+      "name": "黑色星期五",
+      "nameEn": "Black Friday",
+      "formattedDate": "2023年11月",
+      "image": "https://mwstats.info/images/gacha-preview/gacha_c_blackfriday23.jpg?v=0b46823f"
+    },
+    {
+      "id": "sp01",
+      "gacha_type": "筹码类",
+      "name": "Seas of Prey S01 占领",
+      "nameEn": "Seas of Prey S01 Domination",
+      "formattedDate": "2023年8月",
+      "image": "https://mwstats.info/images/event-key-art/a852cf7b-3c74-4a04-9cd3-27bef261f856.jpg?v=9ab560d3",
+      "currency_gachacoins_image": "https://mwstats.info/images/sprites-2024-transparent/currency_g_lockpickssp01.webp?v=126967d2"
     }
   ]
 }

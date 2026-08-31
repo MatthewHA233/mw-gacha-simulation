@@ -371,8 +371,9 @@ export function buildItemImageUrl(item, activityIdOrConfig) {
     return `${CDN_BASE_URL}/assets/contentseparated_assets_porticons/${item.id}.png${IMG_WEBP}`
   }
 
-  // 史诗/传说物品：根据 type 和 id 动态生成
-  if (item.rarity === 'epic' || item.rarity === 'legendary') {
+  // 史诗/传说/稀有物品：根据 type 和 id 动态生成
+  // 稀有(rare)与史诗/传说共用同一批 sprites 目录（旗帜、涂装等）
+  if (item.rarity === 'epic' || item.rarity === 'legendary' || item.rarity === 'rare') {
     let folder
     if (item.type === '战舰' || item.type === '无人舰艇') {
       // 战舰、无人舰艇都使用 units_ships 路径

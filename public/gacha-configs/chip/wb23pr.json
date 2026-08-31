@@ -1,0 +1,132 @@
+{
+  "id": "wb23pr",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "冬季盛典：派对冲刺",
+    "nameEn": "Winter Bash: Party Rush",
+    "formattedDate": "2023年12月",
+    "image": "https://mwstats.info/images/gacha-preview/gacha_c_wb23pr.jpg?v=db1d96b9"
+  },
+  "items": [
+    {
+      "name": "新起点",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Camo_NewBeginnings",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "New Beginnings"
+    },
+    {
+      "name": "新年派对",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Flag_NewYearParty",
+      "type": "旗帜",
+      "rarity": "epic",
+      "nameEn": "New Year Party"
+    },
+    {
+      "name": "[法]阿基坦(D650)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Aquitaine",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Aquitaine (D650)"
+    },
+    {
+      "name": "[意]的里雅斯特(L9890)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Trieste",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "IT Trieste (L9890)"
+    },
+    {
+      "name": "[德]萨克森(F124型)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "F124",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FGS F124"
+    },
+    {
+      "name": "30 艺术硬币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Artstorm",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "3 雪花代币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "雪花代币",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Token",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "100 机载导弹诱饵",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "MissileDecoy",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "50 修理包",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "RepairKit",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "50 鱼雷诱饵",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "TorpedoDecoy",
+      "type": "战斗增益",
+      "rarity": "common"
+    },
+    {
+      "name": "物理学家-2(533 mm)",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "UGSTPhysic2",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "UGST Futlyar (533 mm)"
+    },
+    {
+      "name": "JRNG-6近防系统",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "JRNG6",
+      "type": "防空设备",
+      "rarity": "epic",
+      "nameEn": "JRNG-6 CIWS"
+    },
+    {
+      "name": "派对大亨",
+      "probability": 0.0,
+      "limit": 0,
+      "id": "Title_PartyMagnateWB23",
+      "type": "头衔",
+      "rarity": "epic",
+      "nameEn": "Party Magnate"
+    }
+  ]
+}

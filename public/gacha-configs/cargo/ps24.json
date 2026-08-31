@@ -15,21 +15,13 @@
       },
       "items": [
         {
-          "name": "国家反舰导弹增程型",
+          "name": "国家反舰导弹-ER",
           "probability": 0.05,
           "limit": 1,
           "id": "MANSUPER",
           "type": "导弹",
           "rarity": "epic",
           "nameEn": "MANSUP-ER"
-        },
-        {
-          "name": "10 艺术硬币",
-          "probability": 2.5,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
         },
         {
           "name": "东风-12",
@@ -41,10 +33,19 @@
           "nameEn": "DF-12"
         },
         {
-          "name": "15 升级芯片",
-          "probability": 30.0,
+          "name": "M270 MLRS (270 mm)",
+          "probability": 1.0,
+          "limit": 2,
+          "id": "M270Launcher",
+          "type": "火箭炮",
+          "rarity": "legendary",
+          "nameEn": "M270 MLRS (270mm)"
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.5,
           "limit": 0,
-          "id": "Upgrades",
+          "id": "bigevent_currency_gacha_rm",
           "type": "资源",
           "rarity": "common"
         },
@@ -57,29 +58,20 @@
           "rarity": "common"
         },
         {
-          "name": "350 代币",
-          "probability": 32.7,
+          "name": "10 艺术硬币",
+          "probability": 2.5,
           "limit": 0,
-          "id": "Token",
+          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         },
         {
-          "name": "授权密钥",
-          "probability": 1.5,
+          "name": "活动通行证积分加成",
+          "probability": 5.0,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
+          "id": "Eventbooster",
+          "type": "战斗增益",
           "rarity": "common"
-        },
-        {
-          "name": "M270 MLRS (270 mm)",
-          "probability": 1.0,
-          "limit": 2,
-          "id": "M270Launcher",
-          "type": "火箭炮",
-          "rarity": "legendary",
-          "nameEn": "M270 MLRS (270mm)"
         },
         {
           "name": "20 无人机电池",
@@ -90,11 +82,19 @@
           "rarity": "common"
         },
         {
-          "name": "活动通行证积分加成",
-          "probability": 5.0,
+          "name": "15 升级芯片",
+          "probability": 30.0,
           "limit": 0,
-          "id": "Eventbooster",
-          "type": "战斗增益",
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "350 代币",
+          "probability": 32.7,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
           "rarity": "common"
         }
       ]
@@ -116,12 +116,13 @@
           "nameEn": "RF Project 22350M"
         },
         {
-          "name": "授权密钥",
-          "probability": 6.67,
+          "name": "K-76L/62 (76 mm)",
+          "probability": 0.2,
           "limit": 0,
-          "id": "bigevent_currency_gacha_rm",
-          "type": "资源",
-          "rarity": "common"
+          "id": "K76L62",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "K-76L/62 (76mm)"
         },
         {
           "name": "UUM-125\"海长矛\"",
@@ -133,29 +134,13 @@
           "nameEn": "UUM-125 Sea Lance"
         },
         {
-          "name": "5 艺术硬币",
-          "probability": 33.0,
-          "limit": 0,
-          "id": "Artstorm",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "20 黄金",
-          "probability": 30.0,
-          "limit": 0,
-          "id": "Hard",
-          "type": "资源",
-          "rarity": "common"
-        },
-        {
-          "name": "K-76L/62 (76 mm)",
-          "probability": 0.2,
-          "limit": 0,
-          "id": "K76L62",
-          "type": "主炮",
+          "name": "30式电磁炮(40 mm)",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "40mmJPRailgun",
+          "type": "自卫炮",
           "rarity": "epic",
-          "nameEn": "K-76L/62 (76mm)"
+          "nameEn": "Type-30 JEAG (40 mm)"
         },
         {
           "name": "日食",
@@ -167,6 +152,22 @@
           "nameEn": "Eclipse"
         },
         {
+          "name": "授权密钥",
+          "probability": 6.67,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
+          "name": "200 代币",
+          "probability": 10.0,
+          "limit": 135,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common"
+        },
+        {
           "name": "活动通行证积分加成",
           "probability": 15.52,
           "limit": 0,
@@ -175,19 +176,18 @@
           "rarity": "common"
         },
         {
-          "name": "30式电磁炮(40 mm)",
-          "probability": 0.3,
-          "limit": 2,
-          "id": "40mmJPRailgun",
-          "type": "自卫炮",
-          "rarity": "epic",
-          "nameEn": "Type-30 JEAG (40 mm)"
+          "name": "20 黄金",
+          "probability": 30.0,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common"
         },
         {
-          "name": "200 代币",
-          "probability": 10.0,
-          "limit": 135,
-          "id": "Token",
+          "name": "5 艺术硬币",
+          "probability": 33.0,
+          "limit": 0,
+          "id": "Artstorm",
           "type": "资源",
           "rarity": "common"
         }
