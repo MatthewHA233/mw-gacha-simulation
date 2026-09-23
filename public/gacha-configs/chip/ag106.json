@@ -12,79 +12,80 @@
       "probability": 0.08,
       "limit": 1,
       "id": "Midway",
+      "nameEn": "USS Midway (CV-41)",
       "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "USS Midway (CV-41)"
+      "rarity": "epic"
     },
     {
       "name": "[泛空间]鹦鹉螺",
       "probability": 0.095,
       "limit": 1,
       "id": "Nautilos",
+      "nameEn": "Pan Spatial Nautilos",
       "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "Pan Spatial Nautilos"
-    },
-    {
-      "name": "[中]宁波(956EM型)",
-      "probability": 0.14,
-      "limit": 1,
-      "id": "Type956EM",
-      "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "CN Type 956EM Ningbo"
+      "rarity": "epic"
     },
     {
       "name": "[美]圣安东尼奥(LPD-17)",
       "probability": 0.65,
       "limit": 1,
       "id": "SanAntonio",
+      "nameEn": "USS San Antonio (LPD-17)",
       "type": "战舰",
-      "rarity": "epic",
-      "nameEn": "USS San Antonio (LPD-17)"
-    },
-    {
-      "name": "K731\"白鲨\"",
-      "probability": 0.7,
-      "limit": 3,
-      "id": "K731WhiteShark",
-      "type": "鱼雷",
-      "rarity": "legendary",
-      "nameEn": "K731 White Shark"
-    },
-    {
-      "name": "FARA",
-      "probability": 0.2,
-      "limit": 2,
-      "id": "FARA",
-      "type": "直升机",
-      "rarity": "legendary",
-      "nameEn": "FARA"
-    },
-    {
-      "name": "UUM-44\"萨布罗克\"",
-      "probability": 0.28,
-      "limit": 2,
-      "id": "UUM44SUBROC",
-      "type": "导弹",
-      "rarity": "legendary",
-      "nameEn": "UUM-44 SUBROC"
-    },
-    {
-      "name": "阿波罗",
-      "probability": 1.6,
-      "limit": 1,
-      "id": "Camo_be103OfferLegendary",
-      "type": "涂装",
-      "rarity": "legendary",
-      "nameEn": "Apollo"
+      "rarity": "epic"
     },
     {
       "name": "70 升级芯片",
       "probability": 4.0,
       "limit": 0,
       "id": "Upgrades",
+      "nameEn": "70 Upgrade Chips",
       "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "[中]宁波(956EM型)",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Type956EM",
+      "nameEn": "CN Type 956EM Ningbo",
+      "type": "战舰",
+      "rarity": "epic"
+    },
+    {
+      "name": "10 升级芯片",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Upgrades",
+      "nameEn": "10 Upgrade Chips",
+      "type": "资源",
+      "rarity": "common"
+    },
+    {
+      "name": "FARA",
+      "probability": 0.2,
+      "limit": 2,
+      "id": "FARA",
+      "nameEn": "FARA",
+      "type": "直升机",
+      "rarity": "legendary"
+    },
+    {
+      "name": "阿波罗",
+      "probability": 1.6,
+      "limit": 1,
+      "id": "Camo_be103OfferLegendary",
+      "nameEn": "Apollo",
+      "type": "涂装",
+      "rarity": "legendary"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "nameEn": "6 Premium Repair Kits",
+      "type": "战斗增益",
       "rarity": "common"
     },
     {
@@ -92,38 +93,43 @@
       "probability": 7.45,
       "limit": 0,
       "id": "currency_universaltoken",
+      "nameEn": "10 Universal Tokens",
       "type": "资源",
       "rarity": "common"
     },
     {
-      "name": "10 升级芯片",
-      "probability": 33.0,
-      "limit": 0,
-      "id": "Upgrades",
-      "type": "资源",
-      "rarity": "common"
-    },
-    {
-      "name": "2 电子对抗",
-      "probability": 17.0,
-      "limit": 0,
-      "id": "ElectronicWarfare",
-      "type": "战斗增益",
-      "rarity": "common"
+      "name": "UUM-44\"萨布罗克\"",
+      "probability": 0.28,
+      "limit": 2,
+      "id": "UUM44SUBROC",
+      "nameEn": "UUM-44 SUBROC",
+      "type": "导弹",
+      "rarity": "legendary"
     },
     {
       "name": "4 螺旋密钥",
       "probability": 22.0,
       "limit": 0,
       "id": "currency_universaltoken",
+      "nameEn": "4 Universal Tokens",
       "type": "资源",
       "rarity": "common"
     },
     {
-      "name": "6 高级修理包",
-      "probability": 12.805,
+      "name": "K731\"白鲨\"",
+      "probability": 0.7,
+      "limit": 3,
+      "id": "K731WhiteShark",
+      "nameEn": "K731 White Shark",
+      "type": "鱼雷",
+      "rarity": "legendary"
+    },
+    {
+      "name": "2 电子对抗",
+      "probability": 17.0,
       "limit": 0,
-      "id": "PremiumRepairKit",
+      "id": "ElectronicWarfare",
+      "nameEn": "2 Electronic Warfare",
       "type": "战斗增益",
       "rarity": "common"
     }

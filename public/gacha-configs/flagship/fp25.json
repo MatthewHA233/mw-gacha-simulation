@@ -1,0 +1,384 @@
+{
+  "gacha_type": "旗舰宝箱类",
+  "id": "fp25",
+  "lootboxes": [
+    {
+      "items": [
+        {
+          "name": "阿斯特罗斯II MK6",
+          "probability": 0.524,
+          "limit": 1,
+          "id": "AstrosIIMK6",
+          "type": "火箭炮",
+          "rarity": "epic",
+          "nameEn": "Astros II MK6"
+        },
+        {
+          "name": "CVS401\"英仙座\"",
+          "probability": 0.524,
+          "limit": 1,
+          "id": "CVS401Perseus",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "CVS401 Perseus"
+        },
+        {
+          "name": "表情包鱼",
+          "probability": 0.524,
+          "limit": 3,
+          "id": "Flag_Meme",
+          "type": "旗帜",
+          "rarity": "epic",
+          "nameEn": "Meme Fish"
+        },
+        {
+          "name": "小鹿毛衣",
+          "probability": 1.571,
+          "limit": 2,
+          "id": "Camo_DeerSweater",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Deer Sweater"
+        },
+        {
+          "name": "MW冬运会",
+          "probability": 1.571,
+          "limit": 2,
+          "id": "Camo_MWWinterGames",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "MW Winter Games"
+        },
+        {
+          "name": "扎宾船长",
+          "probability": 6.283,
+          "limit": 1,
+          "id": "AvatarPortrait_MarinePepe",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Captain Zhabin"
+        },
+        {
+          "name": "6 旗舰钥匙",
+          "probability": 1.047,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/fp25_premium_lootbox_ticket.png",
+          "nameEn": "6 Flagship Keys"
+        },
+        {
+          "name": "3 旗舰钥匙",
+          "probability": 3.141,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/fp25_premium_lootbox_ticket.png",
+          "nameEn": "3 Flagship Keys"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 5.236,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "25 Gold"
+        },
+        {
+          "name": "2 旗舰钥匙",
+          "probability": 5.236,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/fp25_premium_lootbox_ticket.png",
+          "nameEn": "2 Flagship Keys"
+        },
+        {
+          "name": "10 普通钥匙",
+          "probability": 6.283,
+          "limit": 0,
+          "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/fp25_common_lootbox_ticket.png",
+          "nameEn": "10 Common Keys"
+        },
+        {
+          "name": "25 升级芯片",
+          "probability": 9.424,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "25 Upgrade Chips"
+        },
+        {
+          "name": "10 高级导弹诱饵",
+          "probability": 10.471,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Premium Missile Decoys"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 10.471,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Premium Repair Kits"
+        },
+        {
+          "name": "100 导弹诱饵",
+          "probability": 12.565,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "100 Missile Decoys"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.565,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "50 Repair Kits"
+        },
+        {
+          "name": "300000 美金",
+          "probability": 12.565,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "300000 Dollars"
+        }
+      ],
+      "metadata": {
+        "name": "宝箱"
+      },
+      "type": "container"
+    },
+    {
+      "items": [
+        {
+          "name": "[中]共青团员(1164E型)",
+          "probability": 0.09,
+          "limit": 1,
+          "id": "Project2164E",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN Project 1164E"
+        },
+        {
+          "name": "[西]SMART 8000",
+          "probability": 0.09,
+          "limit": 1,
+          "id": "SMART8000",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "SPS SMART 8000"
+        },
+        {
+          "name": "[中]十堰",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "ShiYan",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN ShiYan"
+        },
+        {
+          "name": "[泛空间]百慕大",
+          "probability": 0.11,
+          "limit": 1,
+          "id": "Bermuda",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "Pan Spatial Bermuda"
+        },
+        {
+          "name": "[泛空间]宙斯",
+          "probability": 0.11,
+          "limit": 1,
+          "id": "Zeus",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "Pan Spatial Zeus"
+        },
+        {
+          "name": "[法]SMX-25",
+          "probability": 1,
+          "limit": 1,
+          "id": "SMX25",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS SMX-25"
+        },
+        {
+          "name": "[法]SMX-31",
+          "probability": 1,
+          "limit": 1,
+          "id": "SMX31",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "FS SMX-31"
+        },
+        {
+          "name": "青蛙",
+          "probability": 3,
+          "limit": 2,
+          "id": "Camo_MemeFrogs",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Frogs"
+        },
+        {
+          "name": "10 普通钥匙",
+          "probability": 1,
+          "limit": 0,
+          "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/fp25_common_lootbox_ticket.png",
+          "nameEn": "10 Common Keys"
+        },
+        {
+          "name": "恶作剧",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Title_FP25LootboxActivity",
+          "type": "头衔",
+          "rarity": "epic",
+          "nameEn": "Prankster"
+        },
+        {
+          "name": "200 艺术硬币",
+          "probability": 3.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "200 Artstorm Coins"
+        },
+        {
+          "name": "400 黄金",
+          "probability": 4,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "400 Gold"
+        },
+        {
+          "name": "75 艺术硬币",
+          "probability": 6.7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "75 Artstorm Coins"
+        },
+        {
+          "name": "250 黄金",
+          "probability": 7,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "250 Gold"
+        },
+        {
+          "name": "5 高级鱼雷诱饵",
+          "probability": 7,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Premium Torpedo Decoys"
+        },
+        {
+          "name": "7 高级修理包",
+          "probability": 7.6,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "7 Premium Repair Kits"
+        },
+        {
+          "name": "15 电子对抗",
+          "probability": 9,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "15 Electronic Warfare"
+        },
+        {
+          "name": "30 引擎过载",
+          "probability": 9,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Engine Boost"
+        },
+        {
+          "name": "5 高级机载导弹诱饵",
+          "probability": 9,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Premium Aircraft Missile Decoys"
+        },
+        {
+          "name": "7 高级导弹诱饵",
+          "probability": 9,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "7 Premium Missile Decoys"
+        },
+        {
+          "name": "600000 美金",
+          "probability": 9,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "600000 Dollars"
+        },
+        {
+          "name": "7 高级弹药储备",
+          "probability": 10,
+          "limit": 0,
+          "id": "PremiumAmmunitionReserve",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "7 Premium Ammunition Reserve"
+        }
+      ],
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "type": "flagship"
+    }
+  ],
+  "metadata": {
+    "name": "恶作剧节",
+    "formattedDate": "2024年11月",
+    "nameEn": "Festival of Pranks",
+    "image": "https://mwstats.info/cdn-cgi/image/width=720%2Cformat=auto%2Cquality=85/images/event-key-art/activity_c_fp25_popup_background.jpg?v=237f6d39"
+  }
+}

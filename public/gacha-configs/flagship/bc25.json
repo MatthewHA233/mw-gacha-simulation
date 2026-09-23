@@ -1,0 +1,400 @@
+{
+  "gacha_type": "旗舰宝箱类",
+  "id": "bc25",
+  "lootboxes": [
+    {
+      "items": [
+        {
+          "name": "优雅牡丹",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "Camo_ElegantPeonies",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Elegant Peonies"
+        },
+        {
+          "name": "Erlik-2050 (127 mm)",
+          "probability": 0.5,
+          "limit": 1,
+          "id": "UFSA2050",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Erlik-2050 (127 mm)"
+        },
+        {
+          "name": "摄心女爵",
+          "probability": 3,
+          "limit": 1,
+          "id": "AvatarPortrait_DameofHearts",
+          "type": "头像",
+          "rarity": "legendary",
+          "nameEn": "Dame of Hearts"
+        },
+        {
+          "name": "舞蹈之乐",
+          "probability": 4,
+          "limit": 1,
+          "id": "AvatarPortrait_CarnivalDancer",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Delight of Dance"
+        },
+        {
+          "name": "6 旗舰钥匙",
+          "probability": 1,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/bc25_premium_lootbox_ticket.png",
+          "nameEn": "6 Flagship Keys"
+        },
+        {
+          "name": "狂欢面具",
+          "probability": 3,
+          "limit": 0,
+          "id": "Flag_CarnivalMask",
+          "type": "旗帜",
+          "rarity": "epic",
+          "nameEn": "Carnival's Face"
+        },
+        {
+          "name": "3 旗舰钥匙",
+          "probability": 3,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/bc25_premium_lootbox_ticket.png",
+          "nameEn": "3 Flagship Keys"
+        },
+        {
+          "name": "2 旗舰钥匙",
+          "probability": 5,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "image": "https://assets.lingflow.cn/mw-gacha-simulation/assets/contentseparated_assets_assets/content/textures/sprites/lootboxtickets/bc25_premium_lootbox_ticket.png",
+          "nameEn": "2 Flagship Keys"
+        },
+        {
+          "name": "1 天高级账户",
+          "probability": 5,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "1-day Premium Account"
+        },
+        {
+          "name": "75 艺术硬币",
+          "probability": 7,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "75 Artstorm Coins"
+        },
+        {
+          "name": "200 黄金",
+          "probability": 8,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "200 Gold"
+        },
+        {
+          "name": "100 黄金",
+          "probability": 10,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "100 Gold"
+        },
+        {
+          "name": "30 高级机载导弹诱饵",
+          "probability": 10,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Premium Aircraft Missile Decoys"
+        },
+        {
+          "name": "30 高级弹药储备",
+          "probability": 10,
+          "limit": 0,
+          "id": "PremiumAmmunitionReserve",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Premium Ammunition Reserve"
+        },
+        {
+          "name": "30 高级导弹诱饵",
+          "probability": 10,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Premium Missile Decoys"
+        },
+        {
+          "name": "30 高级修理包",
+          "probability": 10,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Premium Repair Kits"
+        },
+        {
+          "name": "30 高级鱼雷诱饵",
+          "probability": 10,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Premium Torpedo Decoys"
+        }
+      ],
+      "metadata": {
+        "name": "宝箱"
+      },
+      "type": "container"
+    },
+    {
+      "items": [
+        {
+          "name": "[日]摩耶(DDG-179)",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "DDG179",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "JS Maya (DDG-179)"
+        },
+        {
+          "name": "[土]TF-2000",
+          "probability": 0.1,
+          "limit": 1,
+          "id": "TF2000",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "TF-2000"
+        },
+        {
+          "name": "阿拉伯黄金",
+          "probability": 1,
+          "limit": 2,
+          "id": "CamoClassicArabianGold",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Arabian Gold"
+        },
+        {
+          "name": "狂战士",
+          "probability": 1,
+          "limit": 2,
+          "id": "Camo_Berserker",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Berserker"
+        },
+        {
+          "name": "四叶草",
+          "probability": 1,
+          "limit": 2,
+          "id": "Camo_Clover",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Clover"
+        },
+        {
+          "name": "巨猿",
+          "probability": 1,
+          "limit": 2,
+          "id": "Camo_Gorilla",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Gorilla"
+        },
+        {
+          "name": "蜥蜴",
+          "probability": 1,
+          "limit": 2,
+          "id": "Camo_Lizard",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Lizard"
+        },
+        {
+          "name": "灯火之城",
+          "probability": 1,
+          "limit": 2,
+          "id": "Camo_NeoNoir",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "City of Lights"
+        },
+        {
+          "name": "新起点",
+          "probability": 1,
+          "limit": 2,
+          "id": "Camo_NewBeginnings",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "New Beginnings"
+        },
+        {
+          "name": "狂欢旋风",
+          "probability": 1.8,
+          "limit": 2,
+          "id": "Camo_BrazilianCarnival",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Carnival Whirlwind"
+        },
+        {
+          "name": "金丝带",
+          "probability": 2.24,
+          "limit": 2,
+          "id": "Camo_GoldenLigature",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Golden Ligature"
+        },
+        {
+          "name": "勇士数码迷彩",
+          "probability": 2.24,
+          "limit": 2,
+          "id": "Camo_MightofHonor",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Pixels of Valor"
+        },
+        {
+          "name": "[泛空间]龙翼",
+          "probability": 0.5,
+          "limit": 0,
+          "id": "DragonWing",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Pan Spatial Dragon Wing"
+        },
+        {
+          "name": "蝎式直升机",
+          "probability": 0.5,
+          "limit": 0,
+          "id": "Scorpion",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Scorpion"
+        },
+        {
+          "name": "250 艺术硬币",
+          "probability": 4.509,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "250 Artstorm Coins"
+        },
+        {
+          "name": "3 天高级账户",
+          "probability": 5.24,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "3-day Premium Account"
+        },
+        {
+          "name": "100 艺术硬币",
+          "probability": 6.24,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "100 Artstorm Coins"
+        },
+        {
+          "name": "400 黄金",
+          "probability": 6.24,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "400 Gold"
+        },
+        {
+          "name": "20 升级芯片",
+          "probability": 8,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "20 Upgrade Chips"
+        },
+        {
+          "name": "2 天高级账户",
+          "probability": 8.14,
+          "limit": 0,
+          "id": "v1_premium_1d",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "2-day Premium Account"
+        },
+        {
+          "name": "30 引擎过载",
+          "probability": 9.62,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "30 Engine Boost"
+        },
+        {
+          "name": "250 黄金",
+          "probability": 10.24,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "250 Gold"
+        },
+        {
+          "name": "10 升级芯片",
+          "probability": 12.48,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "10 Upgrade Chips"
+        },
+        {
+          "name": "150 黄金",
+          "probability": 14.811,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "150 Gold"
+        }
+      ],
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "type": "flagship"
+    }
+  ],
+  "metadata": {
+    "name": "色彩迸发",
+    "formattedDate": "2024年11月",
+    "nameEn": "Burst of Colors",
+    "image": "https://mwstats.info/cdn-cgi/image/width=720%2Cformat=auto%2Cquality=85/images/event-key-art/lootbox_activity_bc25_popup_background.jpg?v=d1b05cec"
+  }
+}

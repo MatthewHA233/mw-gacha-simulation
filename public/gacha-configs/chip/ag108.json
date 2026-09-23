@@ -1,0 +1,137 @@
+{
+  "id": "ag108",
+  "gacha_type": "筹码类",
+  "metadata": {
+    "name": "暗影交易",
+    "formattedDate": "2026年9月",
+    "nameEn": "Deal with the Shadow"
+  },
+  "items": [
+    {
+      "name": "[德]提尔皮茨",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "Tirpitz",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "FGS Tirpitz"
+    },
+    {
+      "name": "[美]弗莱彻(DD-992)",
+      "probability": 0.095,
+      "limit": 1,
+      "id": "Fletcher",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Fletcher (DD-992)"
+    },
+    {
+      "name": "[韩]幽灵指挥官",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "GhostCommander",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "ROKS Ghost Commander"
+    },
+    {
+      "name": "神鹰",
+      "probability": 0.2,
+      "limit": 3,
+      "id": "DivineEagle",
+      "type": "战斗攻击机",
+      "rarity": "legendary",
+      "nameEn": "Divine Eagle"
+    },
+    {
+      "name": "MAR-290 (290 mm)",
+      "probability": 0.28,
+      "limit": 3,
+      "id": "MAR290",
+      "type": "火箭炮",
+      "rarity": "legendary",
+      "nameEn": "MAR-290 (290 mm)"
+    },
+    {
+      "name": "[法]无敌(SNLE-3G)",
+      "probability": 0.65,
+      "limit": 1,
+      "id": "SNLE",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS SNLE 3G"
+    },
+    {
+      "name": "Mark-45 \"阿斯托尔\" (483 mm)",
+      "probability": 0.7,
+      "limit": 2,
+      "id": "Mark45Astor",
+      "type": "鱼雷",
+      "rarity": "legendary",
+      "nameEn": "Mark-45 ASTOR (483 mm)"
+    },
+    {
+      "name": "权力代价",
+      "probability": 1.6,
+      "limit": 1,
+      "id": "Camo_be105OfferLegendary",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Toll of Power"
+    },
+    {
+      "name": "70 升级芯片",
+      "probability": 4.0,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "70 Upgrade Chips"
+    },
+    {
+      "name": "10 螺旋密钥",
+      "probability": 7.45,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "10 Universal Tokens"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common",
+      "nameEn": "6 Premium Repair Kits"
+    },
+    {
+      "name": "2 电子对抗",
+      "probability": 17.0,
+      "limit": 0,
+      "id": "ElectronicWarfare",
+      "type": "战斗增益",
+      "rarity": "common",
+      "nameEn": "2 Electronic Warfare"
+    },
+    {
+      "name": "4 螺旋密钥",
+      "probability": 22.0,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "4 Universal Tokens"
+    },
+    {
+      "name": "10 升级芯片",
+      "probability": 33.0,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "10 Upgrade Chips"
+    }
+  ]
+}

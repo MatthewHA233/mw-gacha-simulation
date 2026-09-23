@@ -1,382 +1,432 @@
 {
-  "id": "la101",
   "gacha_type": "旗舰宝箱类",
+  "id": "la101",
+  "lootboxes": [
+    {
+      "items": [
+        {
+          "name": "[韩]联合火力攻击舰(JSS)",
+          "probability": 0.15,
+          "limit": 1,
+          "id": "JSS",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "ROKS JSS"
+        },
+        {
+          "name": "无畏X",
+          "probability": 0.4,
+          "limit": 2,
+          "id": "DefiantX",
+          "type": "直升机",
+          "rarity": "epic",
+          "nameEn": "Defiant X"
+        },
+        {
+          "name": "S-10\"石榴石\"",
+          "probability": 0.5,
+          "limit": 3,
+          "id": "S10Granat",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "S-10 Granat"
+        },
+        {
+          "name": "狂欢节",
+          "probability": 1.2,
+          "limit": 1,
+          "id": "Camo_la101",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Carnival"
+        },
+        {
+          "name": "美洲虎舞者",
+          "probability": 1.4,
+          "limit": 1,
+          "id": "AvatarPortrait_la101Male",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Jaguar Dancer"
+        },
+        {
+          "name": "狂欢节女王",
+          "probability": 1.4,
+          "limit": 1,
+          "id": "AvatarPortrait_la101Female",
+          "type": "头像",
+          "rarity": "epic",
+          "nameEn": "Queen of the Carnival"
+        },
+        {
+          "name": "凤凰",
+          "probability": 2,
+          "limit": 1,
+          "id": "decal_events101rare1",
+          "type": "贴花",
+          "rarity": "legendary",
+          "nameEn": ""
+        },
+        {
+          "name": "纸灯笼",
+          "probability": 6,
+          "limit": 1,
+          "id": "decal_events101rare3",
+          "type": "贴花",
+          "rarity": "rare",
+          "nameEn": ""
+        },
+        {
+          "name": "6 旗舰钥匙",
+          "probability": 0.75,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "6 Flagship Keys"
+        },
+        {
+          "name": "3 旗舰钥匙",
+          "probability": 1.5,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "3 Flagship Keys"
+        },
+        {
+          "name": "2 旗舰钥匙",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "currency_premium_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "2 Flagship Keys"
+        },
+        {
+          "name": "50 黄金",
+          "probability": 3,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "50 Gold"
+        },
+        {
+          "name": "10 钥匙",
+          "probability": 5,
+          "limit": 0,
+          "id": "currency_common_lootboxkey",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "10 Common Keys"
+        },
+        {
+          "name": "300 000 美金",
+          "probability": 7,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "300000 Dollars"
+        },
+        {
+          "name": "25 升级芯片",
+          "probability": 9,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "25 Upgrade Chips"
+        },
+        {
+          "name": "25 黄金",
+          "probability": 12,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "25 Gold"
+        },
+        {
+          "name": "15 高级导弹诱饵",
+          "probability": 9.7,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "15 Premium Missile Decoys"
+        },
+        {
+          "name": "100 导弹诱饵",
+          "probability": 12,
+          "limit": 0,
+          "id": "MissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "100 Missile Decoys"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 12,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Premium Repair Kits"
+        },
+        {
+          "name": "50 修理包",
+          "probability": 12.5,
+          "limit": 0,
+          "id": "RepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "50 Repair Kits"
+        }
+      ],
+      "metadata": {
+        "name": "宝箱"
+      },
+      "type": "container"
+    },
+    {
+      "items": [
+        {
+          "name": "[日]伊吹(ASEV-1001)",
+          "probability": 0.12,
+          "limit": 1,
+          "id": "Ibuki",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "JS Ibuki (ASEV-1001)"
+        },
+        {
+          "name": "[英]圣骑士(D200)",
+          "probability": 0.145,
+          "limit": 1,
+          "id": "Paladin",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "HMS Paladin (D200)"
+        },
+        {
+          "name": "[中]十堰",
+          "probability": 0.165,
+          "limit": 1,
+          "id": "ShiYan",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN ShiYan"
+        },
+        {
+          "name": "[中]麒麟(DDG-203)",
+          "probability": 1.95,
+          "limit": 1,
+          "id": "DDG203",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "CN DDG-203 Kylin"
+        },
+        {
+          "name": "[俄]海燕(905工程)",
+          "probability": 2.2,
+          "limit": 1,
+          "id": "Project905",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": "RF Burevestnik (Project 905)"
+        },
+        {
+          "name": "RG-32 Mk1 (150 mm)",
+          "probability": 0.001,
+          "limit": 1,
+          "id": "RG32",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "RG-32 Mk1 (150mm)"
+        },
+        {
+          "name": "[泛空间]打击时刻",
+          "probability": 0.069,
+          "limit": 1,
+          "id": "Strikeswitch",
+          "type": "攻击机",
+          "rarity": "legendary",
+          "nameEn": "Pan Spatial Strikeswitch"
+        },
+        {
+          "name": "AFGS",
+          "probability": 0.35,
+          "limit": 2,
+          "id": "AFGS",
+          "type": "自卫炮",
+          "rarity": "epic",
+          "nameEn": "AFGS"
+        },
+        {
+          "name": "等离子炮(203 mm)",
+          "probability": 0.55,
+          "limit": 2,
+          "id": "Shogun",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "Den Sho gun (203 mm)"
+        },
+        {
+          "name": "灰鲭鲨",
+          "probability": 0.85,
+          "limit": 2,
+          "id": "Mako",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": "Mako"
+        },
+        {
+          "name": "金色代码",
+          "probability": 1.4,
+          "limit": 1,
+          "id": "Camo_GoldenMatrix",
+          "type": "涂装",
+          "rarity": "legendary",
+          "nameEn": "Golden Code"
+        },
+        {
+          "name": "狂欢节",
+          "probability": 2.5,
+          "limit": 2,
+          "id": "Camo_la101",
+          "type": "涂装",
+          "rarity": "epic",
+          "nameEn": "Carnival"
+        },
+        {
+          "name": "130 艺术硬币",
+          "probability": 2.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "130 Artstorm Coins"
+        },
+        {
+          "name": "400 黄金",
+          "probability": 4,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "400 Gold"
+        },
+        {
+          "name": "75 艺术硬币",
+          "probability": 4.5,
+          "limit": 0,
+          "id": "Artstorm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "75 Artstorm Coins"
+        },
+        {
+          "name": "40 升级芯片",
+          "probability": 7.5,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "40 Upgrade Chips"
+        },
+        {
+          "name": "400 000 美金",
+          "probability": 8,
+          "limit": 0,
+          "id": "Soft",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "400000 Dollars"
+        },
+        {
+          "name": "10 机载电子对抗",
+          "probability": 7,
+          "limit": 0,
+          "id": "AirElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Air Electronic Warfare"
+        },
+        {
+          "name": "15 电子对抗",
+          "probability": 7,
+          "limit": 0,
+          "id": "ElectronicWarfare",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "15 Electronic Warfare"
+        },
+        {
+          "name": "10 高级修理包",
+          "probability": 7.8,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Premium Repair Kits"
+        },
+        {
+          "name": "15 高级导弹诱饵",
+          "probability": 8,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Premium Missile Decoys"
+        },
+        {
+          "name": "10 高级机载导弹诱饵",
+          "probability": 8,
+          "limit": 0,
+          "id": "PremiumAircraftMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Premium Aircraft Missile Decoys"
+        },
+        {
+          "name": "15 引擎过载",
+          "probability": 8,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "15 Engine Boost"
+        },
+        {
+          "name": "10 高级鱼雷诱饵",
+          "probability": 8.5,
+          "limit": 0,
+          "id": "PremiumTorpedoDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Premium Torpedo Decoys"
+        },
+        {
+          "name": "10 烟幕",
+          "probability": 8.9,
+          "limit": 0,
+          "id": "TankSmokeBombs",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "10 Smoke Bombs"
+        }
+      ],
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "type": "flagship"
+    }
+  ],
   "metadata": {
     "name": "嘉年华狂潮",
     "formattedDate": "2026年2月",
     "nameEn": "Fiesta Tide"
-  },
-  "lootboxes": [
-    {
-      "type": "container",
-      "items": [
-        {
-          "id": "JSS",
-          "limit": 1,
-          "name": "[韩]联合火力攻击舰(JSS)",
-          "probability": 0.15,
-          "rarity": "epic",
-          "type": "战舰"
-        },
-        {
-          "id": "DefiantX",
-          "limit": 2,
-          "name": "无畏X",
-          "probability": 0.4,
-          "rarity": "epic",
-          "type": "直升机"
-        },
-        {
-          "id": "S10Granat",
-          "limit": 3,
-          "name": "S-10\"石榴石\"",
-          "probability": 0.5,
-          "rarity": "legendary",
-          "type": "导弹"
-        },
-        {
-          "id": "Camo_la101",
-          "limit": 1,
-          "name": "狂欢节",
-          "probability": 1.2,
-          "rarity": "epic",
-          "type": "涂装"
-        },
-        {
-          "id": "AvatarPortrait_la101Male",
-          "limit": 1,
-          "name": "美洲虎舞者",
-          "probability": 1.4,
-          "rarity": "epic",
-          "type": "头像"
-        },
-        {
-          "id": "AvatarPortrait_la101Female",
-          "limit": 1,
-          "name": "狂欢节女王",
-          "probability": 1.4,
-          "rarity": "epic",
-          "type": "头像"
-        },
-        {
-          "id": "decal_events101rare1",
-          "limit": 1,
-          "name": "凤凰",
-          "probability": 2.0,
-          "rarity": "legendary",
-          "type": "贴花"
-        },
-        {
-          "id": "decal_events101rare3",
-          "limit": 1,
-          "name": "纸灯笼",
-          "probability": 6.0,
-          "rarity": "rare",
-          "type": "贴花"
-        },
-        {
-          "id": "currency_premium_lootboxkey",
-          "limit": 0,
-          "name": "6 旗舰钥匙",
-          "probability": 0.75,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "currency_premium_lootboxkey",
-          "limit": 0,
-          "name": "3 旗舰钥匙",
-          "probability": 1.5,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "currency_premium_lootboxkey",
-          "limit": 0,
-          "name": "2 旗舰钥匙",
-          "probability": 2.5,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Hard",
-          "limit": 0,
-          "name": "50 黄金",
-          "probability": 3.0,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "currency_common_lootboxkey",
-          "limit": 0,
-          "name": "10 钥匙",
-          "probability": 5.0,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Soft",
-          "limit": 0,
-          "name": "300 000 美金",
-          "probability": 7.0,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Upgrades",
-          "limit": 0,
-          "name": "25 升级芯片",
-          "probability": 9.0,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Hard",
-          "limit": 0,
-          "name": "25 黄金",
-          "probability": 12.0,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "PremiumMissileDecoy",
-          "limit": 0,
-          "name": "15 高级导弹诱饵",
-          "probability": 9.7,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "MissileDecoy",
-          "limit": 0,
-          "name": "100 导弹诱饵",
-          "probability": 12.0,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "PremiumRepairKit",
-          "limit": 0,
-          "name": "5 高级修理包",
-          "probability": 12.0,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "RepairKit",
-          "limit": 0,
-          "name": "50 修理包",
-          "probability": 12.5,
-          "rarity": "common",
-          "type": "战斗增益"
-        }
-      ]
-    },
-    {
-      "type": "flagship",
-      "items": [
-        {
-          "id": "Ibuki",
-          "limit": 1,
-          "name": "[日]伊吹(ASEV-1001)",
-          "probability": 0.12,
-          "rarity": "legendary",
-          "type": "战舰"
-        },
-        {
-          "id": "Paladin",
-          "limit": 1,
-          "name": "[英]圣骑士(D200)",
-          "probability": 0.145,
-          "rarity": "legendary",
-          "type": "战舰"
-        },
-        {
-          "id": "ShiYan",
-          "limit": 1,
-          "name": "[中]十堰",
-          "nameEn": "CN ShiYan",
-          "probability": 0.165,
-          "rarity": "legendary",
-          "type": "战舰"
-        },
-        {
-          "id": "DDG203",
-          "limit": 1,
-          "name": "[中]麒麟(DDG-203)",
-          "probability": 1.95,
-          "rarity": "epic",
-          "type": "战舰"
-        },
-        {
-          "id": "Project905",
-          "limit": 1,
-          "name": "[俄]海燕(905工程)",
-          "probability": 2.2,
-          "rarity": "epic",
-          "type": "战舰"
-        },
-        {
-          "id": "RG32",
-          "limit": 1,
-          "name": "RG-32 Mk1 (150 mm)",
-          "probability": 0.001,
-          "rarity": "legendary",
-          "type": "主炮"
-        },
-        {
-          "id": "Strikeswitch",
-          "limit": 1,
-          "name": "[泛空间]打击时刻",
-          "probability": 0.069,
-          "rarity": "legendary",
-          "type": "攻击机"
-        },
-        {
-          "id": "AFGS",
-          "limit": 2,
-          "name": "AFGS",
-          "probability": 0.35,
-          "rarity": "epic",
-          "type": "自卫炮"
-        },
-        {
-          "id": "Shogun",
-          "limit": 2,
-          "name": "等离子炮(203 mm)",
-          "probability": 0.55,
-          "rarity": "epic",
-          "type": "主炮"
-        },
-        {
-          "id": "Mako",
-          "limit": 2,
-          "name": "灰鲭鲨",
-          "probability": 0.85,
-          "rarity": "epic",
-          "type": "导弹"
-        },
-        {
-          "id": "Camo_GoldenMatrix",
-          "limit": 1,
-          "name": "金色代码",
-          "probability": 1.4,
-          "rarity": "legendary",
-          "type": "涂装"
-        },
-        {
-          "id": "Camo_la101",
-          "limit": 2,
-          "name": "狂欢节",
-          "probability": 2.5,
-          "rarity": "epic",
-          "type": "涂装"
-        },
-        {
-          "id": "Artstorm",
-          "limit": 0,
-          "name": "130 艺术硬币",
-          "probability": 3.5,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Hard",
-          "limit": 0,
-          "name": "400 黄金",
-          "probability": 4,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Artstorm",
-          "limit": 0,
-          "name": "75 艺术硬币",
-          "probability": 4.5,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Upgrades",
-          "limit": 0,
-          "name": "40 升级芯片",
-          "probability": 7.5,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "Soft",
-          "limit": 0,
-          "name": "400 000 美金",
-          "probability": 8,
-          "rarity": "common",
-          "type": "资源"
-        },
-        {
-          "id": "AirElectronicWarfare",
-          "limit": 0,
-          "name": "10 机载电子对抗",
-          "probability": 7,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "ElectronicWarfare",
-          "limit": 0,
-          "name": "15 电子对抗",
-          "probability": 7,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "PremiumRepairKit",
-          "limit": 0,
-          "name": "10 高级修理包",
-          "probability": 7.8,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "PremiumMissileDecoy",
-          "limit": 0,
-          "name": "15 高级导弹诱饵",
-          "probability": 8,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "PremiumAircraftMissileDecoy",
-          "limit": 0,
-          "name": "10 高级机载导弹诱饵",
-          "probability": 8,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "EngineBoost",
-          "limit": 0,
-          "name": "15 引擎过载",
-          "probability": 7,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "PremiumTorpedoDecoy",
-          "limit": 0,
-          "name": "10 高级鱼雷诱饵",
-          "probability": 8.5,
-          "rarity": "common",
-          "type": "战斗增益"
-        },
-        {
-          "id": "TankSmokeBombs",
-          "limit": 0,
-          "name": "10 烟幕",
-          "probability": 8.9,
-          "rarity": "common",
-          "type": "战斗增益"
-        }
-      ]
-    }
-  ]
+  }
 }

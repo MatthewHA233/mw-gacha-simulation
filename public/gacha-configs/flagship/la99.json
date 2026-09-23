@@ -1,17 +1,8 @@
 {
-  "id": "la99",
   "gacha_type": "旗舰宝箱类",
-  "metadata": {
-    "name": "雪域之舟",
-    "formattedDate": "2025年12月",
-    "nameEn": "Snow Crew"
-  },
+  "id": "la99",
   "lootboxes": [
     {
-      "type": "container",
-      "metadata": {
-        "name": "宝箱"
-      },
       "items": [
         {
           "name": "[美]杰克·H·卢卡斯(DDG-125)",
@@ -46,7 +37,8 @@
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "6 Flagship Keys"
         },
         {
           "name": "冰雪堡垒",
@@ -63,7 +55,8 @@
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "3 Flagship Keys"
         },
         {
           "name": "2 旗舰钥匙",
@@ -71,7 +64,17 @@
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "2 Flagship Keys"
+        },
+        {
+          "name": "人人有份！",
+          "probability": 3,
+          "limit": 1,
+          "id": "decal_events99epic3",
+          "type": "贴花",
+          "rarity": "epic",
+          "nameEn": ""
         },
         {
           "name": "50 黄金",
@@ -79,31 +82,44 @@
           "limit": 0,
           "id": "Hard",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "50 Gold"
         },
         {
           "name": "300 000 美金",
-          "probability": 6.0,
+          "probability": 6,
           "limit": 0,
           "id": "Soft",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "300000 Dollars"
         },
         {
           "name": "10 钥匙",
-          "probability": 6.0,
+          "probability": 6,
           "limit": 0,
           "id": "currency_common_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Common Keys"
+        },
+        {
+          "name": "里面是啥？",
+          "probability": 7,
+          "limit": 1,
+          "id": "decal_events99rare3",
+          "type": "贴花",
+          "rarity": "rare",
+          "nameEn": ""
         },
         {
           "name": "25 升级芯片",
-          "probability": 9.0,
+          "probability": 9,
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "25 Upgrade Chips"
         },
         {
           "name": "15 高级导弹诱饵",
@@ -111,31 +127,35 @@
           "limit": 0,
           "id": "PremiumMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "15 Premium Missile Decoys"
         },
         {
           "name": "25 黄金",
-          "probability": 12.0,
+          "probability": 12,
           "limit": 0,
           "id": "Hard",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "25 Gold"
         },
         {
           "name": "100 导弹诱饵",
-          "probability": 12.0,
+          "probability": 12,
           "limit": 0,
           "id": "MissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "100 Missile Decoys"
         },
         {
           "name": "5 高级修理包",
-          "probability": 12.0,
+          "probability": 12,
           "limit": 0,
           "id": "PremiumRepairKit",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "5 Premium Repair Kits"
         },
         {
           "name": "50 修理包",
@@ -143,19 +163,20 @@
           "limit": 0,
           "id": "RepairKit",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "50 Repair Kits"
         }
-      ]
+      ],
+      "metadata": {
+        "name": "宝箱"
+      },
+      "type": "container"
     },
     {
-      "type": "flagship",
-      "metadata": {
-        "name": "旗舰宝箱"
-      },
       "items": [
         {
           "name": "[美]武库舰",
-          "probability": 0.003,
+          "probability": 0.085,
           "limit": 1,
           "id": "Monitor",
           "type": "战舰",
@@ -173,7 +194,7 @@
         },
         {
           "name": "[日]大鲸(SS-513)",
-          "probability": 0.1,
+          "probability": 0.095,
           "limit": 1,
           "id": "Taigei",
           "type": "战舰",
@@ -182,15 +203,16 @@
         },
         {
           "name": "[美]蒙大拿(BB-67)",
-          "probability": 0.19,
+          "probability": 0.185,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
+          "id": "Montana",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "USS Montana (BB-67)"
         },
         {
           "name": "[日]宙斯盾武藏",
-          "probability": 0.19,
+          "probability": 0.185,
           "limit": 1,
           "id": "MusashiAegis",
           "type": "战舰",
@@ -210,17 +232,19 @@
           "name": "[泛空间]百慕大",
           "probability": 0.3,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
+          "id": "Bermuda",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "Pan Spatial Bermuda"
         },
         {
           "name": "[中]十堰",
           "probability": 0.45,
           "limit": 1,
-          "id": "",
-          "type": "舰船",
-          "rarity": "common"
+          "id": "ShiYan",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "CN ShiYan"
         },
         {
           "name": "[韩]正祖大王",
@@ -233,7 +257,7 @@
         },
         {
           "name": "[俄]巴辛斯蒂海军上将",
-          "probability": 2.0,
+          "probability": 2,
           "limit": 1,
           "id": "AdmiralBasisty",
           "type": "战舰",
@@ -255,7 +279,8 @@
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "130 Artstorm Coins"
         },
         {
           "name": "冰雪堡垒",
@@ -268,11 +293,12 @@
         },
         {
           "name": "400 黄金",
-          "probability": 4.0,
+          "probability": 4,
           "limit": 0,
           "id": "Hard",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "400 Gold"
         },
         {
           "name": "75 艺术硬币",
@@ -280,7 +306,8 @@
           "limit": 0,
           "id": "Artstorm",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "75 Artstorm Coins"
         },
         {
           "name": "40 升级芯片",
@@ -288,23 +315,26 @@
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "40 Upgrade Chips"
         },
         {
           "name": "10 机载电子对抗",
-          "probability": 7.0,
+          "probability": 7,
           "limit": 0,
           "id": "AirElectronicWarfare",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Air Electronic Warfare"
         },
         {
           "name": "15 电子对抗",
-          "probability": 7.0,
+          "probability": 7,
           "limit": 0,
           "id": "ElectronicWarfare",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "15 Electronic Warfare"
         },
         {
           "name": "400 000 美金",
@@ -312,7 +342,8 @@
           "limit": 0,
           "id": "Soft",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "400000 Dollars"
         },
         {
           "name": "10 高级修理包",
@@ -320,31 +351,35 @@
           "limit": 0,
           "id": "PremiumRepairKit",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Premium Repair Kits"
         },
         {
           "name": "10 高级导弹诱饵",
-          "probability": 8.0,
+          "probability": 8,
           "limit": 0,
           "id": "PremiumMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Premium Missile Decoys"
         },
         {
           "name": "10 高级机载导弹诱饵",
-          "probability": 8.0,
+          "probability": 8,
           "limit": 0,
           "id": "PremiumAircraftMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Premium Aircraft Missile Decoys"
         },
         {
           "name": "15 引擎过载",
-          "probability": 8.0,
+          "probability": 8,
           "limit": 0,
           "id": "EngineBoost",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "15 Engine Boost"
         },
         {
           "name": "10 高级鱼雷诱饵",
@@ -352,7 +387,8 @@
           "limit": 0,
           "id": "PremiumTorpedoDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Premium Torpedo Decoys"
         },
         {
           "name": "10 烟幕",
@@ -360,9 +396,19 @@
           "limit": 0,
           "id": "TankSmokeBombs",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Smoke Bombs"
         }
-      ]
+      ],
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "type": "flagship"
     }
-  ]
+  ],
+  "metadata": {
+    "name": "雪域之舟",
+    "formattedDate": "2025年12月",
+    "nameEn": "Snow Crew"
+  }
 }

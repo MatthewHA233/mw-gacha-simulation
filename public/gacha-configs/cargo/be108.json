@@ -1,0 +1,209 @@
+{
+  "cargos": [
+    {
+      "items": [
+        {
+          "name": "[日]宙斯盾白根",
+          "probability": 0.05,
+          "limit": 1,
+          "id": "ShiraneAegis",
+          "type": "战舰",
+          "rarity": "epic",
+          "nameEn": ""
+        },
+        {
+          "name": "[美]战巡2000",
+          "probability": 0.15,
+          "limit": 1,
+          "id": "Battlecruiser2000",
+          "type": "战舰",
+          "rarity": "legendary",
+          "nameEn": "USS Battlecruiser 2000"
+        },
+        {
+          "name": "[泛空间]M-001",
+          "probability": 0.3,
+          "limit": 2,
+          "id": "PSM001",
+          "type": "导弹",
+          "rarity": "epic",
+          "nameEn": ""
+        },
+        {
+          "name": "国王轨道炮(180 mm)",
+          "probability": 0.35,
+          "limit": 2,
+          "id": "MRPGKonigEMRG",
+          "type": "主炮",
+          "rarity": "legendary",
+          "nameEn": "EMRG Konig (180 mm)"
+        },
+        {
+          "name": "GWS-25\"海狼\"",
+          "probability": 0.85,
+          "limit": 3,
+          "id": "GWS25SeaWolf",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "GWS-25 Sea Wolf"
+        },
+        {
+          "name": "15 无人机电池",
+          "probability": 13,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "15 Drone Batteries"
+        },
+        {
+          "name": "5 引擎过载",
+          "probability": 16.7,
+          "limit": 0,
+          "id": "EngineBoost",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Engine Boost"
+        },
+        {
+          "name": "15 升级芯片",
+          "probability": 20,
+          "limit": 0,
+          "id": "Upgrades",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "15 Upgrade Chips"
+        },
+        {
+          "name": "250 代币",
+          "probability": 22,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "250 Tokens"
+        },
+        {
+          "name": "10 无人机电池",
+          "probability": 26.6,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "10 Drone Batteries"
+        }
+      ],
+      "metadata": {
+        "guaranteeThreshold": 1100,
+        "name": "机密货物"
+      },
+      "type": "rm"
+    },
+    {
+      "items": [
+        {
+          "name": "[欧瑞康]HEL",
+          "probability": 0.25,
+          "limit": 1,
+          "id": "OerlikonHEL",
+          "type": "防空设备",
+          "rarity": "epic",
+          "nameEn": "Oerlikon HEL"
+        },
+        {
+          "name": "S-10\"石榴石\"",
+          "probability": 0.45,
+          "limit": 2,
+          "id": "S10Granat",
+          "type": "导弹",
+          "rarity": "legendary",
+          "nameEn": "S-10 Granat"
+        },
+        {
+          "name": "JRVG-1 (76 mm)",
+          "probability": 0.7,
+          "limit": 2,
+          "id": "JRVG1",
+          "type": "主炮",
+          "rarity": "epic",
+          "nameEn": "JRVG-1 (76 mm)"
+        },
+        {
+          "name": "全速前进！",
+          "probability": 2.5,
+          "limit": 4,
+          "id": "decal_events108rare3",
+          "type": "贴花",
+          "rarity": "rare",
+          "nameEn": ""
+        },
+        {
+          "name": "授权密钥",
+          "probability": 1.1,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_rm",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "Authorization Keys"
+        },
+        {
+          "name": "20 黄金",
+          "probability": 8,
+          "limit": 0,
+          "id": "Hard",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "20 Gold"
+        },
+        {
+          "name": "5 高级修理包",
+          "probability": 15,
+          "limit": 0,
+          "id": "PremiumRepairKit",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Premium Repair Kits"
+        },
+        {
+          "name": "20 无人机电池",
+          "probability": 20,
+          "limit": 0,
+          "id": "bigevent_currency_gacha_gameplay",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "20 Drone Batteries"
+        },
+        {
+          "name": "5 高级导弹诱饵",
+          "probability": 22,
+          "limit": 0,
+          "id": "PremiumMissileDecoy",
+          "type": "战斗增益",
+          "rarity": "common",
+          "nameEn": "5 Premium Missile Decoys"
+        },
+        {
+          "name": "300 代币",
+          "probability": 30,
+          "limit": 0,
+          "id": "Token",
+          "type": "资源",
+          "rarity": "common",
+          "nameEn": "300 Tokens"
+        }
+      ],
+      "metadata": {
+        "guaranteeThreshold": 850,
+        "name": "货运无人机"
+      },
+      "type": "gameplay"
+    }
+  ],
+  "gacha_type": "机密货物类",
+  "id": "be108",
+  "metadata": {
+    "name": "神经霸权",
+    "formattedDate": "2026年9月",
+    "nameEn": "Neural Supremacy"
+  }
+}

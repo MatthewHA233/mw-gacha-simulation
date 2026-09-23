@@ -1,14 +1,8 @@
 {
-  "id": "la105",
   "gacha_type": "旗舰宝箱类",
-  "metadata": {
-    "name": "端午节",
-    "formattedDate": "2026年6月",
-    "nameEn": "Dragon Boat Festival"
-  },
+  "id": "la105",
   "lootboxes": [
     {
-      "type": "container",
       "items": [
         {
           "name": "[德]萨克森(F124型)",
@@ -21,7 +15,7 @@
         },
         {
           "name": "阅舰式",
-          "probability": 3.0,
+          "probability": 3,
           "limit": 1,
           "id": "port_birthday2025",
           "type": "港口",
@@ -30,7 +24,7 @@
         },
         {
           "name": "K-76L/62 (76 mm)",
-          "probability": 1.0,
+          "probability": 1,
           "limit": 3,
           "id": "K76L62",
           "type": "主炮",
@@ -48,7 +42,7 @@
         },
         {
           "name": "河流之龙",
-          "probability": 1.0,
+          "probability": 1,
           "limit": 1,
           "id": "Camo_la105Epic",
           "type": "涂装",
@@ -70,7 +64,8 @@
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "6 Flagship Keys"
         },
         {
           "name": "3 旗舰钥匙",
@@ -78,15 +73,17 @@
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "3 Flagship Keys"
         },
         {
           "name": "2 旗舰钥匙",
-          "probability": 2.0,
+          "probability": 2,
           "limit": 0,
           "id": "currency_premium_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "2 Flagship Keys"
         },
         {
           "name": "50 黄金",
@@ -94,7 +91,8 @@
           "limit": 0,
           "id": "Hard",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "50 Gold"
         },
         {
           "name": "10 钥匙",
@@ -102,23 +100,26 @@
           "limit": 0,
           "id": "currency_common_lootboxkey",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Common Keys"
         },
         {
           "name": "300 000 美金",
-          "probability": 6.0,
+          "probability": 6,
           "limit": 0,
           "id": "Soft",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "300000 Dollars"
         },
         {
           "name": "25 升级芯片",
-          "probability": 9.0,
+          "probability": 9,
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "25 Upgrade Chips"
         },
         {
           "name": "25 黄金",
@@ -126,7 +127,8 @@
           "limit": 0,
           "id": "Hard",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "25 Gold"
         },
         {
           "name": "15 高级导弹诱饵",
@@ -134,15 +136,17 @@
           "limit": 0,
           "id": "PremiumMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "15 Premium Missile Decoys"
         },
         {
           "name": "100 导弹诱饵",
-          "probability": 12.0,
+          "probability": 12,
           "limit": 0,
           "id": "MissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "100 Missile Decoys"
         },
         {
           "name": "5 高级修理包",
@@ -150,7 +154,8 @@
           "limit": 0,
           "id": "PremiumRepairKit",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "5 Premium Repair Kits"
         },
         {
           "name": "50 修理包",
@@ -158,12 +163,16 @@
           "limit": 0,
           "id": "RepairKit",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "50 Repair Kits"
         }
-      ]
+      ],
+      "metadata": {
+        "name": "宝箱"
+      },
+      "type": "container"
     },
     {
-      "type": "flagship",
       "items": [
         {
           "name": "[美]武库舰",
@@ -279,15 +288,17 @@
           "limit": 0,
           "id": "currency_universaltoken",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "130 Universal Tokens"
         },
         {
           "name": "75 螺旋密钥",
-          "probability": 4.0,
+          "probability": 4,
           "limit": 0,
           "id": "currency_universaltoken",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "75 Universal Tokens"
         },
         {
           "name": "100 升级芯片",
@@ -295,7 +306,8 @@
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "100 Upgrade Chips"
         },
         {
           "name": "80 升级芯片",
@@ -303,31 +315,35 @@
           "limit": 0,
           "id": "Upgrades",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "80 Upgrade Chips"
         },
         {
           "name": "800 000 美金",
-          "probability": 8.0,
+          "probability": 8,
           "limit": 0,
           "id": "Soft",
           "type": "资源",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "800000 Dollars"
         },
         {
           "name": "20 机载电子对抗",
-          "probability": 7.0,
+          "probability": 7,
           "limit": 0,
           "id": "AirElectronicWarfare",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "20 Air Electronic Warfare"
         },
         {
           "name": "15 电子对抗",
-          "probability": 7.0,
+          "probability": 7,
           "limit": 0,
           "id": "ElectronicWarfare",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "15 Electronic Warfare"
         },
         {
           "name": "20 高级修理包",
@@ -335,23 +351,26 @@
           "limit": 0,
           "id": "PremiumRepairKit",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "20 Premium Repair Kits"
         },
         {
           "name": "20 高级机载导弹诱饵",
-          "probability": 8.0,
+          "probability": 8,
           "limit": 0,
           "id": "PremiumAircraftMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "20 Premium Aircraft Missile Decoys"
         },
         {
           "name": "15 引擎过载",
-          "probability": 8.0,
+          "probability": 8,
           "limit": 0,
           "id": "EngineBoost",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "15 Engine Boost"
         },
         {
           "name": "20 高级导弹诱饵",
@@ -359,7 +378,8 @@
           "limit": 0,
           "id": "PremiumMissileDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "20 Premium Missile Decoys"
         },
         {
           "name": "20 高级鱼雷诱饵",
@@ -367,7 +387,8 @@
           "limit": 0,
           "id": "PremiumTorpedoDecoy",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "20 Premium Torpedo Decoys"
         },
         {
           "name": "10 烟幕",
@@ -375,9 +396,19 @@
           "limit": 0,
           "id": "TankSmokeBombs",
           "type": "战斗增益",
-          "rarity": "common"
+          "rarity": "common",
+          "nameEn": "10 Smoke Bombs"
         }
-      ]
+      ],
+      "metadata": {
+        "name": "旗舰宝箱"
+      },
+      "type": "flagship"
     }
-  ]
+  ],
+  "metadata": {
+    "name": "端午节",
+    "formattedDate": "2026年6月",
+    "nameEn": "Dragon Boat Festival"
+  }
 }

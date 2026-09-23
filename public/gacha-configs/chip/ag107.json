@@ -1,0 +1,137 @@
+{
+  "gacha_type": "筹码类",
+  "id": "ag107",
+  "items": [
+    {
+      "name": "[朝]崔贤",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "ChoeHyon",
+      "type": "战舰",
+      "rarity": "legendary",
+      "nameEn": "KPN Choe Hyon"
+    },
+    {
+      "name": "[美]加利福尼亚(CGN-36)",
+      "probability": 0.095,
+      "limit": 1,
+      "id": "CaliforniaCGN36",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS California (CGN 36)"
+    },
+    {
+      "name": "[法]诺曼底(D651)",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "Normandie",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "FS Normandie (D651)"
+    },
+    {
+      "name": "歼-36(空优挂载)",
+      "probability": 0.2,
+      "limit": 3,
+      "id": "J36ASF",
+      "type": "战斗机",
+      "rarity": "epic",
+      "nameEn": "J-36 ASF"
+    },
+    {
+      "name": "SpGH EVA (155 mm)",
+      "probability": 0.28,
+      "limit": 2,
+      "id": "SPGH155EVA",
+      "type": "主炮",
+      "rarity": "legendary",
+      "nameEn": "SpGH EVA (155 mm)"
+    },
+    {
+      "name": "燎原-1",
+      "probability": 0.7,
+      "limit": 3,
+      "id": "LY1",
+      "type": "防空设备",
+      "rarity": "legendary",
+      "nameEn": "LY-1"
+    },
+    {
+      "name": "[中]深圳(051B型)",
+      "probability": 0.7,
+      "limit": 1,
+      "id": "Type051B",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN Type 051B Shenzhen"
+    },
+    {
+      "name": "黑曜石",
+      "probability": 1.55,
+      "limit": 1,
+      "id": "Camo_be104OfferLegendary",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Obsidian"
+    },
+    {
+      "name": "70 升级芯片",
+      "probability": 4,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "70 Upgrade Chips"
+    },
+    {
+      "name": "10 螺旋密钥",
+      "probability": 7.45,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "10 Universal Tokens"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common",
+      "nameEn": "6 Premium Repair Kits"
+    },
+    {
+      "name": "2 电子对抗",
+      "probability": 17,
+      "limit": 0,
+      "id": "ElectronicWarfare",
+      "type": "战斗增益",
+      "rarity": "common",
+      "nameEn": "2 Electronic Warfare"
+    },
+    {
+      "name": "4 螺旋密钥",
+      "probability": 22,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "4 Universal Tokens"
+    },
+    {
+      "name": "10 升级芯片",
+      "probability": 33,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "10 Upgrade Chips"
+    }
+  ],
+  "metadata": {
+    "name": "暗影交易",
+    "formattedDate": "2026年8月",
+    "nameEn": "Deal with the Shadow"
+  }
+}
