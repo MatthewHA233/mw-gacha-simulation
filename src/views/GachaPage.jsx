@@ -144,7 +144,8 @@ export function GachaPage({ type, activityId }) {
     <div
       className="overflow-hidden relative"
       style={shouldRotate ? {
-        width: '100vh',
+        // 长边用实际可见高度（--app-height，见 ViewportHeightSync），不用 100vh：手机 Chrome 地址栏显示时 100vh 会超出屏幕
+        width: 'var(--app-height, 100vh)',
         height: '100vw',
         transform: 'rotate(90deg) translateY(-100%)',
         transformOrigin: 'top left',
@@ -153,7 +154,7 @@ export function GachaPage({ type, activityId }) {
         left: 0
       } : {
         width: '100vw',
-        height: '100vh',
+        height: 'var(--app-height, 100vh)',
         position: 'relative'
       }}
     >

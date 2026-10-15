@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useActivityList } from '../../hooks/useActivityList'
 import { buildWidgetUrl, getGachaTypePath } from '../../services/cdnService'
 import { CDN_BASE_URL } from '../../utils/constants'
-import { formatActivityWindow } from '../../utils/activityWindow'
+import { activityWindowParts } from '../../utils/activityWindow'
 import { useSound } from '../../hooks/useSound'
 import { VersionModal } from './VersionModal'
 import './Sidebar.css'
@@ -389,7 +389,15 @@ export function Sidebar({
                   <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
                     <div className="space-y-0.5">
                       <h2 className="text-white text-[10px] md:text-base font-bold truncate">{activity.name}</h2>
-                      <p className="text-white/80 text-[8px] md:text-sm truncate">{formatActivityWindow(activity) || activity.formattedDate}</p>
+                      <p className="text-white/80 text-[8px] md:text-sm truncate">
+                        {(() => {
+                          // 有起止时间：日期正常字号，时间（15:00 / 14:59）小一号，窄屏放得下
+                          const w = activityWindowParts(activity)
+                          if (!w) return activity.formattedDate
+                          const time = (t) => <span className="text-[6px] md:text-[11px] text-white/60"> {t}</span>
+                          return <>{w.start.date}{time(w.start.time)} ~ {w.end ? <>{w.end.date}{time(w.end.time)}</> : '月底'}</>
+                        })()}
+                      </p>
                     </div>
                   </div>
 

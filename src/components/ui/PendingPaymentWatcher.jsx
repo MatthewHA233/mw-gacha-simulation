@@ -288,7 +288,7 @@ function copyToClipboard(text) {
 
 /** 横屏旋转样式（与 GachaPage 一致） */
 const rotateStyle = {
-  width: '100vh',
+  width: 'var(--app-height, 100vh)',
   height: '100vw',
   transform: 'rotate(90deg) translateY(-100%)',
   transformOrigin: 'top left',

@@ -29,6 +29,24 @@ const formatTime = (value, sameYearAs) => {
   return `${year}${parts.month}月${parts.day}日 ${parts.hour}:${parts.minute}`
 }
 
+// 拆成日期与时间两段（侧边栏把时间用小一号的字显示，窄屏上放得下）
+const splitTime = (value, sameYearAs) => {
+  const parts = timeParts(value)
+  if (!parts) return { date: '?', time: '' }
+  const year = sameYearAs && timeParts(sameYearAs)?.year === parts.year ? '' : `${parts.year}年`
+  return { date: `${year}${parts.month}月${parts.day}日`, time: `${parts.hour}:${parts.minute}` }
+}
+
+/**
+ * 活动时间段的分段：{ start: {date, time}, end: {date, time} | null }；end 为 null 表示「月底」。没有起止时间返回 null。
+ */
+export const activityWindowParts = (activity) => {
+  const start = activity?.startDate
+  if (!start) return null
+  const end = activity?.endDate
+  return { start: splitTime(start), end: end ? splitTime(end, start) : null }
+}
+
 /**
  * 活动时间段文本，例如「2026年10月8日 15:00 ~ 10月27日 14:59」「2026年10月15日 15:00 ~ 月底」
  */

@@ -4,6 +4,7 @@ import { AuthProvider } from '@/hooks/useAuth'
 import { PendingPaymentWatcher } from '@/components/ui/PendingPaymentWatcher'
 import { VersionInitializer } from '@/components/VersionInitializer'
 import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar'
+import { ViewportHeightSync } from '@/components/ViewportHeightSync'
 import '@/App.css'
 import '@/index.css'
 
@@ -22,12 +23,13 @@ export default function RootLayout({ children }) {
         <script defer src="https://umami.lingflow.cn/script.js" data-website-id="b982957c-d4c7-4e48-af34-e84bf8788261"></script>
       </head>
       <body>
+        <ViewportHeightSync />
         <VersionInitializer />
         <ServiceWorkerRegistrar />
         <AuthProvider>
           <PendingPaymentWatcher />
           <MilestoneToastProvider maxToasts={3} position="top-right">
-            <div className="w-full h-screen overflow-hidden bg-black">
+            <div className="w-full h-[var(--app-height,100vh)] overflow-hidden bg-black">
               <Analytics />
               {children}
             </div>

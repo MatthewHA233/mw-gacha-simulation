@@ -102,7 +102,7 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
       <div
         className="fixed pointer-events-none z-[10000]"
         style={shouldRotate ? {
-          width: '100vh',
+          width: 'var(--app-height, 100vh)',
           height: '100vw',
           transform: 'rotate(90deg) translateY(-100%)',
           transformOrigin: 'top left',

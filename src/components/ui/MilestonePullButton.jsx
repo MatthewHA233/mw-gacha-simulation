@@ -183,7 +183,7 @@ export function MilestonePullButton({
   const portalStyle = shouldRotate
     ? {
         position: 'fixed',
-        width: '100vh',
+        width: 'var(--app-height, 100vh)',
         height: '100vw',
         transform: 'rotate(90deg) translateY(-100%)',
         transformOrigin: 'top left',
