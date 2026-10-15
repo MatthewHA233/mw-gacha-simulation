@@ -11,6 +11,11 @@
 """
 
 import os
+
+# 直连 OSS，不走系统代理：系统 http_proxy 指向本地代理，且值末尾带空格会让 requests 解析失败
+for _k in ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy'):
+    os.environ.pop(_k, None)
+os.environ['NO_PROXY'] = '*'
 import sys
 import json
 import hashlib
