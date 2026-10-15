@@ -903,6 +903,23 @@ function buildAllMemberships(memberships) {
 | `/api/payment/notify` | POST | 支付回调 |
 | `/api/payment/query` | POST | 查询订单状态 |
 
+### ⚠️ 支付数据与「MW 市场幽灵」共用 —— 收入统计必须隔离
+
+`payment_orders` 表（在**云 Supabase 项目 `mw.lingflow`** / project_id `lfuuncerhuczruzjshnd`）是本项目与另一个应用 **MW 市场幽灵**（`D:\my_pro\Tauri_ob\mw-monitor`，复用了本项目的支付后端）**共用**的。靠 **`order_type`** 字段区分：
+
+- `order_type = 'subscription'` → **本项目**（抽奖模拟器）的会员单（档位 0.1 / 3.9 / 20 元）
+- `order_type = 'mwmonitor'` → **MW 市场幽灵**的会员单（档位 19 / 20 / 20.63 / 39 元），**不属于本项目盈利**
+
+**铁律：本项目任何收入统计 / 交易流水 / 管理面板查 `payment_orders` 都必须排除 mwmonitor**，口径统一用
+```sql
+AND order_type IS DISTINCT FROM 'mwmonitor'   -- IS DISTINCT FROM 兼容 order_type 为 null 的历史单
+```
+
+已修（2026-07-03）：
+- 交易流水 `app/api/admin/orders/route.js` 有 `.neq('order_type','mwmonitor')` ✓
+- 数据中枢曾漏：RPC **`admin_revenue_stats`**（7 个子查询全 `FROM payment_orders` 无过滤）→ mwmonitor 12 单 / 330.63 元混入本项目所有统计（总收入/日月/小时/按类型/按支付/近期订单），当月虚高至 1570 元。已给 7 处 `WHERE` 都补上过滤（migration `admin_revenue_stats_exclude_mwmonitor`），修后当月真实 1239.40 元。
+- ⚠️ **`admin_revenue_stats` 直接在 Supabase 上定义、无源 SQL 文件**（项目里只有调用方 `app/api/admin/stats/route.js`），改动仅在云 DB + Supabase migration 历史。以后要改这个函数，用 MCP / SQL 编辑器直接改云上定义。
+
 ### 前端组件
 
 | 文件 | 说明 |
