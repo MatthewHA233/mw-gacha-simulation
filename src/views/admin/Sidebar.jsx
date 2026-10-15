@@ -1,10 +1,17 @@
-import { LayoutDashboard, Receipt, Wallet, Gift, X } from 'lucide-react'
+import { LayoutDashboard, Receipt, Wallet, Gift, X, BellRing, Trophy, Package, ExternalLink } from 'lucide-react'
 
 export const NAV = [
     { id: 'overview', label: '数据中枢', sub: 'DATA.CORE', Icon: LayoutDashboard },
     { id: 'orders', label: '交易流水', sub: 'TX.RECORDS', Icon: Receipt },
     { id: 'costs', label: '系统耗材', sub: 'SYS.COSTS', Icon: Wallet },
     { id: 'gifts', label: '赠送兑换码', sub: 'GIFT.CODES', Icon: Gift },
+]
+
+// 前台的测试 / 展示页（app/test/*），新标签页打开
+export const TEST_PAGES = [
+    { href: '/test/toasts', label: '通知与成就展示', sub: 'TOAST.SHOWCASE', Icon: BellRing },
+    { href: '/test/milestone-toast', label: '里程碑演示', sub: 'MILESTONE.DEMO', Icon: Trophy },
+    { href: '/test/lootbox-animation', label: '宝箱开启动画', sub: 'LOOTBOX.ANIM', Icon: Package },
 ]
 
 export function Sidebar({ active, onChange, open, onClose }) {
@@ -97,6 +104,29 @@ export function Sidebar({ active, onChange, open, onClose }) {
                             </button>
                         )
                     })}
+
+                    <div className="mb-2 mt-6 px-3">
+                        <p className="font-['Roboto_Mono'] text-[10px] uppercase text-[#E8EDF2]/30 tracking-[0.2em]">
+                            Test // 测试页
+                        </p>
+                    </div>
+                    {TEST_PAGES.map(({ href, label, sub, Icon }) => (
+                        <a
+                            key={href}
+                            href={href}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={onClose}
+                            className="group relative flex w-full items-center gap-4 rounded-xl px-4 py-3 text-sm font-medium text-[#E8EDF2]/60 transition-all duration-300 hover:bg-[#141825]/50 hover:text-[#E8EDF2]"
+                        >
+                            <Icon size={18} strokeWidth={2} className="text-[#E8EDF2]/40 group-hover:text-[#00F5D4]/70 transition-colors" />
+                            <div className="flex flex-col items-start translate-y-[1px]">
+                                <span className="font-['DM_Sans'] text-sm tracking-wide">{label}</span>
+                                <span className="font-['Roboto_Mono'] text-[10px] opacity-50 tracking-wider">{sub}</span>
+                            </div>
+                            <ExternalLink size={13} className="ml-auto text-[#E8EDF2]/30 group-hover:text-[#00F5D4]/70 transition-colors" />
+                        </a>
+                    ))}
                 </nav>
 
                 {/* Footer Info */}
