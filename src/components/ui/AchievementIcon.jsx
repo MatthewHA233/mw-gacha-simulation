@@ -1,15 +1,20 @@
 /**
- * 氪金里程碑的成就徽章（2026-10-15）：每个里程碑一枚，图案对应文案里的梗，外框按金额分四档材质。
+ * 氪金里程碑的成就徽章（2026-10-15）：每个里程碑一枚，图案对应文案里的梗，外框按金额分档材质。
  *
  *   < ¥1,000          青铜    百元大钞、女仆咖啡厅、木吉他、帝王蟹、降噪耳机、迪士尼、648 船票、拍立得、演唱会
  *   ¥1,000 – 2,999    白银    健身年卡、1314、咬牙、一路发、实习大学生、Switch、快四个 648
  *   ¥3,000 – 14,000   翠绿    毕业、全景相机、主机、跨栏、十连 648、钱包倒计时、五位数之壁、顶配手机、旅行
  *   ¥16,499 – 90,000  黄金    旗舰显卡、双倍喜悦、回忆杀、复古机车、冰岛极光、立式钢琴、南极企鹅、自己的马、北海道雪季
- *   ≥ ¥100,000        紫晶    轿车开走、一年白干、伪神、小飞机、小店、半神、房车、深渊之眼、录取信、吊床、万氪之王
+ *   ¥100,000 – 180,000 紫晶   轿车开走、间隔年、猫、帆船、一年白干、世界杯、天文台
+ *   ¥200,000 – 400,000 赤红   伪神、老款 911、小飞机、独立游戏、小店
+ *   ¥500,000 – 900,000 炫彩   半神、房车、深渊之眼、录取信、吊床：全息渐变外框，颜色沿边框缓慢流转
+ *   100 万             王      万氪之王独一档：金框 + 流转的炫彩内圈 + 深紫底和星点
  *   （万氪之王三档 20 万 / 50 万 / 100 万直接画顶栏同款王冠 MEMBER_CROWNS，成就和顶栏看着是同一顶）
  *
- * 纯 SVG（64×64 画布），平涂 + 深色描边，不用渐变；任何尺寸都清晰、不用传 CDN。
+ * 纯 SVG（64×64 画布），平涂 + 深色描边；只有炫彩 / 王两档的外框用渐变。任何尺寸都清晰、不用传 CDN。
  */
+
+import { useId } from 'react'
 
 const TIERS = {
   bronze: { base: '#4a2f20', panel: '#7d5136', rim: '#e9ae7a', ink: '#ffeedd', accent: '#ff9f5a' },
@@ -17,6 +22,12 @@ const TIERS = {
   jade: { base: '#0f3326', panel: '#1d5c43', rim: '#7ff0b8', ink: '#eafff4', accent: '#ffd166' },
   gold: { base: '#3a2a07', panel: '#634a10', rim: '#ffd86b', ink: '#fff6da', accent: '#ffc83d' },
   violet: { base: '#23183f', panel: '#4a3485', rim: '#d4c0ff', ink: '#f5efff', accent: '#ff86d6' },
+  red: { base: '#3a0d14', panel: '#7d1d2c', rim: '#ff9b9b', ink: '#fff0ee', accent: '#ffcf4a' },
+  // 炫彩 / 王：rim 是给卡片边框、倒计时线用的代表色，徽章外框实际画 holo 渐变
+  prism: { base: '#1e1636', panel: '#35285c', rim: '#d9b8ff', ink: '#f7f2ff', accent: '#ff86d6',
+    holo: ['#ff8fd8', '#b79bff', '#7fd8ff', '#8ff0c0', '#ffe08a'], panelStops: ['#41306e', '#263a66', '#43265a'] },
+  king: { base: '#170d22', panel: '#2a1840', rim: '#ffd86b', ink: '#fff6da', accent: '#ffcf4a',
+    holo: ['#ff8fd8', '#b79bff', '#7fd8ff', '#8ff0c0', '#ffe08a'], gold: ['#fff6d6', '#ffd86b', '#d9961f'] },
 }
 
 export function achievementTier(amount) {
@@ -24,7 +35,10 @@ export function achievementTier(amount) {
   if (amount < 3000) return 'silver'
   if (amount < 16499) return 'jade'
   if (amount < 100000) return 'gold'
-  return 'violet'
+  if (amount < 200000) return 'violet'
+  if (amount < 500000) return 'red'      // 20～40 万
+  if (amount < 1000000) return 'prism'   // 50～90 万
+  return 'king'                          // 100 万：万氪之王独一档
 }
 
 export function achievementRim(amount) {
@@ -569,6 +583,49 @@ const ART = {
       <text x="56" y="20" textAnchor="end" fontSize="14" fontWeight="900" fill={c.ink} stroke={c.base} strokeWidth="3" paintOrder="stroke" fontFamily="system-ui, sans-serif">?!</text>
     </g>
   ),
+  // 一个间隔年：塞得鼓鼓的背包，一条虚线路线通向远处的定位针
+  110000: (c) => (
+    <g>
+      <path d="M38 41Q50 38 47 25" fill="none" stroke={c.ink} strokeWidth="1.5" strokeDasharray="2.5 2.5" strokeLinecap="round" opacity="0.75" />
+      <path d="M48 23.5c-4.5-5-6.5-8-6.5-11a6.5 6.5 0 0 1 13 0c0 3-2 6-6.5 11Z" fill="#ffd86b" stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <circle cx="48" cy="12.5" r="2.2" fill={c.base} />
+      <path d="M21 23q5-7 10 0" fill="none" stroke={c.ink} strokeWidth="2.2" strokeLinecap="round" />
+      <rect x="13" y="23" width="26" height="31" rx="6" fill={c.accent} stroke={c.base} strokeWidth="2" />
+      <path d="M13 31Q13 23 26 23Q39 23 39 31V33H13Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <rect x="24.5" y="31" width="3" height="4.5" rx="0.6" fill={c.base} />
+      <rect x="18.5" y="40" width="15" height="10" rx="2" fill={c.panel} stroke={c.base} strokeWidth="1.6" />
+      <path d="M22 43.5h8" stroke={c.ink} strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+    </g>
+  ),
+  // 一只猫的一辈子：坐着眯眼的猫，尾巴卷起来，脚边一个被打翻的杯子
+  120000: (c) => (
+    <g>
+      <path d="M43 50Q55 50 52 38" fill="none" stroke={c.base} strokeWidth="5.4" strokeLinecap="round" />
+      <path d="M43 50Q55 50 52 38" fill="none" stroke={c.ink} strokeWidth="3" strokeLinecap="round" />
+      <path d="M21 52Q16 41 22 34L21 21L28 27Q32.5 25.5 37 27L44 21L43 34Q49 41 44 52Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M23 24.5L25.5 28L23.3 28.6Z" fill={c.accent} />
+      <path d="M42 24.5L39.5 28L41.7 28.6Z" fill={c.accent} />
+      <path d="M26.5 34q2-2 4 0M34.5 34q2-2 4 0" fill="none" stroke={c.base} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M31.3 37h2.4l-1.2 1.4Z" fill={c.accent} />
+      <path d="M32.5 38.4v1.4M32.5 39.8q-1.5 1.2-3 0M32.5 39.8q1.5 1.2 3 0" fill="none" stroke={c.base} strokeWidth="1" strokeLinecap="round" />
+      <path d="M22 37l-6-1M22 39.5l-6 1M43 37l6-1M43 39.5l6 1" stroke={c.base} strokeWidth="0.9" strokeLinecap="round" opacity="0.7" />
+      <g transform="rotate(-70 12 50)">
+        <path d="M7 45h10l-1.2 9h-7.6Z" fill="#ffd86b" stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
+      </g>
+      <ellipse cx="10" cy="55" rx="5.5" ry="1.6" fill="#8fd0ff" opacity="0.8" />
+    </g>
+  ),
+  // 一条小帆船：两面帆、小三角旗，船底下几道浪
+  130000: (c) => (
+    <g>
+      <path d="M32 9.5V44" stroke={c.ink} strokeWidth="2" strokeLinecap="round" />
+      <path d="M32 9.5l6 2.4-6 2.4Z" fill={c.accent} />
+      <path d="M33.5 14L51 41H33.5Z" fill={c.ink} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M30.5 17L15 41H30.5Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M11 44H55L48.5 51.5H17.5Z" fill={c.base} stroke={c.ink} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M6 55q4-3 8 0t8 0 8 0 8 0 8 0 8 0" fill="none" stroke="#8fd0ff" strokeWidth="1.8" strokeLinecap="round" />
+    </g>
+  ),
   // 一年白干：公文包 + 背后一页写着 365 的日历
   150000: (c) => (
     <g>
@@ -582,8 +639,47 @@ const ART = {
       <rect x="23.5" y="32" width="7" height="6" rx="1.2" fill={c.accent} stroke={c.base} strokeWidth="1.4" />
     </g>
   ),
+  // 一整届世界杯：飞进球网的足球
+  160000: (c) => (
+    <g>
+      <path d="M30 16.5h26M30 23h26M30 29.5h26M36.5 10v26M43 10v26M49.5 10v26" stroke={c.ink} strokeWidth="0.8" opacity="0.4" />
+      <path d="M30 36V10H56" fill="none" stroke={c.ink} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M5 33h6M3 39h7M5 45h6" stroke={c.ink} strokeWidth="1.8" strokeLinecap="round" opacity="0.55" />
+      <circle cx="25" cy="39" r="12" fill="#ffffff" stroke={c.base} strokeWidth="2" />
+      <path d="M25 34.4L29.37 37.58L27.7 42.72H22.3L20.63 37.58Z" fill={c.base} />
+      <path d="M25 34.4V30M29.37 37.58L33.56 36.22M27.7 42.72L30.29 46.28M22.3 42.72L19.71 46.28M20.63 37.58L16.44 36.22" stroke={c.base} strokeWidth="1.4" strokeLinecap="round" />
+    </g>
+  ),
+  // 一座自己的天文台：圆顶小屋，望远镜从天窗伸出去对着土星
+  180000: (c) => (
+    <g>
+      <circle cx="47" cy="14" r="5" fill="#ffd86b" stroke={c.base} strokeWidth="1.4" />
+      <ellipse cx="47" cy="14" rx="9" ry="2.6" transform="rotate(-20 47 14)" fill="none" stroke={c.ink} strokeWidth="1.4" />
+      <circle cx="13" cy="13" r="1" fill={c.ink} /><circle cx="22" cy="9" r="0.8" fill={c.ink} /><circle cx="56" cy="30" r="0.9" fill={c.ink} />
+      <path d="M33.5 31.5L44 21.5L47.5 25L37 35Z" fill={c.accent} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M14 41a17 15 0 0 1 34 0Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M29 26.4Q31 26 33 26.4V41H29Z" fill={c.panel} />
+      <rect x="14" y="41" width="34" height="12" fill={c.ink} stroke={c.base} strokeWidth="2" />
+      <rect x="27" y="45" width="8" height="8" rx="1" fill={c.panel} stroke={c.base} strokeWidth="1.2" />
+    </g>
+  ),
   // 万氪之王 · 伪神：顶栏同款，歪斜开裂的粉色王冠
   200000: memberCrownArt(200000),
+  // 一台老款 911：侧面的经典溜背轿跑，圆灯
+  250000: (c) => (
+    <g>
+      <path d="M2 31h5M1 37h4" stroke={c.ink} strokeWidth="1.8" strokeLinecap="round" opacity="0.55" />
+      <path d="M7 43V39Q8 35.5 13 34.5Q21 26 31 25.5Q39 25.5 45 33L55 35.5Q58 36.5 58 40V43Q58 45 56 45H9Q7 45 7 43Z" fill={c.accent} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M18 34Q23.5 28.5 31 28.2Q37.5 28.2 42 33.5Z" fill={c.panel} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M31.5 28.2V33.8" stroke={c.base} strokeWidth="1.4" />
+      <path d="M21 38.5H52" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round" opacity="0.45" />
+      <circle cx="55.3" cy="38" r="1.7" fill="#ffd86b" stroke={c.base} strokeWidth="0.8" />
+      <circle cx="17" cy="45" r="5.4" fill={c.base} stroke={c.ink} strokeWidth="2" />
+      <circle cx="48" cy="45" r="5.4" fill={c.base} stroke={c.ink} strokeWidth="2" />
+      <circle cx="17" cy="45" r="1.8" fill={c.ink} /><circle cx="48" cy="45" r="1.8" fill={c.ink} />
+      <path d="M4 53H60" stroke={c.ink} strokeWidth="1.4" strokeDasharray="5 4" opacity="0.4" />
+    </g>
+  ),
   // 私人飞行执照：小螺旋桨飞机从云层里爬升出来
   300000: (c) => (
     <g>
@@ -599,6 +695,21 @@ const ART = {
         <circle cx="52.5" cy="26" r="1.7" fill={c.base} />
       </g>
       <path d="M49 49a3.5 3.5 0 0 1 4-3.5a5 5 0 0 1 4 4.5a3 3 0 0 1-1 5.5H50a3 3 0 0 1-1-6.5Z" fill={c.ink} opacity="0.5" />
+    </g>
+  ),
+  // 做一款自己的游戏：屏幕里的代码，前面一只手柄
+  350000: (c) => (
+    <g>
+      <rect x="9" y="9" width="46" height="31" rx="3" fill={c.base} stroke={c.ink} strokeWidth="2" />
+      <text x="17" y="24" fontSize="10" fontWeight="800" fill={c.accent} fontFamily="ui-monospace, monospace">&lt;/&gt;</text>
+      <path d="M15 29h12M15 33h17" stroke={c.ink} strokeWidth="1.2" strokeLinecap="round" opacity="0.55" />
+      {[[42, 15], [45, 15], [39, 18], [42, 18], [45, 18], [48, 18], [42, 21], [45, 21], [44, 24]].map(([x, y]) => (
+        <rect key={`${x}-${y}`} x={x - 0.5} y={y} width="3" height="3" fill="#ffd86b" />
+      ))}
+      <path d="M28 40v4M36 40v4M24 44.5h16" stroke={c.ink} strokeWidth="2" strokeLinecap="round" />
+      <path d="M21 47.5q-1.5-5.5 4.5-6h14q6 .5 4.5 6l-1.6 5q-1 3-4 1l-2.4-2h-7l-2.4 2q-3 2-4-1Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M27 45.5v4M25 47.5h4" stroke={c.base} strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="37.5" cy="46.5" r="1.1" fill={c.base} /><circle cx="40" cy="48.5" r="1.1" fill={c.base} />
     </g>
   ),
   // 开一家自己的小店：条纹遮阳棚的小铺，橱窗里一杯咖啡，门上挂着营业牌
@@ -686,16 +797,74 @@ const ART = {
   1000000: memberCrownArt(1000000),
 }
 
+// 炫彩外框的渐变：首尾同色、整条渐变绕中心慢慢转，颜色就沿着边框流动
+function HoloGradient({ id, colors, dur = '6s' }) {
+  const stops = [...colors, colors[0]]
+  return (
+    <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+      {stops.map((color, i) => <stop key={i} offset={i / (stops.length - 1)} stopColor={color} />)}
+      <animateTransform attributeName="gradientTransform" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur={dur} repeatCount="indefinite" />
+    </linearGradient>
+  )
+}
+
+// 外框 + 面板：普通档平涂；炫彩档全息描边 + 偏色面板；王档金框 + 炫彩内圈 + 深紫径向底 + 星点
+function Frame({ tier, c, uid }) {
+  if (tier === 'prism') {
+    return (
+      <>
+        <defs>
+          <HoloGradient id={`${uid}-holo`} colors={c.holo} />
+          <linearGradient id={`${uid}-panel`} x1="0" y1="0" x2="1" y2="1">
+            {c.panelStops.map((color, i) => <stop key={i} offset={i / (c.panelStops.length - 1)} stopColor={color} />)}
+          </linearGradient>
+        </defs>
+        <rect x="1.5" y="1.5" width="61" height="61" rx="11" fill={c.base} stroke={`url(#${uid}-holo)`} strokeWidth="2.6" />
+        <rect x="5.5" y="5.5" width="53" height="53" rx="8" fill={`url(#${uid}-panel)`} />
+      </>
+    )
+  }
+  if (tier === 'king') {
+    return (
+      <>
+        <defs>
+          <HoloGradient id={`${uid}-holo`} colors={c.holo} dur="4s" />
+          <linearGradient id={`${uid}-gold`} x1="0" y1="0" x2="0" y2="1">
+            {c.gold.map((color, i) => <stop key={i} offset={i / (c.gold.length - 1)} stopColor={color} />)}
+          </linearGradient>
+          <radialGradient id={`${uid}-panel`} cx="0.5" cy="0.48" r="0.62">
+            <stop offset="0" stopColor="#5b2f86" />
+            <stop offset="1" stopColor={c.panel} />
+          </radialGradient>
+        </defs>
+        <rect x="1.5" y="1.5" width="61" height="61" rx="11" fill={c.base} stroke={`url(#${uid}-gold)`} strokeWidth="2.8" />
+        <rect x="4.6" y="4.6" width="54.8" height="54.8" rx="8.6" fill="none" stroke={`url(#${uid}-holo)`} strokeWidth="1.4" />
+        <rect x="6.5" y="6.5" width="51" height="51" rx="7" fill={`url(#${uid}-panel)`} />
+        {[[11, 12, 0.8], [53, 11, 0.7], [10, 52, 0.7], [54, 51, 0.8], [47, 56, 0.5]].map(([x, y, r]) => (
+          <circle key={`${x}-${y}`} cx={x} cy={y} r={r} fill="#fff6da" opacity="0.8" />
+        ))}
+      </>
+    )
+  }
+  return (
+    <>
+      <rect x="1.5" y="1.5" width="61" height="61" rx="11" fill={c.base} stroke={c.rim} strokeWidth="2" />
+      <rect x="5.5" y="5.5" width="53" height="53" rx="8" fill={c.panel} />
+    </>
+  )
+}
+
 /**
  * @param {{ amount: number, size?: number, className?: string }} props
  */
 export function AchievementIcon({ amount, size = 64, className = '' }) {
-  const c = TIERS[achievementTier(amount)]
+  const tier = achievementTier(amount)
+  const c = TIERS[tier]
+  const uid = `ach${useId().replace(/:/g, '')}`
   const art = ART[amount]
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" className={className} aria-hidden="true">
-      <rect x="1.5" y="1.5" width="61" height="61" rx="11" fill={c.base} stroke={c.rim} strokeWidth="2" />
-      <rect x="5.5" y="5.5" width="53" height="53" rx="8" fill={c.panel} />
+      <Frame tier={tier} c={c} uid={uid} />
       {/* 左上一道平涂的斜向反光，让徽章有点金属片的感觉 */}
       <path d="M5.5 15Q5.5 5.5 15 5.5H44L5.5 44Z" fill="#ffffff" opacity="0.07" />
       {art ? art(c) : (
