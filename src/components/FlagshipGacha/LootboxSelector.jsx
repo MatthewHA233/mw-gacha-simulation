@@ -6,7 +6,7 @@ import { buildLootboxTicketUrl } from '../../services/cdnService'
  * 旗舰宝箱选择器组件
  * 显示宝箱选项
  */
-export function LootboxSelector({ activityId, selectedType, onSelect, isScrolling = false, hasMediumLootbox = false }) {
+export function LootboxSelector({ activityId, selectedType, onSelect, isScrolling = false, hasMediumLootbox = false, locked = false }) {
   // 基础宝箱列表
   const baseLootboxes = [
     {
@@ -73,14 +73,16 @@ export function LootboxSelector({ activityId, selectedType, onSelect, isScrollin
         return (
           <button
             key={lootbox.type}
-            onClick={() => !lootbox.disabled && onSelect(lootbox.type)}
-            disabled={lootbox.disabled}
+            onClick={() => !lootbox.disabled && !locked && onSelect(lootbox.type)}
+            disabled={lootbox.disabled || (locked && !isSelected)}
             className={`
               w-24 h-24 md:w-[112px] md:h-[112px] border flex items-center justify-center
               transition-all
               ${lootbox.disabled
                 ? 'cursor-not-allowed opacity-60'
-                : 'cursor-pointer hover:border-[#e7e3b9]/50'
+                : locked
+                  ? 'cursor-not-allowed' + (isSelected ? '' : ' opacity-60')
+                  : 'cursor-pointer hover:border-[#e7e3b9]/50'
               }
               ${isSelected
                 ? 'bg-[#6e6938] border-[#e7e3b9]'

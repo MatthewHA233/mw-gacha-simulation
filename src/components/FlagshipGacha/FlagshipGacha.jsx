@@ -1516,7 +1516,8 @@ export function FlagshipGacha({
           <LootboxSelector
             activityId={activityId}
             selectedType={selectedLootboxType}
-            onSelect={setSelectedLootboxType}
+            onSelect={(type) => { if (!isAnimating) setSelectedLootboxType(type) }}
+            locked={isAnimating}
             isScrolling={isScrolling}
             hasMediumLootbox={activityConfig.hasMediumLootbox}
           />

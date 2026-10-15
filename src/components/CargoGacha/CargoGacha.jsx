@@ -7,6 +7,14 @@ import { loadActivityConfig, buildBackgroundUrl, buildCargoPoolImageUrl, buildIt
 import { findCheapestPurchase } from '../../services/gachaService'
 import { loadGameState, saveGameState, getDefaultGameState, clearGameState, clearAllGameStates } from '../../utils/gameStateStorage'
 import { HeaderSpacer } from '../Layout/HeaderSpacer'
+import { FitScale } from '../ui/FitScale'
+
+// 机密货物奖品网格的格子边长（原始尺寸，整体再由 FitScale 按空间缩放）。号主 2026-10-15：转盘大些、右侧小些；
+// 手机（宽 < 768，与 GachaPage 判断一致）用 144 让网格占得多，电脑 144 显得太大，用 128
+const CARGO_GRID_ITEM_SIZE = { mobile: 144, desktop: 128 }
+
+// 奖池切换的钢架颗粒质感：细颗粒噪点（SVG 噪声，去色后叠加）
+const TAB_NOISE = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")"
 import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
@@ -36,6 +44,14 @@ export function CargoGacha({
 
   // 选中的奖池类型
   const [selectedCargoType, setSelectedCargoType] = useState('rm') // 'rm' | 'gameplay'
+  const [isNarrow, setIsNarrow] = useState(false)
+  useEffect(() => {
+    const update = () => setIsNarrow(window.innerWidth < 768)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+  const gridItemSize = isNarrow ? CARGO_GRID_ITEM_SIZE.mobile : CARGO_GRID_ITEM_SIZE.desktop
 
   // 活动配置
   const [activityConfig, setActivityConfig] = useState({
@@ -1641,6 +1657,7 @@ export function CargoGacha({
 
   // 处理标签切换
   const handleTabSelect = (type) => {
+    if (isDrawing) return // 抽奖动画进行中不能切奖池（号主 2026-10-15）
     setSelectedCargoType(type)
   }
 
@@ -1806,7 +1823,7 @@ export function CargoGacha({
   const backgroundUrl = buildBackgroundUrl(activityConfig)
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden flex flex-col">
       {/* Header 占位容器 */}
       <HeaderSpacer />
 
@@ -1818,70 +1835,81 @@ export function CargoGacha({
         }}
       />
 
-      {/* 主内容区域 */}
-      <div className="relative z-10 h-full flex items-center justify-center px-4 md:px-8 lg:px-12 gap-2 md:gap-4 lg:gap-8 pb-64">
-        {/* 左侧：奖池选择标签 */}
-        <div className="flex justify-center lg:justify-start scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-x-12 translate-y-20 sm:-translate-x-6 sm:translate-y-0 md:translate-x-1 lg:translate-x-2 xl:translate-x-0">
-          <div className="flex flex-col items-center gap-3 px-6 py-4 rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-md shadow-[0_15px_35px_rgba(15,23,42,0.45)]">
-            {(() => {
-              // 从 cargos 配置中读取标签名称
-              const rmCargo = activityConfig.cargos?.find(c => c.type === 'rm')
-              const gameplayCargo = activityConfig.cargos?.find(c => c.type === 'gameplay')
+      {/* 主内容区域（2026-10-15 取代按断点手写的缩放 / 平移，那套在手机旋转、侧边栏展开时错位：切换按钮被侧边栏盖住、
+          货箱图被挤出屏幕，电脑上整块偏上）：切换按钮 + 网格 + 货箱图排成一行（切换按钮紧挨网格，同原来的位置），
+          FitScale 在顶部栏与按钮之间等比缩放、居中；切换按钮在手机上原始尺寸放大，抵消缩放 */}
+      <div className="relative z-10 flex-1 min-h-0 w-full flex items-center">
+        <FitScale className="flex-1 min-w-0 h-full">
+        <div className="flex items-center justify-center px-6 gap-8">
+        {/* 左侧：奖池选择标签（2026-10-15 号主定：镂空、不要纯填充，要和右边的货箱图呼应）：
+            照货箱的结构——深灰钢架（带颗粒，压暗不抢眼）里装两块面板：紫色边框单独一层材质（颗粒 + 细斜纹 + 上沿亮线，
+            选中亮紫、未选中暗紫），里面一层深色内凹面板（颗粒 + 淡紫细斜纹 + 内阴影）。试过钢架对角贴黄黑警示斜纹，太突兀，去掉了 */}
+        <div
+          className="shrink-0 self-center relative p-1.5 md:p-1 rounded-[5px] md:rounded-[4px] border border-slate-400/30"
+          style={{
+            backgroundColor: '#272c34',
+            backgroundImage: TAB_NOISE,
+            backgroundBlendMode: 'overlay',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.5)',
+          }}
+        >
+          <div className="flex flex-col gap-1.5 md:gap-1">
+          {(() => {
+            // 从 cargos 配置中读取标签名称
+            const rmCargo = activityConfig.cargos?.find(c => c.type === 'rm')
+            const gameplayCargo = activityConfig.cargos?.find(c => c.type === 'gameplay')
 
-              return [
-                { type: 'rm', label: rmCargo?.metadata?.name || '机密货物' },
-                { type: 'gameplay', label: gameplayCargo?.metadata?.name || '货运无人机' }
-              ]
-            })().map((tab) => {
-              const isActive = selectedCargoType === tab.type
+            return [
+              { type: 'rm', label: rmCargo?.metadata?.name || '机密货物' },
+              { type: 'gameplay', label: gameplayCargo?.metadata?.name || '货运无人机' }
+            ]
+          })().map((tab) => {
+            const isActive = selectedCargoType === tab.type
 
-              return (
-                <button
-                  key={tab.type}
-                  onClick={() => handleTabSelect(tab.type)}
-                  className={`group relative min-w-[8.5rem] px-4 py-2 rounded-full font-bold text-xs md:text-xs lg:text-sm whitespace-nowrap text-center transition-all duration-300 ${isActive ? 'scale-105' : 'hover:scale-[1.02]'}`}
+            return (
+              <button
+                key={tab.type}
+                onClick={() => handleTabSelect(tab.type)}
+                disabled={isDrawing && !isActive}
+                // 外层 = 紫色边框材质，内层 = 内凹面板材质。在 FitScale 里跟网格一起缩放：手机上整体约缩到 0.6，
+                // 原始尺寸按手机放大（text-lg 等），缩完约 11px；电脑上原样
+                className={`block p-[3px] md:p-[2px] rounded-[7px] md:rounded-[6px] transition-opacity duration-200 ${isDrawing ? 'cursor-not-allowed' + (isActive ? '' : ' opacity-50') : 'group'}`}
+                style={{
+                  backgroundColor: isActive ? '#9a5cf5' : '#3b2960',
+                  backgroundImage: `${TAB_NOISE}, repeating-linear-gradient(135deg, rgba(255,255,255,${isActive ? 0.16 : 0.07}) 0 1px, transparent 1px 4px)`,
+                  backgroundBlendMode: 'overlay, normal',
+                  boxShadow: isActive
+                    ? 'inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(40,10,80,0.6)'
+                    : 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.5)',
+                }}
+              >
+                <span
+                  className={`block min-w-[10rem] md:min-w-[9rem] px-6 py-3 md:px-6 md:py-2.5 rounded-[5px] md:rounded-[4px] text-lg md:text-sm font-black tracking-wider whitespace-nowrap text-center transition-colors duration-200 ${isActive ? 'text-white' : 'text-violet-200/70'} ${isDrawing || isActive ? '' : 'group-hover:text-violet-100'}`}
+                  style={{
+                    backgroundColor: isActive ? '#120a22' : '#0b0714',
+                    backgroundImage: `${TAB_NOISE}, repeating-linear-gradient(135deg, rgba(167,139,250,${isActive ? 0.09 : 0.05}) 0 1px, transparent 1px 6px)`,
+                    backgroundBlendMode: 'overlay, normal',
+                    boxShadow: 'inset 0 2px 3px rgba(0,0,0,0.85), inset 0 -1px 0 rgba(255,255,255,0.05)',
+                    textShadow: '0 1px 0 rgba(0,0,0,0.8)',
+                  }}
                 >
-                  <span
-                    className={`absolute inset-0 rounded-full transition-all duration-300 ${isActive
-                      ? 'bg-gradient-to-b from-emerald-400/35 via-emerald-500/20 to-emerald-400/10'
-                      : 'bg-slate-900/60 group-hover:bg-slate-900/80'
-                    }`}
-                  />
-                  <span
-                    className={`absolute inset-0 rounded-full border transition-all duration-300 ${isActive
-                      ? 'border-emerald-300/70 shadow-[0_0_32px_rgba(16,185,129,0.55)]'
-                      : 'border-white/10 group-hover:border-white/25'
-                    }`}
-                  />
-                  <span
-                    className={`relative z-10 tracking-wide transition-colors duration-300 ${isActive
-                      ? 'text-emerald-100 drop-shadow-[0_0_12px_rgba(16,185,129,0.75)]'
-                      : 'text-white/55 group-hover:text-white/75'
-                    }`}
-                  >
-                    {tab.label}
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute -bottom-1 left-[10%] h-0.5 w-4/5 rounded-full bg-emerald-300/80 shadow-[0_0_12px_rgba(16,185,129,0.6)]"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              )
-            })}
+                  {tab.label}
+                </span>
+              </button>
+            )
+          })}
           </div>
         </div>
 
         {/* 中间：物品网格 */}
-        <div className="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center -translate-x-16 translate-y-20 sm:-translate-x-12 sm:translate-y-0 md:-translate-x-10 lg:-translate-x-8 xl:translate-x-0">
+        <div className="flex flex-col items-center gap-4">
           {/* 物品网格 */}
           <div className="flex flex-col gap-2">
             {/* 上排 4 个 */}
             <div className="flex gap-2">
               {getCurrentItems().slice(0, 4).map((item, i) => (
                 <SquareItem
+                  size={gridItemSize}
                   key={item.id || i}
                   item={item}
                   activityConfig={activityConfig}
@@ -1894,6 +1922,7 @@ export function CargoGacha({
             <div className="flex gap-2 items-center justify-between">
               {getCurrentItems()[4] && (
                 <SquareItem
+                  size={gridItemSize}
                   item={getCurrentItems()[4]}
                   activityConfig={activityConfig}
                   isHighlighted={highlightedItemName === getCurrentItems()[4].name}
@@ -1914,7 +1943,7 @@ export function CargoGacha({
                   const isPrizeObtained = prizeItem && prizeItem.limit > 0 && prizeItem.obtained >= prizeItem.limit
 
                   return (
-                    <p className="text-emerald-400 text-xs font-bold text-center leading-snug">
+                    <p className="text-emerald-400 text-sm font-bold text-center leading-snug">
                       {prizeItem ? prizeItem.name : '头奖物品'}
                       <br/>
                       {isPrizeObtained ? '已得到' : `在${remainingDraws}次抽奖后必得`}
@@ -1925,6 +1954,7 @@ export function CargoGacha({
 
               {getCurrentItems()[5] && (
                 <SquareItem
+                  size={gridItemSize}
                   item={getCurrentItems()[5]}
                   activityConfig={activityConfig}
                   isHighlighted={highlightedItemName === getCurrentItems()[5].name}
@@ -1936,6 +1966,7 @@ export function CargoGacha({
             <div className="flex gap-2">
               {getCurrentItems().slice(6, 10).map((item, i) => (
                 <SquareItem
+                  size={gridItemSize}
                   key={item.id || i + 6}
                   item={item}
                   activityConfig={activityConfig}
@@ -1947,7 +1978,8 @@ export function CargoGacha({
         </div>
 
         {/* 右侧：大图展示 */}
-        <div className="flex-1 flex justify-center items-center max-w-xl -translate-x-28 translate-y-20 sm:-translate-x-20 sm:translate-y-0 md:-translate-x-20 lg:-translate-x-16 xl:translate-x-0">
+        {/* 宽 26rem（号主 2026-10-15：图片小一丢丢、文字不变）；整栏下移 2rem：货箱图 png 底部带透明留白，按盒子居中看起来偏上 */}
+        <div className="flex justify-center items-center w-[26rem] translate-y-8">
           {/* 图片容器 */}
           <motion.div
             key={selectedCargoType}
@@ -1962,8 +1994,8 @@ export function CargoGacha({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className={`absolute text-white text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm xl:text-lg font-bold drop-shadow-lg z-10 whitespace-nowrap -translate-x-32 xs:-translate-x-28 sm:-translate-x-24 md:-translate-x-24 lg:-translate-x-20 xl:translate-x-0 ${
-                selectedCargoType === 'rm' ? 'top-[15%] left-6 sm:left-8 md:left-10 lg:left-12 xl:left-16' : 'top-[12%] left-3 sm:left-4 md:left-5 lg:left-6 xl:left-8'
+              className={`absolute text-white text-base font-bold drop-shadow-lg z-10 whitespace-nowrap ${
+                selectedCargoType === 'rm' ? 'top-[15%] left-[4.25rem]' : 'top-[12%] left-9'
               }`}
             >
               {(() => {
@@ -1989,15 +2021,17 @@ export function CargoGacha({
                 const cargo = activityConfig.cargos?.find(c => c.type === selectedCargoType)
                 return cargo?.metadata?.name || (selectedCargoType === 'gameplay' ? '货运无人机' : '机密货物')
               })()}
-              className="w-full h-auto min-w-[200px] object-contain drop-shadow-2xl"
+              className="w-full h-auto object-contain drop-shadow-2xl"
             />
           </motion.div>
         </div>
+        </div>
+        </FitScale>
       </div>
 
-      {/* 底部：抽奖按钮区域 */}
-      <div className="absolute bottom-16 md:bottom-20 lg:bottom-24 left-0 right-0 flex justify-center items-center z-20">
-        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-8 justify-center items-end scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center translate-y-10 sm:translate-y-0">
+      {/* 底部：抽奖按钮区域（排在内容下面，不再绝对定位） */}
+      <div className="relative shrink-0 flex justify-center items-center z-20 pb-4 md:pb-10 lg:pb-16 pt-1 md:pt-2">
+        <div className="flex flex-wrap gap-2 md:gap-4 lg:gap-8 justify-center items-end scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 origin-center">
           {/* 抽奖 x1 */}
           <button
             onClick={() => handleButtonClick(handleSingleDraw)}
