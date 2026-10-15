@@ -13,7 +13,8 @@ import { BGM_TRACKS } from './tracks'
  * 播放偏好沿用原来侧边栏的 localStorage 键与规则：主动开过才自动播放，暂停超过一天自动恢复为播放。
  * 播放模式三种（默认列表循环），和最近播放的曲目、位置一起记在本地。
  * 管理后台不放音乐：进去只停声音、不改播放偏好，回到前台接着放（号主 2026-10-15 定）。
- * 切歌（点歌单 / 下一首）时当前曲目先快速渐隐再换，下一首不淡入；自然放完接下一首本来就到了结尾，不处理。
+ * 列表循环 / 随机播放自动接下一首时，在剩最后 0.8 秒开始把当前曲目渐隐掉、不等 ended，下一首直接进场不淡入。
+ * 手动切歌（点歌单 / 下一首）立即换，不渐隐；单曲循环走 <audio loop> 无缝，也不渐隐。
  */
 
 const KEY_PLAYING = 'sidebar_music_playing'
@@ -23,7 +24,7 @@ const KEY_TRACK = 'bgm_track'
 const KEY_MODE = 'bgm_mode'
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 const BASE_VOLUME = 0.8
-const SWITCH_FADE_MS = 350   // 切歌时当前曲目的渐隐时长，游戏那种一闪而过的感觉；下一首直接进场不淡入
+const TAIL_FADE_MS = 800     // 列表循环 / 随机播放：剩这么多毫秒时开始把尾巴渐隐掉再接下一首（很多曲子结尾是硬切的），下一首直接进场不淡入
 
 // 单曲循环 → 列表循环 → 随机播放 → 单曲循环（点一下换下一种）
 export const PLAY_MODES = [
@@ -60,7 +61,8 @@ export function MusicProvider({ children }) {
   const indexRef = useRef(0)
   const modeRef = useRef(DEFAULT_MODE)
   const fadeRef = useRef(null)        // 进行中的渐隐 { raf, resolve }
-  const switchTokenRef = useRef(0)    // 渐隐期间又切了一次：旧的那次作废
+  const switchTokenRef = useRef(0)    // 尾部渐隐期间手动切了歌：渐隐完别再自动换
+  const tailFadingRef = useRef(false) // 这首的尾部渐隐已经开始
   const [trackIndex, setTrackIndex] = useState(0)
   const [mode, setMode] = useState(DEFAULT_MODE)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -96,6 +98,7 @@ export function MusicProvider({ children }) {
     const track = BGM_TRACKS[index]
     if (!audio || !track) return
     indexRef.current = index
+    tailFadingRef.current = false
     setTrackIndex(index)
     setFailed(false)
     storage.set(KEY_TRACK, track.id)
@@ -137,36 +140,40 @@ export function MusicProvider({ children }) {
 
   const toggle = useCallback(() => (isPlaying ? pause() : play()), [isPlaying, pause, play])
 
-  // 把正在出声的曲目在 SWITCH_FADE_MS 内压到静音；没在放声就立即完成。再次调用会打断上一次并让它直接返回
-  const fadeOut = useCallback(() => new Promise((resolve) => {
-    if (fadeRef.current) {
-      cancelAnimationFrame(fadeRef.current.raf)
-      fadeRef.current.resolve()
-      fadeRef.current = null
-    }
+  // 停掉进行中的渐隐（等它的那一方会收到 resolve，再按 token 判断要不要继续）
+  const cancelFade = useCallback(() => {
+    if (!fadeRef.current) return
+    cancelAnimationFrame(fadeRef.current.raf)
+    fadeRef.current.resolve()
+    fadeRef.current = null
+  }, [])
+
+  // 把正在出声的曲目在 durationMs 内压到静音；没在放声就立即完成
+  const fadeOut = useCallback((durationMs) => new Promise((resolve) => {
+    cancelFade()
     const audio = audioRef.current
     if (!audio || audio.paused || audio.volume === 0) { resolve(); return }
     const from = audio.volume
     const startedAt = performance.now()
     const step = (now) => {
-      const progress = Math.min(1, (now - startedAt) / SWITCH_FADE_MS)
+      const progress = Math.min(1, (now - startedAt) / Math.max(16, durationMs))
       audio.volume = from * (1 - progress)
       if (progress < 1) { fadeRef.current.raf = requestAnimationFrame(step); return }
       fadeRef.current = null
       resolve()
     }
     fadeRef.current = { raf: requestAnimationFrame(step), resolve }
-  }), [])
+  }), [cancelFade])
 
-  // 在歌单里点哪首就放哪首：换曲前先把当前这首渐隐掉
-  const selectTrack = useCallback(async (index) => {
-    if (index === indexRef.current) { play(); return }
-    const token = ++switchTokenRef.current
-    await fadeOut()
-    if (token !== switchTokenRef.current) return   // 渐隐期间又点了别的，交给最后那次
-    loadTrack(index)
+  // 在歌单里点哪首就放哪首，立即换、不渐隐；正好赶上尾部渐隐就把它作废、音量恢复
+  const selectTrack = useCallback((index) => {
+    switchTokenRef.current += 1
+    cancelFade()
+    tailFadingRef.current = false
+    if (index !== indexRef.current) loadTrack(index)
+    else if (audioRef.current) audioRef.current.volume = BASE_VOLUME
     play()
-  }, [fadeOut, loadTrack, play])
+  }, [cancelFade, loadTrack, play])
 
   // 单曲循环交给 <audio loop>（无缝，不会触发 ended）；另外两种在放完时换曲
   const applyMode = useCallback((value) => {
@@ -194,6 +201,13 @@ export function MusicProvider({ children }) {
   }, [])
 
   const next = useCallback(() => selectTrack(nextIndex()), [selectTrack, nextIndex])
+
+  // 进度条拖到哪就从哪放（0~1）；时长还没拿到时忽略
+  const seek = useCallback((fraction) => {
+    const audio = audioRef.current
+    if (!audio || !Number.isFinite(audio.duration) || audio.duration <= 0) return
+    audio.currentTime = Math.min(1, Math.max(0, fraction)) * audio.duration
+  }, [])
 
   useEffect(() => {
     const audio = audioRef.current
@@ -233,6 +247,7 @@ export function MusicProvider({ children }) {
         play()
         return
       }
+      if (tailFadingRef.current) return   // 尾部渐隐已经在跑，由它负责换曲
       loadTrack(nextIndex())
       play()
     }
@@ -248,6 +263,17 @@ export function MusicProvider({ children }) {
     const onTimeUpdate = () => {
       const now = Date.now()
       if (now - lastSaved > 5000) { lastSaved = now; savePosition() }
+      // 列表循环 / 随机播放：快放完时提前把尾巴渐隐掉，渐隐完直接接下一首
+      if (modeRef.current === 'one' || tailFadingRef.current || !Number.isFinite(audio.duration)) return
+      const remainingMs = (audio.duration - audio.currentTime) * 1000
+      if (remainingMs <= 0 || remainingMs > TAIL_FADE_MS) return
+      tailFadingRef.current = true
+      const token = ++switchTokenRef.current
+      fadeOut(remainingMs).then(() => {
+        if (token !== switchTokenRef.current) return   // 期间用户手动切了歌
+        loadTrack(nextIndex())
+        play()
+      })
     }
 
     const listeners = { play: onPlay, playing: onPlaying, pause: onPause, waiting: onWaiting,
@@ -260,7 +286,7 @@ export function MusicProvider({ children }) {
       document.removeEventListener('touchend', onFirstInteraction)
       window.removeEventListener('pagehide', savePosition)
     }
-  }, [loadTrack, play, applyMode, nextIndex])
+  }, [loadTrack, play, applyMode, nextIndex, fadeOut])
 
   // 进管理后台：只停声音，不调 pause()——那会把偏好记成「已暂停」，回到前台就不放了
   useEffect(() => {
@@ -277,7 +303,8 @@ export function MusicProvider({ children }) {
   const value = {
     tracks: BGM_TRACKS, track: BGM_TRACKS[trackIndex], trackIndex,
     isPlaying, isLoading, failed, mode,
-    play, pause, toggle, selectTrack, next, cycleMode, analyserRef,
+    play, pause, toggle, selectTrack, next, cycleMode, seek, analyserRef,
+    audioRef,   // 进度条自己订阅 timeupdate，不经过 context 刷新
   }
 
   return (
@@ -292,7 +319,7 @@ const fallback = {
   tracks: BGM_TRACKS, track: BGM_TRACKS[0], trackIndex: 0, isPlaying: false, isLoading: false, failed: false,
   mode: DEFAULT_MODE,
   play: async () => false, pause: () => {}, toggle: () => {}, selectTrack: () => {}, next: () => {},
-  cycleMode: () => PLAY_MODES[0], analyserRef: { current: null },
+  cycleMode: () => PLAY_MODES[0], seek: () => {}, analyserRef: { current: null }, audioRef: { current: null },
 }
 
 export function useMusic() {
