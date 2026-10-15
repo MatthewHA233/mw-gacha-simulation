@@ -101,6 +101,12 @@ python -X utf8 -u scripts/upload-to-oss.py incremental
 }
 ```
 
+**活动起止时间（2026 年 10 月起的活动才带，更早的不补）**：index.json 条目和活动 JSON 的 `metadata` 里都有
+`startDate` / `endDate`，值是游戏奖池 `StartDate` / `EndDate` 的 UTC 原文（如 `"2026-10-08T07:00:00Z"`）。
+旗舰宝箱的游戏结束时间是 2034 年这种远期占位，记 `"endDate": null`。网站侧边栏和 MW Monitor 管理面板按北京时间显示
+「2026年10月8日 15:00 ~ 10月27日 14:59」，`endDate` 为 null 时显示「~ 月底」；没有 `startDate` 时照旧显示 `formattedDate`。
+MW Monitor 的「拉取活动」会自动写这两个字段（`scripts/gacha_fetch.py` 的 `activity_window`），手工补活动时照这个格式填。
+
 ### 第2种：抽奖物品概率界面截图
 
 （待补充）

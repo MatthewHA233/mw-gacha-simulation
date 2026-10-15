@@ -1,6 +1,33 @@
 {
   "activities": [
     {
+      "id": "la109",
+      "gacha_type": "旗舰宝箱类",
+      "name": "杰克货箱",
+      "nameEn": "Jack's Cargo",
+      "formattedDate": "2026年10月",
+      "startDate": "2026-10-15T07:00:00Z",
+      "endDate": null
+    },
+    {
+      "id": "be109",
+      "gacha_type": "机密货物类",
+      "name": "海怪收割",
+      "nameEn": "Leviathan Harvest",
+      "formattedDate": "2026年10月",
+      "startDate": "2026-10-08T07:00:00Z",
+      "endDate": "2026-10-27T06:59:00Z"
+    },
+    {
+      "id": "ag109",
+      "gacha_type": "筹码类",
+      "name": "暗影交易",
+      "nameEn": "Deal with the Shadow",
+      "formattedDate": "2026年10月",
+      "startDate": "2026-10-02T07:00:00Z",
+      "endDate": "2026-10-18T06:59:00Z"
+    },
+    {
       "id": "la108",
       "gacha_type": "旗舰宝箱类",
       "name": "共此明月",

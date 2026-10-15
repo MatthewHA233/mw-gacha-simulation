@@ -1,0 +1,139 @@
+{
+  "gacha_type": "筹码类",
+  "id": "ag109",
+  "items": [
+    {
+      "name": "[美]中途岛(CV-41)",
+      "probability": 0.08,
+      "limit": 1,
+      "id": "Midway",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "USS Midway (CV-41)"
+    },
+    {
+      "name": "[意]FREMM-EVO",
+      "probability": 0.095,
+      "limit": 1,
+      "id": "FREMMEVO",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "IT FREMM-EVO"
+    },
+    {
+      "name": "B-1N\"枪骑兵\"",
+      "probability": 0.12,
+      "limit": 3,
+      "id": "B1N",
+      "type": "轰炸机",
+      "rarity": "legendary",
+      "nameEn": "B-1N Lancer"
+    },
+    {
+      "name": "[中]半潜武库舰(SSA)",
+      "probability": 0.14,
+      "limit": 1,
+      "id": "ProjectSSA",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "CN SSA"
+    },
+    {
+      "name": "HyFly-2(核)",
+      "probability": 0.28,
+      "limit": 3,
+      "id": "HyFly2Nuke",
+      "type": "导弹",
+      "rarity": "legendary",
+      "nameEn": "HyFly-2 (Nuke)"
+    },
+    {
+      "name": "[英]参战者(UXV)",
+      "probability": 0.65,
+      "limit": 1,
+      "id": "UXVCombatant",
+      "type": "战舰",
+      "rarity": "epic",
+      "nameEn": "HMS UXV Combatant"
+    },
+    {
+      "name": "Mk 47\"海上打击者\"",
+      "probability": 0.78,
+      "limit": 2,
+      "id": "MK47SeaStriker",
+      "type": "自卫炮",
+      "rarity": "legendary",
+      "nameEn": "Mk 47 Sea Striker"
+    },
+    {
+      "name": "权力代价",
+      "probability": 1.6,
+      "limit": 1,
+      "id": "Camo_be105OfferLegendary",
+      "type": "涂装",
+      "rarity": "legendary",
+      "nameEn": "Toll of Power"
+    },
+    {
+      "name": "70 升级芯片",
+      "probability": 4,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "70 Upgrade Chips"
+    },
+    {
+      "name": "10 螺旋密钥",
+      "probability": 7.45,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "10 Universal Tokens"
+    },
+    {
+      "name": "2 烟幕",
+      "probability": 12.805,
+      "limit": 0,
+      "id": "TankSmokeBombs",
+      "type": "战斗增益",
+      "rarity": "common",
+      "nameEn": "2 Smoke Bombs"
+    },
+    {
+      "name": "6 高级修理包",
+      "probability": 17,
+      "limit": 0,
+      "id": "PremiumRepairKit",
+      "type": "战斗增益",
+      "rarity": "common",
+      "nameEn": "6 Premium Repair Kits"
+    },
+    {
+      "name": "4 螺旋密钥",
+      "probability": 22,
+      "limit": 0,
+      "id": "currency_universaltoken",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "4 Universal Tokens"
+    },
+    {
+      "name": "10 升级芯片",
+      "probability": 33,
+      "limit": 0,
+      "id": "Upgrades",
+      "type": "资源",
+      "rarity": "common",
+      "nameEn": "10 Upgrade Chips"
+    }
+  ],
+  "metadata": {
+    "name": "暗影交易",
+    "formattedDate": "2026年10月",
+    "startDate": "2026-10-02T07:00:00Z",
+    "endDate": "2026-10-18T06:59:00Z",
+    "nameEn": "Deal with the Shadow"
+  }
+}
