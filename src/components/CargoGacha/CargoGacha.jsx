@@ -18,6 +18,7 @@ const TAB_NOISE = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
 import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
+import { SKIP_UNLOCK_MAX_REMAINING_RARE } from '../../utils/constants'
 import { SquareItem } from '../SquareItem'
 import { ResultModal } from '../ui/ResultModal'
 import { InfoModal } from '../ChipGacha/InfoModal'
@@ -522,7 +523,7 @@ export function CargoGacha({
 
   // 快进到下一个史诗/传说物品或结束
   const skipToNext = () => {
-    if (!resultModal.canSkip) return
+    // 能否快进由结果弹窗统一判定（剩余稀有 ≤ 3 或弹窗已开满 6 秒），这里只防状态不对
     if (!resultModal.isGenerating || resultModal.isPaused) return
 
     stopAnimationRef.current = true
@@ -1183,7 +1184,7 @@ export function CargoGacha({
       }))
 
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
-      const canSkip = remainingLimited <= 1
+      const canSkip = remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       landOnFirstThenShow(resultsWithDrawNum[0], () => {
         setResultModal({
@@ -1386,7 +1387,7 @@ export function CargoGacha({
       }))
 
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
-      const canSkip = remainingLimited <= 1
+      const canSkip = remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       landOnFirstThenShow(resultsWithDrawNum[0], () => {
         setResultModal({
@@ -1584,7 +1585,7 @@ export function CargoGacha({
       }))
 
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState[itemsKey])
-      const canSkip = remainingLimited <= 1
+      const canSkip = remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       landOnFirstThenShow(resultsWithDrawNum[0], () => {
         setResultModal({

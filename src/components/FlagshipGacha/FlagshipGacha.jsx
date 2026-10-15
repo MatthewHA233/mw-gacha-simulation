@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
-import { CDN_BASE_URL } from '../../utils/constants'
+import { CDN_BASE_URL, SKIP_UNLOCK_MAX_REMAINING_RARE } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
@@ -558,8 +558,7 @@ export function FlagshipGacha({
 
   // 快进到下一个史诗/传说物品或结束
   const skipToNext = () => {
-    // 只有在可以快进时才执行（剩余史诗/传说物品 ≤ 1）
-    if (!resultModal.canSkip) return
+    // 能否快进由结果弹窗统一判定（剩余稀有 ≤ 3 或弹窗已开满 6 秒），这里只防状态不对
     if (!resultModal.isGenerating || resultModal.isPaused) return
 
     // 停止当前的动画流程
@@ -814,7 +813,7 @@ export function FlagshipGacha({
       })
     } else {
       console.log('[FlagshipGacha] 显示多抽结果弹窗')
-      const canSkip = (drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && remainingLimited <= 1
+      const canSkip = (drawType === 'multi100' || drawType === 'multi500' || drawType === 'multi5000') && remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       setResultModal({
         show: true,

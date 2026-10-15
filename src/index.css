@@ -84,3 +84,10 @@
 }
 .app-toast-bump { animation: app-toast-bump 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
 .app-toast-bump .app-toast-count { animation: app-toast-count-pop 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* 结果弹窗「双击快进」提示前的青色 »：轻轻呼吸，提示可以操作（ResultModal 的 SkipHint） */
+@keyframes skip-hint-breathe {
+  0%, 100% { opacity: 0.55; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(2px); }
+}
+.skip-hint-chevron { animation: skip-hint-breathe 1.6s ease-in-out infinite; }

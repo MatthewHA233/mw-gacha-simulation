@@ -9,6 +9,11 @@ export const OSS_BASE_URL = (typeof process !== 'undefined' && process.env?.NEXT
   || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_OSS_BASE_URL)
   || ''
 
+// 双击快进的解锁条件（2026-10-15 号主定）：
+// 奖池里剩余未抽满的限定史诗 / 传说 ≤ 这个数时，结果一弹出就能快进；否则结果弹窗开满这么久后也能快进
+export const SKIP_UNLOCK_MAX_REMAINING_RARE = 3
+export const SKIP_UNLOCK_AFTER_MS = 6000
+
 // 稀有度配置
 export const RARITY_CONFIG = {
   common: {

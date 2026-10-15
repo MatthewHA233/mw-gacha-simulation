@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
-import { CDN_BASE_URL } from '../../utils/constants'
+import { CDN_BASE_URL, SKIP_UNLOCK_MAX_REMAINING_RARE } from '../../utils/constants'
 import { useSound } from '../../hooks/useSound'
 import { useAuth } from '../../hooks/useAuth'
 import { useMilestoneTracker } from '../../hooks/useMilestoneTracker'
@@ -477,8 +477,7 @@ export function ChipGacha({
 
   // 快进到下一个史诗/传说物品或结束
   const skipToNext = () => {
-    // 只有在可以快进时才执行（剩余史诗/传说物品 ≤ 1）
-    if (!resultModal.canSkip) return
+    // 能否快进由结果弹窗统一判定（剩余稀有 ≤ 3 或弹窗已开满 6 秒），这里只防状态不对
     if (!resultModal.isGenerating || resultModal.isPaused) return
 
     // 停止当前的动画流程
@@ -1068,7 +1067,7 @@ export function ChipGacha({
 
       // 检查奖池中剩余未抽满的限定史诗/传说物品数量
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
-      const canSkip = remainingLimited <= 1
+      const canSkip = remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       landOnFirstThenShow(resultsWithDrawNum[0], () => {
         setResultModal({
@@ -1229,7 +1228,7 @@ export function ChipGacha({
 
       // 检查奖池中剩余未抽满的限定史诗/传说物品数量
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
-      const canSkip = remainingLimited <= 1
+      const canSkip = remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       landOnFirstThenShow(resultsWithDrawNum[0], () => {
         setResultModal({
@@ -1387,7 +1386,7 @@ export function ChipGacha({
       }))
 
       const remainingLimited = getRemainingLimitedEpicLegendary(tempGameState.items)
-      const canSkip = remainingLimited <= 1
+      const canSkip = remainingLimited <= SKIP_UNLOCK_MAX_REMAINING_RARE
 
       landOnFirstThenShow(resultsWithDrawNum[0], () => {
         setResultModal({
