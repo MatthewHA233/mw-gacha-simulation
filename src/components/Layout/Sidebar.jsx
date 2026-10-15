@@ -265,7 +265,7 @@ export function Sidebar({
       <div className="w-[210px] md:w-[420px] max-w-[42.5vw] md:max-w-[85vw] h-full flex flex-col">
         {/* 顶部网站Logo */}
         <div
-          className="py-3 md:py-4 px-4 border-b border-white/10 bg-gradient-to-br from-slate-950 to-black relative overflow-hidden"
+          className="py-3 md:py-4 px-2 md:px-4 border-b border-white/10 bg-gradient-to-br from-slate-950 to-black relative overflow-hidden"
         >
           {/* 音频波纹背景 */}
           <canvas
@@ -275,7 +275,7 @@ export function Sidebar({
             className="absolute inset-0 w-full h-full opacity-70 pointer-events-none"
           />
 
-          <div className="flex items-center gap-2 md:gap-3 relative z-10">
+          <div className="flex items-center gap-1 md:gap-3 relative z-10">
             {/* Logo - 播放时脉冲发光，可点击打开版本信息 */}
             <motion.div
               onClick={handleLogoClick}
@@ -301,19 +301,22 @@ export function Sidebar({
               />
             </motion.div>
 
-            {/* 文字 - 彩虹渐变光晕效果 */}
+            {/* 标题字标（2026-10-15）：去掉 AI 味的彩虹渐变 + 发光，整行做成军事游戏标题的样式（不拆开）：
+                粗体右倾 + 金属拉丝质感（上亮下暗、中间一道分界）+ 深色硬投影 */}
             <div className="flex-1 min-w-0">
-              <h1
-                className="text-[10px] md:text-sm font-bold tracking-wide"
-                style={{
-                  backgroundImage: 'linear-gradient(to right, #19fdfe 0%, #67e8f9 20%, #a78bfa 40%, #f0abfc 60%, #fef08a 80%, #fef08a 100%)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                  filter: 'drop-shadow(0 0 1px rgba(34, 211, 238, 0.4)) drop-shadow(0 0 2px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 3px rgba(232, 121, 249, 0.3)) drop-shadow(0 0 4px rgba(250, 204, 21, 0.3))',
-                }}
-              >
-                现代战舰抽卡模拟器
+              <h1 className="whitespace-nowrap overflow-hidden leading-none py-0.5">
+                <span
+                  className="inline-block -skew-x-12 text-[11px] md:text-lg font-black tracking-[0.02em] md:tracking-[0.06em] pr-1"
+                  style={{
+                    backgroundImage: 'linear-gradient(180deg, #ffffff 0%, #e2e8f0 46%, #8193a8 52%, #cbd5e1 78%, #f1f5f9 100%)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                    filter: 'drop-shadow(0 1px 0 rgba(0, 0, 0, 0.95)) drop-shadow(1px 1px 0 rgba(8, 47, 73, 0.9))',
+                  }}
+                >
+                  现代战舰抽奖模拟器
+                </span>
               </h1>
               <div className="flex items-center gap-1 text-[8px] md:text-xs mt-0.5">
                 <span className="text-white/60">活动列表</span>

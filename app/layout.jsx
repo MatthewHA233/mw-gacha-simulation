@@ -10,7 +10,7 @@ import '@/index.css'
 
 export const metadata = {
   title: '现代战舰抽奖模拟器',
-  description: '现代战舰游戏抽卡模拟器',
+  description: '现代战舰游戏抽奖模拟器',
   icons: {
     icon: '/MW.png',
   },

@@ -3,13 +3,16 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { buildCurrencyIconUrl, loadActivityIndex, IMG_WEBP } from '../../services/cdnService'
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useSound } from '../../hooks/useSound'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { Crown, Copy, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MembershipModal } from '../ui/MembershipModal'
+
+// 服务端渲染时 useLayoutEffect 会报警告，浏览器端才用它（量宽度要在绘制前，免得闪一下）
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -43,6 +46,35 @@ export function Header({
   const [bindPassError, setBindPassError] = useState('')
   const [bindPassSuccess, setBindPassSuccess] = useState('')
   const [codeCopied, setCodeCopied] = useState(false)
+
+  // 顶部栏放不下时逐级折叠（2026-10-15，号主定：放得下就全部显示，位置不够才自动折）：
+  //   0 级 = 全部显示；1 级 = 省掉股东炮按钮；2 级 = 再把「已获得」累计数收进下拉。活动中英文名一直保留。
+  // needRef[i] 记下第 i 级完整显示需要的宽度，空间够了就逐级放开（侧边栏收起、窗口变宽）。
+  const rowRef = useRef(null)
+  const needRef = useRef([0, 0])
+  const [foldLevel, setFoldLevel] = useState(0)
+  const [showRewards, setShowRewards] = useState(false)
+  const compact = foldLevel >= 2
+  useIsoLayoutEffect(() => {
+    const row = rowRef.current
+    if (!row || typeof ResizeObserver === 'undefined') return
+    const check = () => {
+      const overflow = row.scrollWidth > row.clientWidth + 1
+      if (overflow && foldLevel < 2) {
+        needRef.current[foldLevel] = row.scrollWidth
+        setFoldLevel(foldLevel + 1)
+      } else if (!overflow && foldLevel > 0) {
+        const need = needRef.current[foldLevel - 1]
+        if (need && row.clientWidth >= need) setFoldLevel(foldLevel - 1)
+      }
+    }
+    check()
+    const observer = new ResizeObserver(check)
+    observer.observe(row)
+    Array.from(row.children).forEach(child => observer.observe(child))
+    return () => observer.disconnect()
+  })
+  useEffect(() => { if (!compact) setShowRewards(false) }, [compact])
 
   // 编辑账号信息
   const [showEditAccount, setShowEditAccount] = useState(false)
@@ -261,11 +293,79 @@ export function Header({
     return total
   }
 
+  // 「已获得」的累计数（抽到的艺术硬币 / 美金 / 黄金 / 升级芯片 / 活动代币）；紧凑模式收进下拉
+  const rewardChips = (
+    <>
+            {/* 艺术硬币 */}
+            <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
+              <img
+                src={`${CDN_BASE_URL}/assets/common-items/Artstorm.png${IMG_WEBP}`}
+                alt="艺术硬币"
+                className="w-4 h-4 md:w-6 md:h-6"
+              />
+              <span className="text-purple-400 font-bold text-[10px] md:text-sm">
+                {getArtstormTotal()}
+              </span>
+            </div>
+
+            {/* 旗舰宝箱类：美金 */}
+            {isFlagshipGacha && (
+              <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-green-500/30">
+                <img
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png${IMG_WEBP}`}
+                  alt="美金"
+                  className="w-4 h-4 md:w-6 md:h-6"
+                />
+                <span className="text-green-400 font-bold text-[10px] md:text-sm">
+                  {getSoftTotal()}
+                </span>
+              </div>
+            )}
+
+            {/* 黄金 */}
+            <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
+              <img
+                src={`${CDN_BASE_URL}/assets/common-items/Hard.png${IMG_WEBP}`}
+                alt="黄金"
+                className="w-4 h-4 md:w-6 md:h-6"
+              />
+              <span className="text-yellow-400 font-bold text-[10px] md:text-sm">
+                {getGoldTotal()}
+              </span>
+            </div>
+
+            {/* 旗舰宝箱类：升级芯片 */}
+            {isFlagshipGacha && (
+              <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
+                <img
+                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png${IMG_WEBP}`}
+                  alt="升级芯片"
+                  className="w-4 h-4 md:w-6 md:h-6"
+                />
+                <span className="text-blue-400 font-bold text-[10px] md:text-sm">
+                  {getUpgradesTotal()}
+                </span>
+              </div>
+            )}
+
+            {/* 特殊资源（仅当当前活动有该资源时显示） */}
+            {getSpecialCurrencyTotals().map(s => (
+              <div
+                key={s.id}
+                className={`flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border ${s.borderClass}`}
+              >
+                <img src={s.iconUrl} alt={s.label} className="w-4 h-4 md:w-6 md:h-6" />
+                <span className={`${s.textClass} font-bold text-[10px] md:text-sm`}>{s.total}</span>
+              </div>
+            ))}
+    </>
+  )
+
   return (
     <div className="absolute top-0 left-0 right-0 z-50">
-      <div className="relative flex items-center justify-between px-2 py-0.5 md:px-4 md:py-3 bg-gradient-to-b from-black/80 to-black/40">
+      <div ref={rowRef} className="relative flex items-center justify-between gap-1 md:gap-3 px-2 py-0.5 md:px-4 md:py-3 bg-gradient-to-b from-black/80 to-black/40">
         {/* 左侧：返回按钮 + 标题 */}
-        <div className="flex items-center gap-1 md:gap-4">
+        <div className="flex items-center gap-1 md:gap-4 shrink-0">
           {/* 侧边栏切换按钮 */}
           <motion.button
             onClick={isModalOpen ? undefined : () => { playButtonClick(); onToggleSidebar(); }}
@@ -287,8 +387,8 @@ export function Header({
             )}
           </motion.button>
 
-          {/* 股东炮抽奖链接 - 不在 la101 页面时显示 */}
-          {activityId !== 'la104' && (
+          {/* 股东炮抽奖链接 - 不在 la104 页面时显示；顶部栏放不下（紧凑模式）时整个省掉，号主定：宁可留活动英文名 */}
+          {activityId !== 'la104' && foldLevel === 0 && (
             <motion.button
               onClick={() => {
                 playButtonClick();
@@ -305,20 +405,22 @@ export function Header({
                   alt="股东炮"
                   className="w-5 h-5 md:w-10 md:h-10 object-contain"
                 />
-                <span className="text-[10px] md:text-sm font-bold">股东炮抽奖！</span>
+                {/* 手机上固定两行（按钮窄一半，侧边栏收起时整排放得下），电脑上一行 */}
+                <span className="md:hidden text-[10px] font-bold leading-tight text-left">股东炮<br />抽奖！</span>
+                <span className="hidden md:inline text-sm font-bold whitespace-nowrap">股东炮抽奖！</span>
               </div>
             </motion.button>
           )}
 
           {/* 标题 */}
-          <div>
-            <h1 className="text-white text-[10px] md:text-lg font-bold">{activityName}</h1>
-            <p className="text-cyan-400 text-[8px] md:text-xs">{activityNameEn}</p>
+          <div className="min-w-0">
+            <h1 className="text-white text-[10px] md:text-lg font-bold whitespace-nowrap">{activityName}</h1>
+            <p className="text-cyan-400 text-[8px] md:text-xs whitespace-nowrap">{activityNameEn}</p>
           </div>
         </div>
 
         {/* 右侧：会员状态 + 登录/注销 + 信息按钮 + 赞助按钮 + 货币显示 */}
-        <div className="flex items-center gap-1 md:gap-4">
+        <div className="flex items-center gap-1 md:gap-4 shrink-0">
           {/* 会员状态徽章 + 剩余天数 */}
           {isActivated && isMember && (
             <motion.div
@@ -797,68 +899,25 @@ export function Header({
               <span className="text-red-400 font-bold text-[10px] md:text-sm">{gameState.rmb}</span>
             </div>
 
-            {/* 艺术硬币 */}
-            <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-purple-500/30">
-              <img
-                src={`${CDN_BASE_URL}/assets/common-items/Artstorm.png${IMG_WEBP}`}
-                alt="艺术硬币"
-                className="w-4 h-4 md:w-6 md:h-6"
-              />
-              <span className="text-purple-400 font-bold text-[10px] md:text-sm">
-                {getArtstormTotal()}
-              </span>
-            </div>
-
-            {/* 旗舰宝箱类：美金 */}
-            {isFlagshipGacha && (
-              <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-green-500/30">
-                <img
-                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Soft.png${IMG_WEBP}`}
-                  alt="美金"
-                  className="w-4 h-4 md:w-6 md:h-6"
-                />
-                <span className="text-green-400 font-bold text-[10px] md:text-sm">
-                  {getSoftTotal()}
-                </span>
+            {compact ? (
+              <div className="relative">
+                <button
+                  onClick={() => { playButtonClick(); setShowRewards(v => !v) }}
+                  className="flex items-center gap-0.5 md:gap-1 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-white/20 text-white/80 text-[10px] md:text-sm font-bold whitespace-nowrap"
+                >
+                  已获得
+                  <svg className={`w-3 h-3 md:w-4 md:h-4 transition-transform ${showRewards ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                </button>
+                {showRewards && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowRewards(false)} />
+                    <div className="absolute top-full right-0 mt-1 z-50 flex flex-col items-end gap-1 p-1.5 bg-slate-900/95 border border-slate-700 shadow-xl">
+                      {rewardChips}
+                    </div>
+                  </>
+                )}
               </div>
-            )}
-
-            {/* 黄金 */}
-            <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-yellow-500/30">
-              <img
-                src={`${CDN_BASE_URL}/assets/common-items/Hard.png${IMG_WEBP}`}
-                alt="黄金"
-                className="w-4 h-4 md:w-6 md:h-6"
-              />
-              <span className="text-yellow-400 font-bold text-[10px] md:text-sm">
-                {getGoldTotal()}
-              </span>
-            </div>
-
-            {/* 旗舰宝箱类：升级芯片 */}
-            {isFlagshipGacha && (
-              <div className="flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border border-blue-500/30">
-                <img
-                  src={`${CDN_BASE_URL}/assets/contentseparated_assets_content/textures/sprites/currency/Upgrades.png${IMG_WEBP}`}
-                  alt="升级芯片"
-                  className="w-4 h-4 md:w-6 md:h-6"
-                />
-                <span className="text-blue-400 font-bold text-[10px] md:text-sm">
-                  {getUpgradesTotal()}
-                </span>
-              </div>
-            )}
-
-            {/* 特殊资源（仅当当前活动有该资源时显示） */}
-            {getSpecialCurrencyTotals().map(s => (
-              <div
-                key={s.id}
-                className={`flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border ${s.borderClass}`}
-              >
-                <img src={s.iconUrl} alt={s.label} className="w-4 h-4 md:w-6 md:h-6" />
-                <span className={`${s.textClass} font-bold text-[10px] md:text-sm`}>{s.total}</span>
-              </div>
-            ))}
+            ) : rewardChips}
           </div>
         </div>
       </div>
