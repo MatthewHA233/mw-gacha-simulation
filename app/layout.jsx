@@ -19,6 +19,15 @@ export const metadata = {
   manifest: '/manifest.webmanifest',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // 安卓 Chrome 输入法：默认只缩小可视区域、再把整页往上推来露出输入框（顶上去，收起后还可能错位）。
+  // resizes-content 让布局区域直接变矮：fixed 居中的弹窗自动落到键盘上方。背后页面的高度由 ViewportHeightSync
+  // 在输入时冻结，不跟着压扁。iPhone 会忽略这一项，照它自己的方式处理。
+  interactiveWidget: 'resizes-content',
+}
+
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN">

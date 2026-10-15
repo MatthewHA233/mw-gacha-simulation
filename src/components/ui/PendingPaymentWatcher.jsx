@@ -391,7 +391,7 @@ function SuccessModal({ activationCode, onClose, shouldRotate, isRenewal = false
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'tween', duration: 0.2 }}
-            className="w-full max-w-[360px] md:max-w-2xl relative overflow-x-hidden overflow-y-auto max-h-[85vh] bg-slate-900/80 border border-slate-600/50 shadow-2xl backdrop-blur-md"
+            className="w-full max-w-[360px] md:max-w-2xl relative overflow-x-hidden overflow-y-auto max-h-[85%] bg-slate-900/80 border border-slate-600/50 shadow-2xl backdrop-blur-md"
           style={{
             backgroundImage: `linear-gradient(to right, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.4) 100%), url(${CDN_BASE_URL}/assets/ui-common/resources_captain_vip_background_1920x1080.webp)`,
             backgroundSize: '120%',

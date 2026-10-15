@@ -99,20 +99,52 @@ function ModeIcon({ mode, className }) {
 
 const modeLabel = (mode) => PLAY_MODES.find((item) => item.id === mode)?.label || ''
 
-function Playlist({ tracks, trackIndex, isPlaying, mode, onPick }) {
+// 播放器可以拖到任何位置（FloatingControls），拖完发这个事件，开着的歌单据此重新决定往哪边展开
+export const PLAYER_MOVED_EVENT = 'bgm-player-moved'
+const LIST_GAP = 8
+
+// 歌单往哪边展开：看播放器在主内容区里的位置——上方空间多就往上、否则往下；播放器在右半边就靠右对齐；
+// 高度不超过那一侧的剩余空间（手机横屏只有三四百像素高，9 首全展开会顶出屏幕，超出的在列表里滚动）
+function playlistPlacement(anchor) {
+  const box = anchor?.closest('[data-bgm-box]')
+  const parent = box?.offsetParent
+  if (!box || !parent) return { above: true, alignRight: false, maxHeight: 240 }
+  const header = parent.firstElementChild
+  const headerHeight = header && header !== box ? header.offsetHeight : 0
+  const spaceAbove = box.offsetTop - headerHeight - LIST_GAP * 2
+  const spaceBelow = parent.clientHeight - box.offsetTop - box.offsetHeight - LIST_GAP * 2
+  const above = spaceAbove >= spaceBelow
+  return {
+    above,
+    alignRight: box.offsetLeft + box.offsetWidth / 2 > parent.clientWidth / 2,
+    maxHeight: Math.max(120, above ? spaceAbove : spaceBelow),
+  }
+}
+
+// 标题行不动、列表在里面滚，打开时滚到当前那首
+function Playlist({ tracks, trackIndex, isPlaying, mode, placement, onPick }) {
+  const currentRef = useRef(null)
+  useEffect(() => { currentRef.current?.scrollIntoView({ block: 'nearest' }) }, [])
+  const side = `${placement.above ? 'bottom-full mb-2' : 'top-full mt-2'} ${placement.alignRight ? 'right-0' : 'left-0'}`
   return (
-    <div className="absolute bottom-full left-0 mb-2 w-44 md:w-52 rounded-xl border border-white/15 bg-[#0e0c15]/95 p-1 shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
-      <div className="flex items-center justify-between px-2 pt-1 pb-1.5 text-[10px] md:text-[11px] text-white/45">
+    <div
+      data-bgm-playlist=""
+      className={`absolute ${side} w-52 md:w-56 flex flex-col rounded-xl border border-white/15 bg-[#0e0c15]/95 p-1 shadow-[0_8px_24px_rgba(0,0,0,0.6)]`}
+      style={{ maxHeight: placement.maxHeight }}
+    >
+      <div className="shrink-0 flex items-center justify-between gap-2 px-2 pt-1 pb-1.5 text-[10px] md:text-[11px] text-white/45 whitespace-nowrap">
         <span>背景音乐 · 游戏主界面</span>
         <span className="flex items-center gap-1 text-[#b9a8e6]/80">
           <ModeIcon mode={mode} className="w-3 h-3" />{modeLabel(mode)}
         </span>
       </div>
+      <div className="min-h-0 overflow-y-auto overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.18)_transparent]">
       {tracks.map((track, index) => {
         const current = index === trackIndex
         return (
           <button
             key={track.id}
+            ref={current ? currentRef : undefined}
             onClick={() => onPick(index)}
             className={`w-full flex items-center gap-2 px-2 py-1.5 md:py-2 rounded-lg text-left text-[11px] md:text-xs transition-colors ${
               current ? 'bg-[#b9a8e6]/[0.12] text-[#ece7f8]' : 'text-white/70 hover:bg-white/[0.06] hover:text-white'
@@ -127,6 +159,7 @@ function Playlist({ tracks, trackIndex, isPlaying, mode, onPick }) {
           </button>
         )
       })}
+      </div>
     </div>
   )
 }
@@ -135,7 +168,25 @@ export function MusicPlayer() {
   const { tracks, track, trackIndex, isPlaying, isLoading, failed, mode, toggle, selectTrack, next, cycleMode } = useMusic()
   const { playButtonClick } = useSound()
   const [open, setOpen] = useState(false)
+  const [placement, setPlacement] = useState({ above: true, alignRight: false, maxHeight: 240 })
   const rootRef = useRef(null)
+
+  const toggleList = () => {
+    if (!open) setPlacement(playlistPlacement(rootRef.current))
+    setOpen((value) => !value)
+  }
+
+  // 开着歌单时拖动了播放器：重新决定展开方向
+  useEffect(() => {
+    if (!open) return undefined
+    const replace = () => setPlacement(playlistPlacement(rootRef.current))
+    window.addEventListener(PLAYER_MOVED_EVENT, replace)
+    window.addEventListener('resize', replace)
+    return () => {
+      window.removeEventListener(PLAYER_MOVED_EVENT, replace)
+      window.removeEventListener('resize', replace)
+    }
+  }, [open])
 
   // 点歌单外面收起
   useEffect(() => {
@@ -156,13 +207,14 @@ export function MusicPlayer() {
           trackIndex={trackIndex}
           isPlaying={isPlaying}
           mode={mode}
+          placement={placement}
           onPick={(index) => { playButtonClick(); selectTrack(index); setOpen(false) }}
         />
       )}
       <div className="flex items-center gap-1.5 md:gap-2 rounded-full border border-white/15 bg-black/55 backdrop-blur-sm pl-1 pr-1 py-1 shadow-[0_3px_12px_rgba(0,0,0,0.55)]">
         <Disc track={track} isPlaying={isPlaying} isLoading={isLoading} onClick={() => { playButtonClick(); toggle() }} />
         <button
-          onClick={() => { playButtonClick(); setOpen((value) => !value) }}
+          onClick={() => { playButtonClick(); toggleList() }}
           aria-label="背景音乐歌单"
           className="min-w-0 flex items-center gap-1.5 md:gap-2 pl-0.5 text-left"
         >

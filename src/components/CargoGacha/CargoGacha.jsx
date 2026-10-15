@@ -29,6 +29,7 @@ import { ConfirmModal } from '../ui/ConfirmModal'
 import { QuickPurchaseConfirm } from '../ui/QuickPurchaseConfirm'
 import { MembershipModal } from '../ui/MembershipModal'
 import { MilestonePullButton } from '../ui/MilestonePullButton'
+import { isPhoneLayout } from '../../utils/phoneLayout'
 
 /**
  * 机密货物类抽卡组件
@@ -46,7 +47,7 @@ export function CargoGacha({
   const [selectedCargoType, setSelectedCargoType] = useState('rm') // 'rm' | 'gameplay'
   const [isNarrow, setIsNarrow] = useState(false)
   useEffect(() => {
-    const update = () => setIsNarrow(window.innerWidth < 768)
+    const update = () => setIsNarrow(isPhoneLayout())
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)

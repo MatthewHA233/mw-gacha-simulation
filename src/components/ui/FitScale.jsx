@@ -21,9 +21,10 @@ export function FitScale({ children, className = '', maxScale = 1 }) {
     const inner = innerRef.current
     if (!outer || !inner || typeof ResizeObserver === 'undefined') return
     const update = () => {
-      // offsetWidth / offsetHeight 是排版尺寸，不受自身 transform 影响
-      const w = inner.offsetWidth
-      const h = inner.offsetHeight
+      // offsetWidth / offsetHeight 是排版尺寸，不受自身 transform 影响；
+      // 再取 scrollWidth / scrollHeight：子元素溢出自身宽度时（如六边形奖池第三排比上面宽）也算进去，不然会被裁掉
+      const w = Math.max(inner.offsetWidth, inner.scrollWidth)
+      const h = Math.max(inner.offsetHeight, inner.scrollHeight)
       if (!w || !h) return
       setScale(Math.min(maxScale, outer.clientWidth / w, outer.clientHeight / h))
     }

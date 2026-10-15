@@ -8,6 +8,7 @@ import { ChipGacha } from '../components/ChipGacha/ChipGacha'
 import { CargoGacha } from '../components/CargoGacha/CargoGacha'
 import { FlagshipGacha } from '../components/FlagshipGacha/FlagshipGacha'
 import { FloatingControls } from '../components/ui/FloatingControls'
+import { isPhoneLayout } from '../utils/phoneLayout'
 
 /**
  * 抽卡页面容器
@@ -18,7 +19,7 @@ export function GachaPage({ type, activityId }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sponsorModal, setSponsorModal] = useState(false)
   const [versionModalOpen, setVersionModalOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(isPhoneLayout())
   const [itemScale, setItemScale] = useState(1)
   const [shouldRotate, setShouldRotate] = useState(false)
 
@@ -82,7 +83,7 @@ export function GachaPage({ type, activityId }) {
       const shouldRotateNow = width < height && width < 900
       setShouldRotate(shouldRotateNow)
 
-      setIsMobile(width < 768)
+      setIsMobile(isPhoneLayout())
 
       // 计算物品缩放比例
       const baseWidth = 1920

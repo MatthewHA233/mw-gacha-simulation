@@ -1,84 +1,150 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { MusicPlayer } from '../music/MusicPlayer'
-import { useSound } from '../../hooks/useSound'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { MusicPlayer, PLAYER_MOVED_EVENT } from '../music/MusicPlayer'
+import { useAutoFullscreen } from '../../hooks/useAutoFullscreen'
 
 /**
- * 左下角悬浮控件（2026-10-15）：背景音乐播放器 + 手机「全屏横屏」。
+ * 底部悬浮控件（2026-10-15）：背景音乐播放器。顺带挂上手机自动全屏横屏（没有按钮，见 useAutoFullscreen）。
  * 放在抽卡页的旋转容器里（伪横屏时跟着一起转）；音乐状态在根布局的 MusicProvider，换页面不中断。
+ *
+ * 默认在左侧 10%、贴底（号主定）；按住拖动可以换位置（移动超过 6px 才算拖，不影响点按钮），松手后按「在可移动范围里的比例」
+ * 记在本地，换屏幕尺寸、横竖切换后还在同样的相对位置，也不会跑出屏幕。拖动范围是主内容区里顶部栏以下。
+ * 伪横屏时页面整体转了 90°，手指在屏幕上的位移要按祖先元素的变换矩阵换算回页面里的方向。
  */
+const POS_KEY = 'bgm_player_pos'   // { fx, fy }，0~1
+const DRAG_THRESHOLD = 6
 
-// 「全屏横屏」：进入全屏后把屏幕方向锁成横屏，系统锁了竖屏也是真横屏（截图、输入法都横）。
-// 只在支持锁定方向的触屏浏览器上显示（安卓 Chrome / Edge / 三星 / 火狐）；iPhone Safari、微信 / QQ 内置浏览器不支持就不显示，继续用伪横屏。
-function useLandscapeLockSupport() {
-  const [supported, setSupported] = useState(false)
-  useEffect(() => {
-    const coarse = window.matchMedia?.('(pointer: coarse)').matches
-    const canFullscreen = !!(document.fullscreenEnabled && document.documentElement.requestFullscreen)
-    const canLock = !!(window.screen?.orientation && typeof window.screen.orientation.lock === 'function')
-    setSupported(!!(coarse && canFullscreen && canLock))
-  }, [])
-  return supported
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+
+// 屏幕上的位移 → 本元素所在坐标系里的位移（抵消祖先的旋转 / 缩放）
+function screenToLocal(el) {
+  let matrix = new DOMMatrix()
+  for (let node = el.parentElement; node; node = node.parentElement) {
+    const transform = getComputedStyle(node).transform
+    if (transform && transform !== 'none') matrix = new DOMMatrix(transform).multiply(matrix)
+  }
+  const inverse = matrix.inverse()
+  const origin = inverse.transformPoint({ x: 0, y: 0 })
+  return (dx, dy) => {
+    const point = inverse.transformPoint({ x: dx, y: dy })
+    return { x: point.x - origin.x, y: point.y - origin.y }
+  }
 }
 
-function LandscapeButton() {
-  const supported = useLandscapeLockSupport()
-  const [active, setActive] = useState(false)
-  const { playButtonClick } = useSound()
-
-  useEffect(() => {
-    const onChange = () => {
-      const inFullscreen = !!document.fullscreenElement
-      setActive(inFullscreen)
-      if (!inFullscreen) { try { window.screen.orientation.unlock?.() } catch { /* 有的浏览器没有 unlock */ } }
-    }
-    document.addEventListener('fullscreenchange', onChange)
-    return () => document.removeEventListener('fullscreenchange', onChange)
-  }, [])
-
-  if (!supported) return null
-
-  const enter = async () => {
-    try {
-      await document.documentElement.requestFullscreen({ navigationUI: 'hide' })
-    } catch {
-      toast.error('当前浏览器不允许全屏')
-      return
-    }
-    try {
-      await window.screen.orientation.lock('landscape')
-    } catch {
-      try { await document.exitFullscreen() } catch { /* 已退出 */ }
-      toast('当前浏览器不支持锁定横屏，请打开系统自动旋转后把手机横过来', { icon: 'ℹ️' })
-    }
+// 可移动范围：主内容区内、顶部栏（主内容区第一个子元素）以下
+function bounds(el) {
+  const parent = el.offsetParent
+  if (!parent) return null
+  const header = parent.firstElementChild
+  const minTop = header && header !== el ? header.offsetHeight : 0
+  return {
+    maxLeft: Math.max(0, parent.clientWidth - el.offsetWidth),
+    minTop,
+    maxTop: Math.max(minTop, parent.clientHeight - el.offsetHeight),
   }
-  const exit = async () => {
-    try { window.screen.orientation.unlock?.() } catch { /* 同上 */ }
-    try { await document.exitFullscreen() } catch { /* 已退出 */ }
-  }
+}
 
-  return (
-    <button
-      onClick={() => { playButtonClick(); active ? exit() : enter() }}
-      aria-label={active ? '退出全屏' : '全屏横屏'}
-      title={active ? '退出全屏' : '全屏横屏'}
-      className="w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center bg-slate-900/80 border border-white/25 text-white/85 shadow-[0_3px_10px_rgba(0,0,0,0.6)] hover:text-white"
-    >
-      {active ? (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3v4a2 2 0 0 1-2 2H3M21 9h-4a2 2 0 0 1-2-2V3M3 15h4a2 2 0 0 1 2 2v4M15 21v-4a2 2 0 0 1 2-2h4" /></svg>
-      ) : (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3" /></svg>
-      )}
-    </button>
-  )
+function readStoredPos() {
+  try {
+    const value = JSON.parse(localStorage.getItem(POS_KEY) || 'null')
+    if (value && Number.isFinite(value.fx) && Number.isFinite(value.fy)) {
+      return { fx: clamp(value.fx, 0, 1), fy: clamp(value.fy, 0, 1) }
+    }
+  } catch { /* 坏数据 / 存储不可用：用默认位置 */ }
+  return null
 }
 
 export function FloatingControls() {
+  useAutoFullscreen()
+  const boxRef = useRef(null)
+  const dragRef = useRef(null)
+  const justDraggedRef = useRef(false)
+  const [pos, setPos] = useState(null)        // 存下的比例；null = 默认位置
+  const [pixels, setPixels] = useState(null)  // 实际摆放的 left / top
+
+  useEffect(() => { setPos(readStoredPos()) }, [])
+
+  // 比例 → 像素；窗口、侧边栏、横竖变化时重算
+  useLayoutEffect(() => {
+    const el = boxRef.current
+    const parent = el?.offsetParent
+    if (!el || !parent || !pos) { setPixels(null); return undefined }
+    const place = () => {
+      const b = bounds(el)
+      if (b) setPixels({ left: b.maxLeft * pos.fx, top: b.minTop + (b.maxTop - b.minTop) * pos.fy })
+    }
+    place()
+    const observer = new ResizeObserver(place)
+    observer.observe(parent)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [pos])
+
+  const onPointerDown = (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    // 在歌单里按下（拖滚动条、滑列表）不拖播放器，否则播放器会跟着手走
+    if (event.target.closest?.('[data-bgm-playlist]')) return
+    const el = boxRef.current
+    const b = bounds(el)
+    if (!b) return
+    justDraggedRef.current = false
+    dragRef.current = {
+      id: event.pointerId, startX: event.clientX, startY: event.clientY,
+      left: el.offsetLeft, top: el.offsetTop, toLocal: screenToLocal(el), bounds: b, moved: false, last: null,
+    }
+  }
+
+  const onPointerMove = (event) => {
+    const drag = dragRef.current
+    if (!drag || drag.id !== event.pointerId) return
+    const { x, y } = drag.toLocal(event.clientX - drag.startX, event.clientY - drag.startY)
+    if (!drag.moved) {
+      if (Math.hypot(x, y) < DRAG_THRESHOLD) return
+      drag.moved = true
+      boxRef.current.setPointerCapture?.(event.pointerId)
+    }
+    const { maxLeft, minTop, maxTop } = drag.bounds
+    drag.last = { left: clamp(drag.left + x, 0, maxLeft), top: clamp(drag.top + y, minTop, maxTop) }
+    setPixels(drag.last)
+  }
+
+  const endDrag = (event) => {
+    const drag = dragRef.current
+    if (!drag || drag.id !== event.pointerId) return
+    dragRef.current = null
+    if (!drag.moved || !drag.last) return
+    justDraggedRef.current = true
+    const { maxLeft, minTop, maxTop } = drag.bounds
+    const next = {
+      fx: maxLeft > 0 ? drag.last.left / maxLeft : 0,
+      fy: maxTop > minTop ? (drag.last.top - minTop) / (maxTop - minTop) : 1,
+    }
+    setPos(next)
+    try { localStorage.setItem(POS_KEY, JSON.stringify(next)) } catch { /* 存不了就只在这次有效 */ }
+    window.dispatchEvent(new Event(PLAYER_MOVED_EVENT))   // 歌单开着的话重新决定往哪边展开
+  }
+
+  // 拖完松手那一下不算点击（不切歌、不暂停）
+  const onClickCapture = (event) => {
+    if (!justDraggedRef.current) return
+    justDraggedRef.current = false
+    event.stopPropagation()
+    event.preventDefault()
+  }
+
   return (
-    <div className="absolute left-3 bottom-3 md:left-6 md:bottom-6 z-30 flex flex-col items-start gap-2">
-      <LandscapeButton />
+    <div
+      ref={boxRef}
+      data-bgm-box=""
+      className={`absolute z-30 touch-none select-none ${pixels ? '' : 'left-[10%] bottom-3 md:bottom-6'}`}
+      style={pixels ? { left: pixels.left, top: pixels.top } : undefined}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onClickCapture={onClickCapture}
+    >
       <MusicPlayer />
     </div>
   )

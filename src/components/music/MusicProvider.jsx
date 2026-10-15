@@ -10,7 +10,7 @@ import { BGM_TRACKS } from './tracks'
  * 根布局在路由切换时不会重新挂载，所以 <audio> 放这里，换活动页面音乐不中断、进度不变；
  * 整页刷新时从 localStorage 记下的曲目和位置接着放。侧边栏的频谱和左下角的播放器都从这里取状态。
  * 播放偏好沿用原来侧边栏的 localStorage 键与规则：主动开过才自动播放，暂停超过一天自动恢复为播放。
- * 播放模式三种（号主定默认单曲循环），和最近播放的曲目、位置一起记在本地。
+ * 播放模式三种（默认列表循环），和最近播放的曲目、位置一起记在本地。
  */
 
 const KEY_PLAYING = 'sidebar_music_playing'
@@ -26,7 +26,7 @@ export const PLAY_MODES = [
   { id: 'all', label: '列表循环' },
   { id: 'shuffle', label: '随机播放' },
 ]
-const DEFAULT_MODE = 'one'
+const DEFAULT_MODE = 'all'   // 号主 2026-10-15 定：默认列表循环（本地存过模式的照旧用存的）
 const isMode = (value) => PLAY_MODES.some((mode) => mode.id === value)
 
 // 跨域：crossOrigin 的 <audio>（频谱要用）要求响应带跨域头。OSS 只在请求带 Origin 时才回，CDN 又不按 Origin

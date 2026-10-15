@@ -93,7 +93,7 @@ export function LoginModal({ isOpen, onClose, onSuccess, onOpenMembership }) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'tween', duration: 0.2 }}
-            className="bg-slate-900 w-full max-w-[320px] md:max-w-md max-h-[85vh] overflow-y-auto border border-slate-600 shadow-2xl relative"
+            className="bg-slate-900 w-full max-w-[320px] md:max-w-md max-h-[85%] overflow-y-auto border border-slate-600 shadow-2xl relative"
             onClick={e => e.stopPropagation()}
           >
             {/* 顶部装饰条 */}

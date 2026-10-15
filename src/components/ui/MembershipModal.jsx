@@ -307,7 +307,7 @@ export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'sel
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'tween', duration: 0.2 }}
-            className={`w-full relative overflow-x-hidden overflow-y-auto max-h-[85vh] transition-all duration-300 ${
+            className={`w-full relative overflow-x-hidden overflow-y-auto max-h-[85%] transition-all duration-300 ${
               step === 'payment' ? 'max-w-[360px] md:max-w-2xl bg-white rounded-lg shadow-2xl'
               : (step === 'login' || step === 'bind') ? 'max-w-[360px] md:max-w-md bg-slate-900/80 border border-slate-600/50 shadow-2xl backdrop-blur-md'
               : 'max-w-[360px] md:max-w-2xl bg-slate-900/80 border border-slate-600/50 shadow-2xl backdrop-blur-md'
