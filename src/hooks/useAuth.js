@@ -287,6 +287,36 @@ export function AuthProvider({ children }) {
   }, [membership])
 
   /**
+   * 修改账号名 / 密码（任意一项留空表示不修改）
+   */
+  const updateAccount = useCallback(async (currentPassword, newLoginId, newPassword) => {
+    const account = JSON.parse(localStorage.getItem(USER_KEY) || 'null')
+    if (!account?.user_id) throw new Error('请先绑定账号')
+
+    const response = await fetch('/api/auth/update-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: account.user_id,
+        current_password: currentPassword,
+        new_login_id: newLoginId || '',
+        new_password: newPassword || ''
+      })
+    })
+    const result = await response.json()
+    if (!response.ok) throw new Error(result.error || '修改失败')
+
+    // 如果账号名有变更，同步到本地
+    if (result.data?.login_id) {
+      const updated = { ...account, login_id: result.data.login_id }
+      localStorage.setItem(USER_KEY, JSON.stringify(updated))
+      setUserAccount(updated)
+    }
+
+    return result
+  }, [])
+
+  /**
    * 注销
    */
   const deactivate = useCallback(() => {
@@ -329,6 +359,7 @@ export function AuthProvider({ children }) {
     activateAfterPayment,
     bindAccount,
     bindPass,
+    updateAccount,
     deactivate,
     verify,
 
