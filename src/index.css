@@ -43,12 +43,12 @@
   mask-composite: exclude;
 }
 
-/* 背景音乐播放器「正在播放」的跳动音量条（MusicPlayer.jsx） */
+/* 背景音乐播放器的频率线（MusicPlayer.jsx）：三根细线平滑起伏，顶端一截亮头。
+   动画改 height 而不是 scaleY——scaleY 会把顶端那 1px 亮头一起压扁变糊。 */
 @keyframes bgm-eq {
-  0%, 100% { transform: scaleY(0.35); }
-  50% { transform: scaleY(1); }
+  0%, 100% { height: 35%; }
+  50% { height: 100%; }
 }
 .bgm-eq-bar {
-  transform-origin: bottom;
   animation: bgm-eq 0.9s ease-in-out infinite;
 }
