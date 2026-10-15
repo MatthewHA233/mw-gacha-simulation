@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { Menu } from 'lucide-react'
 
 // Layout & UI components
-import { NoiseOverlay, ADMIN_ID } from './admin/Shared'
+import { NoiseOverlay } from './admin/Shared'
+import { adminFetch } from './admin/adminFetch'
 import { Sidebar, NAV } from './admin/Sidebar'
 
 // Views
@@ -16,11 +17,21 @@ import { GiftCodes } from './admin/GiftCodes'
 
 export default function AdminDashboard() {
   const { userAccount, loading } = useAuth()
-  const isAdmin = userAccount?.login_id === ADMIN_ID
+  // 是否管理员由服务端判定（管理员账号只在服务端环境变量里，前端不再本地比对）：null = 还没问到
+  const [isAdmin, setIsAdmin] = useState(null)
+  useEffect(() => {
+    if (!userAccount) { setIsAdmin(null); return }
+    let cancelled = false
+    adminFetch('/api/admin/whoami')
+      .then((res) => res.json())
+      .then((data) => { if (!cancelled) setIsAdmin(Boolean(data?.isAdmin)) })
+      .catch(() => { if (!cancelled) setIsAdmin(false) })
+    return () => { cancelled = true }
+  }, [userAccount])
   const [nav, setNav] = useState('overview')
   const [drawer, setDrawer] = useState(false)
 
-  if (loading) return (
+  if (loading || (userAccount && isAdmin === null)) return (
     <div className="flex h-full min-h-screen items-center justify-center bg-[#0B0E1A]">
       <div className="flex flex-col items-center gap-4">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-transparent border-t-[#00F5D4] shadow-[0_0_15px_rgba(0,245,212,0.5)]" />
