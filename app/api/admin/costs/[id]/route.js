@@ -4,6 +4,7 @@
 
 import { NextResponse } from 'next/server'
 import { getSupabase } from '@lib/supabase/serverClient'
+import { requireAdmin } from '@lib/admin/adminAuth'
 
 export async function DELETE(request, { params }) {
   try {
@@ -11,6 +12,9 @@ export async function DELETE(request, { params }) {
 
     const supabase = getSupabase()
     if (!supabase) return NextResponse.json({ error: 'Supabase 未配置' }, { status: 503 })
+    // 管理员身份在服务端核对（2026-10-15 前这些接口不校验，谁都能调）
+    const auth = await requireAdmin(request, supabase)
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { error } = await supabase
       .from('admin_costs')

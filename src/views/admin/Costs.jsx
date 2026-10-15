@@ -4,6 +4,7 @@ import {
     fmt, todayStr,
     PageHeader, IconBtn, ErrorBanner
 } from './Shared'
+import { adminFetch } from './adminFetch'
 
 export function Costs() {
     const [costs, setCosts] = useState([])
@@ -15,7 +16,7 @@ export function Costs() {
     const load = useCallback(async () => {
         setLoading(true); setError(null)
         try {
-            const res = await fetch('/api/admin/costs')
+            const res = await adminFetch('/api/admin/costs')
             const d = await res.json()
             if (!res.ok) throw new Error(d.error || '请求失败')
             setCosts(d.costs || [])
@@ -30,7 +31,7 @@ export function Costs() {
         if (!form.description.trim() || !form.date || isNaN(amountCents) || amountCents <= 0) return
         setAdding(true)
         try {
-            const res = await fetch('/api/admin/costs', {
+            const res = await adminFetch('/api/admin/costs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: amountCents, description: form.description.trim(), cost_date: form.date }),
@@ -46,7 +47,7 @@ export function Costs() {
     async function removeCost(id) {
         setCosts(prev => prev.filter(c => c.id !== id))
         try {
-            const res = await fetch(`/api/admin/costs/${id}`, { method: 'DELETE' })
+            const res = await adminFetch(`/api/admin/costs/${id}`, { method: 'DELETE' })
             if (!res.ok) throw new Error()
         } catch {
             load() // 出错则重新加载

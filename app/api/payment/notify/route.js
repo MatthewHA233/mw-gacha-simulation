@@ -13,6 +13,7 @@ import { verifySign } from '@lib/payment/signUtil'
 import { getOrder, updateOrderStatus } from '@lib/payment/orderStore'
 import { getSupabase } from '@lib/supabase/serverClient'
 import { grantMwMonitorMembership } from '@lib/mwmonitor/grant'
+import { generateActivationCode } from '@lib/membership/activationCode'
 
 /**
  * 将支付网关回调的北京本地时间字符串转换为 UTC ISO 字符串
@@ -31,19 +32,7 @@ function payTimeToUTC(payTime) {
 
 const APP_SECRET = process.env.PAYMENT_APP_SECRET
 
-/**
- * 序列号字符集：排除易混淆字符 0/O/1/I/L
- * 30 个字符 × 8 位 = 30^8 ≈ 6561 亿种组合
- */
-const CODE_CHARS = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'
-
-function generateActivationCode() {
-  let code = ''
-  for (let i = 0; i < 8; i++) {
-    code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]
-  }
-  return `MW-${code}`
-}
+// 序列号格式（MW-XXXXXXXX）与管理员赠送码共用，见 lib/membership/activationCode.js
 
 export async function POST(request) {
   try {

@@ -72,7 +72,13 @@ export async function POST(request) {
         .eq('login_id', login_id.trim())
         .single()
 
-      if (userErr || !user) {
+      // .single() 查不到行时报 PGRST116，那才是账号不存在；其他错误是连不上数据库，
+      // 不能说成「账号不存在」（2026-10-15 本地连不上 Supabase 时就这样误导过）
+      if (userErr && userErr.code !== 'PGRST116') {
+        console.error('[Auth Activate] 查询账号失败', userErr.message)
+        return NextResponse.json({ error: '服务暂时连不上，请稍后再试' }, { status: 503 })
+      }
+      if (!user) {
         return NextResponse.json({ error: '账号不存在' }, { status: 404 })
       }
 

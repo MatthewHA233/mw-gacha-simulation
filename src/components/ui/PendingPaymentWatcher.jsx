@@ -19,7 +19,6 @@ import { X, Copy, Check, Eye, EyeOff, ShieldCheck, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/hooks/useAuth'
 import { CDN_BASE_URL } from '@/utils/constants'
-import { getBrowserSupabase } from '@lib/supabase/browserClient'
 
 const PENDING_KEY = 'pending_mobile_payment'
 const EXPIRY_MS = 10 * 60 * 1000 // 10 分钟
@@ -32,7 +31,6 @@ export function PendingPaymentWatcher() {
   const totalDaysRef = useRef(totalRemainingDays)
   useEffect(() => { totalDaysRef.current = totalRemainingDays }, [totalRemainingDays])
   const pollingRef = useRef(null)
-  const subscriptionRef = useRef(null)
   const [status, setStatus] = useState(null) // null | 'waiting' | 'success'
   const [successCode, setSuccessCode] = useState(null)
   const [isRenewal, setIsRenewal] = useState(false)
@@ -55,9 +53,8 @@ export function PendingPaymentWatcher() {
     if (handledRef.current) return
     handledRef.current = true
 
-    // 清理轮询和订阅
+    // 清理轮询
     clearPolling()
-    clearSubscription()
 
     // 读取 is_renewal 和 plan_id 标记（在清理前读取）
     let renewal = isRenewal
@@ -103,12 +100,15 @@ export function PendingPaymentWatcher() {
     }
   }, [activateAfterPayment, bindPass, verify, isRenewal])
 
-  /** 启动轮询（主要检测手段，不依赖 Supabase） */
+  /**
+   * 轮询服务端查单（唯一的检测手段）。2026-10-15 起数据库不再对浏览器的公开 key 开放订单表，
+   * 原来那条 Supabase Realtime「加速检测」已删除；为了不变慢，启动时先查一次，之后每 2 秒查一次。
+   */
   const startPolling = useCallback((outTradeNo) => {
     if (pollingRef.current) return
     let codeRetries = 0
 
-    pollingRef.current = setInterval(async () => {
+    const check = async () => {
       try {
         const res = await fetch(`/api/payment/query?out_trade_no=${outTradeNo}`)
         if (!res.ok) return
@@ -128,7 +128,6 @@ export function PendingPaymentWatcher() {
           }
         } else if (order.status === 'failed') {
           clearPolling()
-          clearSubscription()
           try { localStorage.removeItem(PENDING_KEY) } catch {}
           toast.error('支付失败，请重试')
           setStatus(null)
@@ -136,45 +135,9 @@ export function PendingPaymentWatcher() {
       } catch {
         // 网络错误，继续轮询
       }
-    }, POLL_INTERVAL)
-  }, [handleSuccess])
-
-  /** 启动 Supabase Realtime 订阅（加速检测，可选） */
-  const startRealtime = useCallback((outTradeNo) => {
-    const supabase = getBrowserSupabase()
-    if (!supabase) return
-
-    // 先查一次（覆盖回调已完成但还没连上 Realtime 的情况）
-    supabase
-      .from('payment_orders')
-      .select('activation_code')
-      .eq('out_trade_no', outTradeNo)
-      .single()
-      .then(({ data, error }) => {
-        if (!error && data?.activation_code) {
-          handleSuccess(data.activation_code)
-        }
-      })
-      .catch(() => {})
-
-    const channel = supabase
-      .channel(`payment_watch_${outTradeNo}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'payment_orders',
-          filter: `out_trade_no=eq.${outTradeNo}`
-        },
-        (payload) => {
-          const code = payload.new?.activation_code
-          if (code) handleSuccess(code)
-        }
-      )
-      .subscribe()
-
-    subscriptionRef.current = channel
+    }
+    pollingRef.current = setInterval(check, POLL_INTERVAL)
+    check()
   }, [handleSuccess])
 
   /** 检查并启动恢复流程 */
@@ -188,8 +151,7 @@ export function PendingPaymentWatcher() {
     setIsRenewal(!!pending.is_renewal)
     setStatus('waiting')
     startPolling(pending.out_trade_no)
-    startRealtime(pending.out_trade_no)
-  }, [status, startPolling, startRealtime])
+  }, [status, startPolling])
 
   // 挂载时检查
   useEffect(() => {
@@ -219,7 +181,6 @@ export function PendingPaymentWatcher() {
   useEffect(() => {
     return () => {
       clearPolling()
-      clearSubscription()
     }
   }, [])
 
@@ -230,18 +191,9 @@ export function PendingPaymentWatcher() {
     }
   }
 
-  function clearSubscription() {
-    if (subscriptionRef.current) {
-      const supabase = getBrowserSupabase()
-      if (supabase) supabase.removeChannel(subscriptionRef.current)
-      subscriptionRef.current = null
-    }
-  }
-
   if (status === 'waiting') {
     return <WaitingOverlay shouldRotate={shouldRotate} onCancel={() => {
       clearPolling()
-      clearSubscription()
       try { localStorage.removeItem(PENDING_KEY) } catch {}
       setStatus(null)
     }} />

@@ -12,6 +12,7 @@ import { Sidebar, NAV } from './admin/Sidebar'
 import { Overview } from './admin/Overview'
 import { Orders } from './admin/Orders'
 import { Costs } from './admin/Costs'
+import { GiftCodes } from './admin/GiftCodes'
 
 export default function AdminDashboard() {
   const { userAccount, loading } = useAuth()
@@ -77,7 +78,7 @@ export default function AdminDashboard() {
           <div className="pointer-events-none absolute -left-[20%] -top-[20%] h-[60%] w-[60%] rounded-full bg-[#00F5D4]/5 blur-[120px]"></div>
 
           <div className="absolute inset-0 h-full w-full overflow-hidden">
-            {nav === 'overview' ? <Overview /> : nav === 'orders' ? <Orders /> : <Costs />}
+            {nav === 'overview' ? <Overview /> : nav === 'orders' ? <Orders /> : nav === 'gifts' ? <GiftCodes /> : <Costs />}
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import {
     FEE_RATE, fmt, fmtDate,
     PageHeader, IconBtn, ErrorBanner, TypeBadge, Pagination
 } from './Shared'
+import { adminFetch } from './adminFetch'
 
 const PAGE_SIZE = 20
 
@@ -16,7 +17,7 @@ export function Orders() {
     const load = useCallback(async () => {
         setLoading(true); setError(null)
         try {
-            const res = await fetch(`/api/admin/orders?page=${page}&limit=${PAGE_SIZE}`)
+            const res = await adminFetch(`/api/admin/orders?page=${page}&limit=${PAGE_SIZE}`)
             const d = await res.json()
             if (!res.ok) throw new Error(d.error || '请求失败')
             setData(d)
@@ -35,7 +36,7 @@ export function Orders() {
             ),
         }))
         try {
-            const res = await fetch(`/api/admin/orders/${encodeURIComponent(out_trade_no)}`, {
+            const res = await adminFetch(`/api/admin/orders/${encodeURIComponent(out_trade_no)}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ is_admin_purchase: !current }),

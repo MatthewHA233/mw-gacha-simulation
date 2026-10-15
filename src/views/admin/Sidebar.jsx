@@ -1,9 +1,10 @@
-import { LayoutDashboard, Receipt, Wallet, X } from 'lucide-react'
+import { LayoutDashboard, Receipt, Wallet, Gift, X } from 'lucide-react'
 
 export const NAV = [
     { id: 'overview', label: '数据中枢', sub: 'DATA.CORE', Icon: LayoutDashboard },
     { id: 'orders', label: '交易流水', sub: 'TX.RECORDS', Icon: Receipt },
     { id: 'costs', label: '系统耗材', sub: 'SYS.COSTS', Icon: Wallet },
+    { id: 'gifts', label: '赠送兑换码', sub: 'GIFT.CODES', Icon: Gift },
 ]
 
 export function Sidebar({ active, onChange, open, onClose }) {

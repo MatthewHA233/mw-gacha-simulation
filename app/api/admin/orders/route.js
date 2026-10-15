@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import { getSupabase } from '@lib/supabase/serverClient'
+import { requireAdmin } from '@lib/admin/adminAuth'
 
 export async function GET(request) {
   try {
@@ -17,6 +18,9 @@ export async function GET(request) {
 
     const supabase = getSupabase()
     if (!supabase) return NextResponse.json({ error: 'Supabase 未配置' }, { status: 503 })
+    // 管理员身份在服务端核对（2026-10-15 前这些接口不校验，谁都能调）
+    const auth = await requireAdmin(request, supabase)
+    if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { data: orders, error, count } = await supabase
       .from('payment_orders')

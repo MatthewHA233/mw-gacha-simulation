@@ -10,6 +10,7 @@ import {
     PageHeader, IconBtn, KpiCard, ChartTip, MonthlyChartTip, HourlyChartTip,
     ErrorBanner, TypeBadge
 } from './Shared'
+import { adminFetch } from './adminFetch'
 
 export function Overview() {
     const now = new Date()
@@ -24,8 +25,8 @@ export function Overview() {
         setLoading(true); setError(null)
         try {
             const [sRes, cRes] = await Promise.all([
-                fetch(`/api/admin/stats?year=${year}&month=${month}`),
-                fetch('/api/admin/costs'),
+                adminFetch(`/api/admin/stats?year=${year}&month=${month}`),
+                adminFetch('/api/admin/costs'),
             ])
             const [sData, cData] = await Promise.all([sRes.json(), cRes.json()])
             if (!sRes.ok) throw new Error(sData.error || '统计请求失败')

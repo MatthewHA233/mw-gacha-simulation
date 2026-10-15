@@ -1,4 +1,5 @@
-export const ADMIN_ID = '15727124853'
+// 管理员账号和服务端校验共用一处定义
+export { ADMIN_LOGIN_ID as ADMIN_ID } from '@lib/admin/adminAuth'
 export const FEE_RATE = 0.009 // 0.9% 支付手续费
 
 export const TYPE_COLORS = {
