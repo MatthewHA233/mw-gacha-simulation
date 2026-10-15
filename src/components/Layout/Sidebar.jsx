@@ -5,9 +5,9 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import { useActivityList } from '../../hooks/useActivityList'
 import { buildWidgetUrl, getGachaTypePath } from '../../services/cdnService'
-import { CDN_BASE_URL } from '../../utils/constants'
 import { activityWindowParts } from '../../utils/activityWindow'
 import { useSound } from '../../hooks/useSound'
+import { useMusic } from '../music/MusicProvider'
 import { VersionModal } from './VersionModal'
 import './Sidebar.css'
 
@@ -39,206 +39,49 @@ export function Sidebar({
     container.scrollTop = Math.max(0, target)
   }, [activities])
 
-  // 音乐播放器状态 - 初始为 false，客户端挂载后从 localStorage 读取
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-
-  // 客户端挂载后从 localStorage 读取状态
-  useEffect(() => {
-    setIsMounted(true)
-    const saved = localStorage.getItem('sidebar_music_playing')
-    const pausedAt = localStorage.getItem('sidebar_music_paused_at')
-
-    // 如果是暂停状态，检查是否超过一天
-    if (saved === 'false' && pausedAt) {
-      const pausedTime = parseInt(pausedAt, 10)
-      const now = Date.now()
-      const oneDayInMs = 24 * 60 * 60 * 1000 // 24小时
-
-      // 超过一天，自动恢复为播放状态
-      if (now - pausedTime > oneDayInMs) {
-        localStorage.setItem('sidebar_music_playing', 'true')
-        localStorage.removeItem('sidebar_music_paused_at')
-        setIsPlaying(true)
-        return
-      }
-    }
-
-    setIsPlaying(saved === 'true')
-  }, [])
-  const audioRef = useRef(null)
-  const audioContextRef = useRef(null)
-  const analyserRef = useRef(null)
-  const sourceRef = useRef(null)
+  // 背景音乐：音频与播放状态在根布局的 MusicProvider（2026-10-15 抽出来，换页面不中断）；这里只画频谱 + 播放按钮
+  const { isPlaying, toggle: toggleMusic, analyserRef } = useMusic()
   const canvasRef = useRef(null)
-  const animationIdRef = useRef(null)
 
-  // Web Audio API 初始化
   useEffect(() => {
-    if (!audioRef.current || sourceRef.current) return
-
-    audioRef.current.volume = 0.8
-
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    const analyser = audioContext.createAnalyser()
-    analyser.fftSize = 64
-    const source = audioContext.createMediaElementSource(audioRef.current)
-    source.connect(analyser)
-    analyser.connect(audioContext.destination)
-
-    audioContextRef.current = audioContext
-    analyserRef.current = analyser
-    sourceRef.current = source
-
-    const renderWaveformInternal = () => {
-      if (!analyserRef.current || !canvasRef.current) return
-
+    if (!isPlaying) return
+    let frame = 0
+    const draw = () => {
+      frame = requestAnimationFrame(draw)
+      const analyser = analyserRef.current
       const canvas = canvasRef.current
+      if (!analyser || !canvas) return
       const ctx = canvas.getContext('2d')
-      const bufferLength = analyserRef.current.frequencyBinCount
+      const bufferLength = analyser.frequencyBinCount
       const dataArray = new Uint8Array(bufferLength)
-
-      const draw = () => {
-        animationIdRef.current = requestAnimationFrame(draw)
-        analyserRef.current.getByteFrequencyData(dataArray)
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-        const barWidth = canvas.width / bufferLength
-        let x = 0
-
-        for (let i = 0; i < bufferLength; i++) {
-          const barHeight = (dataArray[i] / 255) * canvas.height * 0.8
-          const hue = (i / bufferLength) * 360
-
-          // 绘制发光效果
-          ctx.shadowBlur = 15
-          ctx.shadowColor = `hsla(${hue}, 100%, 60%, 0.8)`
-          ctx.fillStyle = `hsla(${hue}, 90%, 65%, 0.85)`
-          ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
-
-          x += barWidth + 1
-        }
-
-        // 重置阴影
-        ctx.shadowBlur = 0
+      analyser.getByteFrequencyData(dataArray)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const barWidth = canvas.width / bufferLength
+      let x = 0
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (dataArray[i] / 255) * canvas.height * 0.8
+        const hue = (i / bufferLength) * 360
+        ctx.shadowBlur = 15
+        ctx.shadowColor = `hsla(${hue}, 100%, 60%, 0.8)`
+        ctx.fillStyle = `hsla(${hue}, 90%, 65%, 0.85)`
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
+        x += barWidth + 1
       }
-
-      draw()
+      ctx.shadowBlur = 0
     }
-
-    const attemptAutoPlay = async () => {
-      // 只在用户之前主动开启过音乐时才自动播放
-      const shouldAutoPlay = localStorage.getItem('sidebar_music_playing') === 'true'
-      if (!shouldAutoPlay) return
-
-      try {
-        if (audioContext.state === 'suspended') await audioContext.resume()
-        await audioRef.current.play()
-        setIsPlaying(true)
-        renderWaveformInternal()
-      } catch (error) {
-        // 自动播放失败，重置状态
-        setIsPlaying(false)
-        localStorage.setItem('sidebar_music_playing', 'false')
-      }
-    }
-
-    attemptAutoPlay()
-
-    const handleFirstInteraction = async () => {
-      // 只在用户之前主动开启过音乐时才在首次交互时播放
-      const shouldAutoPlay = localStorage.getItem('sidebar_music_playing') === 'true'
-      if (!shouldAutoPlay || audioContext.state === 'closed') return
-
-      try {
-        if (audioContext.state === 'suspended') await audioContext.resume()
-        await audioRef.current.play()
-        setIsPlaying(true)
-        renderWaveformInternal()
-      } catch (e) {
-        setIsPlaying(false)
-        localStorage.setItem('sidebar_music_playing', 'false')
-      }
-    }
-
-    document.addEventListener('click', handleFirstInteraction, { once: true, passive: true })
-
+    draw()
     return () => {
-      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current)
+      cancelAnimationFrame(frame)
+      const canvas = canvasRef.current
+      canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height)
     }
-  }, [])
+  }, [isPlaying, analyserRef])
 
   // 播放/暂停切换
-  const togglePlay = async (e) => {
+  const togglePlay = (e) => {
     e.stopPropagation()
     playButtonClick()
-    if (!audioRef.current) return
-
-    if (isPlaying) {
-      audioRef.current.pause()
-      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current)
-      setIsPlaying(false)
-      localStorage.setItem('sidebar_music_playing', 'false')
-      localStorage.setItem('sidebar_music_paused_at', Date.now().toString())
-    } else {
-      try {
-        if (audioContextRef.current.state === 'suspended') {
-          await audioContextRef.current.resume()
-        }
-        await audioRef.current.play()
-        setIsPlaying(true)
-        localStorage.setItem('sidebar_music_playing', 'true')
-        localStorage.removeItem('sidebar_music_paused_at') // 清除暂停时间戳
-
-        // 启动波形渲染
-        if (!analyserRef.current || !canvasRef.current) return
-
-        const canvas = canvasRef.current
-        const ctx = canvas.getContext('2d')
-        const bufferLength = analyserRef.current.frequencyBinCount
-        const dataArray = new Uint8Array(bufferLength)
-
-        const draw = () => {
-          animationIdRef.current = requestAnimationFrame(draw)
-          analyserRef.current.getByteFrequencyData(dataArray)
-
-          ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-          const barWidth = canvas.width / bufferLength
-          let x = 0
-
-          for (let i = 0; i < bufferLength; i++) {
-            const barHeight = (dataArray[i] / 255) * canvas.height * 0.8
-            const hue = (i / bufferLength) * 360
-
-            // 绘制发光效果
-            ctx.shadowBlur = 15
-            ctx.shadowColor = `hsla(${hue}, 100%, 60%, 0.8)`
-            ctx.fillStyle = `hsla(${hue}, 90%, 65%, 0.85)`
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
-
-            x += barWidth + 1
-          }
-
-          // 重置阴影
-          ctx.shadowBlur = 0
-        }
-
-        draw()
-      } catch (error) {
-        console.error('[BGM播放失败]', error)
-        setIsPlaying(false)
-        localStorage.setItem('sidebar_music_playing', 'false')
-
-        // 友好的错误提示
-        if (error.name === 'NotAllowedError') {
-          console.warn('浏览器阻止自动播放，需要用户交互')
-        } else if (error.name === 'NotSupportedError') {
-          console.error('音频格式不支持或CORS问题')
-        }
-      }
-    }
+    toggleMusic()
   }
 
   const handleActivityClick = (activity) => {
@@ -431,13 +274,7 @@ export function Sidebar({
       </div>
 
       {/* 隐藏的音频元素 */}
-      <audio
-        ref={audioRef}
-        src={`${CDN_BASE_URL}/audio/ModernWarships_Menu_Halloween2025_OST.wav`}
-        loop
-        preload="auto"
-        crossOrigin="anonymous"
-      />
+      {/* 背景音乐的 <audio> 在根布局的 MusicProvider 里 */}
 
       {/* 版本信息弹窗 */}
       <VersionModal

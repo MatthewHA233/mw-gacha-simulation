@@ -5,6 +5,7 @@ import { PendingPaymentWatcher } from '@/components/ui/PendingPaymentWatcher'
 import { VersionInitializer } from '@/components/VersionInitializer'
 import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar'
 import { ViewportHeightSync } from '@/components/ViewportHeightSync'
+import { MusicProvider } from '@/components/music/MusicProvider'
 import '@/App.css'
 import '@/index.css'
 
@@ -14,6 +15,8 @@ export const metadata = {
   icons: {
     icon: '/MW.png',
   },
+  // 安卓「添加到主屏幕」后从桌面打开：全屏 + 横屏（manifest 里的 display / orientation，iPhone 会忽略方向）
+  manifest: '/manifest.webmanifest',
 }
 
 export default function RootLayout({ children }) {
@@ -27,6 +30,7 @@ export default function RootLayout({ children }) {
         <VersionInitializer />
         <ServiceWorkerRegistrar />
         <AuthProvider>
+          <MusicProvider>
           <PendingPaymentWatcher />
           <MilestoneToastProvider maxToasts={3} position="top-right">
             <div className="w-full h-[var(--app-height,100vh)] overflow-hidden bg-black">
@@ -34,6 +38,7 @@ export default function RootLayout({ children }) {
               {children}
             </div>
           </MilestoneToastProvider>
+          </MusicProvider>
         </AuthProvider>
       </body>
     </html>

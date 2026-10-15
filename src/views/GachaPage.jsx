@@ -7,6 +7,7 @@ import { Header } from '../components/Layout/Header'
 import { ChipGacha } from '../components/ChipGacha/ChipGacha'
 import { CargoGacha } from '../components/CargoGacha/CargoGacha'
 import { FlagshipGacha } from '../components/FlagshipGacha/FlagshipGacha'
+import { FloatingControls } from '../components/ui/FloatingControls'
 
 /**
  * 抽卡页面容器
@@ -210,6 +211,9 @@ export function GachaPage({ type, activityId }) {
 
           {/* 抽卡组件内容 */}
           {renderGachaComponent()}
+
+          {/* 左下角悬浮：背景音乐 + 手机全屏横屏 */}
+          <FloatingControls />
         </div>
       </div>
     </div>
