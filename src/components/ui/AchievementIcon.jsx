@@ -2,8 +2,9 @@
  * 氪金里程碑的成就徽章（2026-10-15）：每个里程碑一枚，图案对应文案里的梗，外框按金额分四档材质。
  *
  *   < ¥1,000          青铜    百元大钞、女仆咖啡厅、木吉他、帝王蟹、降噪耳机、迪士尼、648 船票、拍立得、演唱会
- *   ¥1,000 – 3,000    白银    健身年卡、1314、咬牙、一路发、实习大学生、Switch、快四个 648、毕业
- *   ¥3,500 – 90,000   黄金    全景相机、主机、跨栏、十连 648、钱包倒计时、五位数之壁、顶配手机、旅行、旗舰显卡 … 九万之巅
+ *   ¥1,000 – 2,999    白银    健身年卡、1314、咬牙、一路发、实习大学生、Switch、快四个 648
+ *   ¥3,000 – 14,000   翠绿    毕业、全景相机、主机、跨栏、十连 648、钱包倒计时、五位数之壁、顶配手机、旅行
+ *   ¥16,499 – 90,000  黄金    旗舰显卡、双倍喜悦、回忆杀、四万之坎、次元穿越者、六万之重、七万里路、接近极限、九万之巅
  *   ≥ ¥100,000        紫晶    轿车开走、一年白干、裂开的王冠、存钱罐、半边点亮的王冠、深渊之眼、万氪之王
  *
  * 纯 SVG（64×64 画布），平涂 + 深色描边，不用渐变；任何尺寸都清晰、不用传 CDN。
@@ -12,13 +13,15 @@
 const TIERS = {
   bronze: { base: '#4a2f20', panel: '#7d5136', rim: '#e9ae7a', ink: '#ffeedd', accent: '#ff9f5a' },
   silver: { base: '#2f3a4a', panel: '#56667d', rim: '#dfe8f4', ink: '#f6faff', accent: '#8fd0ff' },
+  jade: { base: '#0f3326', panel: '#1d5c43', rim: '#7ff0b8', ink: '#eafff4', accent: '#ffd166' },
   gold: { base: '#3a2a07', panel: '#634a10', rim: '#ffd86b', ink: '#fff6da', accent: '#ffc83d' },
   violet: { base: '#23183f', panel: '#4a3485', rim: '#d4c0ff', ink: '#f5efff', accent: '#ff86d6' },
 }
 
 export function achievementTier(amount) {
   if (amount < 1000) return 'bronze'
-  if (amount <= 3000) return 'silver'
+  if (amount < 3000) return 'silver'
+  if (amount < 16499) return 'jade'
   if (amount < 100000) return 'gold'
   return 'violet'
 }
@@ -422,7 +425,7 @@ const ART = {
     </g>
   ),
   // 说走就走的旅行：行李箱 + 起飞的飞机
-  15000: (c) => (
+  14000: (c) => (
     <g>
       <path d="M33 22l12-6c3-1.5 7 0 5 2.5l-10 6 2 9-3 1.5-4.5-7-6.5 3.5.5 4-2.5 1-1.5-5.5-5-2.5 2-1.5 4 1.5Z"
         fill={c.ink} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
