@@ -109,10 +109,17 @@ const modeLabel = (mode) => PLAY_MODES.find((item) => item.id === mode)?.label |
 
 // 曲名宽度固定（胶囊不随曲名变宽变窄）；放不下时来回滚：先停一会，慢慢滚到最右，停一会，再滚回最左，循环。
 // 用 Web Animations 按实际超出的像素现算时长，短的超一点就滚得短、长的滚得久，速度一致。
+// 不看 prefers-reduced-motion：Windows 关了「动画效果」浏览器就报 reduce，号主机器就是这样，结果曲名永远不滚（2026-10-15）。
 const MARQUEE_SPEED = 28      // 像素 / 秒
 const MARQUEE_PAUSE = 1800    // 两端各停多久（毫秒）
 
-function MarqueeTitle({ text, className }) {
+// 带节拍数据的曲目（tracks.js 的 beat）按拍子滚：停 2 拍、滚 2 拍，一来一回各一小节，每次都正好落在小节第一拍上；
+// 播放中按 <audio> 的当前时间对齐相位（偏差超 40ms 才拨），暂停时按同样节奏自己走。
+const BEAT_HOLD = 2
+const BEAT_TRAVEL = 2
+const SYNC_TOLERANCE_MS = 40
+
+function MarqueeTitle({ text, className, beat, audioRef }) {
   const boxRef = useRef(null)
   const textRef = useRef(null)
 
@@ -120,28 +127,42 @@ function MarqueeTitle({ text, className }) {
     const box = boxRef.current
     const inner = textRef.current
     if (!box || !inner || typeof inner.animate !== 'function') return undefined
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     let animation = null
     let disposed = false
+
+    const beatMs = beat ? 60000 / beat.bpm : 0
+
+    // 让滚动相位跟上音乐：动画第 0 毫秒 = 首拍，一圈正好整数拍
+    const syncToMusic = () => {
+      const audio = audioRef?.current
+      if (!animation || !beat || !audio || audio.paused) return
+      const cycle = animation.effect.getTiming().duration
+      const target = ((((audio.currentTime - beat.offset) * 1000) % cycle) + cycle) % cycle
+      const current = (animation.currentTime ?? 0) % cycle
+      const drift = Math.min(Math.abs(current - target), cycle - Math.abs(current - target))
+      if (drift > SYNC_TOLERANCE_MS) animation.currentTime = target
+    }
 
     const start = () => {
       if (disposed) return
       animation?.cancel()
       animation = null
       const distance = inner.scrollWidth - box.clientWidth
-      if (distance <= 1 || reduceMotion) return
-      const travel = Math.max(1200, (distance / MARQUEE_SPEED) * 1000)
-      const total = MARQUEE_PAUSE * 2 + travel * 2
+      if (distance <= 1) return
+      const pause = beat ? BEAT_HOLD * beatMs : MARQUEE_PAUSE
+      const travel = beat ? BEAT_TRAVEL * beatMs : Math.max(1200, (distance / MARQUEE_SPEED) * 1000)
+      const total = pause * 2 + travel * 2
       const at = (ms) => ms / total
       const left = 'translateX(0)'
       const right = `translateX(-${distance}px)`
       animation = inner.animate([
         { transform: left, offset: 0 },
-        { transform: left, offset: at(MARQUEE_PAUSE), easing: 'ease-in-out' },
-        { transform: right, offset: at(MARQUEE_PAUSE + travel) },
-        { transform: right, offset: at(MARQUEE_PAUSE * 2 + travel), easing: 'ease-in-out' },
+        { transform: left, offset: at(pause), easing: 'ease-in-out' },
+        { transform: right, offset: at(pause + travel) },
+        { transform: right, offset: at(pause * 2 + travel), easing: 'ease-in-out' },
         { transform: left, offset: 1 },
       ], { duration: total, iterations: Infinity })
+      syncToMusic()
     }
 
     start()
@@ -149,12 +170,16 @@ function MarqueeTitle({ text, className }) {
     document.fonts?.ready.then(start)
     const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(start) : null
     observer?.observe(box)
+    const audio = beat ? audioRef?.current : null
+    const syncEvents = ['playing', 'seeked', 'timeupdate']
+    syncEvents.forEach((name) => audio?.addEventListener(name, syncToMusic))
     return () => {
       disposed = true
       observer?.disconnect()
+      syncEvents.forEach((name) => audio?.removeEventListener(name, syncToMusic))
       animation?.cancel()
     }
-  }, [text])
+  }, [text, beat, audioRef])
 
   return (
     <span ref={boxRef} className={`block shrink-0 overflow-hidden whitespace-nowrap ${className}`}>
@@ -404,6 +429,8 @@ export function MusicPlayer() {
             <EqBars state={eqState} />
             <MarqueeTitle
               text={track.title}
+              beat={track.beat}
+              audioRef={audioRef}
               className={`w-[4.5rem] md:w-[5.5rem] text-[11px] md:text-[13px] font-medium transition-colors ${titleTone}`}
             />
             {failed && <span className="shrink-0 text-[10px] md:text-[11px] text-rose-200/70">放不了</span>}

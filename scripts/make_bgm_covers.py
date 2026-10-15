@@ -10,9 +10,10 @@
 """
 import hashlib
 import io
+import math
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageStat
 
 REPO = Path(__file__).resolve().parent.parent
 A = REPO / "public" / "assets"
@@ -27,21 +28,50 @@ COVERS = {
     "halloween2025": (A / "contentseparated_assets_porticons/port_halloween2025.png", (57, 12, 337, 292)),
     # 主题曲用当前游戏启动画面（主题曲就在这个画面播放），号主定：比默认港口好看
     "main": (M / "主题背景图/2026_08/SplashScreen_4096x2048.png", (950, 448, 2550, 2048)),
-    # 2024-11 周年庆 al24：海神 + 航母
-    "orchestral": (A / "contentseparated_assets_ui_eventhub/event_al24_widget.png", (228, 0, 412, 184)),
-    # 2025-05 Rhythm of Fury（音乐主题活动）：吉他骷髅
-    "main_klepacki": (A / "contentseparated_assets_activities/activity_gacha_rf25_background.png", (400, 0, 1400, 1000)),
+    # 2025-11 通行证主视觉：落日下的驱逐舰（号主 2026-10-15 从候选里挑的，原先 al24 海神图不好看）
+    "orchestral": (M / "主题背景图/2025_11/BattlePass_November_Purchase_1920x1080.png", (480, 0, 1560, 1080)),
+    # 2025-05 Rhythm of Fury（音乐主题活动）：吉他骷髅。原图是活动背景、故意压得很暗（平均亮度 34），提亮到和其它封面一档
+    "main_klepacki": (A / "contentseparated_assets_activities/activity_gacha_rf25_background.png", (400, 0, 1400, 1000), 110),
     # 2022-11 最早的通行证主视觉：风暴里的隐身舰
     "main_old": (M / "主题背景图/2022_11/BattlePass_November_Purchase_2048x1152.png", (470, 240, 1370, 1140)),
-    # 2026-01 Beats of War：霓虹城市
-    "customize1": (A / "contentseparated_assets_activities/lootbox_activity_la100_widget.png", (128, 0, 384, 256)),
+    # 2026-01 通行证主视觉：雪山前的舰队（号主 2026-10-15 挑的，原先 la100 霓虹城市不好看）
+    "customize1": (M / "主题背景图/2026_01/BattlePass_January_Purchase_1920x1080.png", (760, 0, 1840, 1080)),
     # 2026-07 通行证：彩色烟带的舰船
     "customize2": (M / "主题背景图/2026_07/BattlePass_July_Purchase_1920x1080.png", (560, 0, 1640, 1080)),
     # 港口「阅兵式」port_birthday2025（Fleet Review，最早出现在 2026-03 旗舰 la102）
     "parade": (A / "contentseparated_assets_porticons/port_birthday2025.png", (80, 122, 360, 402)),
-    # 港口 port_halloween（旧万圣节港口）
-    "halloween": (A / "contentseparated_assets_porticons/port_halloween.png", (90, 12, 370, 292)),
+    # 港口 port_halloween2026：紫色古堡（号主 2026-10-15 挑的，原先旧万圣节港口 port_halloween 不好看；
+    # 和万圣节 2025 的青色幽灵船颜色错开）
+    "halloween": (A / "contentseparated_assets_porticons/port_halloween2026.png", (57, 12, 337, 292)),
 }
+
+
+def _percentile(hist: list[int], q: float) -> int:
+    total, acc = sum(hist), 0
+    for value, count in enumerate(hist):
+        acc += count
+        if acc >= q * total:
+            return value
+    return 255
+
+
+def brighten(img: Image.Image, target_mean: float) -> Image.Image:
+    """暗图提亮：色阶拉伸（0.5% 暗部 → 0、99.5% 亮部 → 245）→ gamma 调到目标平均亮度 → 饱和度 ×1.15。
+    三个通道用同一张查找表，色相不偏。"""
+    hist = img.convert("L").histogram()
+    lo, hi = _percentile(hist, 0.005), _percentile(hist, 0.995)
+    span = max(1, hi - lo)
+    img = img.point([min(255, max(0, round((i - lo) * 245 / span))) for i in range(256)] * 3)
+    # gamma 二分到目标平均亮度（亮度的均值不是均值的幂，一次算不准）
+    low, high = 0.2, 1.0
+    for _ in range(20):
+        gamma = (low + high) / 2
+        trial = img.point([round(255 * (i / 255) ** gamma) for i in range(256)] * 3)
+        if ImageStat.Stat(trial.convert("L")).mean[0] < target_mean:
+            high = gamma
+        else:
+            low = gamma
+    return ImageEnhance.Color(trial).enhance(1.15)
 
 
 def main() -> None:
@@ -52,11 +82,13 @@ def main() -> None:
     sheet = Image.new("RGB", (len(COVERS) * 180, 210), (24, 22, 30))
     draw = ImageDraw.Draw(sheet)
     files = {}
-    for i, (key, (src, box)) in enumerate(COVERS.items()):
+    for i, (key, (src, box, *opts)) in enumerate(COVERS.items()):
         im = Image.open(src).convert("RGBA")
         flat = Image.new("RGBA", im.size, (20, 18, 28, 255))
         flat.alpha_composite(im)
         cover = flat.crop(box).convert("RGB").resize((SIZE, SIZE), Image.LANCZOS)
+        if opts:   # 第三项 = 目标平均亮度：原图太暗时提亮
+            cover = brighten(cover, opts[0])
         buf = io.BytesIO()
         cover.save(buf, "JPEG", quality=86, optimize=True, progressive=True)
         data = buf.getvalue()

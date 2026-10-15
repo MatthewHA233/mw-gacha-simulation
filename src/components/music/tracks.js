@@ -14,7 +14,8 @@ export const BGM_TRACKS = [
   { id: 'halloween', title: '万圣节 · 旧版', file: 'ModernWarships_Menu_halloween_OST.wav' },
   { id: 'main', title: '主题曲', file: 'ModernWarships_Main_Theme_OST.wav' },
   { id: 'orchestral', title: '主题曲 · 交响版', file: 'ModernWarships_Main_Theme_Orchestral_OST.wav' },
-  { id: 'main_klepacki', title: '主题曲 · Klepacki 版', file: 'ModernWarships_MainTheme_02_OST.wav' },
+  // beat：曲名放不下时滚动对拍用。librosa 起音强度拟合常数网格（2026-10-15）：严格 90 BPM、首拍 0.028s，全曲每 20 秒相位偏移 0
+  { id: 'main_klepacki', title: '主题曲 · Klepacki 版', file: 'ModernWarships_MainTheme_02_OST.wav', beat: { bpm: 90, offset: 0.028 } },
   { id: 'main_old', title: '主题曲 · 旧版', file: 'ModernWarships_Main_Theme_Old_OST.wav' },
   { id: 'customize1', title: '改装界面 1', file: 'ModernWarships_CustomizeTheme_01_OST.wav' },
   { id: 'customize2', title: '改装界面 2', file: 'ModernWarships_CustomizeTheme_02_OST.wav' },
@@ -24,10 +25,13 @@ export const BGM_TRACKS = [
  * 唱片封面：CDN audio/covers/<曲目 id>.<内容指纹>.jpg，256×256，由 scripts/make_bgm_covers.py 生成（同时写 coverFiles.js）。
  * 文件名带指纹，换图就是换地址：CDN 和网站 Service Worker 的永久缓存都照旧，不用刷新。
  * 主界面音乐跟着「港口」外观走，能对上港口的用港口预览图（porticons）：
- *   万圣节 2025 = port_halloween2025   万圣节 · 旧版 = port_halloween
- *   阅兵 = 港口「阅兵式」port_birthday2025（Fleet Review，最早出现在 2026-03 旗舰 la102）
+ *   万圣节 2025 = port_halloween2025   阅兵 = 港口「阅兵式」port_birthday2025（Fleet Review，最早出现在 2026-03 旗舰 la102）
  * 主题曲 = 当前游戏启动画面 SplashScreen（比默认港口好看）。
- * 对不上港口的按曲子出现的时期挑：交响版 = 2024-11 周年庆 al24，Klepacki 版 = 2025-05 Rhythm of Fury，
- *   旧版 = 2022-11 最早的通行证主视觉，改装界面 1 / 2 = 2026-01 Beats of War / 2026-07 通行证。
+ * 其余按曲子出现的时期挑：Klepacki 版 = 2025-05 Rhythm of Fury（原图很暗，生成时提亮），旧版 = 2022-11 最早的通行证主视觉，
+ *   改装界面 2 = 2026-07 通行证。
+ * 2026-10-15 号主从候选里重挑：万圣节 · 旧版 = port_halloween2026 紫色古堡，交响版 = 2025-11 通行证落日驱逐舰，
+ *   改装界面 1 = 2026-01 通行证雪山舰队。
  */
-export const trackCover = (track) => `${CDN_BASE_URL}/audio/covers/${COVER_FILES[track.id]}`
+// 开发环境读本地 public/audio/covers（make_bgm_covers.py 生成在这里）：换封面时先在 dev 里看效果、定了再传 CDN
+const COVER_BASE = process.env.NODE_ENV === 'development' ? '' : CDN_BASE_URL
+export const trackCover = (track) => `${COVER_BASE}/audio/covers/${COVER_FILES[track.id]}`
