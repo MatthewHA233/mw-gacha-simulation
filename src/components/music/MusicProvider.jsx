@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { CDN_BASE_URL } from '../../utils/constants'
 import { BGM_TRACKS } from './tracks'
 
@@ -11,6 +12,7 @@ import { BGM_TRACKS } from './tracks'
  * 整页刷新时从 localStorage 记下的曲目和位置接着放。侧边栏的频谱和左下角的播放器都从这里取状态。
  * 播放偏好沿用原来侧边栏的 localStorage 键与规则：主动开过才自动播放，暂停超过一天自动恢复为播放。
  * 播放模式三种（默认列表循环），和最近播放的曲目、位置一起记在本地。
+ * 管理后台不放音乐：进去只停声音、不改播放偏好，回到前台接着放（号主 2026-10-15 定）。
  */
 
 const KEY_PLAYING = 'sidebar_music_playing'
@@ -45,6 +47,7 @@ const storage = {
 }
 
 const wantsMusic = () => storage.get(KEY_PLAYING) === 'true'
+const isQuietRoute = (pathname) => Boolean(pathname?.startsWith('/admin'))
 
 export function MusicProvider({ children }) {
   const audioRef = useRef(null)
@@ -58,6 +61,10 @@ export function MusicProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [failed, setFailed] = useState(false)
+  const silenced = isQuietRoute(usePathname())
+  const silencedRef = useRef(silenced)
+  silencedRef.current = silenced
+  const wasSilencedRef = useRef(silenced)
 
   // 频谱分析只建一次（同一个 <audio> 只能接一次 MediaElementSource）
   const ensureGraph = useCallback(() => {
@@ -88,7 +95,7 @@ export function MusicProvider({ children }) {
     setFailed(false)
     storage.set(KEY_TRACK, track.id)
     // 没打算放音乐的访客不预载：每首 wav 二三十 MB，全走 CDN 流量
-    audio.preload = wantsMusic() ? 'auto' : 'none'
+    audio.preload = wantsMusic() && !silencedRef.current ? 'auto' : 'none'
     audio.src = trackSrc(track)
     if (resumeAt > 0) {
       audio.addEventListener('loadedmetadata', () => {
@@ -99,7 +106,7 @@ export function MusicProvider({ children }) {
 
   const play = useCallback(async () => {
     const audio = audioRef.current
-    if (!audio) return false
+    if (!audio || silencedRef.current) return false
     ensureGraph()
     // 上次加载失败（网络 / CDN 缓存坏了）：元素停在出错状态，不重新 load 的话 play() 只会原地失败
     if (audio.error) { setFailed(false); audio.load() }
@@ -223,6 +230,18 @@ export function MusicProvider({ children }) {
       window.removeEventListener('pagehide', savePosition)
     }
   }, [loadTrack, play, applyMode, nextIndex])
+
+  // 进管理后台：只停声音，不调 pause()——那会把偏好记成「已暂停」，回到前台就不放了
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (silenced) {
+      if (!audio.paused) audio.pause()
+    } else if (wasSilencedRef.current && wantsMusic() && audio.paused) {
+      play()
+    }
+    wasSilencedRef.current = silenced
+  }, [silenced, play])
 
   const value = {
     tracks: BGM_TRACKS, track: BGM_TRACKS[trackIndex], trackIndex,
