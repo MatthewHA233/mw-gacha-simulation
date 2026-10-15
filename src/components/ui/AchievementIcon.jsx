@@ -4,8 +4,8 @@
  *   < ¥1,000          青铜    百元大钞、女仆咖啡厅、木吉他、帝王蟹、降噪耳机、迪士尼、648 船票、拍立得、演唱会
  *   ¥1,000 – 2,999    白银    健身年卡、1314、咬牙、一路发、实习大学生、Switch、快四个 648
  *   ¥3,000 – 14,000   翠绿    毕业、全景相机、主机、跨栏、十连 648、钱包倒计时、五位数之壁、顶配手机、旅行
- *   ¥16,499 – 90,000  黄金    旗舰显卡、双倍喜悦、回忆杀、四万之坎、次元穿越者、六万之重、七万里路、接近极限、九万之巅
- *   ≥ ¥100,000        紫晶    轿车开走、一年白干、伪神、存钱罐、半神、深渊之眼、万氪之王
+ *   ¥16,499 – 90,000  黄金    旗舰显卡、双倍喜悦、回忆杀、复古机车、冰岛极光、立式钢琴、南极企鹅、自己的马、北海道雪季
+ *   ≥ ¥100,000        紫晶    轿车开走、一年白干、伪神、小飞机、小店、半神、房车、深渊之眼、录取信、吊床、万氪之王
  *   （万氪之王三档 20 万 / 50 万 / 100 万直接画顶栏同款王冠 MEMBER_CROWNS，成就和顶栏看着是同一顶）
  *
  * 纯 SVG（64×64 画布），平涂 + 深色描边，不用渐变；任何尺寸都清晰、不用传 CDN。
@@ -467,80 +467,94 @@ const ART = {
       <text x="16" y="50" textAnchor="middle" fontSize="10" fontWeight="900" fill={c.base} fontFamily="system-ui, sans-serif">5</text>
     </g>
   ),
-  // 四万の坎：笔记本电脑（屏幕里是图鉴格子）
+  // 一台复古机车：侧面的复古摩托，油箱、圆大灯，身后两道风
   40000: (c) => (
     <g>
-      <rect x="14" y="15" width="36" height="25" rx="2.5" fill={c.ink} stroke={c.base} strokeWidth="2" />
-      <rect x="17.5" y="18.5" width="29" height="18" fill={c.base} />
-      {[0, 1, 2, 3].map((i) => [0, 1].map((j) => (
-        <rect key={`${i}${j}`} x={20 + i * 6.5} y={21 + j * 7} width="5" height="5.5" rx="0.8" fill={i + j * 4 < 7 ? c.accent : c.panel} />
-      )))}
-      <path d="M7 42H57L53 49H11Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <rect x="27" y="42" width="10" height="2.5" rx="1" fill={c.base} opacity="0.4" />
+      <path d="M3 33h6M2 39h5" stroke={c.ink} strokeWidth="1.8" strokeLinecap="round" opacity="0.55" />
+      <circle cx="16" cy="44" r="7.5" fill="none" stroke={c.ink} strokeWidth="3" />
+      <circle cx="48" cy="44" r="7.5" fill="none" stroke={c.ink} strokeWidth="3" />
+      <circle cx="16" cy="44" r="2" fill={c.ink} />
+      <circle cx="48" cy="44" r="2" fill={c.ink} />
+      <path d="M16 44L25 33H38L48 44" fill="none" stroke={c.ink} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M44 22L48 44" stroke={c.ink} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M24 39H37" stroke={c.accent} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M12 31Q17 27.5 25 29.5L24 33.5H13Z" fill={c.base} stroke={c.ink} strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M25 30Q27 24.5 34 24.5Q39.5 24.5 40.5 29L38.5 33.5H26.5Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M28 28.5Q30.5 26.5 34 26.8" fill="none" stroke="#ffffff" strokeWidth="1.3" strokeLinecap="round" opacity="0.7" />
+      <path d="M41 21.5h6" stroke={c.ink} strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="49" cy="28" r="3.4" fill={c.ink} stroke={c.base} strokeWidth="1.4" />
     </g>
   ),
-  // 次元穿越者：传送门
+  // 冰岛的极光：夜空两道极光带，雪地上一间亮着暖灯的玻璃屋
   50000: (c) => (
     <g>
-      <ellipse cx="32" cy="33" rx="18" ry="20" fill={c.base} stroke={c.accent} strokeWidth="3.4" />
-      <path d={spiralPath(32, 33, 15, 2.4, 1, 1.12)} fill="none" stroke={c.ink} strokeWidth="2.4" strokeLinecap="round" opacity="0.9" />
-      <path d={spiralPath(32, 33, 15, 2.4, 1, 1.12, Math.PI)} fill="none" stroke={c.accent} strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />
-      <circle cx="32" cy="33" r="2.8" fill={c.ink} />
-      <path d="M52 12l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2ZM12 46l.9 2.2 2.2.9-2.2.9-.9 2.2-.9-2.2-2.2-.9 2.2-.9Z" fill={c.ink} />
+      <path d="M6 24Q18 10 30 20T58 13" fill="none" stroke="#7ff0b8" strokeWidth="3.6" strokeLinecap="round" opacity="0.9" />
+      <path d="M6 31Q20 19 32 27T58 21" fill="none" stroke="#8fd0ff" strokeWidth="2.4" strokeLinecap="round" opacity="0.75" />
+      <circle cx="14" cy="11" r="1" fill={c.ink} /><circle cx="46" cy="30" r="0.9" fill={c.ink} /><circle cx="52" cy="9" r="1" fill={c.ink} />
+      <path d="M6 51Q32 44 58 51V58.5H6Z" fill={c.ink} />
+      <path d="M20 50.5a12 12 0 0 1 24 0Z" fill="#8fd0ff" fillOpacity="0.35" stroke={c.ink} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M32 38.5V50.5M22.5 45h19M25 41.5q7 2.5 14 0" fill="none" stroke={c.ink} strokeWidth="1" opacity="0.75" />
+      <circle cx="32" cy="47.5" r="2" fill={c.accent} />
     </g>
   ),
-  // 六万之重：房子 + 钥匙（大半年房租）
+  // 一架立式钢琴：琴身、谱架上的乐谱、黑白键，旁边飘一个音符
   60000: (c) => (
     <g>
-      <path d="M14 33L32 18L50 33V50H14Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <path d="M9 34L32 14L55 34" fill="none" stroke={c.accent} strokeWidth="4.4" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 34L32 14L55 34" fill="none" stroke={c.base} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.45" />
-      <rect x="26" y="37" width="9" height="13" rx="1" fill={c.base} />
-      <rect x="17.5" y="36" width="6" height="6" rx="0.8" fill={c.panel} />
-      <circle cx="46" cy="43" r="5.2" fill="none" stroke={c.base} strokeWidth="5" />
-      <circle cx="46" cy="43" r="5.2" fill="none" stroke={c.accent} strokeWidth="2.8" />
-      <path d="M49.5 46.5L56 53M53 50l2.4-2.4" stroke={c.base} strokeWidth="5" strokeLinecap="round" />
-      <path d="M49.5 46.5L56 53M53 50l2.4-2.4" stroke={c.accent} strokeWidth="2.8" strokeLinecap="round" />
+      <rect x="11" y="14" width="40" height="27" rx="2" fill={c.base} stroke={c.ink} strokeWidth="2" />
+      <rect x="23" y="17.5" width="16" height="10" rx="1" fill={c.ink} stroke={c.base} strokeWidth="1" />
+      <path d="M26 20.5h10M26 23.5h10" stroke={c.base} strokeWidth="0.7" opacity="0.7" />
+      <circle cx="29" cy="23.5" r="1.1" fill={c.base} /><circle cx="33.5" cy="20.5" r="1.1" fill={c.base} />
+      <rect x="9" y="31" width="44" height="9" rx="1" fill="#ffffff" stroke={c.base} strokeWidth="1.6" />
+      {[12.5, 17, 25.5, 30, 34.5, 43, 47.5].map((x) => <rect key={x} x={x} y="31" width="2.6" height="5" fill={c.base} />)}
+      <path d="M14 41V52M48 41V52M11 52h6M45 52h6" stroke={c.ink} strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M55 9v8.5" stroke={c.accent} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M55 9l4 1.5" stroke={c.accent} strokeWidth="1.8" strokeLinecap="round" />
+      <ellipse cx="53.3" cy="18" rx="2.2" ry="1.7" fill={c.accent} />
     </g>
   ),
-  // 七万里路：蜿蜒到天边的路
+  // 去南极看企鹅：冰山前的一只企鹅
   70000: (c) => (
     <g>
-      <path d="M8 22L17 13L26 22Z" fill={c.panel} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M40 20L48 11L57 20Z" fill={c.panel} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M17 54C22 44 41 41 34 31C30 25 34 18 36 13H39C37.5 18 35 24 38 30C46 41 30 46 47 54Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <path d="M32 53C33 46 40 40 36 31C34 25 36 18 37.5 14" fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="3.5 3" strokeLinecap="round" />
+      <path d="M33 47L41.5 20L47.5 29L57 47Z" fill="#e8f6ff" stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M41.5 20L44 34L40 47" fill="none" stroke="#8fd0ff" strokeWidth="1.4" opacity="0.8" />
+      <path d="M7 47L12.5 37L18 47Z" fill="#e8f6ff" opacity="0.75" />
+      <path d="M4 47.5H60" stroke="#8fd0ff" strokeWidth="2" strokeLinecap="round" />
+      <path d="M8 53q3-2 6 0t6 0M40 53q3-2 6 0t6 0" fill="none" stroke="#8fd0ff" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+      <path d="M16.5 35q-4.5 6-1.5 10" fill="none" stroke="#1d1b2a" strokeWidth="3.2" strokeLinecap="round" />
+      <ellipse cx="24" cy="36.5" rx="8" ry="12" fill="#1d1b2a" stroke={c.ink} strokeWidth="1.6" />
+      <ellipse cx="25.5" cy="39" rx="5" ry="8.5" fill="#ffffff" />
+      <circle cx="27" cy="29.5" r="1.4" fill="#ffffff" /><circle cx="27.4" cy="29.6" r="0.7" fill="#1d1b2a" />
+      <path d="M30 31l4.5 1.2-4.5 1.3Z" fill={c.accent} stroke={c.base} strokeWidth="0.6" strokeLinejoin="round" />
+      <path d="M20 48.5h4M26 48.5h4" stroke={c.accent} strokeWidth="2" strokeLinecap="round" />
     </g>
   ),
-  // 接近极限：武库舰（甲板上一排垂发单元，正在发射）
+  // 一匹自己的马：马头侧影、飘起来的鬃毛和笼头，下面一只马蹄铁
   80000: (c) => (
     <g>
-      <circle cx="41" cy="27" r="2.2" fill={c.ink} opacity="0.45" />
-      <circle cx="39.5" cy="31" r="1.6" fill={c.ink} opacity="0.35" />
-      <g transform="rotate(20 46 20)">
-        <path d="M44.5 27.5h3l1.2 3.5h-5.4Z" fill={c.accent} />
-        <rect x="44.3" y="14" width="3.4" height="13" rx="1" fill={c.ink} stroke={c.base} strokeWidth="1.2" />
-        <path d="M44.3 14.2L46 9.5L47.7 14.2Z" fill={c.ink} stroke={c.base} strokeWidth="1.2" strokeLinejoin="round" />
-        <path d="M44.3 23l-2.2 3.5h2.2ZM47.7 23l2.2 3.5h-2.2Z" fill={c.ink} stroke={c.base} strokeWidth="1" strokeLinejoin="round" />
-      </g>
-      <rect x="16" y="28" width="13" height="10" rx="1" fill={c.ink} stroke={c.base} strokeWidth="1.8" />
-      <rect x="18.5" y="30.5" width="8" height="2.5" rx="0.6" fill={c.base} opacity="0.55" />
-      <line x1="22.5" y1="19" x2="22.5" y2="28" stroke={c.ink} strokeWidth="2" />
-      <circle cx="22.5" cy="19.5" r="3.4" fill={c.ink} stroke={c.base} strokeWidth="1.5" />
-      <path d="M7 38H57L51 47H13Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      {[0, 1, 2, 3, 4].map((i) => (
-        <rect key={i} x={31 + i * 4.2} y="33.5" width="3.2" height="4.5" rx="0.5" fill={c.accent} stroke={c.base} strokeWidth="1" />
-      ))}
-      <path d="M7 52q4-3 8 0t8 0 8 0 8 0 8 0 8 0" fill="none" stroke={c.ink} strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+      <path d="M21 52V41Q16.5 34 18.5 25.5Q21 15 31 10.5L33 5.5L36.5 10.5Q45.5 12.5 49.5 21.5L53.5 31Q54.5 35.5 50.5 36.5L43.5 35Q39.5 36 38 40.5V52Z"
+        fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M31 11Q24 15 22.5 24.5Q21.5 33 25 40.5" fill="none" stroke={c.accent} strokeWidth="4" strokeLinecap="round" />
+      <path d="M28 14Q22 20 21.5 27" fill="none" stroke={c.base} strokeWidth="1" opacity="0.5" />
+      <path d="M37.5 15.5Q40.5 23.5 45 31M45 31Q49 29.5 53.2 31.5" fill="none" stroke={c.accent} strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="45" cy="31" r="1.3" fill={c.accent} />
+      <circle cx="41.5" cy="21.5" r="1.6" fill={c.base} />
+      <circle cx="50.5" cy="32.5" r="1" fill={c.base} />
+      <path d="M44.5 53a4.5 4.5 0 1 1 9 0" fill="none" stroke={c.accent} strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M45.4 50.6h.01M52.6 50.6h.01M49 47.6h.01" stroke={c.base} strokeWidth="1.2" strokeLinecap="round" />
     </g>
   ),
-  // 九万之巅：钞票堆成的山，山顶插旗
+  // 北海道的一整个雪季：雪山上两道滑雪轨迹，天上飘雪花
   90000: (c) => (
     <g>
-      <path d="M8 51L25 24L33 34L42 18L57 51Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <path d="M19 42H47M14 47H54M23 36H30M37 30H46" stroke={c.accent} strokeWidth="2.2" strokeLinecap="round" />
-      <path d="M42 18V8" stroke={c.base} strokeWidth="2" strokeLinecap="round" />
-      <path d="M42 8L50 11L42 14Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M4 54L25 17L35 31L42 23L60 54Z" fill="#ffffff" stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M25 17L29 33L22 54H4Z" fill="#dce9f7" />
+      <path d="M4 54L25 17L35 31L42 23L60 54Z" fill="none" stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M27 24Q22 31 31 37T27 52" fill="none" stroke="#8fd0ff" strokeWidth="1.3" strokeLinecap="round" />
+      <path d="M30 24Q25 31 34 37T30 52" fill="none" stroke="#8fd0ff" strokeWidth="1.3" strokeLinecap="round" />
+      {[[12, 13, 3], [50, 11, 3.5], [55, 25, 2.5]].map(([x, y, r]) => (
+        <path key={x} d={`M${x} ${y - r}v${r * 2}M${x - r} ${y}h${r * 2}M${x - r * 0.7} ${y - r * 0.7}l${r * 1.4} ${r * 1.4}M${x + r * 0.7} ${y - r * 0.7}l${-r * 1.4} ${r * 1.4}`}
+          stroke={c.ink} strokeWidth="1.2" strokeLinecap="round" />
+      ))}
     </g>
   ),
   // 十万！为什么？！：一辆家用轿车开走了
@@ -570,25 +584,64 @@ const ART = {
   ),
   // 万氪之王 · 伪神：顶栏同款，歪斜开裂的粉色王冠
   200000: memberCrownArt(200000),
-  // 三十而已：粉色存钱罐，一枚金币正掉进去
+  // 私人飞行执照：小螺旋桨飞机从云层里爬升出来
   300000: (c) => (
     <g>
-      <circle cx="31" cy="12.5" r="5" fill="#ffd86b" stroke={c.base} strokeWidth="1.6" />
-      <path d="M29.5 12.5h3" stroke={c.base} strokeWidth="1.4" strokeLinecap="round" />
-      <path d="M10 37q-4-1-3 3" fill="none" stroke={c.accent} strokeWidth="2.2" strokeLinecap="round" />
-      <rect x="17" y="44" width="5" height="8" rx="1.5" fill={c.accent} stroke={c.base} strokeWidth="1.6" />
-      <rect x="36" y="44" width="5" height="8" rx="1.5" fill={c.accent} stroke={c.base} strokeWidth="1.6" />
-      <path d="M22 25.5l3-6 4.5 5Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
-      <ellipse cx="30" cy="36" rx="20" ry="13" fill={c.accent} stroke={c.base} strokeWidth="2" />
-      <rect x="25" y="23.5" width="10" height="2.6" rx="1.3" fill={c.base} />
-      <ellipse cx="50" cy="35.5" rx="4.5" ry="5.5" fill="#ffc2e6" stroke={c.base} strokeWidth="1.8" />
-      <circle cx="49" cy="34" r="0.9" fill={c.base} /><circle cx="51" cy="37" r="0.9" fill={c.base} />
-      <circle cx="41" cy="31" r="1.6" fill={c.base} />
-      <path d="M18 32a8 8 0 0 1 6-5" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+      <path d="M5 21h7M3 27h6M6 33h5" stroke={c.ink} strokeWidth="1.8" strokeLinecap="round" opacity="0.55" />
+      <path d="M11 54a5.5 5.5 0 0 1 0-11a8 8 0 0 1 15.5-3a6.5 6.5 0 0 1 11.5 4.5a5 5 0 0 1 0 9.5Z" fill={c.ink} stroke={c.base} strokeWidth="1.8" strokeLinejoin="round" />
+      <g transform="rotate(-18 34 26)">
+        <path d="M16 23L12 15H17L22 22Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M14 27Q15 22 22 22H44Q50 22 52 26Q50 30 44 30H22Q15 30 14 27Z" fill={c.ink} stroke={c.base} strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M22 26.5H40" stroke={c.accent} strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M38 22.5Q40 18.5 44 19L46.5 22.5Z" fill={c.panel} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M29 28L23 38.5H29L37 28Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M53.5 19V33" stroke={c.base} strokeWidth="2" strokeLinecap="round" />
+        <circle cx="52.5" cy="26" r="1.7" fill={c.base} />
+      </g>
+      <path d="M49 49a3.5 3.5 0 0 1 4-3.5a5 5 0 0 1 4 4.5a3 3 0 0 1-1 5.5H50a3 3 0 0 1-1-6.5Z" fill={c.ink} opacity="0.5" />
+    </g>
+  ),
+  // 开一家自己的小店：条纹遮阳棚的小铺，橱窗里一杯咖啡，门上挂着营业牌
+  400000: (c) => (
+    <g>
+      <rect x="13" y="21" width="38" height="31" rx="1.5" fill={c.ink} stroke={c.base} strokeWidth="2" />
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <g key={i}>
+          <rect x={9 + i * 7.67} y="12" width="7.67" height="9" fill={i % 2 ? c.ink : c.accent} />
+          <path d={`M${9 + i * 7.67} 21a3.83 3.83 0 0 0 7.67 0Z`} fill={i % 2 ? c.ink : c.accent} stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
+        </g>
+      ))}
+      <rect x="9" y="12" width="46" height="9" fill="none" stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <rect x="17" y="30" width="15" height="13" rx="1" fill={c.panel} stroke={c.base} strokeWidth="1.6" />
+      <path d="M21 34.5h7v3.2a3.5 3.5 0 0 1-7 0Z" fill={c.ink} stroke={c.base} strokeWidth="1" />
+      <path d="M28 35.5h1.2a1.6 1.6 0 0 1 0 3.2H28" fill="none" stroke={c.ink} strokeWidth="1" />
+      <path d="M23 32.5q-1-1 0-2M26 32.5q-1-1 0-2" fill="none" stroke={c.ink} strokeWidth="0.9" strokeLinecap="round" opacity="0.8" />
+      <rect x="36" y="29" width="11" height="23" rx="1" fill={c.panel} stroke={c.base} strokeWidth="1.6" />
+      <circle cx="44.5" cy="43" r="1" fill={c.ink} />
+      <path d="M39 30.5l2.5 2.5 2.5-2.5" fill="none" stroke={c.ink} strokeWidth="0.8" />
+      <rect x="37.5" y="33" width="8" height="4.5" rx="0.8" fill="#ffd86b" stroke={c.base} strokeWidth="0.9" />
     </g>
   ),
   // 万氪之王 · 半神：顶栏同款，左半金色实心、右半虚线轮廓
   500000: memberCrownArt(500000),
+  // 一台自己的房车：远处的雪山，车身一道彩条
+  600000: (c) => (
+    <g>
+      <path d="M4 40L17 23L25 32L35 17L50 40Z" fill={c.rim} opacity="0.3" />
+      <path d="M35 17L39 23L36.5 21.8L35 23.5L33.3 21.8L31 23Z" fill="#ffffff" opacity="0.85" />
+      <path d="M17 23L20.6 27L18.3 26.2L17 27.4L15.8 26.2L13.9 27Z" fill="#ffffff" opacity="0.75" />
+      <path d="M9 30a3 3 0 0 1 3-3H45V47H9Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M45 31H50.5L56 38.5V47H45Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <rect x="9" y="39.5" width="47" height="2.6" fill={c.accent} />
+      <rect x="13" y="31" width="9" height="6" rx="1" fill={c.panel} stroke={c.base} strokeWidth="1.4" />
+      <rect x="25" y="31" width="7" height="6" rx="1" fill={c.panel} stroke={c.base} strokeWidth="1.4" />
+      <rect x="36" y="30.5" width="6" height="15" rx="1" fill="none" stroke={c.base} strokeWidth="1.4" />
+      <path d="M47 33.5H50L53.5 38H47Z" fill={c.panel} stroke={c.base} strokeWidth="1.2" strokeLinejoin="round" />
+      <circle cx="19" cy="48" r="4.6" fill={c.base} stroke={c.ink} strokeWidth="2" />
+      <circle cx="48" cy="48" r="4.6" fill={c.base} stroke={c.ink} strokeWidth="2" />
+      <path d="M53 9v6M50 12h6" stroke="#ffd86b" strokeWidth="1.6" strokeLinecap="round" />
+    </g>
+  ),
   // 凝视深渊：深渊漩涡里睁开的一只眼
   700000: (c) => (
     <g>
@@ -600,6 +653,33 @@ const ART = {
       <circle cx="32" cy="33" r="3.6" fill={c.base} />
       <circle cx="29.5" cy="30.5" r="1.5" fill="#ffffff" />
       <path d="M14 22l-3-3M50 22l3-3M32 13v-4" stroke={c.accent} strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+    </g>
+  ),
+  // 海外录取通知书：信封里抽出半截录取信，粉色火漆印，一架纸飞机
+  800000: (c) => (
+    <g>
+      <rect x="10" y="24" width="44" height="27" rx="2" fill={c.rim} stroke={c.base} strokeWidth="2" />
+      <rect x="15" y="11" width="28" height="22" rx="1.5" fill="#ffffff" stroke={c.base} strokeWidth="1.6" />
+      <path d="M19.5 16.5h19M19.5 20.5h14M19.5 24.5h17" stroke={c.panel} strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M10 26V49a2 2 0 0 0 2 2H52a2 2 0 0 0 2-2V26L32 40Z" fill={c.ink} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M11 49.5L26 37M53 49.5L38 37" stroke={c.base} strokeWidth="1.4" opacity="0.45" />
+      <circle cx="32" cy="40" r="5" fill={c.accent} stroke={c.base} strokeWidth="1.6" />
+      <path d="M32 37.2l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2-1.45-1.4 2-.3Z" fill="#ffffff" />
+      <path d="M45 14L58 7L52.5 19.5L49.5 16Z" fill={c.ink} stroke={c.base} strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M49.5 16L58 7" stroke={c.base} strokeWidth="1" />
+    </g>
+  ),
+  // 躺平基金：太阳底下两根柱子间的吊床，飘着 zZ
+  900000: (c) => (
+    <g>
+      <circle cx="17" cy="17" r="5.5" fill="#ffd86b" stroke={c.base} strokeWidth="1.6" />
+      <path d="M17 7.5v2M17 24.5v2M7.5 17h2M24.5 17h2M10.3 10.3l1.4 1.4M22.3 22.3l1.4 1.4M10.3 23.7l1.4-1.4M22.3 11.7l1.4-1.4" stroke="#ffd86b" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M12 26V52M52 26V52" stroke={c.ink} strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M12 30Q32 52 52 30Q32 44 12 30Z" fill={c.accent} stroke={c.base} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M18 35.5Q32 46 46 35.5" fill="none" stroke={c.base} strokeWidth="0.9" strokeDasharray="2 2" opacity="0.6" />
+      <text x="36" y="25" fontSize="7" fontWeight="800" fill={c.ink} fontFamily="system-ui, sans-serif">z</text>
+      <text x="41" y="19" fontSize="10" fontWeight="800" fill={c.ink} fontFamily="system-ui, sans-serif">Z</text>
+      <path d="M7 53H57" stroke={c.base} strokeWidth="2" strokeLinecap="round" />
     </g>
   ),
   // 万氪之王：顶栏同款，长短交错光芒里的金冠

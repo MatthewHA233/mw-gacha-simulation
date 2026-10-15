@@ -114,7 +114,7 @@ export default function ToastShowcase() {
       <div className="mx-auto max-w-6xl px-4 py-6 md:py-10 flex flex-col gap-5">
         <header>
           <h1 className="text-xl md:text-2xl font-bold">通知与成就展示</h1>
-          <p className="mt-1 text-sm text-white/65">全站普通通知、33 个成就弹出、顶栏会员王冠四档，都是线上同一套组件。</p>
+          <p className="mt-1 text-sm text-white/65">全站普通通知、{MILESTONES.length} 个成就弹出、顶栏会员王冠四档，都是线上同一套组件。</p>
         </header>
 
         <Section title="顶栏 · 会员王冠四档" note="只存浏览器本地、只升不降：达成过 ¥20 万 / ¥50 万 / ¥100 万里程碑后换成伪神 / 半神 / 万氪之王；剩余天数的字色跟着变。">
