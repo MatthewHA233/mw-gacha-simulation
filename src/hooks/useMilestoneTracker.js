@@ -2,228 +2,165 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useMilestoneToast } from '../components/ui/MilestoneToastProvider'
-import { getMilestoneByAmount, MILESTONES } from '../data/milestoneConfig'
+import { MILESTONES } from '../data/milestoneConfig'
+import { raiseCrownTier } from '../utils/crownTier'
+
+const QUEUE_GAP_MS = 3000        // 一次跨过多个里程碑时，相邻两个之间隔多久
+const PLAIN_DURATION_MS = 5000   // 普通成就停留时长
+const CHOICE_DURATION_MS = 15000 // 带选项的成就停留时长（等玩家选）
+// 一口气连续弹 3 个及以上时，除最后一个外都按 5 倍速过（停留和间隔都缩到 1/5），最后一个恢复常规速度
+const BURST_MIN = 3
+const BURST_SPEEDUP = 5
 
 /**
- * 里程碑追踪Hook
- * 监听氪金总额变化，自动触发里程碑Toast
- * 支持批量触发时按金额从小到大依次弹出（每3秒一个）
+ * 里程碑追踪：氪金总额每跨过一个里程碑弹一次成就，一次跨过多个就按金额从小到大、每 3 秒一个；
+ * 一口气 3 个及以上时前面的按 5 倍速过（停留 1 秒、间隔 0.6 秒），最后一个恢复常规速度。
+ *
+ * 2026-10-15 修「同一个成就弹两次」：
+ * 原先把入队、弹窗写在 setTriggeredMilestones(prev => …) 的更新函数里。React 严格模式（next.config reactStrictMode）
+ * 在开发环境会故意把更新函数调两次，并发渲染下生产环境也可能重放；第一次调用里普通成就已同步弹出并移出「处理中」，
+ * 第二次调用的 prev 还是旧值，于是又弹一次。以前多条成就叠在同一个位置，两条完全重合看不出来。
+ * 现在「已触发」以 triggeredRef 为准：检测到就先同步记进去再弹，任何重入都看得到；更新函数里不再有副作用。
+ *
+ * 同日修「花到 100 万不弹 100 万」：已触发记录按活动存在 `<类型>_<活动>_milestones`，版本更新重置只清了一个不存在的键，
+ * 氪金额归零了记录却还在，以前到过的档位再跨过就不弹。现在已触发记录始终和当前累计金额对齐：
+ * 累计金额低于某档时，那一档自动回到「未触发」（读档就绪时、金额回落时都校正），任何重置方式都不用再单独清记录。
+ * 组件的存档是挂载后异步读进来的（先默认 0 再跳到存档金额），所以要 ready（存档已读入）：
+ * 就绪那一刻只把读进来的金额当基线、校正记录，不弹；之后的增加才算花钱。
+ *
+ * @param {number} totalRmb 当前人民币余额（负数 = 已花）
+ * @param {string} storageKey 例如 chip_ag109
+ * @param {boolean} ready 该活动的存档是否已读入（默认 true，不读档的场景直接用）
+ * @param {{ awardCrown?: boolean }} options awardCrown=false 时不升顶栏王冠（/test/toasts 展示页用，免得一点就「作弊」）
  */
-export function useMilestoneTracker(totalRmb, storageKey) {
+export function useMilestoneTracker(totalRmb, storageKey, ready = true, { awardCrown = true } = {}) {
   const { showToast, closeAll } = useMilestoneToast()
-  const [triggeredMilestones, setTriggeredMilestones] = useState(new Set())
-  const [isHydrated, setIsHydrated] = useState(false)
+  const storageName = `${storageKey}_milestones`
+  const triggeredRef = useRef(new Set())
+  const [triggeredMilestones, setTriggeredMilestones] = useState(() => new Set())
+  const prevRmbRef = useRef(totalRmb)
+  const queueRef = useRef([])
+  const processingRef = useRef(false)
+  const mountedRef = useRef(true)
+  const readyRef = useRef(false)
 
-  // 客户端挂载后从 localStorage 加载已触发的里程碑
+  const persist = () => {
+    try {
+      localStorage.setItem(storageName, JSON.stringify([...triggeredRef.current]))
+    } catch (error) {
+      console.error('[里程碑] 保存已触发记录失败:', error)
+    }
+  }
+
+  // 已触发记录和当前累计金额对齐：高于当前金额的档位视为没到过（重置后能重新触发）。有变动才写回
+  const alignWithSpent = (spent) => {
+    const kept = [...triggeredRef.current].filter((amount) => amount <= spent)
+    if (kept.length === triggeredRef.current.size) return
+    triggeredRef.current = new Set(kept)
+    persist()
+    setTriggeredMilestones(new Set(triggeredRef.current))
+  }
+
+  // 客户端挂载后（及切换活动时）读回已触发的里程碑；按金额校正放到存档就绪那一刻
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(`${storageKey}_milestones`)
-      if (saved) {
-        setTriggeredMilestones(new Set(JSON.parse(saved)))
-      }
+      const saved = JSON.parse(localStorage.getItem(storageName) || '[]')
+      triggeredRef.current = new Set(Array.isArray(saved) ? saved : [])
     } catch {
-      // ignore
+      triggeredRef.current = new Set()
     }
-    setIsHydrated(true)
-  }, [storageKey])
+    setTriggeredMilestones(new Set(triggeredRef.current))
+    // 顶栏王冠彩蛋补登：这个功能上线前就达成过的 20 / 50 / 100 万也算
+    if (awardCrown && triggeredRef.current.size > 0) raiseCrownTier(Math.max(...triggeredRef.current))
+  }, [storageName])
 
-  const prevRmbRef = useRef(totalRmb)
-  const toastQueueRef = useRef([])
-  const isProcessingRef = useRef(false)
-  const isMountedRef = useRef(true)  // 标记组件是否已挂载
-  const processingMilestonesRef = useRef(new Set())  // 正在处理中的里程碑金额集合
-
-  // 组件挂载/卸载生命周期
+  // 卸载（换活动页）时清掉队列、收起正在显示的成就
   useEffect(() => {
-    // 组件挂载时确保标记为 true
-    isMountedRef.current = true
-    console.log(`[里程碑] 组件挂载，storageKey: ${storageKey}`)
-
-    // 只在组件真正卸载时清理
+    mountedRef.current = true
     return () => {
-      console.log(`[里程碑] 组件卸载，清除队列和关闭Toast，storageKey: ${storageKey}`)
-      isMountedRef.current = false
-      toastQueueRef.current = []
-      isProcessingRef.current = false
+      mountedRef.current = false
+      queueRef.current = []
+      processingRef.current = false
       closeAll()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])  // 空依赖数组，只在挂载和卸载时运行
+  }, [])
 
-  // 持久化已触发的里程碑
-  useEffect(() => {
-    if (typeof window === 'undefined' || !isHydrated) return
-    try {
-      localStorage.setItem(
-        `${storageKey}_milestones`,
-        JSON.stringify([...triggeredMilestones])
-      )
-    } catch (error) {
-      console.error('Failed to save triggered milestones:', error)
-    }
-  }, [triggeredMilestones, storageKey, isHydrated])
-
-  // 处理Toast队列，每3秒弹出一个
-  const processToastQueue = async () => {
-    console.log(`[里程碑] processToastQueue 被调用，队列长度: ${toastQueueRef.current.length}, isProcessing: ${isProcessingRef.current}, isMounted: ${isMountedRef.current}`)
-
-    if (isProcessingRef.current || toastQueueRef.current.length === 0) {
-      return
-    }
-
-    isProcessingRef.current = true
-
-    while (toastQueueRef.current.length > 0) {
-      // 检查组件是否已卸载
-      if (!isMountedRef.current) {
-        console.log(`[里程碑] 组件已卸载，停止处理队列`)
-        toastQueueRef.current = []
-        processingMilestonesRef.current.clear()
-        isProcessingRef.current = false
-        return
-      }
-
-      const milestone = toastQueueRef.current.shift()
-      console.log(`[里程碑] 准备显示 Toast: ¥${milestone.amount}${milestone.buttons ? ' (带选项，等待用户交互)' : ''}`)
-
-      // 标记为正在处理（防止重复检测）
-      processingMilestonesRef.current.add(milestone.amount)
-
-      // 区分有无选项的Toast
-      if (milestone.buttons && milestone.buttons.length > 0) {
-        // 带选项的Toast：等待用户交互后才继续
-        await showToast(milestone, {
-          onButtonClick: (milestone, buttonText) => {
-            console.log(`[里程碑] 用户选择: "${buttonText}" (¥${milestone.amount})`)
-          },
-          duration: 15000  // 带选项的延长时间
-        })
-
-        console.log(`[里程碑] Toast 已关闭: ¥${milestone.amount}`)
-
-        // Toast 关闭后，从正在处理集合中移除
-        processingMilestonesRef.current.delete(milestone.amount)
-
-        // 检查组件是否已卸载
-        if (!isMountedRef.current) {
-          console.log(`[里程碑] Toast 关闭期间组件已卸载，停止处理队列`)
-          toastQueueRef.current = []
-          processingMilestonesRef.current.clear()
-          isProcessingRef.current = false
-          return
-        }
-      } else {
-        // 无选项的Toast：立即显示，不等待关闭
-        showToast(milestone, {
-          onButtonClick: (milestone, buttonText) => {
-            console.log(`[里程碑] 用户选择: "${buttonText}" (¥${milestone.amount})`)
-          },
-          duration: 5000
-        })
-
-        // 如果队列还有待处理的Toast，等待3秒
-        if (toastQueueRef.current.length > 0) {
-          console.log(`[里程碑] 等待 3 秒...`)
-          await new Promise(resolve => setTimeout(resolve, 3000))
-
-          // 等待后再次检查组件是否已卸载
-          if (!isMountedRef.current) {
-            console.log(`[里程碑] 等待期间组件已卸载，停止处理队列`)
-            toastQueueRef.current = []
-            processingMilestonesRef.current.clear()
-            isProcessingRef.current = false
-            return
-          }
-        }
-
-        // Toast 显示完成，从正在处理集合中移除
-        processingMilestonesRef.current.delete(milestone.amount)
+  // 依次弹出队列：普通成就弹完隔 3 秒弹下一个；带选项的等玩家选完（或超时关掉）再继续。
+  // 这一轮连续弹的总数（已弹 + 当前 + 还在排队）达到 3 个时，不是最后一个的都按 5 倍速；中途又跨过新里程碑也算进这一轮
+  const processQueue = async () => {
+    if (processingRef.current) return
+    processingRef.current = true
+    let shownInRun = 0
+    while (queueRef.current.length > 0 && mountedRef.current) {
+      const milestone = queueRef.current.shift()
+      const hasChoices = milestone.buttons?.length > 0
+      const isLast = queueRef.current.length === 0
+      const fast = !isLast && shownInRun + 1 + queueRef.current.length >= BURST_MIN
+      const speed = fast ? BURST_SPEEDUP : 1
+      shownInRun += 1
+      const closed = showToast(milestone, { duration: (hasChoices ? CHOICE_DURATION_MS : PLAIN_DURATION_MS) / speed })
+      if (hasChoices) {
+        await closed
+      } else if (queueRef.current.length > 0) {
+        await new Promise((resolve) => setTimeout(resolve, QUEUE_GAP_MS / speed))
       }
     }
-
-    console.log(`[里程碑] 队列处理完成`)
-    isProcessingRef.current = false
+    if (!mountedRef.current) queueRef.current = []
+    processingRef.current = false
   }
 
-  // 监听totalRmb变化
+  // 氪金总额增加时检查新跨过的里程碑（rmb 是负数，取绝对值）
   useEffect(() => {
-    // 计算累计消耗量（rmb是负数，需要取绝对值）
+    if (!ready) {
+      readyRef.current = false
+      prevRmbRef.current = totalRmb
+      return
+    }
+    if (!readyRef.current) {
+      // 存档刚读入：读进来的金额只当基线，顺便把高于它的「已触发」记录清掉，不弹
+      readyRef.current = true
+      prevRmbRef.current = totalRmb
+      alignWithSpent(Math.abs(totalRmb))
+      return
+    }
     const totalSpent = Math.abs(totalRmb)
     const prevSpent = Math.abs(prevRmbRef.current)
-
-    // 只在消耗量增加时检查里程碑
-    if (totalSpent <= prevSpent) {
+    prevRmbRef.current = totalRmb
+    if (totalSpent < prevSpent) {
+      alignWithSpent(totalSpent)   // 金额回落（重置、读到旧档等）：高于它的档位重新可触发
       return
     }
+    if (totalSpent === prevSpent) return
 
-    // 找出所有新达成的里程碑（按金额从小到大排序）
-    // 使用函数式更新访问最新的 triggeredMilestones，避免将其加入依赖项
-    setTriggeredMilestones(prev => {
-      const newMilestones = MILESTONES
-        .filter(m =>
-          totalSpent >= m.amount &&
-          !prev.has(m.amount) &&
-          prevSpent < m.amount  // 只触发刚刚达成的（避免重复触发）
-        )
-        .sort((a, b) => a.amount - b.amount)  // 从小到大排序
+    const fresh = MILESTONES
+      .filter((m) => totalSpent >= m.amount && prevSpent < m.amount && !triggeredRef.current.has(m.amount))
+      .sort((a, b) => a.amount - b.amount)
+    if (fresh.length === 0) return
 
-      if (newMilestones.length === 0) {
-        return prev  // 没有新里程碑，直接返回
-      }
+    // 先登记再弹：之后任何重入都看得到它已经触发过
+    fresh.forEach((m) => triggeredRef.current.add(m.amount))
+    if (awardCrown) raiseCrownTier(fresh[fresh.length - 1].amount)   // 顶栏王冠彩蛋：跨过 20 / 50 / 100 万就升档（只升不降）
+    persist()
+    setTriggeredMilestones(new Set(triggeredRef.current))
 
-      console.log(`[里程碑] 当前累计消耗: ¥${totalSpent}, 达成 ${newMilestones.length} 个新里程碑:`, newMilestones.map(m => `¥${m.amount}`).join(', '))
+    queueRef.current = [...queueRef.current, ...fresh].sort((a, b) => a.amount - b.amount)
+    processQueue()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalRmb, ready])
 
-      // 过滤掉已经在队列中或正在处理中的里程碑（防止重复）
-      const queuedAmounts = new Set(toastQueueRef.current.map(m => m.amount))
-      const uniqueNewMilestones = newMilestones.filter(m =>
-        !queuedAmounts.has(m.amount) &&
-        !processingMilestonesRef.current.has(m.amount)  // 关键：也过滤正在处理的
-      )
-
-      console.log(`[里程碑] 过滤后剩余: ${uniqueNewMilestones.length} 个，队列中已有: ${queuedAmounts.size} 个，正在处理: ${processingMilestonesRef.current.size} 个`)
-
-      if (uniqueNewMilestones.length > 0) {
-        // 添加到队列
-        toastQueueRef.current.push(...uniqueNewMilestones)
-
-        // 对整个队列按金额从小到大重新排序（重要！确保顺序正确）
-        toastQueueRef.current.sort((a, b) => a.amount - b.amount)
-
-        console.log(`[里程碑] 队列排序后:`, toastQueueRef.current.map(m => `¥${m.amount}`).join(', '))
-
-        // 开始处理队列
-        processToastQueue()
-      }
-
-      // 更新已触发的里程碑
-      const updated = new Set(prev)
-      newMilestones.forEach(m => updated.add(m.amount))
-      return updated
-    })
-
-    // 在检测完成后再更新 prevRmbRef（重要！防止状态更新延迟导致重复检测）
-    prevRmbRef.current = totalRmb
-  }, [totalRmb])  // 只依赖 totalRmb，showToast 在 processToastQueue 闭包中捕获
-
-  // 重置已触发里程碑的函数
   const resetMilestones = () => {
-    console.log(`[里程碑] 重置里程碑记录: ${storageKey}`)
+    triggeredRef.current = new Set()
     setTriggeredMilestones(new Set())
-    toastQueueRef.current = []
-    processingMilestonesRef.current.clear()  // 清空正在处理的集合
-    prevRmbRef.current = 0  // 重置累计消费记录
-    isProcessingRef.current = false  // 重置队列处理状态
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.removeItem(`${storageKey}_milestones`)
-      } catch (error) {
-        console.error('Failed to reset milestones:', error)
-      }
+    queueRef.current = []
+    processingRef.current = false
+    prevRmbRef.current = 0
+    try {
+      localStorage.removeItem(storageName)
+    } catch (error) {
+      console.error('[里程碑] 清除已触发记录失败:', error)
     }
   }
 
-  return {
-    triggeredMilestones,
-    resetMilestones
-  }
+  return { triggeredMilestones, resetMilestones }
 }

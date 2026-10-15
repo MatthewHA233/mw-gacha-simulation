@@ -216,9 +216,10 @@ export function checkAndResetIfNeeded() {
       // 清除所有游戏数据
       clearAllGameStates()
 
-      // 清除氪金里程碑记录
-      const milestoneKey = 'mw_gacha_milestones'
-      localStorage.removeItem(milestoneKey)
+      // 清除氪金里程碑记录：按活动存在 <类型>_<活动>_milestones（原先清的 mw_gacha_milestones 并不存在）
+      Object.keys(localStorage)
+        .filter((key) => key.endsWith('_milestones'))
+        .forEach((key) => localStorage.removeItem(key))
 
       // 清除音乐播放状态
       const musicKey = 'musicPlayback'

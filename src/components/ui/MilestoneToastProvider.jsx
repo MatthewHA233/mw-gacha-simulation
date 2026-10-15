@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { MilestoneToast } from './MilestoneToast'
 
 /**
@@ -10,9 +11,9 @@ const MilestoneToastContext = createContext(null)
 
 /**
  * Toast管理器Provider
- * 支持多个Toast堆叠显示（类似Steam成就）
+ * Steam 成就那样在右下角往上叠：新的从底部滑上来，旧的被推上去；关掉一条，上面的平滑落下补位
  */
-export function MilestoneToastProvider({ children, maxToasts = 3, position = 'top-right' }) {
+export function MilestoneToastProvider({ children, maxToasts = 3, position = 'bottom-right' }) {
   const [toasts, setToasts] = useState([])
   const [shouldRotate, setShouldRotate] = useState(false)
   const resolveMapRef = useRef(new Map())  // 存储 toast id 到 resolve 函数的映射
@@ -32,50 +33,12 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  /**
-   * 显示新Toast
-   * @param {object} milestone - 里程碑配置对象
-   * @param {function} onButtonClick - 按钮点击回调
-   * @param {number} duration - 显示时长（毫秒）
-   * @returns {Promise} 在 Toast 关闭时 resolve
-   */
-  const showToast = useCallback((milestone, { onButtonClick, duration = 5000 } = {}) => {
-    const id = Date.now() + Math.random()
+  // 正在显示的成就（同步可读，供去重和超上限收起用）：[{ id, amount, promise }]
+  const activeRef = useRef([])
 
-    // 创建 Promise，在 Toast 关闭时 resolve
-    const promise = new Promise((resolve) => {
-      resolveMapRef.current.set(id, resolve)
-    })
-
-    setToasts((prev) => {
-      const newToasts = [
-        ...prev,
-        {
-          id,
-          milestone,
-          onButtonClick,
-          duration
-        }
-      ]
-
-      // 限制最大Toast数量，移除最早的
-      if (newToasts.length > maxToasts) {
-        return newToasts.slice(newToasts.length - maxToasts)
-      }
-
-      return newToasts
-    })
-
-    return promise
-  }, [maxToasts])
-
-  /**
-   * 关闭指定Toast
-   */
-  const closeToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id))
-
-    // 调用对应的 resolve 函数
+  // 结束一条：移出 activeRef 并通知等它关闭的一方（带选项的成就会被队列 await）
+  const finish = useCallback((id) => {
+    activeRef.current = activeRef.current.filter((entry) => entry.id !== id)
     const resolve = resolveMapRef.current.get(id)
     if (resolve) {
       resolve()
@@ -84,13 +47,36 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
   }, [])
 
   /**
-   * 关闭所有Toast
+   * 显示一条成就，返回在它关闭时 resolve 的 Promise
+   * - 同一金额的成就正在显示：不重复弹，直接返回那一条的 Promise（防御，正常不会走到）
+   * - 超过 maxToasts：最早那条收起并 resolve，免得等它关闭的队列卡死
    */
+  const showToast = useCallback((milestone, { onButtonClick, duration = 5000 } = {}) => {
+    const existing = activeRef.current.find((entry) => entry.amount === milestone.amount)
+    if (existing) return existing.promise
+
+    const id = Date.now() + Math.random()
+    const promise = new Promise((resolve) => {
+      resolveMapRef.current.set(id, resolve)
+    })
+    activeRef.current = [...activeRef.current, { id, amount: milestone.amount, promise }]
+    while (activeRef.current.length > maxToasts) finish(activeRef.current[0].id)
+
+    const keep = new Set(activeRef.current.map((entry) => entry.id))
+    const toast = { id, milestone, onButtonClick, duration }
+    setToasts((prev) => [...prev, toast].filter((item) => keep.has(item.id)))
+    return promise
+  }, [maxToasts, finish])
+
+  const closeToast = useCallback((id) => {
+    finish(id)
+    setToasts((prev) => prev.filter((toast) => toast.id !== id))
+  }, [finish])
+
   const closeAll = useCallback(() => {
-    // 调用所有待解决的 resolve 函数
     resolveMapRef.current.forEach((resolve) => resolve())
     resolveMapRef.current.clear()
-
+    activeRef.current = []
     setToasts([])
   }, [])
 
@@ -113,29 +99,23 @@ export function MilestoneToastProvider({ children, maxToasts = 3, position = 'to
         }}
       >
         <div className={`
-          absolute
-          ${position.includes('top') ? 'top-4' : 'bottom-4'}
-          ${position.includes('right') ? 'right-4' : 'left-4'}
+          absolute flex flex-col gap-2.5
+          ${position.includes('top') ? 'top-3 md:top-4' : 'bottom-3 md:bottom-4'}
+          ${position.includes('right') ? 'right-3 md:right-4 items-end' : 'left-3 md:left-4 items-start'}
           pointer-events-none
         `}>
-          {toasts.map((toast, index) => (
-            <div
-              key={toast.id}
-              className="absolute top-0 right-0 pointer-events-auto"
-              style={{
-                zIndex: 10000 + index
-              }}
-            >
+          <AnimatePresence initial={false} mode="popLayout">
+            {toasts.map((toast) => (
               <MilestoneToast
+                key={toast.id}
                 id={toast.id}
                 milestone={toast.milestone}
                 onClose={closeToast}
                 onButtonClick={toast.onButtonClick}
                 duration={toast.duration}
-                position={position}
               />
-            </div>
-          ))}
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </MilestoneToastContext.Provider>

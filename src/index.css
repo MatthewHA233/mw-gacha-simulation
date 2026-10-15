@@ -84,6 +84,22 @@
 }
 .app-toast-bump { animation: app-toast-bump 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
 .app-toast-bump .app-toast-count { animation: app-toast-count-pop 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+/* 成就徽章出现时扫过一道高光（MilestoneToast 的 .achievement-icon） */
+@keyframes achievement-shine {
+  from { transform: translateX(-130%) skewX(-18deg); }
+  to { transform: translateX(230%) skewX(-18deg); }
+}
+.achievement-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: rgba(255, 255, 255, 0.55);
+  filter: blur(6px);
+  transform: translateX(-130%) skewX(-18deg);
+  animation: achievement-shine 0.85s 0.35s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
 
 /* 结果弹窗「双击快进」提示前的青色 »：轻轻呼吸，提示可以操作（ResultModal 的 SkipHint） */
 @keyframes skip-hint-breathe {
@@ -91,3 +107,10 @@
   50% { opacity: 1; transform: translateX(2px); }
 }
 .skip-hint-chevron { animation: skip-hint-breathe 1.6s ease-in-out infinite; }
+
+/* 顶栏万氪之王王冠（MemberCrownBadge）：沿王冠轮廓的金色辉光慢慢呼吸（无底框，所以用 drop-shadow 而不是盒子阴影） */
+@keyframes crown-king-glow {
+  0%, 100% { filter: drop-shadow(0 0 1.5px rgba(255, 216, 107, 0.55)); }
+  50% { filter: drop-shadow(0 0 5px rgba(255, 216, 107, 0.95)); }
+}
+.crown-king { animation: crown-king-glow 2.4s ease-in-out infinite; }

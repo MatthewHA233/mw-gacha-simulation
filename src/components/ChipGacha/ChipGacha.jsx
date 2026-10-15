@@ -49,11 +49,14 @@ export function ChipGacha({
 
   // 用于防止初始加载时触发保存
   const isInitialLoad = useRef(true)
+  // 存档已为哪个活动读入：里程碑追踪据此区分「读档」和「花钱」（读档那一下的金额跳变不算氪金）
+  const [loadedActivityId, setLoadedActivityId] = useState(null)
 
   // ========== 里程碑追踪 ==========
   const { resetMilestones } = useMilestoneTracker(
     gameState.rmb,
-    `chip_${activityId}`
+    `chip_${activityId}`,
+    loadedActivityId === activityId
   )
 
   // 从 JSON 配置加载物品数据和活动配置
@@ -109,6 +112,7 @@ export function ChipGacha({
         }
 
         // 标记初始加载完成
+        setLoadedActivityId(activityId)
         isInitialLoad.current = false
       } catch (error) {
         console.error('加载物品配置失败:', error)

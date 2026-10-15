@@ -21,22 +21,41 @@ export function getMilestoneLevel(amount) {
  */
 export const MILESTONES = [
   // 密集反馈区：普通池子覆盖 (￥100 - ￥3,000)
+  // 2026-10-15 补 150 / 250 / 400 / 800 / 880 / 2200 / 3500，并改写 100 / 328 / 500 / 1000 / 2000：很多年轻人一直想做、却一直没去做的事，带点「这钱本该花在……」的亏欠感（号主：小众但有共鸣，别写养家）
   {
     amount: 100,
-    title: '首战告捷！',
-    content: '恭喜！您已解锁【初级冒险家】称号！这仅仅是伟大旅程的第一步，下一发可能就是传说！',
+    title: '全场最靓的仔',
+    content: '一张红彤彤的百元大钞。它要是掉在地上，绝对是全场最靓的仔——可惜它没掉在地上，掉进了卡池。',
+    level: 'dense'
+  },
+  {
+    amount: 150,
+    title: '欢迎回来，主人~',
+    content: '一次女仆咖啡厅的钱。“欢迎回来，主人~”这句话，您在视频里听了无数遍，现场一次都没听过。',
+    level: 'dense'
+  },
+  {
+    amount: 250,
+    title: '那把木吉他',
+    content: '一把入门木吉他的钱。抱着它在篝火旁弹唱那首歌的画面，您在脑子里排练过一百遍。',
     level: 'dense'
   },
   {
     amount: 328,
-    title: '一份"大餐"的投入',
-    content: '您已氪入一个豪华双人套餐的金额。是虚拟的饱腹感更持久，还是现实的美食更诱人？（肚子咕咕叫了吗？）',
+    title: '帝王蟹自由',
+    content: '够吃一顿五星酒店海鲜自助：帝王蟹腿、刺身、生蚝、哈根达斯随便拿。您说“等发了工资就去”，工资已经发了好几回了。',
+    level: 'dense'
+  },
+  {
+    amount: 400,
+    title: '一副降噪耳机',
+    content: '一副降噪耳机的钱。室友外放的短视频、楼上装修的电钻，您已经硬扛了一整年——结果钱充进了游戏，现在唯一能盖过它们的，是您中奖后的欢呼。',
     level: 'dense'
   },
   {
     amount: 500,
-    title: '半千里程碑',
-    content: '500元！您已经跨过了"试试水"的阶段。现在的您，是认真的。',
+    title: '没去成的迪士尼',
+    content: '一张迪士尼平日门票，剩下的钱还够买个米奇发箍。城堡上的烟花，您在短视频里看了一百遍。',
     level: 'dense'
   },
   {
@@ -46,9 +65,21 @@ export const MILESTONES = [
     level: 'dense'
   },
   {
+    amount: 800,
+    title: '一台拍立得',
+    content: '一台拍立得，再加两盒相纸。想拍的人、想去的地方都有了，就是一张都还没拍。',
+    level: 'dense'
+  },
+  {
+    amount: 880,
+    title: '期待她的演唱会',
+    content: '一张她的演唱会门票。她来您的城市开唱，您说下次一定。',
+    level: 'dense'
+  },
+  {
     amount: 1000,
     title: '四位数俱乐部',
-    content: '欢迎来到四位数氪金俱乐部！您的手指切3A大作的顶级显卡,现已成功转化为卡池里的一串数据流。帧率？那有抽卡时的虹光重要！',
+    content: '一张健身房年卡的钱。说好今年要练出腹肌的，现在每天练得最勤的，是点「抽奖」的那根手指。',
     level: 'dense'
   },
   {
@@ -71,13 +102,19 @@ export const MILESTONES = [
   },
   {
     amount: 2000,
+    title: '任劳任怨的廉价劳动力',
+    content: '够雇一个刚毕业的大学生实习一个月。任劳任怨、随叫随到，加班还不要加班费。',
+    level: 'dense'
+  },
+  {
+    amount: 2200,
     title: '一台Switch的离去',
     content: '一台崭新的游戏机已从您的生活中蒸发。但没关系，这个游戏不就是您的"全能游戏机"吗？',
     level: 'dense'
   },
   {
     amount: 2500,
-    title: '两个半"648"',
+    title: '快四个"648"',
     content: '您已经氪了接近4个首充档位的金额。系统想问：如果时光倒流，您会选择另一条路吗？',
     level: 'dense'
   },
@@ -89,11 +126,30 @@ export const MILESTONES = [
     buttons: ['见好就收', '我还要更多']
   },
 
-  // 过渡区：深入投入 (￥5,000 - ￥10,000)
+  // 过渡区：深入投入 (￥4,000 - ￥10,000)
+  // 2026-10-15：5000 连解锁前要密（筹码 / 货物类约 ¥2,300 解锁，旗舰宝箱约 ¥21,000），补 4000 / 6480 / 12000 / 15000
+  {
+    amount: 3500,
+    title: '一台全景相机',
+    content: '一台影石全景相机的钱。骑行、旅行、第一人称 vlog 您都想好了——结果钱充进了游戏，现在您唯一的第一人称视角，是盯着抽卡动画的那双眼睛。',
+    level: 'transition'
+  },
+  {
+    amount: 4000,
+    title: '主机全家桶',
+    content: '继那台Switch之后，一台PS5也悄悄离开了您。主机全家桶，这下真的“全”了——全在卡池里。',
+    level: 'transition'
+  },
   {
     amount: 5000,
     title: '跨越常规',
     content: '5000元。您已经超越了99%的普通玩家。沉没成本的声音越来越清晰了，对吗？',
+    level: 'transition'
+  },
+  {
+    amount: 6480,
+    title: '十连648',
+    content: '十个【648】。如果每一次都是“最后一次”，那您已经说了十次“最后一次”。',
     level: 'transition'
   },
   {
@@ -108,6 +164,25 @@ export const MILESTONES = [
     amount: 10000,
     title: '五位数の壁',
     content: '第一个万元户！沉没成本正式成为您的终身旅伴。它将在每个深夜，轻声问你："下一单，会不会就出货?"',
+    level: 'heavy'
+  },
+  {
+    amount: 12000,
+    title: '口袋里的顶配',
+    content: '一万二，刚好够买一台顶配的最新款手机。而您用来抽卡的，可能还是三年前那台。',
+    level: 'heavy'
+  },
+  {
+    amount: 15000,
+    title: '说走就走的旅行',
+    content: '一万五，够一次说走就走的欧洲七日游。您也确实出发了，只不过目的地是卡池。',
+    level: 'heavy'
+  },
+  // 原先 ¥1000 的显卡文案号主觉得好，挪到真实的旗舰显卡价格：RTX 5090 国行首发价 ¥16,499（2025-01）
+  {
+    amount: 16499,
+    title: '一张旗舰显卡',
+    content: '一张旗舰显卡的价格。它本可以让您在 3A 大作里把画质拉满，现在成了卡池里的一串数据流。帧率？哪有抽卡时的虹光重要！',
     level: 'heavy'
   },
   {
@@ -159,7 +234,7 @@ export const MILESTONES = [
     level: 'heavy'
   },
 
-  // 极限区 (￥100,000+)
+  // 极限区 (￥100,000+)：10 万 → 100 万相邻两档 1.3~1.7 倍（2026-10-15 补 15 / 30 / 50 / 70 万，原先 20 万到 100 万之间空着）
   {
     amount: 100000,
     title: '十万！为什么？！',
@@ -168,11 +243,36 @@ export const MILESTONES = [
     buttons: ['是爱', '我乐意']
   },
   {
+    amount: 150000,
+    title: '一年白干',
+    content: '十五万，差不多是一线城市普通上班族一整年的税前工资。这一年里的每一个早高峰、每一次加班，都换成了这里的一串数字。',
+    level: 'extreme'
+  },
+  {
     amount: 200000,
     title: '【万氪之王 · 伪神】',
     content: '二十万！您用金钱铸造了属于您的传说，成为了服务器里的一座丰碑。但请允许我们最后一次询问：这一切，真的值得吗？',
     level: 'extreme',
     buttons: ['过程本身就是奖励', '闭嘴，我还能氪！']
+  },
+  {
+    amount: 300000,
+    title: '三十而已',
+    content: '三十万。放进银行，一年的利息就够您再氪一个首充档位了——当然，您不会这么做的，对吧？',
+    level: 'extreme'
+  },
+  {
+    amount: 500000,
+    title: '【万氪之王 · 半神】',
+    content: '五十万。一套房子的首付，此刻化作了服务器里一行安静的数字。\n\n您已走完通往王座的一半路程——剩下的一半，没有人会拦您。',
+    level: 'extreme',
+    buttons: ['停在半山腰', '王座就在前面']
+  },
+  {
+    amount: 700000,
+    title: '凝视深渊',
+    content: '七十万。当您凝视深渊的时候，深渊正在给您弹里程碑。它说：再往前一点，就能看见王座了。',
+    level: 'extreme'
   },
   {
     amount: 1000000,
@@ -201,42 +301,4 @@ export function getMilestoneByAmount(totalAmount, triggeredMilestones = new Set(
   return untriggeredMilestones.reduce((max, current) =>
     current.amount > max.amount ? current : max
   )
-}
-
-/**
- * 视觉配置映射
- */
-export const LEVEL_STYLES = {
-  dense: {
-    bgGradient: 'from-emerald-600/20 to-yellow-600/20',
-    borderColor: 'border-yellow-500/50',
-    iconBg: 'bg-yellow-500/20',
-    iconColor: 'text-yellow-400',
-    glowColor: 'shadow-yellow-500/50',
-    sound: 'celebration' // 清脆的庆祝音效
-  },
-  transition: {
-    bgGradient: 'from-orange-600/20 to-amber-600/20',
-    borderColor: 'border-orange-500/50',
-    iconBg: 'bg-orange-500/20',
-    iconColor: 'text-orange-400',
-    glowColor: 'shadow-orange-500/50',
-    sound: 'warning' // 轻度警告音
-  },
-  heavy: {
-    bgGradient: 'from-red-600/20 to-rose-700/20',
-    borderColor: 'border-red-500/50',
-    iconBg: 'bg-red-500/20',
-    iconColor: 'text-red-400',
-    glowColor: 'shadow-red-500/50',
-    sound: 'alert' // 沉重的警报声
-  },
-  extreme: {
-    bgGradient: 'from-purple-900/30 to-gray-900/30',
-    borderColor: 'border-purple-500/50',
-    iconBg: 'bg-purple-500/20',
-    iconColor: 'text-purple-400',
-    glowColor: 'shadow-purple-500/50',
-    sound: 'epic' // 史诗级音效
-  }
 }

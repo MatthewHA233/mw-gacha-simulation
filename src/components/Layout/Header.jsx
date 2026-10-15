@@ -8,6 +8,8 @@ import { useSound } from '../../hooks/useSound'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { Crown, Copy, Check } from 'lucide-react'
+import { MemberCrownBadge } from '../ui/MemberCrownBadge'
+import { useCrownTier } from '../../utils/crownTier'
 import toast from 'react-hot-toast'
 import { MembershipModal } from '../ui/MembershipModal'
 import { maskLoginId } from '../../utils/maskLoginId'
@@ -41,6 +43,7 @@ export function Header({
   const router = useRouter()
   const [firstActivityId, setFirstActivityId] = useState(null)
   const { user, isPremium, isMember, membership, logout, isActivated, userAccount, allMemberships, totalRemainingDays, bindPass, updateAccount } = useAuth()
+  const crownTier = useCrownTier()
   const [showMembershipModal, setShowMembershipModal] = useState(false)
   const [membershipInitialStep, setMembershipInitialStep] = useState('select')
   const [showAccountMenu, setShowAccountMenu] = useState(false)
@@ -433,14 +436,8 @@ export function Header({
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-0.5 md:gap-1.5"
             >
-              <div className="flex items-center bg-orange-600/20 border border-orange-500 text-orange-400 p-0.5 md:p-1 shadow-[0_0_8px_rgba(234,88,12,0.3)] backdrop-blur-sm">
-                <Crown size={10} strokeWidth={2.5} className="md:w-3.5 md:h-3.5" />
-              </div>
-              {totalRemainingDays > 0 && (
-                <span className="text-[8px] md:text-[10px] text-orange-300/80 font-mono">
-                  剩余 {totalRemainingDays} 天
-                </span>
-              )}
+              {/* 会员王冠彩蛋：达成过 20 / 50 / 100 万里程碑就换成伪神 / 半神 / 万氪之王（只存本地） */}
+              <MemberCrownBadge tier={crownTier} remainingDays={totalRemainingDays} />
             </motion.div>
           )}
 

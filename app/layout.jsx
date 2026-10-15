@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <MusicProvider>
           <PendingPaymentWatcher />
-          <MilestoneToastProvider maxToasts={3} position="top-right">
+          <MilestoneToastProvider maxToasts={3} position="bottom-right">
             <div className="w-full h-[var(--app-height,100vh)] overflow-hidden bg-black">
               <Analytics />
               {children}
