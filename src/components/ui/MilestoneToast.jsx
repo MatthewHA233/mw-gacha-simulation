@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { AchievementIcon, achievementRim } from './AchievementIcon'
 
 /**
@@ -11,9 +11,12 @@ import { AchievementIcon, achievementRim } from './AchievementIcon'
  * - 右边：「成就已解锁 · ¥648」、标题、文案；带选项的里程碑下面是两个按钮
  * - 和全站通知同一套亮灰紫玻璃；底部细线随剩余时间缩短，颜色是徽章那一档的边框色；鼠标停留时暂停
  * - 进出场动画、多条时的上下挪位交给 MilestoneToastProvider 里的 AnimatePresence + layout
+ *   （popLayout 模式要量退场元素，所以要 forwardRef 把 ref 接到最外层 motion.div 上）
+ * - 手机（不到 md）用紧凑尺寸：宽 15rem、徽章 36～40px、正文 10px 且段落间空行合并，别占掉右下角四分之一屏；同时最多叠 2 条
  */
-export function MilestoneToast({ id, milestone, onClose, onButtonClick, duration = 5000 }) {
+export const MilestoneToast = forwardRef(function MilestoneToast({ id, milestone, onClose, onButtonClick, duration = 5000 }, ref) {
   const rim = achievementRim(milestone.amount)
+  const ceremony = milestone.buttons?.length > 0   // 带选项 = 重大成就：仪式版卡片（后面还有全屏仪式，见 MilestoneCeremony）
   const [paused, setPaused] = useState(false)
   const remainingRef = useRef(duration)
 
@@ -35,6 +38,7 @@ export function MilestoneToast({ id, milestone, onClose, onButtonClick, duration
 
   return (
     <motion.div
+      ref={ref}
       layout
       initial={{ y: 90, opacity: 0 }}
       animate={{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 360, damping: 32 } }}
@@ -43,34 +47,37 @@ export function MilestoneToast({ id, milestone, onClose, onButtonClick, duration
       onMouseLeave={() => setPaused(false)}
       role="status"
       aria-live="polite"
-      className="pointer-events-auto w-[min(19rem,84vw)] md:w-[22rem]"
+      className="pointer-events-auto w-[min(15rem,62vw)] md:w-[22rem]"
     >
-      <div className="relative overflow-hidden rounded-xl border border-white/20 bg-[#3a3650]/95 backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
-        <div className="flex gap-2.5 md:gap-3 p-2.5 md:p-3">
-          <div className="achievement-icon relative shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-[10px] overflow-hidden">
+      <div
+        className="relative overflow-hidden rounded-lg md:rounded-xl border border-white/20 bg-[#3a3650]/95 backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
+        style={ceremony ? { borderColor: rim, boxShadow: `0 0 0 1px ${rim}, 0 0 20px ${rim}55, 0 10px 30px rgba(0,0,0,0.45)` } : undefined}
+      >
+        <div className="flex gap-2 md:gap-3 p-2 md:p-3">
+          <div className={`achievement-icon relative shrink-0 rounded-[10px] overflow-hidden ${ceremony ? 'w-10 h-10 md:w-20 md:h-20' : 'w-9 h-9 md:w-16 md:h-16'}`}>
             <AchievementIcon amount={milestone.amount} size={64} className="w-full h-full" />
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 pr-5 text-[10px] md:text-[11px] leading-none">
-              <span className="text-white/75 tracking-wide">成就已解锁</span>
+            <div className="flex items-center gap-1 md:gap-1.5 pr-4 md:pr-5 text-[9px] md:text-[11px] leading-none">
+              <span className="text-white/75 tracking-wide">{ceremony ? '重大成就已解锁' : '成就已解锁'}</span>
               <span className="text-white/35">·</span>
               <span className="font-semibold tabular-nums" style={{ color: rim }}>¥{milestone.amount.toLocaleString()}</span>
             </div>
-            <h3 className="mt-1 md:mt-1.5 text-[13px] md:text-[15px] font-bold leading-snug text-white">
+            <h3 className="mt-1 md:mt-1.5 text-xs md:text-[15px] font-bold leading-snug text-white">
               {milestone.title}
             </h3>
-            <p className="mt-1 text-[11px] md:text-xs leading-relaxed text-white/85 whitespace-pre-line">
+            <p className="mt-0.5 md:mt-1 text-[10px] md:text-xs leading-snug md:leading-relaxed text-white/85 whitespace-normal md:whitespace-pre-line">
               {milestone.content}
             </p>
 
             {milestone.buttons?.length > 0 && (
-              <div className="mt-2 md:mt-2.5 flex gap-1.5 md:gap-2">
+              <div className="mt-1.5 md:mt-2.5 flex gap-1.5 md:gap-2">
                 {milestone.buttons.map((text, index) => (
                   <button
                     key={text}
                     onClick={() => choose(text)}
-                    className="flex-1 rounded-md px-2 py-1.5 text-[10px] md:text-xs font-medium text-white whitespace-nowrap transition-colors hover:brightness-110"
+                    className="flex-1 rounded-md px-1.5 md:px-2 py-1 md:py-1.5 text-[10px] md:text-xs font-medium text-white whitespace-nowrap transition-colors hover:brightness-110"
                     style={index === 0
                       ? { background: 'rgba(255,255,255,0.12)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.25)' }
                       : { background: `${rim}33`, boxShadow: `inset 0 0 0 1px ${rim}aa` }}
@@ -85,9 +92,9 @@ export function MilestoneToast({ id, milestone, onClose, onButtonClick, duration
           <button
             onClick={() => onClose(id)}
             aria-label="关闭"
-            className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/15 transition-colors"
+            className="absolute top-1 right-1 md:top-1.5 md:right-1.5 w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/15 transition-colors"
           >
-            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
+            <svg className="w-2.5 h-2.5 md:w-3 md:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
               <path d="M7 7l10 10M17 7L7 17" />
             </svg>
           </button>
@@ -100,4 +107,4 @@ export function MilestoneToast({ id, milestone, onClose, onButtonClick, duration
       </div>
     </motion.div>
   )
-}
+})

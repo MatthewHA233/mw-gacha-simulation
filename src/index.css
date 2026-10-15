@@ -114,3 +114,18 @@
   50% { filter: drop-shadow(0 0 5px rgba(255, 216, 107, 0.95)); }
 }
 .crown-king { animation: crown-king-glow 2.4s ease-in-out infinite; }
+
+/* 带选项里程碑的全屏仪式（MilestoneCeremony）：粒子在 Canvas、线稿在 SVG，这里只剩 SVG 线稿的慢转、显卡的 RGB 变色和十万的警示胶带 */
+@keyframes ceremony-rotor { to { transform: rotate(360deg); } }
+.ceremony-rotor, .ceremony-rotor-reverse, .ceremony-rotor-slow { transform-origin: 50% 50%; }
+.ceremony-rotor { animation: ceremony-rotor 90s linear infinite; }
+.ceremony-rotor-reverse { animation: ceremony-rotor 70s linear infinite reverse; }
+.ceremony-rotor-slow { animation: ceremony-rotor 160s linear infinite; }
+@keyframes ceremony-hue { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+.ceremony-hue { animation: ceremony-hue 2.4s linear infinite; }
+@keyframes ceremony-hazard { to { background-position: 28px 0; } }
+.ceremony-hazard {
+  background: repeating-linear-gradient(-45deg, #ffd166 0 10px, #1b1b1b 10px 14px);
+  background-size: 28px 100%;
+  animation: ceremony-hazard 0.6s linear infinite;
+}
