@@ -227,18 +227,23 @@ const ART = {
       <circle cx="49" cy="47" r="2.4" fill={c.ink} stroke={c.base} strokeWidth="1" />
     </g>
   ),
-  // 期待她的演唱会：爱心头的应援荧光棒 + 一张票根
+  // 期待他的演唱会：舞台追光下的立式话筒 + 一张票根
   880: (c) => (
     <g>
-      <g transform="rotate(12 46 34)">
-        <rect x="38" y="20" width="16" height="28" rx="2" fill={c.ink} stroke={c.base} strokeWidth="1.6" />
-        <path d="M38 30h16" stroke={c.base} strokeWidth="1.2" strokeDasharray="2 1.6" />
-        <path d="M42 25h8M42 38h8M42 42h5" stroke={c.panel} strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M6 6L28 40H20Z" fill="#fff6da" opacity="0.16" />
+      <path d="M58 6L36 40H44Z" fill="#fff6da" opacity="0.16" />
+      <circle cx="6" cy="6" r="3" fill="#ffd86b" stroke={c.base} strokeWidth="1.2" />
+      <circle cx="58" cy="6" r="3" fill="#ffd86b" stroke={c.base} strokeWidth="1.2" />
+      <g transform="rotate(14 50 42)">
+        <rect x="43" y="32" width="13" height="20" rx="1.8" fill={c.ink} stroke={c.base} strokeWidth="1.4" />
+        <path d="M43 39h13" stroke={c.base} strokeWidth="1" strokeDasharray="1.8 1.4" />
+        <path d="M46 44h7M46 47.5h4.5" stroke={c.panel} strokeWidth="1.4" strokeLinecap="round" />
       </g>
-      <path d="M20 10q-4-4-8 0M26 6q0-5-5-6M33 10q4-4 8 0" fill="none" stroke="#ff9cd6" strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />
-      <rect x="21" y="30" width="6" height="25" rx="2.5" fill="#2a2433" stroke={c.base} strokeWidth="1.6" transform="rotate(-14 24 42)" />
-      <path d="M26 32c-8-5.5-12-9.5-12-14a6 6 0 0 1 12-2a6 6 0 0 1 12 2c0 4.5-4 8.5-12 14Z" fill="#ff7ad9" stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <path d="M18 18a3 3 0 0 1 4-3" fill="none" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" opacity="0.7" />
+      <path d="M31 33V52M23 55h18M31 52l-6 3M31 52l6 3" stroke={c.ink} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M27 31h8l-1 4h-6Z" fill="#2a2433" stroke={c.base} strokeWidth="1.4" strokeLinejoin="round" />
+      <ellipse cx="31" cy="22" rx="7" ry="9.5" fill="#c9d3e0" stroke={c.base} strokeWidth="2" />
+      <path d="M25 19h12M24.5 23h13M25 27h12M28 13.5v17M31 12.5v19M34 13.5v17" stroke="#7b8797" strokeWidth="0.9" />
+      <path d="M27 16a5 5 0 0 1 3-3" fill="none" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" opacity="0.7" />
     </g>
   ),
   // 四位数俱乐部：健身房年卡 + 哑铃

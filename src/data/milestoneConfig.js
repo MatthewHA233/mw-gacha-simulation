@@ -72,8 +72,8 @@ export const MILESTONES = [
   },
   {
     amount: 880,
-    title: '期待她的演唱会',
-    content: '一张她的演唱会门票。她来您的城市开唱，您说下次一定。',
+    title: '期待他的演唱会',
+    content: '一张他的演唱会门票。他来您的城市开唱，您说下次一定。',
     level: 'dense'
   },
   {
