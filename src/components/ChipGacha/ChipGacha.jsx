@@ -236,17 +236,7 @@ export function ChipGacha({
     })
 
     setResetModal(false)
-    toast.success('当前活动数据已重置！', {
-      duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #ef4444',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('当前活动数据已重置！', { duration: 2000 })
   }
 
   // 重置全部活动数据（打开确认弹窗）
@@ -306,17 +296,7 @@ export function ChipGacha({
 
     setConfirmModal(false)
     setResetModal(false)
-    toast.success('所有活动数据已重置！', {
-      duration: 3000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #dc2626',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('所有活动数据已重置！', { duration: 3000 })
   }
 
   // ========== 检查奖池中剩余未抽满的限定史诗/传说物品数量 ==========
@@ -663,15 +643,7 @@ export function ChipGacha({
           return
         }
       }
-      toast.error('筹码不够，请充值', {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error('筹码不够，请充值', { duration: 2000 })
       setShopModal(true)
       return
     }
@@ -814,15 +786,7 @@ export function ChipGacha({
           return
         }
       }
-      toast.error('筹码不够，请充值', {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error('筹码不够，请充值', { duration: 2000 })
       setShopModal(true)
       return
     }
@@ -979,15 +943,7 @@ export function ChipGacha({
           return
         }
       }
-      toast.error('筹码不够，请充值', {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error('筹码不够，请充值', { duration: 2000 })
       setShopModal(true)
       return
     }
@@ -1148,15 +1104,7 @@ export function ChipGacha({
           return
         }
       }
-      toast.error('筹码不够，请充值', {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error('筹码不够，请充值', { duration: 2000 })
       setShopModal(true)
       return
     }
@@ -1317,15 +1265,7 @@ export function ChipGacha({
           return
         }
       }
-      toast.error('筹码不够，请充值', {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error('筹码不够，请充值', { duration: 2000 })
       setShopModal(true)
       return
     }

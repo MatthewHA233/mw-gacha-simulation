@@ -239,14 +239,6 @@ export function CargoGacha({
     toast.success(`已完成几轮任务，获得${currencyName} ${batteriesToAdd}`, {
       id: 'add-batteries', // 固定 id，连点时刷新同一个 toast 而非堆叠
       duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #3b82f6',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
     })
   }
 
@@ -650,15 +642,7 @@ export function CargoGacha({
           return
         }
       }
-      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, { duration: 2000 })
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
@@ -843,15 +827,7 @@ export function CargoGacha({
           return
         }
       }
-      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, { duration: 2000 })
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
@@ -1051,15 +1027,7 @@ export function CargoGacha({
           return
         }
       }
-      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, { duration: 2000 })
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
@@ -1262,15 +1230,7 @@ export function CargoGacha({
           return
         }
       }
-      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, { duration: 2000 })
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
@@ -1471,15 +1431,7 @@ export function CargoGacha({
           return
         }
       }
-      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: '1px solid #0ea5e9',
-        },
-      })
+      toast.error(`${currencyName}不够${selectedCargoType === 'rm' ? '，请充值' : ''}`, { duration: 2000 })
       if (selectedCargoType === 'rm') {
         setShopModal(true)
       }
@@ -1690,17 +1642,7 @@ export function CargoGacha({
 
     setResetModal(false)
 
-    toast.success('当前活动数据已重置！', {
-      duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #ef4444',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('当前活动数据已重置！', { duration: 2000 })
   }
 
   // 打开重置全部确认弹窗
@@ -1749,17 +1691,7 @@ export function CargoGacha({
     setConfirmModal(false)
     setResetModal(false)
 
-    toast.success('所有活动数据已重置！', {
-      duration: 3000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #dc2626',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('所有活动数据已重置！', { duration: 3000 })
   }
 
   // 商店套餐数据

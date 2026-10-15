@@ -12,17 +12,7 @@ export function SponsorModal({ isOpen, onClose }) {
 
   const handleCopyQQ = () => {
     navigator.clipboard.writeText('1054801058')
-    toast.success('QQ群号已复制', {
-      duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #10b981',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('QQ群号已复制', { duration: 2000 })
   }
 
   return (

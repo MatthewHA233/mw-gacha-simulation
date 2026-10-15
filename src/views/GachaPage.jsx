@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
+import { AppToaster } from '../components/ui/AppToaster'
 import { Sidebar } from '../components/Layout/Sidebar'
 import { Header } from '../components/Layout/Header'
 import { ChipGacha } from '../components/ChipGacha/ChipGacha'
@@ -29,25 +30,7 @@ export function GachaPage({ type, activityId }) {
       const versionUpdateData = sessionStorage.getItem('mw_gacha_version_updated')
       if (versionUpdateData) {
         // 显示版本更新 Toast（不显示具体版本号）
-        toast.success(
-          '版本已更新\n已自动重置全部数据',
-          {
-            duration: 4000,
-            style: {
-              background: '#10b981',
-              color: '#fff',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              padding: '16px 24px',
-              borderRadius: '12px',
-              whiteSpace: 'pre-line'
-            },
-            iconTheme: {
-              primary: '#fff',
-              secondary: '#10b981'
-            }
-          }
-        )
+        toast.success('版本已更新\n已自动重置全部数据', { duration: 4000 })
 
         // 延迟 500ms 后打开版本弹窗，让用户查看详情
         setTimeout(() => {
@@ -160,21 +143,8 @@ export function GachaPage({ type, activityId }) {
         position: 'relative'
       }}
     >
-      {/* Toast 通知（在旋转容器内） - z-index 高于 VersionModal */}
-      <Toaster
-        position="top-center"
-        containerStyle={{
-          zIndex: 10000,
-        }}
-        toastOptions={{
-          style: {
-            marginTop: isMobile ? '20px' : '60px',
-            padding: isMobile ? '6px 12px' : '8px 16px',
-            fontSize: isMobile ? '12px' : '14px',
-            minHeight: 'auto',
-          },
-        }}
-      />
+      {/* Toast 通知（在旋转容器内） - z-index 高于 VersionModal；样式全站统一在 AppToaster */}
+      <AppToaster isMobile={isMobile} />
 
       <div className="flex h-full w-full">
         {/* 侧边栏 */}

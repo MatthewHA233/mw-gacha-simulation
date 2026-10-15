@@ -877,15 +877,7 @@ export function FlagshipGacha({
           return
         }
       }
-      toast.error(`${keyName}不够`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
-        },
-      })
+      toast.error(`${keyName}不够`, { duration: 2000 })
       if (usesPremiumKey) {
         setShopModal(true)
       }
@@ -959,15 +951,7 @@ export function FlagshipGacha({
           return
         }
       }
-      toast.error(`${keyName}不够`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
-        },
-      })
+      toast.error(`${keyName}不够`, { duration: 2000 })
       if (usesPremiumKey) {
         setShopModal(true)
       }
@@ -1052,15 +1036,7 @@ export function FlagshipGacha({
           return
         }
       }
-      toast.error(`${keyName}不够`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
-        },
-      })
+      toast.error(`${keyName}不够`, { duration: 2000 })
       if (usesPremiumKey) {
         setShopModal(true)
       }
@@ -1145,15 +1121,7 @@ export function FlagshipGacha({
           return
         }
       }
-      toast.error(`${keyName}不够`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
-        },
-      })
+      toast.error(`${keyName}不够`, { duration: 2000 })
       if (usesPremiumKey) {
         setShopModal(true)
       }
@@ -1236,15 +1204,7 @@ export function FlagshipGacha({
           return
         }
       }
-      toast.error(`${keyName}不够`, {
-        duration: 2000,
-        position: 'top-center',
-        style: {
-          background: '#1e293b',
-          color: '#fff',
-          border: usesPremiumKey ? '1px solid #f59e0b' : '1px solid #9ca3af',
-        },
-      })
+      toast.error(`${keyName}不够`, { duration: 2000 })
       if (usesPremiumKey) {
         setShopModal(true)
       }
@@ -1382,17 +1342,7 @@ export function FlagshipGacha({
     setResetModal(false)
     playSound('Button_02_UI.Button_02_UI.wav')
 
-    toast.success('当前活动数据已重置！', {
-      duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #ef4444',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('当前活动数据已重置！', { duration: 2000 })
   }
 
   // 打开重置全部确认弹窗
@@ -1457,17 +1407,7 @@ export function FlagshipGacha({
     setResetModal(false)
     playSound('Button_02_UI.Button_02_UI.wav')
 
-    toast.success('所有活动数据已重置！', {
-      duration: 3000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #dc2626',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success('所有活动数据已重置！', { duration: 3000 })
   }
 
   const handleButtonClick = (callback) => {
@@ -1487,12 +1427,6 @@ export function FlagshipGacha({
     toast.success('做完6轮当日任务奖励150个钥匙', {
       id: 'add-common-keys', // 固定 id，连点时刷新同一个 toast 而非堆叠
       duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#1e293b',
-        color: '#fff',
-        border: '1px solid #9ca3af',
-      },
     })
   }
 

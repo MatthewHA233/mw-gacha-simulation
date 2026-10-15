@@ -23,17 +23,7 @@ export function PriceSourceModal({ isOpen, onClose }) {
 
   const handleCopy = (label, value) => {
     navigator.clipboard.writeText(value)
-    toast.success(`${label}号已复制: ${value}`, {
-      duration: 2000,
-      position: 'top-center',
-      style: {
-        background: '#000',
-        color: '#fff',
-        border: '1px solid #10b981',
-        borderRadius: '12px',
-        padding: '12px 24px'
-      }
-    })
+    toast.success(`${label}号已复制: ${value}`, { duration: 2000 })
   }
 
   return (

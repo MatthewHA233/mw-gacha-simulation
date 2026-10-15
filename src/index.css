@@ -52,3 +52,35 @@
 .bgm-eq-bar {
   animation: bgm-eq 0.9s ease-in-out infinite;
 }
+
+/* 全站通知 toast（src/components/ui/AppToaster.jsx）：从右侧滑入带一点回弹，退出向右滑出淡出；
+   底部细线按显示时长从满到空，鼠标停在任意一条上时全部暂停（和 react-hot-toast 的悬停暂停计时一致） */
+@keyframes app-toast-in {
+  0% { opacity: 0; transform: translateX(28px) scale(0.97); }
+  60% { opacity: 1; transform: translateX(-3px) scale(1); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes app-toast-out {
+  0% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(24px); }
+}
+@keyframes app-toast-timer {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+.app-toast-enter { animation: app-toast-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.app-toast-leave { animation: app-toast-out 0.22s cubic-bezier(0.4, 0, 1, 1) both; }
+.app-toast-timer { animation-name: app-toast-timer; animation-timing-function: linear; animation-fill-mode: forwards; opacity: 0.85; }
+.app-toaster:hover .app-toast-timer { animation-play-state: paused; }
+/* 同一条 toast 再次触发：内容轻轻往左一顿再回位、次数数字弹一下（AppToaster 里按触发次数换 key 重放） */
+@keyframes app-toast-bump {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+@keyframes app-toast-count-pop {
+  0% { transform: scale(1.5); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.app-toast-bump { animation: app-toast-bump 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+.app-toast-bump .app-toast-count { animation: app-toast-count-pop 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
