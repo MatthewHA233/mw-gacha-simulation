@@ -19,11 +19,11 @@ const KEY_POSITION = 'bgm_position' // { src, t }
 const KEY_TRACK = 'bgm_track'
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 
-// 地址带版本参数：OSS 只在请求带 Origin 时回跨域头，CDN 又不按 Origin 区分缓存，有人不带 Origin
-// 访问过一次（curl、爬虫、直接打开链接），没有跨域头的那份就被 CDN 节点和浏览器缓存下来，
-// crossOrigin 的 <audio> 从此加载失败（2026-10-15 主题曲实测）。换个参数就是新的缓存键；
-// 再出这种事把版本号改一下即可。根治是在 CDN 上统一加 Access-Control-Allow-Origin 响应头。
-const BGM_URL_VERSION = '1'
+// 跨域：crossOrigin 的 <audio>（频谱要用）要求响应带跨域头。OSS 只在请求带 Origin 时才回，CDN 又不按 Origin
+// 区分缓存，2026-10-15 有一次不带 Origin 的请求让主题曲在 CDN 上缓存成了没有跨域头的版本、浏览器加载失败。
+// 当天已在 CDN（assets.lingflow.cn → 节点 HTTP 响应头）统一加 Access-Control-Allow-Origin: *（不允许重复）并刷新了 audio/ 目录。
+// CDN 忽略 URL 参数，这个版本号只用来让浏览器丢掉自己缓存的旧响应。
+const BGM_URL_VERSION = '2'
 const trackSrc = (track) => `${CDN_BASE_URL}/audio/${track.file}?v=${BGM_URL_VERSION}`
 
 const MusicContext = createContext(null)
