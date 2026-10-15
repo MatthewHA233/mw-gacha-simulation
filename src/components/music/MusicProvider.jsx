@@ -13,6 +13,7 @@ import { BGM_TRACKS } from './tracks'
  * 播放偏好沿用原来侧边栏的 localStorage 键与规则：主动开过才自动播放，暂停超过一天自动恢复为播放。
  * 播放模式三种（默认列表循环），和最近播放的曲目、位置一起记在本地。
  * 管理后台不放音乐：进去只停声音、不改播放偏好，回到前台接着放（号主 2026-10-15 定）。
+ * 切歌（点歌单 / 下一首）时当前曲目先快速渐隐再换，下一首不淡入；自然放完接下一首本来就到了结尾，不处理。
  */
 
 const KEY_PLAYING = 'sidebar_music_playing'
@@ -21,6 +22,8 @@ const KEY_POSITION = 'bgm_position' // { src, t }
 const KEY_TRACK = 'bgm_track'
 const KEY_MODE = 'bgm_mode'
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
+const BASE_VOLUME = 0.8
+const SWITCH_FADE_MS = 350   // 切歌时当前曲目的渐隐时长，游戏那种一闪而过的感觉；下一首直接进场不淡入
 
 // 单曲循环 → 列表循环 → 随机播放 → 单曲循环（点一下换下一种）
 export const PLAY_MODES = [
@@ -56,6 +59,8 @@ export function MusicProvider({ children }) {
   const sourceRef = useRef(null)
   const indexRef = useRef(0)
   const modeRef = useRef(DEFAULT_MODE)
+  const fadeRef = useRef(null)        // 进行中的渐隐 { raf, resolve }
+  const switchTokenRef = useRef(0)    // 渐隐期间又切了一次：旧的那次作废
   const [trackIndex, setTrackIndex] = useState(0)
   const [mode, setMode] = useState(DEFAULT_MODE)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -97,6 +102,7 @@ export function MusicProvider({ children }) {
     // 没打算放音乐的访客不预载：每首 wav 二三十 MB，全走 CDN 流量
     audio.preload = wantsMusic() && !silencedRef.current ? 'auto' : 'none'
     audio.src = trackSrc(track)
+    audio.volume = BASE_VOLUME   // 上一首可能渐隐到了 0
     if (resumeAt > 0) {
       audio.addEventListener('loadedmetadata', () => {
         try { audio.currentTime = resumeAt } catch { /* 时长未知时忽略 */ }
@@ -131,11 +137,36 @@ export function MusicProvider({ children }) {
 
   const toggle = useCallback(() => (isPlaying ? pause() : play()), [isPlaying, pause, play])
 
-  // 在歌单里点哪首就放哪首
-  const selectTrack = useCallback((index) => {
-    if (index !== indexRef.current) loadTrack(index)
+  // 把正在出声的曲目在 SWITCH_FADE_MS 内压到静音；没在放声就立即完成。再次调用会打断上一次并让它直接返回
+  const fadeOut = useCallback(() => new Promise((resolve) => {
+    if (fadeRef.current) {
+      cancelAnimationFrame(fadeRef.current.raf)
+      fadeRef.current.resolve()
+      fadeRef.current = null
+    }
+    const audio = audioRef.current
+    if (!audio || audio.paused || audio.volume === 0) { resolve(); return }
+    const from = audio.volume
+    const startedAt = performance.now()
+    const step = (now) => {
+      const progress = Math.min(1, (now - startedAt) / SWITCH_FADE_MS)
+      audio.volume = from * (1 - progress)
+      if (progress < 1) { fadeRef.current.raf = requestAnimationFrame(step); return }
+      fadeRef.current = null
+      resolve()
+    }
+    fadeRef.current = { raf: requestAnimationFrame(step), resolve }
+  }), [])
+
+  // 在歌单里点哪首就放哪首：换曲前先把当前这首渐隐掉
+  const selectTrack = useCallback(async (index) => {
+    if (index === indexRef.current) { play(); return }
+    const token = ++switchTokenRef.current
+    await fadeOut()
+    if (token !== switchTokenRef.current) return   // 渐隐期间又点了别的，交给最后那次
+    loadTrack(index)
     play()
-  }, [loadTrack, play])
+  }, [fadeOut, loadTrack, play])
 
   // 单曲循环交给 <audio loop>（无缝，不会触发 ended）；另外两种在放完时换曲
   const applyMode = useCallback((value) => {
@@ -167,7 +198,7 @@ export function MusicProvider({ children }) {
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    audio.volume = 0.8
+    audio.volume = BASE_VOLUME
 
     // 暂停超过一天，自动恢复为「播放」偏好（原侧边栏规则）
     const pausedAt = parseInt(storage.get(KEY_PAUSED_AT) || '', 10)
