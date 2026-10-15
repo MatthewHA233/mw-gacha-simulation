@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { loadVersionHistory, clearConfigCache } from '../services/cdnService'
 import { setAppVersion, getAppVersion } from '../utils/version'
 import { checkAndResetIfNeeded, getStoredVersion } from '../utils/gameStateStorage'
+import { clearSiteCaches } from '../utils/siteCache'
 
 /**
  * 版本初始化组件
@@ -35,6 +36,13 @@ export function VersionInitializer() {
               newVersion: resetResult.newVersion,
               oldVersion: resetResult.oldVersion
             }))
+            // 4. 版本变了：清掉浏览器里的资源缓存（换过的图、音频）。真清掉了东西就刷新一次，
+            //    让屏幕上已经加载的旧图重新拉取；新版本号在上面已存好、提示标记在 sessionStorage，刷新后不会再触发、提示照常弹
+            const removed = await clearSiteCaches()
+            if (removed > 0) {
+              window.location.reload()
+              return
+            }
           }
         }
       } catch (error) {

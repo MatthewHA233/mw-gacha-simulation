@@ -2,7 +2,9 @@
 // 缓存 /assets/**、/audio/**、/lootbox/** 以及 CDN 域名下的图片/音频
 // 不缓存 /api/**、/gacha-configs/**（需实时更新）
 
-const CACHE_NAME = 'mw-gacha-assets-v1'
+// 改名 = 新 SW 激活时把旧缓存整个删掉（activate 里只留当前这个名字）。
+// v2（2026-10-15）：v1 期间换过的图（结果弹窗背景等）老用户一直看到旧的，升版本一次性清掉
+const CACHE_NAME = 'mw-gacha-assets-v2'
 
 // 判断请求是否应该走缓存
 function shouldCache(url) {
@@ -49,6 +51,29 @@ self.addEventListener('activate', (event) => {
   )
 })
 
+// 去网络取一份能放进缓存的响应。
+// - CDN（assets.lingflow.cn 统一带 Access-Control-Allow-Origin: *）改用 cors 模式取：能看到真实状态码。
+//   原先 <img> 发的是 no-cors，拿到的是「不透明响应」看不出成败，连 404 也被当成好图永久缓存（2026-10-15 新封面上传前被请求了一次，
+//   之后一直是裂图）。
+// - 缓存里没有才走网络，向服务器确认（no-cache，没变就是 304），不从浏览器 HTTP 磁盘缓存里拿旧图回来填缓存。
+// - 音频是分段请求（Range），原样转发、不缓存。
+async function fetchFromNetwork(request) {
+  if (request.headers.has('range')) return { response: await fetch(request), cacheable: false }
+  const { hostname } = new URL(request.url)
+  if (hostname === 'assets.lingflow.cn' && request.mode === 'no-cors') {
+    try {
+      const response = await fetch(new Request(request.url, { mode: 'cors', credentials: 'omit', cache: 'no-cache' }))
+      return { response, cacheable: response.ok }
+    } catch {
+      // 万一某个文件没带跨域头：退回原请求，照常显示但不缓存
+      return { response: await fetch(request), cacheable: false }
+    }
+  }
+  const response = await fetch(new Request(request, { cache: 'no-cache' }))
+  // 只缓存看得见状态码的成功响应；不透明响应（外站图片）不缓存——看不出成败，而且 Chrome 按每条约 7MB 计入配额
+  return { response, cacheable: response.ok && response.type !== 'opaque' }
+}
+
 // fetch: Cache-First 策略
 self.addEventListener('fetch', (event) => {
   // 只处理 http/https 请求（排除 chrome-extension:// 等）
@@ -57,21 +82,12 @@ self.addEventListener('fetch', (event) => {
   if (!shouldCache(event.request.url)) return
 
   event.respondWith(
-    caches.open(CACHE_NAME).then((cache) =>
-      cache.match(event.request).then((cached) => {
-        if (cached) return cached
-
-        return fetch(event.request).then((response) => {
-          // 缓存条件：
-          // - 200 OK（同源正常响应）
-          // - opaque（跨域 CDN 资源，status=0 但内容可用）
-          // 排除：206 Partial Content、404 等
-          if (response.status === 200 || response.type === 'opaque') {
-            cache.put(event.request, response.clone())
-          }
-          return response
-        })
-      })
-    )
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(event.request)
+      if (cached) return cached
+      const { response, cacheable } = await fetchFromNetwork(event.request)
+      if (cacheable && response.status === 200) cache.put(event.request, response.clone())
+      return response
+    })
   )
 })
