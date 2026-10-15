@@ -55,7 +55,7 @@ function FakeHeader({ tier }) {
         </div>
         <div className="flex items-center gap-1 md:gap-4 shrink-0">
           <MemberCrownBadge tier={tier} remainingDays={279} />
-          <span className="text-slate-300 font-mono text-[10px] md:text-xs px-1 py-0.5 md:px-2 border border-slate-700 bg-black/40">15****4853</span>
+          <span className="text-slate-300 font-mono text-[10px] md:text-xs px-1 py-0.5 md:px-2 border border-slate-700 bg-black/40">13****0000</span>
           {PILLS.map((pill) => (
             <span key={pill.value} className={`hidden sm:flex items-center gap-1 md:gap-2 bg-black/60 rounded-full px-1.5 py-0.5 md:px-3 md:py-1.5 border ${pill.border}`}>
               {pill.rmb
@@ -126,9 +126,9 @@ export default function ToastShowcase() {
               </div>
             ))}
           </div>
-          <div className="mt-5 flex flex-wrap gap-6">
+          <div className="mt-5 flex flex-wrap gap-4">
             {CROWN_TIERS.map((tier) => (
-              <div key={tier} className="flex flex-col items-center gap-2">
+              <div key={tier} className="w-28 flex flex-col items-center gap-2">
                 <span className={`relative flex rounded-[18px] ${tier === 1000000 ? 'crown-king' : ''}`}>
                   <MemberCrownIcon tier={tier} size={88} />
                 </span>

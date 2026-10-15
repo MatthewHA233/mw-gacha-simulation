@@ -5,7 +5,8 @@
  *   ¥1,000 – 2,999    白银    健身年卡、1314、咬牙、一路发、实习大学生、Switch、快四个 648
  *   ¥3,000 – 14,000   翠绿    毕业、全景相机、主机、跨栏、十连 648、钱包倒计时、五位数之壁、顶配手机、旅行
  *   ¥16,499 – 90,000  黄金    旗舰显卡、双倍喜悦、回忆杀、四万之坎、次元穿越者、六万之重、七万里路、接近极限、九万之巅
- *   ≥ ¥100,000        紫晶    轿车开走、一年白干、裂开的王冠、存钱罐、半边点亮的王冠、深渊之眼、万氪之王
+ *   ≥ ¥100,000        紫晶    轿车开走、一年白干、伪神、存钱罐、半神、深渊之眼、万氪之王
+ *   （万氪之王三档 20 万 / 50 万 / 100 万直接画顶栏同款王冠 MEMBER_CROWNS，成就和顶栏看着是同一顶）
  *
  * 纯 SVG（64×64 画布），平涂 + 深色描边，不用渐变；任何尺寸都清晰、不用传 CDN。
  */
@@ -72,21 +73,10 @@ function Bricks({ c, x = 0, y = 0, opacity = 1 }) {
   )
 }
 
-function Crown({ c, fill, crack = false }) {
-  return (
-    <g>
-      <path d="M12 44L14 22L24 32L32 16L40 32L50 22L52 44Z" fill={fill} stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <rect x="12" y="43" width="40" height="7" rx="1.5" fill={c.ink} stroke={c.base} strokeWidth="2" />
-      <circle cx="14" cy="21" r="2.4" fill={c.ink} stroke={c.base} strokeWidth="1.5" />
-      <circle cx="32" cy="15" r="2.6" fill={c.ink} stroke={c.base} strokeWidth="1.5" />
-      <circle cx="50" cy="21" r="2.4" fill={c.ink} stroke={c.base} strokeWidth="1.5" />
-      <circle cx="22" cy="46.5" r="1.6" fill={c.accent} />
-      <circle cx="32" cy="46.5" r="1.6" fill={c.accent} />
-      <circle cx="42" cy="46.5" r="1.6" fill={c.accent} />
-      {crack && <path d="M33.5 18L30 28L35.5 33L31 43" fill="none" stroke={c.base} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />}
-    </g>
-  )
-}
+// 万氪之王三档：直接用顶栏同款王冠（MEMBER_CROWNS），缩进徽章面板里
+const memberCrownArt = (tier) => () => (
+  <g transform="translate(32 33) scale(0.78) translate(-32 -30)">{MEMBER_CROWNS[tier]()}</g>
+)
 
 const ART = {
   // 全场最靓的仔：聚光灯下、躺在地上闪闪发光的百元大钞
@@ -578,8 +568,8 @@ const ART = {
       <rect x="23.5" y="32" width="7" height="6" rx="1.2" fill={c.accent} stroke={c.base} strokeWidth="1.4" />
     </g>
   ),
-  // 万氪之王 · 伪神：裂开的王冠
-  200000: (c) => <Crown c={c} fill={c.accent} crack />,
+  // 万氪之王 · 伪神：顶栏同款，歪斜开裂的粉色王冠
+  200000: memberCrownArt(200000),
   // 三十而已：粉色存钱罐，一枚金币正掉进去
   300000: (c) => (
     <g>
@@ -597,22 +587,8 @@ const ART = {
       <path d="M18 32a8 8 0 0 1 6-5" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
     </g>
   ),
-  // 万氪之王 · 半神：只点亮了左半边的王冠（20 万裂开 → 50 万半边 → 100 万光芒万丈）
-  500000: (c) => (
-    <g>
-      {[[10, 14, 7], [8, 30, 5], [20, 9, 4]].map(([x, y, len]) => (
-        <path key={`${x}${y}`} d={`M${x} ${y - len / 2}v${len}M${x - len / 2} ${y}h${len}`} stroke="#ffd86b" strokeWidth="1.8" strokeLinecap="round" />
-      ))}
-      <path d="M32 16L40 32L50 22L52 44H32Z" fill={c.base} stroke={c.ink} strokeWidth="1.8" strokeLinejoin="round" strokeDasharray="3 2.4" opacity="0.85" />
-      <rect x="32" y="43" width="20" height="7" rx="1.5" fill={c.base} stroke={c.ink} strokeWidth="1.6" strokeDasharray="3 2.4" opacity="0.85" />
-      <path d="M12 44L14 22L24 32L32 16V44Z" fill="#ffd86b" stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <rect x="12" y="43" width="20" height="7" rx="1.5" fill={c.ink} stroke={c.base} strokeWidth="2" />
-      <circle cx="14" cy="21" r="2.4" fill={c.ink} stroke={c.base} strokeWidth="1.5" />
-      <circle cx="32" cy="15" r="2.6" fill="#ffd86b" stroke={c.base} strokeWidth="1.5" />
-      <circle cx="22" cy="46.5" r="1.6" fill={c.accent} />
-      <path d="M32 12V53" stroke="#ffffff" strokeWidth="1.4" opacity="0.55" />
-    </g>
-  ),
+  // 万氪之王 · 半神：顶栏同款，左半金色实心、右半虚线轮廓
+  500000: memberCrownArt(500000),
   // 凝视深渊：深渊漩涡里睁开的一只眼
   700000: (c) => (
     <g>
@@ -626,29 +602,8 @@ const ART = {
       <path d="M14 22l-3-3M50 22l3-3M32 13v-4" stroke={c.accent} strokeWidth="2" strokeLinecap="round" opacity="0.8" />
     </g>
   ),
-  // 万氪之王：桂冠 + 光芒 + 王冠
-  1000000: (c) => (
-    <g>
-      {Array.from({ length: 12 }, (_, i) => {
-        const a = (i / 12) * Math.PI * 2
-        return (
-          <line key={i} x1={32 + Math.cos(a) * 21} y1={32 + Math.sin(a) * 21} x2={32 + Math.cos(a) * 27} y2={32 + Math.sin(a) * 27}
-            stroke="#ffd86b" strokeWidth="2.4" strokeLinecap="round" opacity="0.9" />
-        )
-      })}
-      {[-1, 1].map((side) => (
-        <g key={side} transform={side < 0 ? '' : 'translate(64 0) scale(-1 1)'}>
-          <path d="M17 47Q9 37 13 23" fill="none" stroke={c.ink} strokeWidth="1.8" strokeLinecap="round" />
-          {[[12.5, 26, -50], [11.5, 32, -30], [12.5, 38, -10], [15, 43.5, 15]].map(([x, y, r]) => (
-            <ellipse key={y} cx={x} cy={y} rx="3.4" ry="1.7" transform={`rotate(${r} ${x} ${y})`} fill={c.ink} stroke={c.base} strokeWidth="0.8" />
-          ))}
-        </g>
-      ))}
-      <path d="M20 41L21 26L27 32L32 21L37 32L43 26L44 41Z" fill="#ffd86b" stroke={c.base} strokeWidth="2" strokeLinejoin="round" />
-      <rect x="20" y="40" width="24" height="5.5" rx="1.2" fill={c.ink} stroke={c.base} strokeWidth="1.8" />
-      <circle cx="32" cy="35" r="2.6" fill={c.accent} stroke={c.base} strokeWidth="1.2" />
-    </g>
-  ),
+  // 万氪之王：顶栏同款，长短交错光芒里的金冠
+  1000000: memberCrownArt(1000000),
 }
 
 /**
@@ -717,9 +672,11 @@ const MEMBER_CROWNS = {
   // 会员：端正的橙金王冠
   0: () => <CrownShape light="#ffb766" dark="#ee8a2f" band="#ffe8cc" gem="#e6394f" gem2="#4fb6ff" stroke="#4a2a10" />,
   // 伪神：歪斜、开裂的粉色王冠，青色重影，掉下两片碎片
+  // 绕冠带中心转，再整体挪一点：冠带最低的角落在和其它三档同一条底线上、冠身左右居中
+  // （以前绕画布中心转，整顶冠偏到右下，并排时看着没对齐）
   200000: () => (
-    <g>
-      <g transform="rotate(-11 32 32)">
+    <g transform="translate(3 -3.5)">
+      <g transform="rotate(-11 32 47)">
         <path d={CROWN_OUTLINE} fill="none" stroke="#4fe3ff" strokeWidth="1.4" strokeLinejoin="round" opacity="0.45" transform="translate(-2.4 1.2)" />
         <CrownShape light="#ff94dc" dark="#d95cb4" band="#f3e8ff" gem="#4fe3ff" stroke="#2a1530" />
         <path d="M33.5 12L29.5 24L35.5 30.5L30.5 43" fill="none" stroke="#2a1530" strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
