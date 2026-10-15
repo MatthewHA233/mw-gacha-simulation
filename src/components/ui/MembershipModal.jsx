@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/hooks/useAuth'
 import { CDN_BASE_URL } from '@/utils/constants'
+import { maskLoginId } from '../../utils/maskLoginId'
 
 export function MembershipModal({ isOpen, onClose, onSuccess, initialStep = 'select', isRenewal = false }) {
   const [selectedPlan, setSelectedPlan] = useState('monthly')
@@ -790,7 +791,7 @@ function BindStep({ onBack, onSuccess }) {
           <ShieldCheck size={20} className="text-emerald-400 mx-auto mb-1 md:mb-2 md:[&]:w-7 md:[&]:h-7" />
           <p className="text-emerald-400 text-[10px] md:text-base font-bold mb-0.5 md:mb-2">已绑定账号</p>
           <p className="text-slate-300 text-[9px] md:text-sm">
-            登录账号：<span className="text-white font-mono">{userAccount.login_id}</span>
+            登录账号：<span className="text-white font-mono">{maskLoginId(userAccount.login_id)}</span>
           </p>
           <p className="text-slate-500 text-[9px] md:text-xs mt-0.5 md:mt-2">可用此账号 + 密码直接登录，无需记住通行证密钥</p>
         </motion.div>

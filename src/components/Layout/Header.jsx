@@ -10,9 +10,13 @@ import { useAuth } from '../../hooks/useAuth'
 import { Crown, Copy, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MembershipModal } from '../ui/MembershipModal'
+import { maskLoginId } from '../../utils/maskLoginId'
 
 // 服务端渲染时 useLayoutEffect 会报警告，浏览器端才用它（量宽度要在绘制前，免得闪一下）
 const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
+// 深色细滚动条（账号下拉菜单里用，替掉浏览器默认的白色滚动条）
+const THIN_SCROLLBAR = '[scrollbar-width:thin] [scrollbar-color:rgba(148,163,184,0.35)_transparent] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-600/60'
 
 /**
  * 抽卡页面顶部导航栏组件（公共组件）
@@ -46,6 +50,7 @@ export function Header({
   const [bindPassError, setBindPassError] = useState('')
   const [bindPassSuccess, setBindPassSuccess] = useState('')
   const [codeCopied, setCodeCopied] = useState(false)
+  const [showExpiredPasses, setShowExpiredPasses] = useState(false)
 
   // 顶部栏放不下时逐级折叠（2026-10-15，号主定：放得下就全部显示，位置不够才自动折）：
   //   0 级 = 全部显示；1 级 = 省掉股东炮按钮；2 级 = 再把「已获得」累计数收进下拉。活动中英文名一直保留。
@@ -462,7 +467,7 @@ export function Header({
                 onClick={() => { playButtonClick(); setShowAccountMenu(!showAccountMenu) }}
                 className="text-slate-300 hover:text-white font-mono text-[10px] md:text-xs px-1 py-0.5 md:px-2 border border-slate-700 bg-black/40 hover:border-slate-500 transition-colors cursor-pointer max-w-[60px] md:max-w-[120px] truncate"
               >
-                {userAccount?.login_id || '已登录'}
+                {maskLoginId(userAccount?.login_id) || '已登录'}
               </button>
 
               {/* 过期续费 */}
@@ -493,14 +498,14 @@ export function Header({
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      className="absolute top-full right-0 mt-1 z-50 bg-slate-900 border border-slate-700 shadow-xl min-w-[160px] md:min-w-[180px] max-h-[70vh] overflow-y-auto"
+                      className={`absolute top-full right-0 mt-1 z-50 bg-slate-900 border border-slate-700 shadow-xl min-w-[180px] md:min-w-[220px] max-h-[70vh] overflow-y-auto ${THIN_SCROLLBAR}`}
                     >
                       {/* 账号信息 */}
                       <div className="px-2 py-1.5 md:px-3 md:py-2 border-b border-slate-800">
                         <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider">账号</p>
                         <div className="flex items-center gap-1">
                           <p className="text-xs md:text-sm text-white font-mono truncate flex-1">
-                            {userAccount?.login_id || '未绑定'}
+                            {maskLoginId(userAccount?.login_id) || '未绑定'}
                           </p>
                           {userAccount && (
                             <button
@@ -603,38 +608,64 @@ export function Header({
                         </div>
                       </div>
 
-                      {/* 通行证列表 */}
-                      {allMemberships.length > 0 && (
-                        <div className="px-2 py-1.5 md:px-3 md:py-2 border-b border-slate-800">
-                          <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider mb-0.5 md:mb-1">通行证</p>
-                          <div className="space-y-1 md:space-y-1.5 max-h-[100px] md:max-h-[150px] overflow-y-auto">
-                            {allMemberships.map((m, i) => {
-                              const isExp = m.remaining_days === 0
-                              return (
-                                <div key={m.activation_code || i} className="flex items-center justify-between gap-1.5 md:gap-2">
+                      {/* 通行证列表（2026-10-15 整理）：在用的按剩余天数排最前；已过期的收成一行，点开再看；深色细滚动条 */}
+                      {allMemberships.length > 0 && (() => {
+                        const passCode = (m) => m.activation_code ? m.activation_code.slice(0, 4) + '····' + m.activation_code.slice(-4) : '—'
+                        const passType = (m) => (
+                          <span className="text-[9px] md:text-[10px] px-1 py-px bg-slate-800 text-slate-400 shrink-0">
+                            {m.membership_type === 'yearly' ? '年' : '月'}
+                          </span>
+                        )
+                        const active = allMemberships.filter(m => m.remaining_days > 0)
+                          .sort((a, b) => b.remaining_days - a.remaining_days)
+                        const expired = allMemberships.filter(m => !(m.remaining_days > 0))
+                        return (
+                          <div className="px-2 py-1.5 md:px-3 md:py-2 border-b border-slate-800">
+                            <p className="text-[10px] md:text-[11px] text-slate-400 uppercase tracking-wider mb-0.5 md:mb-1">通行证</p>
+                            <div className="space-y-1 md:space-y-1.5">
+                              {active.map((m, i) => (
+                                <div key={m.activation_code || `a${i}`} className="flex items-center justify-between gap-2">
                                   <div className="flex items-center gap-1 md:gap-1.5 min-w-0">
-                                    <span className={`text-[10px] md:text-xs font-mono truncate ${isExp ? 'text-slate-500 line-through' : 'text-slate-200'}`}>
-                                      {m.activation_code ? m.activation_code.slice(0, 4) + '····' + m.activation_code.slice(-4) : '—'}
-                                    </span>
-                                    <span className="text-[9px] md:text-[10px] px-1 py-px bg-slate-800 text-slate-400 shrink-0">
-                                      {m.membership_type === 'yearly' ? '年' : '月'}
-                                    </span>
+                                    <span className="text-[10px] md:text-xs font-mono text-slate-100 whitespace-nowrap">{passCode(m)}</span>
+                                    {passType(m)}
                                   </div>
-                                  <span className={`text-[10px] md:text-xs font-mono shrink-0 ${isExp ? 'text-slate-500' : 'text-emerald-400'}`}>
-                                    {isExp ? '已过期' : `${m.remaining_days}天`}
-                                  </span>
+                                  <span className="text-[10px] md:text-xs font-mono font-bold text-emerald-400 shrink-0">{m.remaining_days}天</span>
                                 </div>
-                              )
-                            })}
-                          </div>
-                          {totalRemainingDays > 0 && allMemberships.length > 1 && (
-                            <div className="mt-1 pt-1 md:mt-1.5 md:pt-1.5 border-t border-slate-800/50 flex justify-between">
-                              <span className="text-[10px] md:text-xs text-slate-400">合计</span>
-                              <span className="text-[10px] md:text-xs text-orange-400 font-mono font-bold">{totalRemainingDays}天</span>
+                              ))}
+                              {active.length === 0 && (
+                                <p className="text-[10px] md:text-xs text-slate-500">没有在用的通行证</p>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      )}
+                            {active.length > 1 && (
+                              <div className="mt-1 pt-1 md:mt-1.5 md:pt-1.5 border-t border-slate-800/50 flex justify-between">
+                                <span className="text-[10px] md:text-xs text-slate-400">合计</span>
+                                <span className="text-[10px] md:text-xs text-orange-400 font-mono font-bold">{totalRemainingDays}天</span>
+                              </div>
+                            )}
+                            {expired.length > 0 && (
+                              <div className="mt-1.5 md:mt-2">
+                                <button
+                                  onClick={() => setShowExpiredPasses(v => !v)}
+                                  className="w-full flex items-center justify-between text-[10px] md:text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                                >
+                                  <span>已过期 {expired.length} 张</span>
+                                  <svg className={`w-3 h-3 transition-transform ${showExpiredPasses ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                                </button>
+                                {showExpiredPasses && (
+                                  <div className={`mt-1 space-y-1 max-h-[96px] md:max-h-[132px] overflow-y-auto pr-1 ${THIN_SCROLLBAR}`}>
+                                    {expired.map((m, i) => (
+                                      <div key={m.activation_code || `e${i}`} className="flex items-center gap-1 md:gap-1.5 min-w-0 opacity-60">
+                                        <span className="text-[10px] md:text-xs font-mono text-slate-400 whitespace-nowrap">{passCode(m)}</span>
+                                        {passType(m)}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })()}
 
                       {/* 绑定新通行证 - 仅当有账号时显示 */}
                       {userAccount && (
