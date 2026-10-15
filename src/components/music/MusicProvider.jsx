@@ -10,14 +10,24 @@ import { BGM_TRACKS } from './tracks'
  * 根布局在路由切换时不会重新挂载，所以 <audio> 放这里，换活动页面音乐不中断、进度不变；
  * 整页刷新时从 localStorage 记下的曲目和位置接着放。侧边栏的频谱和左下角的播放器都从这里取状态。
  * 播放偏好沿用原来侧边栏的 localStorage 键与规则：主动开过才自动播放，暂停超过一天自动恢复为播放。
- * 歌单顺序播放、放完最后一首回到第一首。
+ * 播放模式三种（号主定默认单曲循环），和最近播放的曲目、位置一起记在本地。
  */
 
 const KEY_PLAYING = 'sidebar_music_playing'
 const KEY_PAUSED_AT = 'sidebar_music_paused_at'
 const KEY_POSITION = 'bgm_position' // { src, t }
 const KEY_TRACK = 'bgm_track'
+const KEY_MODE = 'bgm_mode'
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
+
+// 单曲循环 → 列表循环 → 随机播放 → 单曲循环（点一下换下一种）
+export const PLAY_MODES = [
+  { id: 'one', label: '单曲循环' },
+  { id: 'all', label: '列表循环' },
+  { id: 'shuffle', label: '随机播放' },
+]
+const DEFAULT_MODE = 'one'
+const isMode = (value) => PLAY_MODES.some((mode) => mode.id === value)
 
 // 跨域：crossOrigin 的 <audio>（频谱要用）要求响应带跨域头。OSS 只在请求带 Origin 时才回，CDN 又不按 Origin
 // 区分缓存，2026-10-15 有一次不带 Origin 的请求让主题曲在 CDN 上缓存成了没有跨域头的版本、浏览器加载失败。
@@ -42,7 +52,9 @@ export function MusicProvider({ children }) {
   const analyserRef = useRef(null)
   const sourceRef = useRef(null)
   const indexRef = useRef(0)
+  const modeRef = useRef(DEFAULT_MODE)
   const [trackIndex, setTrackIndex] = useState(0)
+  const [mode, setMode] = useState(DEFAULT_MODE)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [failed, setFailed] = useState(false)
@@ -118,7 +130,32 @@ export function MusicProvider({ children }) {
     play()
   }, [loadTrack, play])
 
-  const next = useCallback(() => selectTrack((indexRef.current + 1) % BGM_TRACKS.length), [selectTrack])
+  // 单曲循环交给 <audio loop>（无缝，不会触发 ended）；另外两种在放完时换曲
+  const applyMode = useCallback((value) => {
+    modeRef.current = value
+    setMode(value)
+    if (audioRef.current) audioRef.current.loop = value === 'one'
+  }, [])
+
+  const cycleMode = useCallback(() => {
+    const index = PLAY_MODES.findIndex((item) => item.id === modeRef.current)
+    const nextMode = PLAY_MODES[(index + 1) % PLAY_MODES.length]
+    applyMode(nextMode.id)
+    storage.set(KEY_MODE, nextMode.id)
+    return nextMode
+  }, [applyMode])
+
+  // 下一首：随机模式随机挑一首别的，其余按歌单顺序（单曲循环下点「下一首」也照顺序换）
+  const nextIndex = useCallback(() => {
+    const count = BGM_TRACKS.length
+    if (modeRef.current === 'shuffle' && count > 1) {
+      const pick = Math.floor(Math.random() * (count - 1))
+      return pick >= indexRef.current ? pick + 1 : pick
+    }
+    return (indexRef.current + 1) % count
+  }, [])
+
+  const next = useCallback(() => selectTrack(nextIndex()), [selectTrack, nextIndex])
 
   useEffect(() => {
     const audio = audioRef.current
@@ -132,7 +169,9 @@ export function MusicProvider({ children }) {
       storage.remove(KEY_PAUSED_AT)
     }
 
-    // 整页刷新后：上次那首、上次的位置
+    // 整页刷新后：上次的播放模式、那首、那个位置
+    const savedMode = storage.get(KEY_MODE)
+    applyMode(isMode(savedMode) ? savedMode : DEFAULT_MODE)
     const savedId = storage.get(KEY_TRACK)
     const savedIndex = Math.max(0, BGM_TRACKS.findIndex((track) => track.id === savedId))
     let resumeAt = 0
@@ -149,10 +188,14 @@ export function MusicProvider({ children }) {
     const onPause = () => { setIsPlaying(false); setIsLoading(false) }
     const onWaiting = () => { if (!audio.paused) setIsLoading(true) }
     const onError = () => { setIsPlaying(false); setIsLoading(false); setFailed(true) }
-    // 放完接下一首；最后一首放完回到第一首
+    // 放完：列表循环接下一首（最后一首回到第一首），随机播放随机挑；单曲循环由 loop 处理，这里只是兜底
     const onEnded = () => {
-      const nextIndex = (indexRef.current + 1) % BGM_TRACKS.length
-      loadTrack(nextIndex)
+      if (modeRef.current === 'one') {
+        audio.currentTime = 0
+        play()
+        return
+      }
+      loadTrack(nextIndex())
       play()
     }
 
@@ -179,12 +222,12 @@ export function MusicProvider({ children }) {
       document.removeEventListener('touchend', onFirstInteraction)
       window.removeEventListener('pagehide', savePosition)
     }
-  }, [loadTrack, play])
+  }, [loadTrack, play, applyMode, nextIndex])
 
   const value = {
     tracks: BGM_TRACKS, track: BGM_TRACKS[trackIndex], trackIndex,
-    isPlaying, isLoading, failed,
-    play, pause, toggle, selectTrack, next, analyserRef,
+    isPlaying, isLoading, failed, mode,
+    play, pause, toggle, selectTrack, next, cycleMode, analyserRef,
   }
 
   return (
@@ -197,8 +240,9 @@ export function MusicProvider({ children }) {
 
 const fallback = {
   tracks: BGM_TRACKS, track: BGM_TRACKS[0], trackIndex: 0, isPlaying: false, isLoading: false, failed: false,
+  mode: DEFAULT_MODE,
   play: async () => false, pause: () => {}, toggle: () => {}, selectTrack: () => {}, next: () => {},
-  analyserRef: { current: null },
+  cycleMode: () => PLAY_MODES[0], analyserRef: { current: null },
 }
 
 export function useMusic() {

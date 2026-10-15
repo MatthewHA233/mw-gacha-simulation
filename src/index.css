@@ -42,3 +42,13 @@
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
 }
+
+/* 背景音乐播放器「正在播放」的跳动音量条（MusicPlayer.jsx） */
+@keyframes bgm-eq {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+.bgm-eq-bar {
+  transform-origin: bottom;
+  animation: bgm-eq 0.9s ease-in-out infinite;
+}
